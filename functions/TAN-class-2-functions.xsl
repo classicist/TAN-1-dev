@@ -644,8 +644,8 @@
          hyphens or commas], one per source)
          Output: nodes, 1 per source, proper subset of tan:prep-class-1-data()
       -->
-      <xsl:param name="this-src-list" as="xs:integer+"/>
-      <xsl:param name="this-refs-norm" as="xs:string+"/>
+      <xsl:param name="this-src-list" as="xs:integer*"/>
+      <xsl:param name="this-refs-norm" as="xs:string*"/>
       <xsl:for-each select="$src-count">
          <xsl:variable name="this-src" select="."/>
          <xsl:element name="tan:source">

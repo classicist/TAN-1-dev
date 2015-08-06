@@ -1,0 +1,15 @@
+default namespace = "tag:textalign.net,2015:ns"
+namespace local = "tag:textalign.net,2015:ns"
+
+start = element TAN-R-tok { TAN-root }
+include "TAN-class-3.rnc" {
+    TAN-body-core = func-replace*, func-tokenize, exampleAB+
+    decl-non-class-3 = lang-outside*
+}
+exampleAB =
+    element example {
+        ed-stamp?,
+        (comment*
+         & (element input { ed-stamp?, text },
+            element output-token { ed-stamp?, text }+))
+    }

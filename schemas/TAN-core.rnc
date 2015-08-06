@@ -1,0 +1,261 @@
+# Master TAN core schema, updated 2015-03-18
+
+default namespace = "tag:textalign.net,2015:ns"
+
+datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
+
+# PART ONE OF TWO: PATTERNS REPEATEDLY USED ACROSS DIFFERENT TAN FILES 
+
+#   1A. ATOMIC PATTERNS (alphabetical)
+
+#    Reference to an agent, used generically (and not in edit stamps)
+agent-ref = attribute who { d:IDREFS }
+#    Expression of certainty an agent has in the data it governs. High = "is probably"; low = "is probably not"; all other values expressed as a real number from 0 (no certainty) to 1 (completely certainty).
+cert-claim =
+    attribute cert {
+        xsd:string { pattern = "(high)|(low)|(0\.\d+)" }
+    }
+#    String that refers to a div either by using single nonword characters to join pairs of @type and optional @n values (themselves joined) 
+#    by a nonword character) or by using single nonword characters to join only @n values. The first pattern
+#    is \w+\W\w*(\W\w+\W\w*)* and the second is \w+(\W\w+)*
+div-ref = xsd:string { pattern = "\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*" }
+#    String that specifies a range of divs using the div-ref pattern joined by a hyphen or a comma
+div-range-ref =
+    xsd:string {
+        pattern =
+            "(\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*)((\s*,|\s+-)\s+(\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*))*"
+    }
+#    Space-delimited sequence of division type id references; value would be d:IDREFS except that these point to IDs in other files.
+div-type-ref = attribute div-type-ref { text }
+#     Reference to agent or agents who have edited (added or modified) an element or its content
+ed-agent = attribute ed-who { d:IDREFS }
+#     Reference to a date or time when an element or its content was edited (added or modified)
+ed-time = attribute ed-when { xsd:dateTime | xsd:date }
+#     Identifier of an entity described within an element. Must be unique within a given file. Must consist only of word characters.
+internal-id =
+    attribute xml:id {
+        d:ID { pattern = "\w\S*" }
+    }
+#     Any generic IRI identifier.
+IRI-gen = xsd:anyURI { pattern = "[a-zA-Z][\-.+a-zA-Z0-9]+:\S+" }
+#     Acceptable values of @n, used by class 1 and class 2 files
+n-val = xsd:string { pattern = "\w*" }
+#     Version of TAN schemas used, here version 1/1
+TAN-ver =
+    attribute TAN-version {
+        xsd:string { pattern = "1(\W+dev)?" }
+    }
+#    tokenization id reference; value would be d:IDREF except that this attribute points to IDs in other files.
+tokenization-ref = attribute which { tokenization-ref-text }
+#    tokenization id text; default (for Class 2 files) is text; narrowed by Class 1 files.
+tokenization-ref-text = text
+#     Attribute with ISO (BCP 47) language code intended to identify the language of the CDATA content (the text) 
+lang-of-content = attribute xml:lang { xsd:language }
+#     Element with ISO (BCP 47) language code. NOT to be used to identify the language of any CDATA content. Used primarily under declarations element, to name the languages to which an operation or declaration applies.
+lang-outside = element for-lang { xsd:language }
+#    Indicates whether @n in a particular div-type is a numeral; default = true unless values fail to match standard patterns for numeral systems (Arabic, Roman, etc.)
+ns-are-numerals = attribute ns-are-numerals { xsd:boolean }
+#    Is the creation and editing of the data still in progress?
+progress = attribute in-progress { xsd:boolean }
+#    Agent who holds the rights over the data, absent sources
+rights-holder = attribute rights-holder { d:IDREFS }
+#     Reference to an xml:id that identifies a role (i.e., duty or responsibility) associated with the creation of editing of the data
+role-ref = attribute roles { d:IDREFS }
+#    Attribute containing an IDREF to the ID of the source for the given token. This is suppressed in TAN-LM files (which have only one source) and required in TAN-A files. 
+source-ref = attribute src { d:IDREFS }
+#    String that specifies a range of tokens: digits or "last(-digit)?" joined by space-delimited hyphens or vertical lines (pipe character)
+seq-picker =
+    xsd:string {
+        pattern =
+            "((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?(\s*,\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*"
+    }
+#    String reference to a particular word token within a sequence of word tokens 
+token-value-ref =
+    attribute val {
+        xsd:string { pattern = ".+" }
+    }
+#     Unused pattern, restricted to URIs. Kept in case the regular expression is helpful in the future.
+URI-gen =
+    xsd:anyURI { pattern = "[a-zA-Z][\-.+a-zA-Z0-9]+:[\-._~+:/?#\[\]%@!$&'\(\)*+,;=a-zA-Z0-9]+" }
+#     Tag URN, mandatory pattern for the IRI name of every TAN file 
+URI-tag =
+    xsd:anyURI {
+        pattern =
+            "tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-(0\d|1[0-2]))?(-([0-2]\d|3[01]))?:\S+"
+    }
+#    Date or date + time, used generically and not for edit stamps
+when-claim = attribute when { xsd:dateTime | xsd:date }
+# 
+#   1B. NON-ATOMIC PATTERNS (alphabetical)
+
+#          Element to declare the checksum of an electronic source/auxiliary. Metadata core is required to identify the type of checksum being used (e.g., SHA-1). 
+checksum =
+    element checksum {
+        entity-nondigital-ref,
+        element value { string }
+    }
+#    Comments, which are required to have @who and @when values indicating who made the comment when.
+comment = element comment { when-claim, agent-ref, text }
+#    Editorial stamp: who created or edited the enclosed data and when. 
+ed-stamp = ed-agent, ed-time
+# 
+#    FOUR TYPES OF ENTITIES THAT CAN BE REFERENCED USING THE IRI+NAME PATTERN
+#    Reference to an external digital entity that is a TAN file
+entity-digital-tan-other-ref = URI-tag-ref, metadata-human, checksum*, loc-src+
+#    Reference to an external digital entity that is not a TAN file
+entity-digital-generic-ref = IRI-gen-ref+, metadata-human, checksum*, loc-src+
+#    Reference to self as digital entity (i.e., TAN file)
+entity-digital-tan-self-ref = metadata-human, loc-self*
+#    Reference to an external non-digital entity (e.g., agents, roles, concepts)
+entity-nondigital-ref = IRI-gen-ref+, metadata-human
+#
+func-param-pattern = element pattern { ed-stamp?, text }
+#
+func-param-flags =
+    element flags {
+        ed-stamp?,
+        xsd:string { pattern = "[smixq]+" }
+    }
+#    NB, @xpath may be untenable, and is slated for deletion from ver 1, if it cannot be applied 
+#    consistently or reliably.
+#    The fn:replace function plus parameters. Used in class 1 and class 3 (TAN-R-tok) files.
+func-replace =
+    element replace {
+        ed-stamp?,
+        attribute xpath { text }?,
+        (comment*
+         & (func-param-pattern,
+            element replacement { ed-stamp?, text },
+            func-param-flags?))
+    }
+#    The fn:tokenize function plus parameters. Used in class 1 and class 3 (TAN-R-tok) files.
+func-tokenize =
+    element tokenize {
+        ed-stamp?,
+        (comment* & (func-param-pattern, func-param-flags?))
+    }
+#    Element that takes a general URI 
+IRI-gen-ref = element IRI { ed-stamp?, IRI-gen }
+#          Element to declare where a master copy of the file itself is to be found. 
+loc-self = element master-location { ed-stamp?, xsd:anyURI }
+#          Element to declare where an electronic source/auxiliary was found, when. 
+loc-src =
+    element location {
+        ed-stamp?,
+        attribute when-accessed { xsd:date },
+        xsd:anyURI
+    }
+metadata-desc =
+    ed-stamp?,
+    lang-of-content?,
+    xsd:string { pattern = "(.|\n)+" }
+metadata-human =
+    element name { metadata-desc }+,
+    element desc { metadata-desc }*
+#    Pointer (link) to a div in a TAP-T(EI) file 
+pointer-to-div = attribute ref { div-ref }
+#    Pointer (link) to a range of divs in a TAP-T(EI) file 
+pointer-to-div-range = attribute ref { div-range-ref }
+#    Numerical reference to a particular word token or a range of them within a sequence of word tokens 
+token-value-order-ref = attribute ord { seq-picker }
+#    Element that takes a general URI 
+URI-gen-ref = element IRI { ed-stamp?, URI-gen }
+#    Element that takes a tag URN
+URI-tag-ref = element IRI { ed-stamp?, URI-tag }
+# 
+# PART TWO OF TWO: COMMON TAN STRUCTURE OF ALL TAN FILES (rootmost nodes first)
+
+# 1st level of any TAN file.
+TAN-root =
+    attribute id { URI-tag },
+    TAN-ver,
+    ed-stamp?,
+    TAN-head,
+    TAN-body
+# 
+# 2nd level of any TAN file.
+
+#    Common metadata header
+TAN-head =
+    element head {
+        ed-stamp?,
+        (comment*
+         & (entity-digital-tan-self-ref,
+            nonsource-rights,
+            source-list,
+            see-also-list,
+            element declarations { ed-stamp?, (comment* & decl-list) },
+            agent-list+,
+            role-list+,
+            agent-role-list*,
+            # Changes, which must indicate through @who and @when who made the change, when  
+            change-list+))
+    }
+#     Common data container
+TAN-body = element body { progress?, ed-stamp?, (comment* & TAN-body-core) }
+TAN-body-core = empty
+# 
+# 3rd level of any TAN file, head metadata only (the body, which differs widely across TAN file types, are defined in other schema files)
+
+#    Element stating the rights under which the data is distributed
+nonsource-rights =
+    element rights-excluding-sources {
+        ed-stamp?, rights-holder, (comment* & entity-nondigital-ref)
+    }
+#    The name of the source upon which the TAN file rests. TAN-T and TAN-LM allow only one. TAN-A-tok allows exactly two. All other TAN formats require one or more. 
+source-list = source-item
+source-item =
+    element source {
+        ed-stamp?,
+        source-id-opt,
+        (comment*
+         & ((entity-nondigital-ref | entity-digital-generic-ref | entity-digital-tan-other-ref),
+            source-rights?))
+    }
+#    Element stating the rights attached to the source of data
+source-rights =
+    element rights-source-only {
+        ed-stamp?,
+        (comment* & (rights-holder*, entity-nondigital-ref))
+    }
+#     Parameter to indicate whether <source> should be allowed to take xml:id (forbidden for TAN files with only one source; mandated otherwise)
+source-id-opt = empty
+#    Auxiliary entities (usually derivative versions of sources) that were materially helpful in creating or editing the data 
+see-also-list = see-also-item*
+see-also-item =
+    element see-also {
+        ed-stamp?,
+        (comment*
+         & (relationship,
+            (entity-nondigital-ref | entity-digital-generic-ref | entity-digital-tan-other-ref)))
+    }
+#        The role that the see-also played, either a reserved keyword or a customized name (e.g., uncorrected transcription) defined by an IRI + name pattern   
+relationship =
+    element relationship {
+        ed-stamp?,
+        (entity-nondigital-ref
+         | xsd:string { pattern = "(new|old|alternative) edition|auxiliary|dependent" })
+    }
+#        The agents (persons, organizations) that played a role in creating or editing the data   
+agent-list = element agent { ed-stamp?, role-ref?, internal-id, (comment* & entity-nondigital-ref) }
+#        The roles (responsibilities, tasks) that agents did in creating or editing the data   
+role-list = element role { ed-stamp?, internal-id, (comment* & entity-nondigital-ref) }
+#        Specific roles performed by specific agents in creating or editing the data
+agent-role-list =
+    element agentrole {
+        attribute when-from { xsd:dateTime | xsd:date },
+        attribute when-to { xsd:dateTime | xsd:date },
+        ed-stamp?,
+        agent-ref,
+        role-ref
+    }
+#        Changes made to the file.
+change-list = element change { ed-stamp?, when-claim, agent-ref, text }
+# 4th level of any TAN file, specifically the /*/head/declarations element
+
+#    Empty declaration element. See other TAN schemas for redefinitions appropriate to a particular type of TAN file. 
+decl-list = decl-core & decl-non-core
+#    Reserved for any declarations that are shared across classes
+decl-core = empty
+#    decl-non-core to be filled out by each TAN-class-X.rnc file
+decl-non-core = empty

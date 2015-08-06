@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../schemas/TAN-R-tok.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="../schemas/TAN-R-tok.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TAN-R-tok xmlns="tag:textalign.net,2015:ns" TAN-version="1/dev"
+   id="tag:textalign.net,2015:tan-r-tok:general-words-only-1">
+   <head>
+      <name>General tokenization pattern for any language, words only</name>
+      <desc>This tokenization pattern takes any text in any language and tokenizes on any non-word
+         characters (i.e., spaces and punctuation). This tokenization pattern is suitable for
+         transcriptions of texts where punctuation is anachronistic or not an object of linguistic
+         analysis. This is a core tokenization pattern, so can be invoked by the elements
+         tokenization or recommended-tokenization simply by setting @which to the value "precise-1".
+         Or you may use the full IRI + name pattern, provided below for the convenience of those
+         preparing a transcription file. @when-accessed should be updated.
+         <!--
+            <recommended-tokenization xml:id="general-words-only-1">
+               <IRI>tag:textalign.net,2015:tan-r-tok:general-words-only-1</IRI>
+               <name>General tokenization pattern for any language, words only</name>
+               <location when-accessed="2015-01-01">http://textalign.net/release/1/dev/TAN-R-tok/general-words-only-1.xml</location>
+            </recommended-tokenization>
+         -->
+      </desc>
+      <master-location>http://textalign.net/release/1/dev/TAN-R-tok/general-words-only-1.xml</master-location>
+      <rights-excluding-sources rights-holder="kalvesmaki">
+         <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
+         <name>Creative Commons Attribution 4.0 International License</name>
+         <desc>This license is granted independent of rights and licenses associated with the
+            source. </desc>
+      </rights-excluding-sources>
+      <declarations/>
+      <agent xml:id="kalvesmaki" roles="creator">
+         <IRI>http://viaf.org/viaf/299582703</IRI>
+         <IRI>tag:textalign.net,2015:agent:kalvesmaki:joel</IRI>
+         <name xml:lang="eng">Joel Kalvesmaki</name>
+      </agent>
+      <role xml:id="creator">
+         <IRI>http://schema.org/creator</IRI>
+         <name xml:lang="eng">creator</name>
+      </role>
+      <change when="2015-03-16" who="kalvesmaki">Started file</change>
+   </head>
+   <body in-progress="false">
+      <replace>
+         <comment when="2015-03-16" who="kalvesmaki">Remove end nonword characters</comment>
+         <pattern>^\W+|\W+$</pattern>
+         <replacement/>
+      </replace>
+      <tokenize>
+         <comment when="2015-03-16" who="kalvesmaki">Tokenize on any cluster of nonword
+            characters.</comment>
+         <pattern>\W+</pattern>
+      </tokenize>
+      <example>
+         <input>I said, "Where is the ping-pong table?"</input>
+         <output-token>I</output-token>
+         <output-token>said</output-token>
+         <output-token>Where</output-token>
+         <output-token>is</output-token>
+         <output-token>the</output-token>
+         <output-token>ping</output-token>
+         <output-token>pong</output-token>
+         <output-token>table</output-token>
+      </example>
+   </body>
+</TAN-R-tok>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:lang="en" xmlns="http://www.tei-c.org/ns/1.0"
+  xmlns:rng="http://relaxng.org/ns/structure/1.0">
+  <teiHeader>
+    <fileDesc>
+      <titleStmt>
+        <title>TEI with maximal setup, customized for inclusion in the Text Alignment
+          Network</title>
+        <author>Joel Kalvesmaki</author>
+      </titleStmt>
+      <publicationStmt>
+        <publisher>Joel Kalvesmaki</publisher>
+        <date>Revised 2015-02-05</date>
+        <availability status="free">
+          <p>Insofar as this ODD file constitutes an original work (see below) all material is
+            released under a Creative Commons Attribution 4.0 International License:
+            http://creativecommons.org/licenses/by/4.0/ </p>
+          <p>The notice in the next paragraph is preserved whole from the template upon which this
+            ODD file is based.</p>
+          <p>TEI material can be licensed differently depending on the use you intend to make of it.
+            Hence it is made available under both the CC+BY and BSD-2 licences. The CC+BY licence is
+            generally appropriate for usages which treat TEI content as data or documentation. The
+            BSD-2 licence is generally appropriate for usage of TEI content in a software
+            environment. For further information or clarification, please contact the TEI Consortium
+            (info@tei-c.org).</p>
+        </availability>
+      </publicationStmt>
+      <sourceDesc>
+        <p>Written from scratch.</p>
+      </sourceDesc>
+    </fileDesc>
+  </teiHeader>
+  <text>
+    <body>
+      <head>TEI All, adapted for the Text Alignment Network</head>
+      <p>This ODD describes parameters needed to turn any document that validates against TEI All
+        (P5) into a form that can be used with the Text Alignment Network (TAN). The next two
+        paragraphs are reproduced wholesale from the template upon which this ODD file is based. </p>
+      <p>This TEI customization describes a schema that includes <emph>all</emph> of the TEI (P5)
+        modules. This is a very useful starting place for manually creating your own customizations
+        — it is much easier to delete the modules you do not want than to add the modules you do.
+        Furthermore this customization often proves helpful for testing TEI software.</p>
+      <p>However, this particular TEI customization is <emph>not recommended</emph> for actual use
+        for encoding documents. It produces schemas and reference documentation that will be much
+        larger, and include many more elements, than almost anyone could conceivably ever need.
+        Tempting though it may be simply to have absolutely everything, and <q>just ignore</q>
+        elements not required, experience has shown that their presence makes the documentation
+        harder to read and use, and makes a schema that is far more lax than desired.</p>
+      <schemaSpec ident="tei_all" start="TEI teiCorpus">
+        <moduleRef key="tei"/>
+        <!-- required -->
+        <moduleRef key="core"/>
+        <!-- required -->
+        <moduleRef key="analysis"/>
+        <moduleRef key="certainty"/>
+        <moduleRef key="corpus"/>
+        <moduleRef key="dictionaries"/>
+        <moduleRef key="drama"/>
+        <moduleRef key="figures"/>
+        <moduleRef key="gaiji"/>
+        <moduleRef key="header"/>
+        <!-- required -->
+        <moduleRef key="iso-fs"/>
+        <moduleRef key="linking"/>
+        <moduleRef key="msdescription"/>
+        <moduleRef key="namesdates"/>
+        <moduleRef key="nets"/>
+        <moduleRef key="spoken"/>
+        <moduleRef key="textcrit"/>
+        <moduleRef key="textstructure"/>
+        <!-- required -->
+        <moduleRef key="transcr"/>
+        <moduleRef key="verse"/>
+        <moduleRef key="tagdocs"/>
+        <!-- This is set up to import the TAN-T header -->
+        <moduleRef url="TAN-class-1.rng"/>
+        <elementSpec mode="change" ident="TEI" module="textstructure">
+          <content>
+            <rng:group>
+              <rng:ref name="teiHeader"/>
+              <rng:ref name="TAN-head"/>
+              <rng:choice>
+                <rng:group>
+                  <rng:oneOrMore>
+                    <rng:ref name="model.resourceLike"/>
+                  </rng:oneOrMore>
+                  <rng:optional>
+                    <rng:ref name="text"/>
+                  </rng:optional>
+                </rng:group>
+                <rng:ref name="text"/>
+              </rng:choice>
+            </rng:group>
+          </content>
+          <attList>
+            <attDef mode="add" ident="id" usage="req">
+              <desc>A tag URN is required in the root element</desc>
+              <datatype>
+                <rng:data type="anyURI">
+                  <rng:param name="pattern"
+                    >tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-(0\d|1[0-2]))?(-([0-2]\d|3[01]))?:[\-a-zA-Z0-9._~:%@/?!$&amp;'\(\)*+,;=]+</rng:param>
+                </rng:data>
+              </datatype>
+            </attDef>
+            <attDef mode="add" ident="TAN-version" usage="req">
+              <desc>A TAN version number is required</desc>
+              <datatype>
+                <rng:data type="string">
+                  <rng:param name="pattern"
+                    >1(\s+\d+)?</rng:param>
+                </rng:data>
+              </datatype>
+            </attDef>
+          </attList>
+        </elementSpec>
+        <elementSpec mode="change" ident="body" module="textstructure">
+          <content>
+            <rng:oneOrMore>
+              <rng:ref name="model.divLike"/>
+            </rng:oneOrMore>
+          </content>
+          <attList>
+            <attDef mode="change" ident="xml:lang" usage="req"/>
+            <attDef mode="add" ident="in-progress">
+              <desc>Specifies whether the transcription is complete or not. Default value is true.
+                Note, a false value should NOT be regarded as a guarantee that the transcription is
+                error free, only that it carries the entire single work-version that has been
+                transcribed from the source. </desc>
+              <datatype>
+                <rng:data type="boolean"/>
+              </datatype>
+            </attDef>
+          </attList>
+        </elementSpec>
+        <elementSpec mode="change" ident="div" module="textstructure">
+          <attList>
+            <attDef mode="change" ident="type" usage="req"/>
+            <attDef mode="change" ident="n" usage="req">
+              <desc>This is a label that, with @type, situates the div within a reference system. If
+                not empty, it must have only word characters--no punctuation or spaces. </desc>
+              <datatype>
+                <rng:data type="string">
+                  <rng:param name="pattern">\w*</rng:param>
+                </rng:data>
+              </datatype>
+            </attDef>
+          </attList>
+        </elementSpec>
+        <classSpec ident="att.global" mode="change" type="atts">
+          <attList>
+            <attDef mode="add" ident="ed-who" usage="opt">
+              <desc>Reference to agent or agents who have edited (added or modified) an element or
+                its content</desc>
+              <datatype>
+                <rng:data type="IDREFS"/>
+              </datatype>
+            </attDef>
+            <attDef mode="add" ident="ed-when" usage="opt">
+              <desc>Reference to a date or time when an element or its content was edited (added or
+                modified)</desc>
+              <datatype><rng:choice>
+                  <rng:data type="date"/>
+                  <rng:data type="dateTime"/>
+                </rng:choice>
+              </datatype>
+            </attDef>
+          </attList>
+        </classSpec>
+      </schemaSpec>
+    </body>
+  </text>
+</TEI>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Data (&lt;body&gt;)</title><link rel="stylesheet" type="text/css" href="../../../../css/TAN-guidelines.css"/><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"/><link rel="home" href="index.xhtml" title="The Text Alignment Network: Official Guidelines"/><link rel="up" href="ch05.xhtml" title="Chapter 5. Patterns and Structures Common to All TAN Encoding Formats"/><link rel="prev" href="ch05s03.xhtml" title="Metadata (&lt;head&gt;)"/><link rel="next" href="ch06.xhtml" title="Chapter 6. Class 1 TAN Files, Representations of Textual Objects"/></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Data (<code class="code">&lt;body&gt;</code>)</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch05s03.xhtml">Prev</a> </td><th width="60%" align="center">Chapter 5. Patterns and Structures Common to All TAN Encoding Formats</th><td width="20%" align="right"> <a accesskey="n" href="ch06.xhtml">Next</a></td></tr></table><hr/></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="body"/>Data (<code class="code">&lt;body&gt;</code>)</h2></div></div></div><p>Regardless of class, each TAN format is devoted to a particular type of textual
+               information, and therefore requires its own structure. A transcription, for example,
+               will be structured quite unlike a set of lexico-morphology data. Thus,
+                  <code class="code">/*/body</code>, unlike <code class="code">/*/head</code>, for the most part differs
+               widely from one format to another, and is discussed in specific chapters. But some
+               common features are documented here.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="in_progress"/>@in-progress</h3></div></div></div><p>In every TAN file, <code class="code">&lt;body&gt;</code> takes an optional
+                     <code class="code">@in-progress</code>. If missing, this value is assumed to be true. That
+                  is, the TAN file is a work in progress. When you finish any TAN file, be certain
+                  to explicitly declare <code class="code">in-progress="false"</code> before publishing it. You
+                  must also be sure to include at least one <code class="code">&lt;master-location&gt;</code> under
+                     <code class="code">&lt;head&gt;</code> indicating where master copies of the TAN file are
+                  kept.</p><p>Any TAN file marked implicitly or explicitly as being in progress means only
+                  that the editor either has not yet finished supplying the data or reserves the
+                  right to make major changes.</p><p>
+                  </p><div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Caution"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Caution]" src="img/caution.png"/></td><th align="left">Caution</th></tr><tr><td align="left" valign="top"><p>If you find a TAN file that is marked as not being in progress, this is
+                        not to suggest that the file is error free. Any editor of a TAN file
+                        reserves the right to correct typographical errors or mistakes.</p></td></tr></table></div><p>
+               </p></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch05s03.xhtml">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch05.xhtml">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch06.xhtml">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Metadata (<code class="code">&lt;head&gt;</code>) </td><td width="20%" align="center"><a accesskey="h" href="index.xhtml">Home</a></td><td width="40%" align="right" valign="top"> Chapter 6. Class 1 TAN Files, Representations of Textual Objects</td></tr></table></div></body></html>

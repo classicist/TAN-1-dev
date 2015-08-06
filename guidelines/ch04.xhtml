@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Chapter 4. General Underpinnings</title><link rel="stylesheet" type="text/css" href="../../../../css/TAN-guidelines.css"/><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"/><link rel="home" href="index.xhtml" title="The Text Alignment Network: Official Guidelines"/><link rel="up" href="pt02.xhtml" title="Part II. Detailed Description"/><link rel="prev" href="pt02.xhtml" title="Part II. Detailed Description"/><link rel="next" href="ch04s02.xhtml" title="Assumptions in the Creation of TAN Data"/></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 4. General Underpinnings</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="pt02.xhtml">Prev</a> </td><th width="60%" align="center">Part II. Detailed Description</th><td width="20%" align="right"> <a accesskey="n" href="ch04s02.xhtml">Next</a></td></tr></table><hr/></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a id="concepts_common"/>Chapter 4. General Underpinnings</h2></div></div></div><div class="toc"><p><strong>Table of Contents</strong></p><dl class="toc"><dt><span class="section"><a href="ch04.xhtml#d5e619">The Big Picture</a></span></dt><dt><span class="section"><a href="ch04s02.xhtml">Assumptions in the Creation of TAN Data</a></span></dt><dt><span class="section"><a href="ch04s03.xhtml">Core Technology</a></span></dt><dd><dl><dt><span class="section"><a href="ch04s03.xhtml#unicode">Unicode</a></span></dt><dt><span class="section"><a href="ch04s03.xhtml#xml">eXtensible Markup Language (XML)</a></span></dt><dt><span class="section"><a href="ch04s03.xhtml#namespace">Namespace</a></span></dt><dt><span class="section"><a href="ch04s03.xhtml#schemas_and_validation">Schemas and Validation</a></span></dt><dt><span class="section"><a href="ch04s03.xhtml#data_types">Data types</a></span></dt><dt><span class="section"><a href="ch04s03.xhtml#IRIs_and_linked_data">International Resource Identifiers and Linked Data</a></span></dt><dt><span class="section"><a href="ch04s03.xhtml#regular_expressions">Regular Expressions</a></span></dt><dt><span class="section"><a href="ch04s03.xhtml#xpath">XPath</a></span></dt></dl></dd></dl></div><p>This chapter retains something of the introductory spirit of the previous one by
+            providing an overview of the fundamental principles and technologies behind TAN. The
+            overall goal of this chapter is to summarize the theoretical and technological
+            underpinnings that run throughout all TAN formats and to note definitions, assumptions,
+            and other matters that broadly affect anyone working with TAN files. Although this
+            chapter assumes no prior knowledge on your part of a particular technology, it is also
+            not meant to be a tutorial. Links to further reading in this chapter will take you to
+            introductory material that will provide thorough instruction or list it.</p><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="d5e619"/>The Big Picture</h2></div></div></div><p>The Text Alignment Network is a suite of XML encoding formats. Each TAN format is
+               designed for a specific type of textual data, organized in three classes: segmented
+               representations of textual works (class 1), annotations of specific texts (class 2),
+               and rules for linguistic concepts (Class 3). The number of classes may grow in the
+               future to cover claims about text-bearing objects, for example codicology or
+               stemmatics (the study of how manuscripts and other versions of a work relate to each
+               other).</p><p><span class="bold"><strong>Class 1</strong></span>, representations of textual objects,
+               consists solely of transcription files. Each transcription file contains the text of
+               a single work from a single text-bearing object, whether physical or digital (TAN
+               regards digital files as objects). There are two types of transcription file, a
+               standard generic format and another for TEI XML files. These two types are
+               differentiated by the name of the rootmost element in the file,
+                  <code class="code">&lt;TAN-T&gt;</code> and <code class="code">&lt;TEI&gt;</code> respectively. In the future,
+               class 1 may expand to include formats intended to segment (and therefore align)
+               visual, audio, or audiovisual files; it may also expand to include a customized form
+               of HTML.</p><p><span class="bold"><strong>Class 2</strong></span>, annotations of textual representations,
+               consists of alignment files and lexico-morphology files. There are two types of
+               alignment, one for broad, general alignments and another that focuses on detailed
+               specificity. The former, identified by the name <code class="code">&lt;TAN-A-div&gt;</code> in the
+               rootmost element, aligns any number (one or more) of class 1 files. The latter,
+                  <code class="code">&lt;TAN-A-tok&gt;</code>, aligns only pairs of class 1 files. Lexico-morphology
+               files, <code class="code">&lt;TAN-LM&gt;</code>, are used to encode the lexical and morphological (or
+               part of speech) forms of individual words in a given class 1 file. In the future,
+               class 2 may expand to include syntax (treebanking).</p><p><span class="bold"><strong>Class 3</strong></span>, rules for linguistic concepts, consists
+               of tokenization patterns and morphological patterns. The first of these,
+                  <code class="code">&lt;TAN-R-tok&gt;</code>, declares a pattern to be used to transform a string
+               of text into a sequence of word tokens for linguistic analysis. The second type,
+                  <code class="code">&lt;TAN-R-mor&gt;</code>, is used to declare the grammatical categories or
+               features of a given language and to stipulate rules for classifying words. Class 3
+               file may expand in the future to include transliteration, lexicography, and syntax. </p><p><span class="italic">Dependence and reference</span>: Class 1 files depend
+               exclusively upon a single source—some text-bearing object (print or digital); they
+               also refer to TAN-R-tok files. Class 2 files alone depend exclusively upon one or
+               more class 1 files for their sources. They may also refer to class 3 files. Class 3
+               files neither depend upon nor make reference to any other class of TAN file.</p><p>Below is a visualization of each TAN format type and the types of TAN files referenced.<span class="inlinemediaobject"><img src="img/TAN%20formats%20class%201.jpeg"/></span><span class="inlinemediaobject"><img src="img/TAN%20formats%20class%202.jpeg"/></span><span class="inlinemediaobject"><img src="img/TAN%20formats%20class%203.jpeg"/></span></p><p>TAN files that refer to or are referred to by other TAN files form a kind of
+               network. Alignment files become the principal point of connection. Below is an
+               illustration of a small network of TAN files.</p><p><span class="inlinemediaobject"><img src="img/TAN%20example%20suite%202015-03.jpeg"/></span></p><p>This approach to text markup adopts what is sometimes called <span class="italic">stand-off annotation</span> (or <span class="italic">stand-off markup</span>). It is to be contrasted with <span class="italic">in-line annotation</span>, in which alignments, morphology, and so forth are
+               built into the transcriptions themselves. Most TEI and HTML files exhibit in-line
+               annotation. Stand-off annotation has been adopted so as to capitalize upon a number
+               of benefits: </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>An editor can work on a file with minimal distraction, focusing on a
+                        limited set of closely related questions.</p></li><li class="listitem"><p>Alignments can be made concurrent to any others that may already exist,
+                        allowing for rich, complex, or alternative alignments. </p></li><li class="listitem"><p>After a dataset is published, any other datasets it refers to, or any
+                        datasets referring to it, can be aggregated into much larger and more
+                        complex datasets, which can then be queried to answer questions otherwise
+                        impossible to answer.</p></li><li class="listitem"><p>Editorial labor can be done without central coordination, as individuals
+                        work at their own pace, independently, on separate files.</p></li><li class="listitem"><p>Errors can be corrected in a single master file. Anyone depending upon
+                        that master file as a source will be able to detect changes that have been
+                        made and deal with them accordingly.</p></li><li class="listitem"><p>Any data file can be released, circulated, and used independent of any
+                        other that points to it, or to which it points.</p></li><li class="listitem"><p>The TAN suite can be expanded to allow other types of linguistic data,
+                        thereby expanding the complexity of questions that could be answered.</p></li></ul></div><p>Stand-off annotation is not without its liabilities. Dependent files might be
+               altered or altogether deleted. Files might contain erroneous or misleading
+               information. It can be sometimes inconvenient not to have the annotated text in the
+               same file and place as the annotation. These liabilities mean that TAN files should
+               not be seen as replacements for in-line annotation formats, especially those that set
+               out to serve activities TAN was not designed to support. </p></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="pt02.xhtml">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="pt02.xhtml">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch04s02.xhtml">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Part II. Detailed Description </td><td width="20%" align="center"><a accesskey="h" href="index.xhtml">Home</a></td><td width="40%" align="right" valign="top"> Assumptions in the Creation of TAN Data</td></tr></table></div></body></html>

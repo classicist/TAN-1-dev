@@ -1,0 +1,53 @@
+default namespace = "tag:textalign.net,2015:ns"
+
+datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
+
+start = element TAN-LM { TAN-root }
+include "TAN-class-2.rnc" {
+    # TAN-LM files must each have at least one lexicon and one TAN-R-mor declaration
+    decl-non-class-2 = decl-lexi+ & decl-morph+
+    # TAN-LM files point only to one source
+    source-list = source-item
+    # Because TAN-LM files depend on only one source, no id references to sources are needed
+    source-ref = empty
+    id-option = empty
+    TAN-body-core = lexicon-attr, grammar-attr, TAN-LM-body-core
+    # TAN-LM files may have no more than one suppress-div-type field. Multiple div-types should be space delimited in @div-type-ref
+    decl-supp-div-opt = decl-supp-div-type?
+}
+# Declaration element: identifies grammatical authorities used.
+decl-morph =
+    element morphology { internal-id, ed-stamp?, lang-outside*, entity-digital-tan-other-ref }
+# Declaration element: identifies lexicographical authorities used
+decl-lexi =
+    element lexicon {
+        internal-id, ed-stamp?, lang-outside*, (entity-digital-generic-ref | entity-nondigital-ref)
+    }
+lexicon-attr = attribute lexicon { d:IDREFS }
+grammar-attr = attribute morphology { d:IDREF }
+TAN-LM-body-core =
+    element ana {
+        certainty-stamp,
+        internal-id?,
+        (comment*
+         & ((joined-token | token-list)+,
+            element lm {
+                certainty-stamp,
+                (comment* & (lexeme*, morph*))
+            }+))
+    }+
+joined-token = element joined { internal-id?, token-list, token-list+ }
+lexeme =
+    element l {
+        lexicon-attr?,
+        attribute def-ref { text }?,
+        certainty-stamp,
+        token-value-order-ref?,
+        text
+    }
+morph =
+    element m {
+        certainty-stamp,
+        grammar-attr?,
+        xsd:string { pattern = "[^\s\(\),|]+(\s+[^\s\(\),|]+)*" }
+    }

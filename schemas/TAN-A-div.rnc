@@ -1,0 +1,71 @@
+default namespace local = "tag:textalign.net,2015:ns"
+
+datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
+
+start = element TAN-A-div { TAN-root }
+include "TAN-class-2.rnc" {
+    # TAN-A-div files must have one or more sources
+    source-list = source-item+
+    # TAN-A-div sources must be named
+    source-id-opt = internal-id
+    # no levels of certainty are allowed in TAN-A-div files; substitute is strength-claim
+    certainty-stamp = ed-stamp?
+    # TAN-A-div files may not point to individual characters/glyphs
+    char-ref = empty
+    # TAN-A-div files do not require a tokenization choice within a filter (choice enforced by Schematron)
+    decl-token-opt = decl-token*
+    TAN-body-core = work-equiv*, div-type-equiv*, split?, realignment*, alignment*
+    # alignments may take either an id with no supplementary variables or else no id and optional variables indicating strength, exclusivity, distribution, and auto-alignment
+    alignment-attributes-non-class-2 =
+        internal-id | (strength-claim?, exclusive-claim?, distribute-claim?)
+    # alignments must contain either one or more div-refs or a list of IDREFS to other alignments
+    alignment-content-non-class-2 = alignment-ref | align-div-list+
+}
+# reconciles any differences of IRIs for the type of work
+work-equiv = element equate-works { source-ref, ed-stamp? }
+# reconciles any differences of div-type IRIs for the type of canonical division 
+div-type-equiv = element equate-div-types { ed-stamp?, div-type-ref-cluster, div-type-ref-cluster+ }
+div-type-ref-cluster = element div-type-ref { ed-stamp?, source-ref, div-type-ref }
+div-n-ref-cluster =
+    element div-n-ref {
+        ed-stamp?,
+        source-ref,
+        div-type-ref,
+        attribute div-n-ref { text }
+    }
+# creates new splits in leaf divs, to create alignments more refined than what a TAN-T file might offer
+split = element split-leaf-div-at { ed-stamp?, (comment* & token-list+) }
+# used to temper the strength of an alignment, suitable for alignments we qualify through "cf." and the
+# like. Cannot used in type and doubt because this model disallows both.
+strength-claim =
+    attribute strength {
+        xsd:string { pattern = "0\.\d+" }
+    }
+realignment =
+    element realign {
+        ed-stamp?,
+        (comment* & (anchor?, realign-div-list+))
+    }
+anchor = element anchor-div-ref { source-ref, pointer-to-div-range, ed-stamp?, seg-ref? }
+realign-div-list = element div-ref { source-ref, pointer-to-div-range, ed-stamp?, seg-ref? }
+# Does or does not the specially declared alignment pass on to
+# other implicitly aligned segments? Suppose a TAN-A-div file has as sources A, B, and C (3 versions 
+# of Work 1) and M, N, and O (3 versions of Work 2). Suppose an <align> linking refs in A to
+# refs in M. @exclusive = false (default value) links not only A to M, but to any refs in B and C
+# that link to A and to any refs in N and O that align with M. This relationship is transitive, so
+# will be applied to any passages that align with any other aligned passages, work notwithstanding.
+# Set @exclusive = true to declare the alignment to be valid only between A and M and no others.
+exclusive-claim = attribute exclusive { xsd:boolean }
+# Is the <align> to be treated as a case of multiple align? Default value is false. If declared to be
+# true, then for every source in every <div-ref> the references will be placed in a sequence.
+# The first item in each sequence will be aligned only with each other, and so on through every item in
+# every sequence. Therefore the number of references derived from @refs must be identical. Further, all 
+# refs in a single @ref must be siblings.  
+distribute-claim = attribute distribute { xsd:boolean }
+# IDREFS of aligns
+alignment-ref = attribute alignments { d:IDREFS }
+align-div-list =
+    element div-ref { source-ref, pointer-to-div-range, strength-claim?, ed-stamp?, seg-ref? }
+# Optional segment picker. If provided, every @ref for every @src must point to a leaf div, and there must
+# be an appropriate number of splits declared for those leaf divs in split-leaf-div-at.
+seg-ref = attribute seg { seq-picker }

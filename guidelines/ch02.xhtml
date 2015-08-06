@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Chapter 2. Starting off with the TAN Format</title><link rel="stylesheet" type="text/css" href="../../../../css/TAN-guidelines.css"/><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"/><link rel="home" href="index.xhtml" title="The Text Alignment Network: Official Guidelines"/><link rel="up" href="pt01.xhtml" title="Part I. General Overview"/><link rel="prev" href="ch01s03.xhtml" title="Design Principles"/><link rel="next" href="ch02s02.xhtml" title="The Principles of TAN Metadata (&lt;head&gt;)"/></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 2. Starting off with the TAN Format</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch01s03.xhtml">Prev</a> </td><th width="60%" align="center">Part I. General Overview</th><td width="20%" align="right"> <a accesskey="n" href="ch02s02.xhtml">Next</a></td></tr></table><hr/></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a id="gentle_guide"/>Chapter 2. Starting off with the TAN Format</h2></div></div></div><div class="toc"><p><strong>Table of Contents</strong></p><dl class="toc"><dt><span class="section"><a href="ch02.xhtml#d5e142">Creating TAN Transcription and Alignment Data</a></span></dt><dt><span class="section"><a href="ch02s02.xhtml">The Principles of TAN Metadata (<code class="code">&lt;head&gt;</code>)</a></span></dt><dt><span class="section"><a href="ch02s03.xhtml">Creating TAN Metadata (<code class="code">&lt;head&gt;</code>)</a></span></dt><dt><span class="section"><a href="ch02s04.xhtml">Aligning across Projects</a></span></dt></dl></div><p>If you are new to markup languages, or if you are unfamiliar with technical terms and
+            acronyms such as <span class="italic">XML</span>, <span class="italic">RDF</span>, <span class="italic">XPath</span>, and so forth, you should
+            start with this chapter, which uses a simple example to illustrate the steps typically
+            taken to create and edit TAN files. By the end of this chapter, you be sufficiently
+            oriented to create and edit a simple corpus of TAN transcriptions and alignments.</p><p>The discussion touches on a number of concepts, some of which may be new. These
+            concepts will be introduced, but only briefly. If you need more explanation, you should
+            follow some of the suggestions for further reading.</p><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="d5e142"/>Creating TAN Transcription and Alignment Data</h2></div></div></div><p>Let us take a simple example, that of aligning two English versions of the nursery
+               rhyme <span class="italic">Ring-a-ring-a-roses</span>, sometimes known as
+                  <span class="italic">Ring around the Rosie</span>. Our goal here is to
+               publish two versions of the nursery rhyme in the TAN format so that they are most
+               likely alignable with any other TAN version of the poem that might be
+               published.</p><p>We begin by finding the versions we want. In this case we use exemplars published
+               in <a class="link" href="http://lccn.loc.gov/12032709" target="_top">1881</a> and <a class="link" href="http://lccn.loc.gov/87042504" target="_top">1987</a>, the former from the UK the
+               latter from the US. Each of these books have other rhymes, but we've already decided
+               to focus upon one particular nursery rhyme, so we transcribe them and nothing
+                  else:</p><div class="table"><a id="d5e150"/><p class="title"><strong>Table 2.1. Ring around the Rosie</strong></p><div class="table-contents"><table summary="Ring around the Rosie" border="1"><colgroup><col class="c1"/><col class="c2"/></colgroup><thead><tr><th>1881 (UK) version</th><th>1987 (US) version</th></tr></thead><tbody><tr><td>
+                              <p>Ring-a-ring-a-roses,</p>
+                              <p>A pocket full of posies;</p>
+                              <p>Hush! Hush! Hush! Hush!</p>
+                              <p>We're all tumbled down.</p>
+                           </td><td>
+                              <p>Ring-a-round the rosie,</p>
+                              <p>A pocket full of posies,</p>
+                              <p>Ashes! Ashes!</p>
+                              <p>We all fall down.</p>
+                           </td></tr></tbody></table></div></div><p><br class="table-break"/></p><p>We must be sure to save each of the two transcriptions as plain Unicode text,
+               preferably with <code class="code">.xml</code> at the end of each file name. If you use a word
+               processor (Word, OpenOffice, Google Docs, and so forth) you must be certain to save
+               the file as plain text, in Unicode encoding (not Western European or other
+               encodings). But even then you have to beware, because these programs can be too
+               sophisticated for our work and sometimes generate erroneous formats. Word processors
+               are in fact a bit too powerful for our purposes. We will be working with raw text,
+               and will not be altering colors, fonts, margins, and so forth. Much better for our
+               work is a <a class="link" href="http://en.wikipedia.org/wiki/Text_editor" target="_top">text
+                  editor</a>. And even better still would be an <a class="link" href="http://en.wikipedia.org/wiki/XML_editor" target="_top">XML editor</a>, which does
+               the same thing a text editor does, but does other things too, such as tell us when
+               our XML file is invalid, or provide shortcuts that save much typing.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="img/note.png"/></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>Software suitable for your needs comes in many styles and prices. In
+                     addition to the links provided above, you may wish to visit the comparative
+                     lists for both <a class="link" href="http://en.wikipedia.org/wiki/Comparison_of_text_editors" target="_top">text
+                        editors</a> and <a class="link" href="http://en.wikipedia.org/wiki/Comparison_of_XML_editors" target="_top">XML
+                        editors</a>. Some XML editors are so powerful they can be very confusing
+                     to use at first. Be certain to take advantage of tutorials and documentation
+                     associated with any XML editor you begin to use.</p></td></tr></table></div><p>Our first task is to get these two versions into separate files with the
+               appropriate markup. Each TAN transcription file has two major parts: a head and a
+               body. For now, we focus on only the second part, the body, as well as a few the
+               necessary preliminary lines that stand above both the head and the body. First, the
+               1881 (UK) version:
+               </p><pre class="programlisting"><span class="bold"><strong>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-T.rnc" type="application/relax-ng-compact-syntax"?&gt;
+&lt;?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-T.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?&gt;
+&lt;TAN-T xmlns="tag:textalign.net,2015:ns" id="tag:parkj@textalign.net,2015:ring01"&gt;
+    &lt;head&gt;
+    . . . . . . .
+    &lt;/head&gt;
+    &lt;body xml:lang="eng" in-progress="false"&gt;
+        &lt;div type="line" n="1"&gt;</strong></span>Ring-a-ring-a-roses,<span class="bold"><strong>&lt;/div&gt;
+        &lt;div type="line" n="2"&gt;</strong></span>A pocket full of posies;<span class="bold"><strong>&lt;/div&gt;
+        &lt;div type="line" n="3"&gt;</strong></span>Hush! Hush! Hush! Hush!<span class="bold"><strong>&lt;/div&gt;
+        &lt;div type="line" n="4"&gt;</strong></span>We're all tumbled down.<span class="bold"><strong>&lt;/div&gt;
+    &lt;/body&gt;
+&lt;/TAN-T&gt;</strong></span></pre><p>
+               And now the 1987 (US) version:
+               </p><pre class="programlisting"><span class="bold"><strong>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-T.rnc" type="application/relax-ng-compact-syntax"?&gt;
+&lt;?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-T.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?&gt;
+&lt;TAN-T xmlns="tag:textalign.net,2015:ns" id="tag:parkj@textalign.net,2015:ring02"&gt;
+   &lt;head&gt;
+   . . . . . . .
+   &lt;/head&gt;
+   &lt;body xml:lang="eng" in-progress="false"&gt;
+      &lt;div type="l" n="1"&gt;</strong></span>Ring-a-round the rosie,<span class="bold"><strong>&lt;/div&gt;
+      &lt;div type="l" n="2"&gt;</strong></span>A pocket full of posies,<span class="bold"><strong>&lt;/div&gt;
+      &lt;div type="l" n="3"&gt;</strong></span>Ashes! Ashes!<span class="bold"><strong>&lt;/div&gt;
+      &lt;div type="l" n="4"&gt;</strong></span>We all fall down.<span class="bold"><strong>&lt;/div&gt;
+   &lt;/body&gt;
+&lt;/TAN-T&gt;</strong></span></pre><p>
+            </p><p>These are standard eXtensible Markup Language (XML) files. (If you are already
+               familiar with this format you may wish to skip ahead.) XML is rather simple. It
+               provides a way to take a text or a collection of data and give it some structure
+               through markup. In the examples above, the markup is in boldface.</p><p>Each file begins with a prolog, marked by the lines that begin with
+                  <code class="code">&lt;?</code>. The first line in each prolog simply states that what follows
+               is an XML document. The next two lines point to the files that will be used to check
+               to see whether or not our data is valid. For now we will skip the specific details.
+               These three lines will be identical, or nearly so, from one TAN transcription file to
+               the next, and we can simply cut and paste when we want to start a new one.</p><p>The fourth line is the opening tag of what is called the root element, here called
+                  <code class="code">&lt;TAN-T&gt;</code>. That opening tag, <code class="code">&lt;TAN-T...&gt;</code> is answered
+               by a closing tag, <code class="code">&lt;/TAN-T&gt;</code>, the last line. The same thing happens
+               with all the other elements in this example. <code class="code">&lt;head&gt;</code> is answered by
+                  <code class="code">&lt;/head&gt;</code>, <code class="code">&lt;body&gt;</code> by <code class="code">&lt;/body&gt;</code> and
+               each <code class="code">&lt;div...&gt;</code> by <code class="code">&lt;/div&gt;</code>. These elements nest within
+               or alongside each other, but they never overlap. (The prohibition on overlapping
+               elements is one of the cardinal rules of XML.) This relationship means that every XML
+               file can be thought of as a tree, with the root at the trunk and the enveloped
+               elements as branches, terminating in metaphorical leaves. It is helpful to use the
+               tree metaphor when we describe the path we take, either toward the leaves or the
+               root. In this manual, we may use the terms <span class="italic">rootward</span>, <span class="italic">rootmost</span>, <span class="italic">leafward</span>, and <span class="italic">leafmost</span>
+               when we want to trace movement within an XML document.</p><p>An XML document is also profitably thought of as a family tree, a metaphor that
+               provides terminology that will be very common. In our examples above,
+                  <code class="code">&lt;TAN-T&gt;</code> is the <span class="italic">parent</span> of
+                  <code class="code">&lt;body&gt;</code>, and <code class="code">&lt;body&gt;</code> the parent of the four
+                  <code class="code">&lt;div&gt;</code> elements. Vice versa, each <code class="code">&lt;div&gt;</code> is the
+                  <span class="italic">child</span> of <code class="code">&lt;body&gt;</code>, and
+                  <code class="code">&lt;body&gt;</code> is the child of <code class="code">&lt;TAN-T&gt;</code>. Distant parental
+               relationships can be described with the terms <span class="italic">ancestor</span> and <span class="italic">descendant</span>.
+                  <code class="code">&lt;TAN-T&gt;</code> is the ancestor of every element it encompasses, and every
+               element encompassed by <code class="code">&lt;TAN-T&gt;</code> is its descendant. Paratactic
+               relationships are also important. <code class="code">&lt;head&gt;</code> and <code class="code">&lt;body&gt;</code>
+               are <span class="italic">siblings</span> to each other, and every
+                  <code class="code">&lt;div&gt;</code> is a sibling to every other <code class="code">&lt;div&gt;</code>.</p><p>Inside of the opening tags for the <code class="code">&lt;TAN-T&gt;</code>,
+               <code class="code">&lt;body&gt;</code>, and <code class="code">&lt;div&gt;</code> elements are pairs of text joined
+               by an equals sign. The left side of each pair is called an attribute, and on the
+               right side, within the quotation marks, is the value. <code class="code">&lt;TAN-T&gt;</code> has two
+               attributes, <code class="code">@xmlns</code> and <code class="code">@id</code> (attributes are commonly
+               referred to with @ before the name). We will skip <code class="code">@xmlns</code> for now; this
+               attribute specifies the namespace of the XML file, a somewhat advanced topic. </p><p>The value of <code class="code">@id</code>, however, is quite important and our first item of
+               business. Every TAN file has an <code class="code">@id</code> that uniquely and permanently
+               identifies the file itself. It is quite similar to the name we give a file when we
+               save it, and to the names we see when we browse through our files, except that it
+               should not be changed. When we make corrections to our work, we will not change the
+                  <code class="code">@id</code> value. We simply note a change (to be discussed later) with the
+               date of the change.</p><p>The value of <code class="code">@id</code> is always what is called a tag uniform resource name
+               (tag URN). It always starts with <code class="code">tag:</code>, followed by an email address or
+               domain name that we owned on a given day. (It is okay to use an obsolete address.)
+               After that email address or domain name comes a comma (no spaces) and a date on which
+               we owned it, in the international standard format of year, month, and date, joined by
+               hyphens, e.g., 2014-12-31. If we leave off a day value, it is assumed to be the first
+               of the month; if we leave off the month value it is assumed to be January. In the
+               examples above, <code class="code">[USER@DOMAIN.NET],2014</code> indicates that the email address
+               was owned on the stroke of midnight (Coordinated Universal Time) January 1, 2014.
+               After that comes a colon, and then any name we wish to assign to the file. </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="img/note.png"/></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>Many if not most TAN files will be circulated under a liberal license,
+                     encouraging people to modify and use the data freely, with attribution. If you
+                     decide to modify someone else's TAN file, and you become responsible for
+                     changes, not the original person or organization. Your first point of order
+                     should be to change the email address or domain name at the heart of the tag
+                     URN, substituting one that you own or owned. The element
+                        <code class="code">&lt;succeeds&gt;</code> in the <code class="code">&lt;head&gt;</code> allows you to
+                     credit the original. If you do not make this change, you are incorrectly
+                     passing the work off as someone else's.</p></td></tr></table></div><p>We have anticipated a simple collection of texts, so we've called the files
+                  <code class="code">ring01</code> and <code class="code">ring02</code>. (If we run out of names, or want to
+               restart, we can simply use a new email-date preface, e.g.,
+                  <code class="code">[USER@DOMAIN.NET],2014-01-02</code>.)</p><p>The element <code class="code">&lt;body&gt;</code> contains our transcription.
+                  <code class="code">@xml:lang</code>, required, specifies the principal language of the
+               transcribed text. We use the standard 3-letter abbreviation for English. (See later
+               in the guide for more complex language requirements.) By saying that
+                  <code class="code">@in-progress</code> is <code class="code">&lt;false&gt;</code>, we indicate that we have
+               finished our transcription and have no further plans to develop it. It doesn't mean
+               that the file is error free. We will have the option to make corrections later. It
+               just means that we have done all the work that we intended, and any further changes
+               will be restricted to corrections of errors. This attribute is optional; if left off,
+               the TAN file is assumed to be a work in progress.</p><p>Our transcription has been divided into four <code class="code">&lt;div&gt;</code> elements. How
+               we divide up the work is entirely up to us. But we must make sure that every bit of
+               text is enclode by a leafmost <code class="code">&lt;div&gt;</code>. That is, every
+                  <code class="code">&lt;div&gt;</code> must be the parent of only other <code class="code">&lt;div&gt;</code>s, or
+               none at all. We cannot have a <code class="code">&lt;div&gt;</code> that mixes any text or other
+               elements with other <code class="code">&lt;div&gt;</code>s. The values of <code class="code">@type</code> and
+                  <code class="code">@n</code> indicate, respectively, the type of division and the name of the
+               division. We have used <code class="code">line</code> in the first example, but we could easily
+               have also used <code class="code">l</code> (as we did in the second) or <code class="code">ln</code> or any
+               other phrase that we think will make intuitive sense to other users (we will see why
+               below). We have used arabic numerals for the values of <code class="code">@n</code>, but the
+               value, once again, could have been anything. But since other people may use our work,
+               we have adopted the naming scheme that seems most common and expected.</p><p>Aside from the <code class="code">&lt;head&gt;</code> element (discussed later), that's all we
+               need in the transcription. We can now move to alignment.</p><p>There are two different types of alignment, one emphasizing breadth, the other,
+               depth. The broad type of alignment, called TAN-A-div, allows us to specify TAN
+               transcriptions of as many versions of as many works as we wish, and to fine-tune the
+               alignment upon the basis of the <code class="code">&lt;div&gt;</code> elements within the
+               transcription. We do not specify why we wish to align the versions. We only declare
+               our interest in doing so. The type of alignment emphasizing depth, called TAN-A-tok,
+               allows us to take any two (and no more) TAN transcriptions and specify word-to-word
+               (or better put, token-to-token) relationships, and specify what type of relationship
+               holds between them. TAN-A-div is suitable for work that focuses on the general
+               alignment of multiple versions of one or more works at a single time. TAN-A-tok is
+               for highly detailed, precise alignment of two text versions.</p><p>For our example, we start with a TAN-A-div file (once again suppressing
+                  <code class="code">&lt;head&gt;</code>):</p><pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-div.rnc" type="application/relax-ng-compact-syntax"?&gt;
+&lt;?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-div.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?&gt;
+&lt;TAN-A-div xmlns="tag:textalign.net,2015:ns" id="tag:parkj@textalign.net,2015:ring-alignment"&gt;
+    &lt;head&gt;
+    . . . . . . .
+    &lt;/head&gt;
+    &lt;body/&gt;
+&lt;/TAN-A-div&gt;</pre><p>In the prolog, the first line is identical to the first line of our transcription
+               files. The second and third lines are identical, aside from pointing to the
+               validation files for alignment. Even the fourth line looks like the transcription
+               file, other than the new name for the root element, <code class="code">&lt;TAN-A-div&gt;</code>, and
+               the new value for <code class="code">@id</code>.</p><p>The penultimate line, <code class="code">&lt;body/&gt;</code>, is what is called an empty element,
+               and is equivalent to <code class="code">&lt;body&gt;&lt;/body&gt;</code>. Collapsing the opening and the
+               closing tags of the element into a single tag provides a shorthand syntax for
+               elements contains nothing. It will become apparent, when we discuss
+                  <code class="code">&lt;head&gt;</code> below, why our <code class="code">&lt;body&gt;</code> can be empty.</p><p>The other kind of alignment, TAN-A-tok, takes a bit more work, because we must
+               first identify words that correspond with each other. Even before we do that, we need
+               to decide what kind of relationship holds between the two texts. Let us pretend, for
+               the sake of illustration, that the 1987 version is a direct descendant (and therefore
+               variation) of the 1881 version. We therefore see our task as creating a map of how
+               the older version became the newer one. There are different ways of approaching this
+               task and deciding on the specifics is not as straightforward as some might think. We
+               will also assume for this example that punctuation is both irrelevant and a marker
+               between words, better termed in this context as <span class="emphasis"><em>tokens</em></span>
+                  (<span class="italic">word</span> is notoriously difficult to define, and
+               the substitute <span class="emphasis"><em>token</em></span> lacks many undesirable
+               implications).</p><p>We now create a TAN-A-tok
+               file:</p><pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-tok.rnc" type="application/relax-ng-compact-syntax"?&gt;
+&lt;?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-tok.sch" type="application/xml" schematypensrc="http://purl.oclc.org/dsdl/schematron"?&gt;
+&lt;TAN-A-tok xmlns="tag:textalign.net,2015:ns" id="tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring02"&gt;
+    &lt;head&gt;
+    . . . . . . .
+    &lt;/head&gt;
+    &lt;body bitext-relation="B-descends-from-A" reuse-type="adaptation" in-progress="false"&gt;
+        &lt;!-- Examples of picking tokens by number --&gt;
+        &lt;align&gt;
+            &lt;tok src="ring1881" ref="line 1" ord="1"/&gt;
+            &lt;tok src="ring1987" ref="l 1" ord="1"/&gt;
+        &lt;/align&gt;
+        &lt;align&gt;
+            &lt;tok src="ring1881" ref="line 1" ord="2"/&gt;
+            &lt;tok src="ring1987" ref="l 1" ord="2"/&gt;
+        &lt;/align&gt;
+        &lt;align&gt;
+            &lt;tok src="ring1881" ref="line 1" ord="3"/&gt;
+            &lt;tok src="ring1987" ref="l 1" ord="3"/&gt;
+        &lt;/align&gt;
+        &lt;align&gt;
+            &lt;tok src="ring1881" ref="line 1" ord="4"/&gt;
+            &lt;tok src="ring1987" ref="l 1" ord="4"/&gt;
+        &lt;/align&gt;
+        &lt;align&gt;
+            &lt;tok src="ring1881" ref="line 1" ord="5"/&gt;
+            &lt;tok src="ring1987" ref="l 1" ord="5"/&gt;
+        &lt;/align&gt;
+        &lt;!-- Examples of picking tokens by value --&gt;
+        &lt;align&gt;
+            &lt;tok src="ring1881" ref="line 2" val="A"/&gt;
+            &lt;tok src="ring1987" ref="l 2" val="A"/&gt;
+        &lt;/align&gt;
+        &lt;align&gt;
+            &lt;tok src="ring1881" ref="line 2" val="pocket"/&gt;
+            &lt;tok src="ring1987" ref="l 2" val="pocket"/&gt;
+        &lt;/align&gt;
+        &lt;align&gt;
+            &lt;tok src="ring1881" ref="line 2" val="full"/&gt;
+            &lt;tok src="ring1987" ref="l 2" val="full"/&gt;
+        &lt;/align&gt;
+        &lt;align&gt;
+            &lt;tok src="ring1881" ref="line 2" val="of"/&gt;
+            &lt;tok src="ring1987" ref="l 2" val="of"/&gt;
+        &lt;/align&gt;
+        &lt;align&gt;
+            &lt;tok src="ring1881" ref="line 2" val="posies"/&gt;
+            &lt;tok src="ring1987" ref="l 2" val="posies"/&gt;
+        &lt;/align&gt;
+        &lt;!-- Examples of picking tokens by number with commas, hyphens, and 'last' --&gt;
+        &lt;align&gt;
+            &lt;tok src="ring1881" ref="line 3" ord="1, 2"/&gt;
+            &lt;tok src="ring1987" ref="l 3" ord="1"/&gt;
+        &lt;/align&gt;
+        &lt;align&gt;
+            &lt;tok src="ring1881" ref="line 3" ord="3 - 4"/&gt;
+            &lt;tok src="ring1987" ref="l 3" ord="2"/&gt;
+        &lt;/align&gt;
+        &lt;align&gt;
+            &lt;tok src="ring1881" ref="line 4" ord="1"/&gt;
+            &lt;tok src="ring1987" ref="l 4" ord="1"/&gt;
+        &lt;/align&gt;
+        &lt;align&gt;
+            &lt;tok src="ring1881" ref="line 4" ord="2"/&gt;
+        &lt;/align&gt;
+        &lt;align&gt;
+            &lt;tok src="ring1881" ref="line 4" ord="3"/&gt;
+            &lt;tok src="ring1987" ref="l 4" ord="2"/&gt;
+        &lt;/align&gt;
+        &lt;align&gt;
+            &lt;tok src="ring1881" ref="line 4" ord="last-1"/&gt;
+            &lt;tok src="ring1987" ref="l 4" ord="last-1"/&gt;
+        &lt;/align&gt;
+        &lt;align&gt;
+            &lt;tok src="ring1881" ref="line 4" ord="last"/&gt;
+            &lt;tok src="ring1987" ref="l 4" ord="last"/&gt;
+        &lt;/align&gt;
+    &lt;/body&gt;
+&lt;/TAN-A-tok&gt;</pre><p>Once again, the first four lines, the prolog and root element, should look
+               familiar, with the only significant changes being the names of the validation files,
+               the name of the root element (<code class="code">&lt;TAN-A-tok&gt;</code>) and the value of
+                  <code class="code">@id</code>.</p><p>The heart of the data is <code class="code">&lt;body&gt;</code>, which has, in addition to
+                  <code class="code">@in-progress</code>, two more attributes, <code class="code">@reuse-type</code>, which
+               specifies the default type of relationship between the two sources, and
+                  <code class="code">@bitext-relation</code>, which specifies how the versions relate to each
+               other. Our two values, <code class="code">B-descends-from-A</code> and <code class="code">adaptation</code>,
+               are arbitrary names that we define in the <code class="code">&lt;head&gt;</code> (discussed later). </p><p><code class="code">&lt;body&gt;</code> is the parent of one or more <code class="code">&lt;align&gt;</code>
+               elements, each of which correlates a set of tokens in the two texts through its
+                  <code class="code">&lt;tok&gt;</code> children. Each <code class="code">&lt;tok&gt;</code> has, in this example,
+               three attributes. <code class="code">@src</code> takes a nickname (an <code class="code">@id</code> reference)
+               that points to one of the two transcriptions; we have used <code class="code">ring1881</code> and
+                  <code class="code">ring1987</code> but we could have just as easily used anything else such as
+                  <code class="code">uk</code> and <code class="code">us</code>. <code class="code">@ref</code> has a value that points to
+               a specific <code class="code">&lt;div&gt;</code> in the source transcription; and <code class="code">@ord</code>
+               or <code class="code">@val</code> specify which token is intended, either by word number
+                  (<code class="code">@ord</code>) or text of the actual word (<code class="code">@val</code>). Either
+               technique is fine, and can be mixed, as in the example. You may also notice that the
+               comma and hyphen can be used in <code class="code">@ord</code> to point to multiple words within
+               the same <code class="code">&lt;div&gt;</code>, and that <code class="code">last</code> and <code class="code">last-X</code>
+               (where <code class="code">X</code> is a digit) can be used to point to a word token relative to
+               the last one in a <code class="code">&lt;div&gt;</code>.</p><p>Each <code class="code">&lt;align&gt;</code> can establish one-to-one, one-to-many, many-to-one,
+               or many-to-many relationships between the two texts. It is perfectly fine to have the
+               same word represented in multiple <code class="code">&lt;align&gt;</code> elements. And if an
+                  <code class="code">&lt;align&gt;</code> has <code class="code">&lt;tok&gt;</code> elements belonging to only one
+               source, such as in the fourth-to-last <code class="code">&lt;align&gt;</code> above, we have what is
+               called, in these guidelines, a <span class="emphasis"><em>half-null alignment</em></span>. That is to
+               say, using our example, that we have stated that the second word of line four of the
+               1881 version is excluded from the act that we have called <code class="code">adaptation</code>
+               (which is, as we shall see, defined in the <code class="code">&lt;head&gt;</code>). If this were a
+               translation, it would be as if we were saying that this word was excluded from the
+               translation. (If this was a half-null alignment for the later source, we would say
+               that it was a word that the translator added.) A half-null alignment is not to be
+               confused with our own silence. If we nowhere mention a token in our TAN-A-tok file,
+               and if we specify through <code class="code">@in-progress</code> that our work is finished, then
+               we are saying only that we have nothing to say about it.</p><p>We could have aligned the two texts in different ways. Perhaps further study will
+               reveal that we were in error to associate the second "ring" with "round" is line 1.
+               We can make corrections, even after publication, and signal the change to users of
+               our data. There are also ways to express doubt or alterative opinions. We can even
+               correlate fragments of tokens (letters, prefixes, infixes, or suffixes). All these
+               more advanced uses are discussed in later chapters of these guidelines.</p><p>For now, we have finished everything for two TAN transcriptions and two alignment
+               files, except for the <code class="code">&lt;head&gt;</code>. Before getting into details, we need
+               first to discuss (1) the principles behind the TAN <code class="code">&lt;head&gt;</code> and (2) how
+               to ensure that the data in <code class="code">&lt;head&gt;</code> is both human readable and computer
+               readable.</p></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch01s03.xhtml">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="pt01.xhtml">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch02s02.xhtml">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Design Principles </td><td width="20%" align="center"><a accesskey="h" href="index.xhtml">Home</a></td><td width="40%" align="right" valign="top"> The Principles of TAN Metadata (<code class="code">&lt;head&gt;</code>)</td></tr></table></div></body></html>

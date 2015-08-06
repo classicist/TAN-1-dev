@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Metadata (&lt;head&gt;)</title><link rel="stylesheet" type="text/css" href="../../../../css/TAN-guidelines.css"/><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"/><link rel="home" href="index.xhtml" title="The Text Alignment Network: Official Guidelines"/><link rel="up" href="ch05.xhtml" title="Chapter 5. Patterns and Structures Common to All TAN Encoding Formats"/><link rel="prev" href="ch05s02.xhtml" title="Overall Structure (root)"/><link rel="next" href="ch05s04.xhtml" title="Data (&lt;body&gt;)"/></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Metadata (<code class="code">&lt;head&gt;</code>)</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch05s02.xhtml">Prev</a> </td><th width="60%" align="center">Chapter 5. Patterns and Structures Common to All TAN Encoding Formats</th><td width="20%" align="right"> <a accesskey="n" href="ch05s04.xhtml">Next</a></td></tr></table><hr/></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="metadata_head"/>Metadata (<code class="code">&lt;head&gt;</code>)</h2></div></div></div><p>No matter how much one TAN format differs from another, the metadata are quite
+               similar. Anyone getting a TAN file, no matter its class or type, is assumed to want
+               to know, and therefore find easily and predictably, the following:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>the name;</p></li><li class="listitem"><p>the version;</p></li><li class="listitem"><p>the sources;</p></li><li class="listitem"><p>other files that have an important relationship;</p></li><li class="listitem"><p>the most significant parts of the editorial history;</p></li><li class="listitem"><p>the linguistic or scholarly conventions that have been adopted in
+                        creating the data;</p></li><li class="listitem"><p>the license, i.e., who holds what rights to the data, and what kind of
+                        reuse is allowed.</p></li><li class="listitem"><p>the persons, organizations, or entities that helped create the data, and
+                        the roles played by each.</p></li></ol></div><p>To answer these questions completely, consistently, and predictably across all TAN
+               formats, the <code class="code">&lt;head&gt;</code>, a mandatory child of the rootmost element, takes
+               a common pattern, thus allowing anyone (people or computers) to work easily and
+               predictably across large numbers and types of TAN files. The TAN
+                  <code class="code">&lt;head&gt;</code>, intended to be concise and focused, compels you to provide
+               metadata for the data that is governed by <code class="code">&lt;body&gt;</code>, but it does not
+               require metadata for the metadata. That is, your metadata should focus on the data
+               itself and not other things. For example, <code class="code">&lt;head&gt;</code> requires you name
+               the people who helped create or edit the data, but you are not expected to give those
+               person's birthdays, nationality, etc. You merely refer through <code class="code">&lt;IRI&gt;</code>
+               to other authoritative sources that can provide more information about that
+               person.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="uri_name"/>Core name, location metadata</h3></div></div></div><p>
+                  </p><div class="table"><a id="d5e1752"/><p class="title"><strong>Table 5.7. Synopsis of <code class="code">&lt;name&gt;</code>, <code class="code">&lt;desc&gt;</code>,
+                           <code class="code">&lt;master-location&gt;</code></strong></p><div class="table-contents"><table summary="Synopsis of &lt;name&gt;, &lt;desc&gt;,&#xA;                           &lt;master-location&gt;" border="1"><colgroup><col class="c1"/><col class="c3"/><col class="c4"/><col class="c5"/><col class="newCol7"/><col class="newCol6"/><col class="c6"/></colgroup><thead><tr><th>name</th><th>req?</th><th>qty</th><th>parent</th><th>attributes</th><th>children</th><th>purpose</th></tr></thead><tbody><tr><td><code class="code">&lt;name&gt;</code></td><td>yes</td><td>one or more</td><td><code class="code">&lt;head&gt;</code></td><td><code class="code">xml:lang</code>?</td><td>data (xsd:string)</td><td>Provide human-readable name of a TAN file</td></tr><tr><td><code class="code">&lt;desc&gt;</code></td><td>no</td><td>one or more</td><td><code class="code">&lt;head&gt;</code></td><td><code class="code">xml:lang</code>?</td><td>data (xsd:string)</td><td>Provide human-readable description of a TAN file</td></tr><tr><td><code class="code">&lt;master-location&gt;</code></td><td>yes</td><td>one or more</td><td><code class="code">&lt;head&gt;</code></td><td>----</td><td>data (xsd:anyURI)</td><td>Provide location of where a master of a TAN file can be
+                                 found</td></tr></tbody></table></div></div><p><br class="table-break"/>
+               </p><p>As was mentioned above (see <a class="xref" href="ch05s02.xhtml" title="Overall Structure (root)">the section called “Overall Structure (root)”</a>) the computer-readable
+                  form of the name is kept at <code class="code">@id</code> in the rootmost element. The
+                  human-readable counterpart is one or more <code class="code">&lt;name&gt;</code>s, the first child
+                  of <code class="code">&lt;head&gt;</code>. <code class="code">&lt;name&gt;</code> can contain any string. Some
+                  editors may wish to use the filename; others, a descriptive phrase. The decision
+                  is left entirely to you. An <code class="code">@xml:lang</code> may be used to hold the value
+                  of the language of the content of <code class="code">&lt;name&gt;</code>. Multiple
+                     <code class="code">&lt;name&gt;</code> elements are to be treated as synonyms.</p><p>One or more optional <code class="code">&lt;desc&gt;</code> elements may be provided, to
+                  describe the TAN file more fully.</p><p>One or more <code class="code">&lt;master-location&gt;</code>s may be provided, to indicate
+                  where master versions of the file is to be found. It takes as a value any URI, and
+                  may be absolute (e.g., <code class="code">http://...</code>) or relative. Any relative URI will
+                  be resolved according to the parent directory of the current TAN document. If a
+                  document in a <code class="code">&lt;master-location&gt;</code> cannot be found, a warning will be
+                  returned. All copies of a TAN file found through <code class="code">&lt;master-location&gt;</code>
+                  should have the same version; if they are not, a warning will be returned from the
+                  validation process. </p><p>When you use <code class="code">&lt;master-location&gt;</code> you commit yourself to updating
+                  the TAN file in those locations. Similarly, if you have completed work on a TAN
+                  file, you must commit yourself to a <code class="code">&lt;master-location&gt;</code>. If
+                     <code class="code">@in-progress</code> (see <a class="xref" href="ch05s04.xhtml#in_progress" title="@in-progress">the section called “@in-progress”</a>) is false and
+                  there is no <code class="code">&lt;master-location&gt;</code> the document will be reported as
+                  invalid.</p><div class="example"><a id="d5e1829"/><p class="title"><strong>Example 5.10. Name metadata</strong></p><div class="example-contents"><pre class="programlisting">&lt;TAN-T xmlns="tag:textalign.net,2015:ns"
+   id="tag:jan@example.com,1999-01-31:TAN-T001" TAN-version="1"&gt;
+   &lt;head&gt;
+      &lt;name&gt;Smith poem 1&lt;/name&gt;
+      &lt;desc xml:lang="eng"&gt;J. Smith's poem no. 1, TAN-compliant.&lt;/desc&gt;
+      &lt;master-location&gt;smithpoem1.xml&lt;/location&gt;
+      ...........
+   &lt;/head&gt;
+   ...........
+&lt;/TAN-T&gt;</pre></div></div><br class="example-break"/></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="license"/>Rights and Licenses</h3></div></div></div><div class="table"><a id="d5e1834"/><p class="title"><strong>Table 5.8. Synopsis of <code class="code">&lt;rights-excluding-sources&gt;</code></strong></p><div class="table-contents"><table summary="Synopsis of &lt;rights-excluding-sources&gt;" border="1"><colgroup><col class="c1"/><col class="c3"/><col class="c4"/><col class="c5"/><col class="newCol7"/><col class="newCol6"/><col class="c6"/></colgroup><thead><tr><th>name</th><th>req?</th><th>qty</th><th>parent</th><th>attributes</th><th>children</th><th>purpose</th></tr></thead><tbody><tr><td><code class="code">&lt;rights-excluding-sources&gt;</code></td><td>yes</td><td>one</td><td><code class="code">&lt;head&gt;</code></td><td><a class="xref" href="ch05.xhtml#edit_stamp" title="Edit Stamp">the section called “Edit Stamp”</a>?, <code class="code">@rights-holder</code></td><td><a class="xref" href="ch05.xhtml#iri_and_name" title="IRI + name Pattern">the section called “IRI + name Pattern”</a></td><td>declare intellectual property rights associated with data,
+                              exclusive of the rights held over the sources</td></tr></tbody></table></div></div><br class="table-break"/><p>Under <code class="code">&lt;rights-excluding-sources&gt;</code>, a mandatory child element of
+                     <code class="code">&lt;head&gt;</code>, you indicate the license under which the data is
+                  released. The value of <code class="code">@rights-holder</code> (required) points to one or
+                  more <code class="code">&lt;agent&gt;</code>s (see <a class="xref" href="ch05s03.xhtml#agent" title="Agents">the section called “Agents”</a>) who hold the rights
+                  over the data, <span class="italic">exclusive</span> of any rights held
+                  over the sources. This element contains the <a class="xref" href="ch05.xhtml#iri_and_name" title="IRI + name Pattern">the section called “IRI + name Pattern”</a>.</p><p>To reduce confusion on the parts of users of your TAN data, you may not use
+                  more than one license (that is, there must be one and only one instance of
+                     <code class="code">&lt;rights-excluding-sources&gt;</code>). If parts of your TAN data fall
+                  under two or more licenses, you should (1) split the file (one for each license),
+                  (2) find a license that sythesizes the desired licenses, or (3) release the entire
+                  file under the most restrictive of the possible licenses.</p><p>Diligently check to ensure that the license you have claimed respects the
+                  rights of your sources' rightsholders. It is recommended that you license your
+                  data under a license that is similar to or slightly more liberal than the one
+                  under which your sources have been released.</p><p>Whereas <code class="code">&lt;rights-excluding-sources&gt;</code> is mandatory in every TAN
+                  file, <code class="code">&lt;rights-source-only&gt;</code> is not (see below). It is never allowed
+                  in class 2 files, because the sources are always TAN files, and the rights
+                  information can be drawn from those sources. For class 1 and class 3 files,
+                  declaring the rightsholders of your source(s) may be more difficult, perhaps even
+                  risky, and is therefore optional.</p><p>As an editor, you are strongly encouraged in the <code class="code">&lt;desc&gt;</code> element
+                  of <code class="code">&lt;rights-excluding-sources&gt;</code> to emphasize the distinction between
+                  the rights you have over your data and the rights held by others over your source.
+                  A statement something like this is recommended: <code class="code">&lt;desc&gt;The data in this
+                     file, only insofar as it constitutes an independent work, is licensed exclusive
+                     of any licenses held by parties over the source or sources listed
+                     below.&lt;/desc&gt;</code></p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note: License Discrepancies"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="img/note.png"/></td><th align="left"><a id="license_discrepancies"/>License Discrepancies</th></tr><tr><td align="left" valign="top"><p>If you find a discrepancy between the two licenses--that of a TAN file and
+                     that of its sources--the more restrictive license should be respected. In using
+                     a TAN file, it is your responsibility to investigate the entire chain of
+                     rights. If a TAN user declares a very liberal, open license for the data, this
+                     does not necessarily mean that the material upon which it depends is in the
+                     public domain. The source may be under tightly regulated rights.</p></td></tr></table></div><div class="example"><a id="d5e1889"/><p class="title"><strong>Example 5.11. License metadata: data only</strong></p><div class="example-contents"><pre class="programlisting">      ...........
+   &lt;rights-excluding-sources rights-holder="park"&gt;
+      &lt;IRI&gt;http://creativecommons.org/licenses/by/4.0/deed.en_US&lt;/IRI&gt;
+      &lt;name&gt;Creative Commons Attribution 4.0 International License&lt;/name&gt;
+      &lt;desc&gt;Exclusive of rights held and licenses offered by rightsholders of the source or
+         sources listed below, this data file, only insofar as it constitutes an independent 
+         work, is licensed under a Creative Commons Attribution 4.0 International License.&lt;/desc&gt;
+   &lt;/rights-excluding-sources&gt;
+      ...........</pre></div></div><br class="example-break"/></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="source_and_see-also"/>Sources and related files</h3></div></div></div><div class="table"><a id="d5e1895"/><p class="title"><strong>Table 5.9. Synopsis of <code class="code">&lt;source&gt;</code>,
+                           <code class="code">&lt;rights-source-only&gt;</code>, <code class="code">&lt;see-also&gt;</code>,
+                           <code class="code">&lt;relationship&gt;</code></strong></p><div class="table-contents"><table summary="Synopsis of &lt;source&gt;,&#xA;                           &lt;rights-source-only&gt;, &lt;see-also&gt;,&#xA;                           &lt;relationship&gt;" border="1"><colgroup><col class="c1"/><col class="c3"/><col class="c4"/><col class="c5"/><col class="newCol7"/><col class="newCol6"/><col class="c6"/></colgroup><thead><tr><th>name</th><th>req?</th><th>qty</th><th>parent</th><th>attributes</th><th>children</th><th>purpose</th></tr></thead><tbody><tr><td><code class="code">&lt;source&gt;</code></td><td>yes</td><td>varies*</td><td><code class="code">&lt;head&gt;</code></td><td><a class="xref" href="ch05.xhtml#edit_stamp" title="Edit Stamp">the section called “Edit Stamp”</a>?, <code class="code">@xml:id</code>?</td><td><a class="xref" href="ch05.xhtml#iri_and_name" title="IRI + name Pattern">the section called “IRI + name Pattern”</a>, <a class="xref" href="ch05.xhtml#digital_entity_metadata" title="Digital Entity Metadata Pattern">the section called “Digital Entity Metadata Pattern”</a>?**,
+                                    <code class="code">&lt;rights-source-only&gt;</code>*</td><td>state name of source(s) upon which the data depends</td></tr><tr><td><code class="code">&lt;rights-source-only&gt;</code></td><td>no</td><td>one</td><td><code class="code">&lt;source&gt;</code></td><td><a class="xref" href="ch05.xhtml#edit_stamp" title="Edit Stamp">the section called “Edit Stamp”</a>?, <code class="code">@src</code>?,
+                                    <code class="code">@rights-holder</code>?</td><td><a class="xref" href="ch05.xhtml#iri_and_name" title="IRI + name Pattern">the section called “IRI + name Pattern”</a></td><td>declare intellectual property rights over a source</td></tr><tr><td><code class="code">&lt;see-also&gt;</code></td><td>no</td><td>one or more</td><td><code class="code">&lt;head&gt;</code></td><td><a class="xref" href="ch05.xhtml#edit_stamp" title="Edit Stamp">the section called “Edit Stamp”</a>?</td><td><a class="xref" href="ch05.xhtml#iri_and_name" title="IRI + name Pattern">the section called “IRI + name Pattern”</a>, <a class="xref" href="ch05.xhtml#digital_entity_metadata" title="Digital Entity Metadata Pattern">the section called “Digital Entity Metadata Pattern”</a>?,
+                                 <code class="code">&lt;type&gt;</code></td><td>identify digital file that relates somehow to the current
+                                 file</td></tr><tr><td><code class="code">&lt;relationship&gt;</code></td><td>yes</td><td>one</td><td><code class="code">&lt;auxiliary&gt;</code></td><td><a class="xref" href="ch05.xhtml#edit_stamp" title="Edit Stamp">the section called “Edit Stamp”</a>?</td><td>keyword <code class="code">old version</code>, <code class="code">new version</code>,
+                                    <code class="code">dependent</code>, <code class="code">auxiliary</code> or <a class="xref" href="ch05.xhtml#iri_and_name" title="IRI + name Pattern">the section called “IRI + name Pattern”</a>
+                              </td><td>indicate what relationship the referred file holds to the
+                                 context file</td></tr></tbody></table></div></div><p><br class="table-break"/></p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="img/note.png"/></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>* <code class="code">&lt;source&gt;</code> quantity is either exactly one (TAN-T,
+                        TAN-TEI, TAN-LM), exactly two (TAN-A-tok), two or more (TAN-A-div), or one
+                        or more (TAN-R-mor).</p><p>** Digital Entity Metadata is required of all class 2 files, and of all
+                        TAN files that depend upon a digital source.</p></td></tr></table></div><p>The mandatory <code class="code">&lt;source&gt;</code> names the item or items upon which
+                  the TAN data depends. This element contains the pattern IRI + name (see <a class="xref" href="ch05.xhtml#iri_and_name" title="IRI + name Pattern">the section called “IRI + name Pattern”</a>). It allows <code class="code">@xml:id</code> only for TAN formats
+                  that permit more than one <code class="code">&lt;source&gt;</code>.</p><p>Transcription files (TAN-T[EI]) will have as their source some digital file or
+                  text-bearing material object. It is wise to find a URN that other people might use
+                  as well, for example a minted URL that reliably names the object (see examples
+                  below). By supplying <code class="code">&lt;IRI&gt;</code> with a name in the form of an
+                     <code class="code">http</code> URL provided by a library catalogue, you provide a way for
+                  users to retrieve extensive, structured bibliographical information. You then save
+                  yourself the hassle of writing a detailed bibliographical description and your
+                  users the hassle of parsing and importing it into their reference management
+                  system. If a URL cannot be found for <code class="code">&lt;IRI&gt;</code> (perhaps the
+                  text-bearing object is a papyrus or a T-shirt), you may simply coin a tag URN or a
+                  UUID. Alternatively, if you find another TAN file that uses the same source, it
+                  would be a good idea to adopt that name. (You don't need to ask permission to use
+                  names minted in other TAN files; all URNs are in the public domain.)</p><p>Class 2 files (lexico-morphology and alignment files) will always have as their
+                  source one or more class 1 files (transcriptions). In those cases the
+                     <code class="code">&lt;IRI&gt;</code> element must give each TAN-T file's IRI name (the value
+                  of <code class="code">TAN-T/@id</code>; see <a class="xref" href="ch05s03.xhtml#uri_name" title="Core name, location metadata">the section called “Core name, location metadata”</a> above). The Digital
+                  Entity Metadata pattern is mandatory because the sources are necessarily
+                  digital.</p><p>Class 3 TAN files (i.e., TAN-R-mor, TAN-R-tok) have more complex
+                     <code class="code">&lt;source&gt;</code> needs. These are discussed in <a class="xref" href="ch08.xhtml" title="Chapter 8. Class 3 TAN Files: Language and Script">Chapter 8, <em>Class 3 TAN Files: Language and Script</em></a>.</p><p>If you can determine with authority the rights of your sources (see below), you
+                  may use <code class="code">&lt;rights-source-only&gt;</code>s, which take the IRI + name pattern
+                  plus an optional <code class="code">@rights-holder</code> to point to the
+                     <code class="code">&lt;agent&gt;</code>s that hold the rights over the source. This element in
+                  class 3 files take an optional <code class="code">@src</code> attribute, pointing by means of
+                  id references of one or more <code class="code">&lt;source&gt;</code>s to which the statement
+                  applies. There may not be more <code class="code">&lt;rights-source-only&gt;</code>s than
+                     <code class="code">&lt;source&gt;</code>s.</p><p>
+                  </p><div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Caution: Naming Licenses and Rights Holders for Sources"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Caution]" src="img/caution.png"/></td><th align="left"><a id="rights_sources_only_caution"/>Naming Licenses and Rights Holders for Sources</th></tr><tr><td align="left" valign="top"><p>It is recommended that you not declare who own what rights over your
+                        source unless you yourself are the rightsholder or unless you can make this
+                        assertion with certainty. Copyright laws differ from one country to another,
+                        and they have changed over time. A source may be protected by copyright in
+                        one place and simultaneously be in the public domain in another. (For
+                        example, neither the U.S. nor Canada have explicit provisions about the
+                        copyright status of modern editions of ancient texts; Germany, however,
+                        explicitly allows forty years of copyright protection before the text goes
+                        into the public domain.) Some copyright statements in books are false, or
+                        cannot be proven. Some persons or entities who claim rights over a source
+                        may have no legal basis for the claim, at least in some jurisdictions.
+                        Furthermore, if you mischaracterize the rights that are held over a source,
+                        you may be held liable by a putative rights holder. It is safer to use the
+                           <code class="code">&lt;IRI&gt;</code> of <code class="code">&lt;source&gt;</code> (described below) to
+                        point the user to authorities that have greater authority and specificity
+                        about who owns what rights. </p></td></tr></table></div><p>
+               </p><p>A missing <code class="code">@rights-holder</code> implies only only silence, not that the
+                  rightsholder is unknown or nonexistent. If you know that a source is in the public
+                  domain, it is recommended that you use the IRI
+                     <code class="code">http://creativecommons.org/publicdomain/mark/1.0/</code> and omit
+                     <code class="code">@rights-holder</code>. If you know the rights holder of a source has
+                  waived all rights and placed the work in the public domain, you may use the IRI
+                     <code class="code">https://creativecommons.org/publicdomain/zero/1.0/</code>.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note: Copyright Law versus Contract Law"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="img/note.png"/></td><th align="left"><a id="copyright_vs_contract"/>Copyright Law versus Contract Law</th></tr><tr><td align="left" valign="top"><p>Some third-party services, such as the Thesaurus Linguae Graecae for
+                        Greek texts, require users to agree not to copy and reuse the texts in
+                        service's databases. Such agreements fall under the area of contract law and
+                        not copyright law. That is, these third parties are most often not the
+                        putative rights holder for the texts they store, therefore, they should
+                        normally not be credited in any <code class="code">&lt;rights-source-only&gt;</code>. See
+                        also <a class="xref" href="ch05s03.xhtml#sources_or_not" title="Digital Transcriptions: Credit as Source or Not?">Digital Transcriptions: Credit as Source or Not?</a></p></td></tr></table></div><p>The optional <code class="code">&lt;see-also&gt;</code> is reserved for cases where the
+                  editing of a TAN data file depends upon other textual objects you wish to credit
+                  or refer to. Any number of these can be provided. They take one
+                     <code class="code">&lt;relationship&gt;</code> in conjunction with an IRI + name
+                  pattern.</p><p><code class="code">&lt;relationship&gt;</code> takes either a reserved keyword or the IRI +
+                  name pattern, to define a relationship not covered by the keywords. The reserved
+                  keywords:</p><p>
+                  </p><div class="table"><a id="d5e2027"/><p class="title"><strong>Table 5.10. <code class="code">&lt;relationship&gt;</code> reserved keywords</strong></p><div class="table-contents"><table summary="&lt;relationship&gt; reserved keywords" border="1"><colgroup><col class="c1"/><col class="c2"/><col class="c3"/></colgroup><thead><tr><th>keyword</th><th>equivalent IRI</th><th>description</th></tr></thead><tbody><tr><td><code class="code">alternative edition</code></td><td><code class="code">tag:textalign.net,2015:relationship:alternative-edition</code></td><td>Alternative edition of the present file.</td></tr><tr><td><code class="code">old edition</code></td><td><code class="code">tag:textalign.net,2015:relationship:old-edition</code></td><td>TAN file superceded by the present file.</td></tr><tr><td><code class="code">new edition</code></td><td><code class="code">tag:textalign.net,2015:relationship:new-edition</code></td><td>TAN file that supercedes the present file.</td></tr><tr><td><code class="code">dependent</code></td><td><code class="code">tag:textalign.net,2015:relationship:dependent</code></td><td>TAN file that uses the present file as a source.</td></tr><tr><td><code class="code">auxiliary</code></td><td><code class="code">tag:textalign.net,2015:relationship:auxiliary</code></td><td>Digital or nondigital entity that was helpful in creating or
+                                 editing the present file.</td></tr></tbody></table></div></div><p><br class="table-break"/>
+               </p><p><code class="code">alternative edition</code>: Used when one wishes to refer to another TAN
+                  file that provides essentially the same data with a different approach. There is
+                  no assumption that this edition is necessarily better. For class 1 files, this
+                  option may be used to point to an edition of the transcription that uses a
+                  different reference system for segmenting and labeling the text. For class 2
+                  files, to alterantives that use largely the same sources or works, but with
+                  different declarative assumptions (e.g., tokenization). Class 3 alternative
+                  editions might be similar rules for the same languages.</p><p><code class="code">old edition</code>: Used to point to a TAN file superceded by the present
+                  one. The alterations have been significant enough to warrant a new
+                     <code class="code">@id</code> in the rootmost element and you believe the current file is
+                  superior.</p><p><code class="code">new edition</code>: Used to point to a TAN file that supercedes the
+                  present one. The alterations have been significant enough to warrant a new
+                     <code class="code">@id</code> in the rootmost element and you believe the current file is
+                  inferior. This is useful for officially deprecating a TAN file without deleting
+                  it. If it is used as a source by other TAN files, when the latter are validated a
+                  warning will be returned.</p><p><code class="code">dependent</code>: Used to point to a TAN file that uses the current file
+                  as a source.</p><p><code class="code">auxiliary</code>: points to an item, whether physical or digital, that
+                  assisted in creating or editing the current file. This may be useful for cases
+                  where you begin with an item as a source, but in the course of editing you find a
+                  better source, but still want to credit the intermediary item. </p><p>If these keywords are insufficient, you may define your own relationship by
+                  specifing it through the IRI + name pattern.</p><p>
+                  </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note: Digital Transcriptions: Credit as Source or Not?"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="img/note.png"/></td><th align="left"><a id="sources_or_not"/>Digital Transcriptions: Credit as Source or Not?</th></tr><tr><td align="left" valign="top"><p>A third-party website or database may have a digital form of a
+                        transcription that you wish to use as the basis for a TAN-T or TAN-TEI file.
+                        These digital surrogates are versions in their own right. They almost always
+                        depart from their original source (print or digital) even if in small ways.
+                        Should they be listed under <code class="code">&lt;source&gt;</code> or
+                           <code class="code">&lt;see-also&gt;</code>?</p><p>If you are interested in and focused on the digital transcription itself,
+                        then that should be credited and treated as a <code class="code">&lt;source&gt;</code>. But
+                        many digital transcriptions are simply derivative copies or versions of
+                        other sources, whether print or digital. It is almost always better to go up
+                        the chain of dependence until you find the earliest version that still meets
+                        your needs. Make that your <code class="code">&lt;source&gt;</code>. You can then make the
+                        third-party digital transcription a <code class="code">&lt;see-also&gt;</code>. In crediting
+                        the third party, you do not assign them any rights. But beware, lest any
+                        agreement you have made puts you in violation of contract law. See above,
+                           <a class="xref" href="ch05s03.xhtml#copyright_vs_contract" title="Copyright Law versus Contract Law">Copyright Law versus Contract Law</a>.</p></td></tr></table></div><p>
+               </p><p>
+                  </p><div class="example"><a id="d5e2095"/><p class="title"><strong>Example 5.12. <code class="code">&lt;source&gt;</code></strong></p><div class="example-contents"><pre class="programlisting">      ...........
+   &lt;source&gt;
+      &lt;IRI&gt;http://www.worldcat.org/oclc/14388933&lt;/IRI&gt;
+      &lt;name&gt;Wang, Fuzhi, 1619-1692. Zhonghua shu ju : Xin hua
+              shu dian Beijing fa xing suo fa xing, Di 1 ban. 1962.&lt;/name&gt;
+   &lt;/source&gt;
+      ...........</pre></div></div><p><br class="example-break"/>
+               </p><div class="example"><a id="d5e2099"/><p class="title"><strong>Example 5.13. <code class="code">&lt;source&gt;</code>, <code class="code">&lt;rights-source-only&gt;</code>, and
+                        <code class="code">&lt;see-also&gt;</code></strong></p><div class="example-contents"><pre class="programlisting">      ...........
+   &lt;source&gt;
+      &lt;IRI&gt;http://lccn.loc.gov/72309768&lt;/IRI&gt;
+      &lt;name xml:lang="fra"&gt;Traitè pratique, ou, Le moine. Evagre le Pontique. 
+         Introduction par Antoine Guillaumont et Claire Guillaumont. Paris, 
+         Éditions du Cerf, 1971.&lt;/name&gt;
+      &lt;rights-source-only&gt;
+         &lt;IRI&gt;urn:uuid:d56dd4a9-5487-4131-ac61-f43e2b11a17a&lt;/IRI&gt;
+         &lt;name&gt;Exclusive rights&lt;/name&gt;
+         &lt;desc&gt;Rights for the source are held by Sources chrétiennes, Les Éditions du Cerf 24, rue
+            des Tanneries 75013 Paris France www.editionsducerf.fr&lt;/desc&gt;
+      &lt;/rights-source-only&gt;
+   &lt;/source&gt;
+   &lt;see-also&gt;
+      &lt;relationship&gt;auxiliary&lt;/relationship&gt;
+      &lt;IRI&gt;tag:parkj@textalign.net,2014:Dysinger_website_Praktikos#2014-02-02&lt;/IRI&gt;
+      &lt;name&gt;Dysinger's handtyped Greek, accessed 2014-02-02&lt;/name&gt;
+      &lt;type&gt;
+         &lt;IRI&gt;tag:textalign.net,2015:auxiliary:basetext&lt;/IRI&gt;
+         &lt;name&gt;Initial, base digital text used as the starting point for an 
+         accurate rendition of the source&lt;/name&gt;
+      &lt;/type&gt;
+   &lt;/auxiliary&gt;
+      ...........         </pre></div></div><br class="example-break"/></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="declarations"/>Declarations</h3></div></div></div><div class="table"><a id="d5e2108"/><p class="title"><strong>Table 5.11. Synopsis of <code class="code">&lt;declarations&gt;</code></strong></p><div class="table-contents"><table summary="Synopsis of &lt;declarations&gt;" border="1"><colgroup><col class="c1"/><col class="c3"/><col class="c4"/><col class="c5"/><col class="newCol7"/><col class="newCol6"/><col class="c6"/></colgroup><thead><tr><th>name</th><th>req?</th><th>qty</th><th>parent</th><th>attributes</th><th>children</th><th>purpose</th></tr></thead><tbody><tr><td><code class="code">&lt;declarations&gt;</code></td><td>yes</td><td>one</td><td><code class="code">&lt;head&gt;</code></td><td>----</td><td>varies</td><td>collect declarations of scholarly assumptions and decisions
+                                 made in preparing data</td></tr></tbody></table></div></div><p><br class="table-break"/>Each core TAN data file has exactly one <code class="code">&lt;declaration&gt;</code>
+                  element. The structure and content of this element differs from one type of TAN
+                  file to the next, so detailed discussion is reserved for later chapters.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="agent"/>Agents</h3></div></div></div><div class="table"><a id="d5e2142"/><p class="title"><strong>Table 5.12. Synopsis of <code class="code">&lt;agent&gt;</code></strong></p><div class="table-contents"><table summary="Synopsis of &lt;agent&gt;" border="1"><colgroup><col class="c1"/><col class="c3"/><col class="c4"/><col class="c5"/><col class="newCol7"/><col class="newCol6"/><col class="c6"/></colgroup><thead><tr><th>name</th><th>req?</th><th>qty</th><th>parent</th><th>attributes</th><th>children</th><th>purpose</th></tr></thead><tbody><tr><td><code class="code">&lt;agent&gt;</code></td><td>yes</td><td>one or more</td><td><code class="code">&lt;head&gt;</code></td><td><code class="code">@roles</code>?, <code class="code">@xml:id</code></td><td><a class="xref" href="ch05.xhtml#iri_and_name" title="IRI + name Pattern">the section called “IRI + name Pattern”</a></td><td>identifies persons, organizations, or artificial intelligences
+                              used to prepare the data</td></tr></tbody></table></div></div><br class="table-break"/><p>One or more <code class="code">&lt;agent&gt;</code> elements must be included as children of
+                     <code class="code">&lt;head&gt;</code>, to describe people, organizations, or other entities
+                  that created or edited the data, in whole or part, directly or indirectly. At
+                  least one <code class="code">&lt;agent&gt;</code> must have an <code class="code">&lt;IRI&gt;</code> that is a tag
+                  URN whose namespace matches that of the IRI name. The first
+                     <code class="code">&lt;agent&gt;</code> with an <code class="code">&lt;IRI&gt;</code> that has a substring
+                  identical to the namespace of the IRI name is, by default, taken to describe the
+                  person or organization that is authorized the creation of the TAN file and is
+                  ultimately responsible for it. If no such substring match can be made, then the
+                  file is invalid. </p><p><code class="code">&lt;agent&gt;</code> may describe any human or organization, or an entity
+                  that simulates a human or organization (i.e. <code class="code">&lt;agent&gt;</code> may name an
+                  artificial intelligence). <code class="code">&lt;agent&gt;</code> takes the <a class="xref" href="ch05.xhtml#iri_and_name" title="IRI + name Pattern">the section called “IRI + name Pattern”</a>. </p><p>Many people involved with a project will not have a name in the form of a URL;
+                  in those cases, a minted UUID or tag URN will suffice as the value of
+                     <code class="code">&lt;IRI&gt;</code>.</p><p>Each <code class="code">&lt;agent&gt;</code> element must take an <code class="code">@xml:id</code> whose
+                  value is unique to the document. This value may be used throughout the TAN file to
+                  assign responsibility for a role, comment, or change to a particular person or
+                  organization.</p><p>Each <code class="code">&lt;agent&gt;</code> element may include <code class="code">@roles</code>, which
+                  carries a space-delimited list of identifying references to
+                  <code class="code">&lt;role&gt;</code>s (see <a class="xref" href="ch05s03.xhtml#role" title="Roles">the section called “Roles”</a>). If you need to provide a
+                  more complex account of how various agents helped create the file, you should
+                  consider ignoring this attribute and using <code class="code">&lt;agentrole&gt;</code> instead
+                  (see <a class="xref" href="ch05s03.xhtml#agentrole" title="Agent roles">the section called “Agent roles”</a>).</p><div class="example"><a id="d5e2200"/><p class="title"><strong>Example 5.14. <code class="code">&lt;agent&gt;</code></strong></p><div class="example-contents"><pre class="programlisting">      ...........
+   &lt;agent xml:id="kalvesmaki" roles="publisher editor"&gt;
+      &lt;IRI&gt;http://viaf.org/viaf/299582703&lt;/IRI&gt;
+      &lt;name xml:lang="eng"&gt;Joel Kalvesmaki&lt;/name&gt;
+   &lt;/agent&gt;
+   &lt;agent xml:id="example" roles="editor"&gt;
+      &lt;IRI&gt;urn:uuid:64befba0-a0a6-11e3-8975-0002a5d5c51b&lt;/IRI&gt;
+      &lt;IRI&gt;http://example.org/24929&lt;/IRI&gt;
+      &lt;name xml:lang="eng"&gt;Bill Contributor&lt;/name&gt;
+   &lt;/agent&gt;
+   &lt;agent xml:id="example2" roles="caterer"&gt;
+      &lt;IRI&gt;tag:jan@example.org,2014:my-cook&lt;/IRI&gt;
+      &lt;name xml:lang="eng"&gt;Robin the Chef, who fed the caterer and editor.&lt;/name&gt;
+   &lt;/agent&gt;
+      ...........               </pre></div></div><br class="example-break"/></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="role"/>Roles</h3></div></div></div><div class="table"><a id="d5e2206"/><p class="title"><strong>Table 5.13. Synopsis of <code class="code">&lt;role&gt;</code></strong></p><div class="table-contents"><table summary="Synopsis of &lt;role&gt;" border="1"><colgroup><col class="c1"/><col class="c3"/><col class="c4"/><col class="c5"/><col class="newCol7"/><col class="newCol6"/><col class="c6"/></colgroup><thead><tr><th>name</th><th>req?</th><th>qty</th><th>parent</th><th>attributes</th><th>children</th><th>purpose</th></tr></thead><tbody><tr><td><code class="code">&lt;role&gt;</code></td><td>yes</td><td>one or more</td><td><code class="code">&lt;head&gt;</code></td><td><code class="code">@xml:id</code></td><td><a class="xref" href="ch05.xhtml#iri_and_name" title="IRI + name Pattern">the section called “IRI + name Pattern”</a></td><td>identifies responsibilities or activities assumed in preparing the
+                              data</td></tr></tbody></table></div></div><br class="table-break"/><p>One or more <code class="code">&lt;role&gt;</code>s must be included as children of
+                     <code class="code">&lt;head&gt;</code>, identifying tasks and responsibilities of agents
+                  involved in creating and editing the data. A role may be any activity, e.g.,
+                  editor, funder, supervisor, data-processor, peer reviewer, patron. These roles may
+                  be chosen however you see fit, and are declared through the <a class="xref" href="ch05.xhtml#iri_and_name" title="IRI + name Pattern">the section called “IRI + name Pattern”</a>.</p><p>Each <code class="code">&lt;role&gt;</code> must have an <code class="code">@xml:id</code> with an value
+                  unique to the document to be used as cross-references in <code class="code">&lt;agent&gt;</code>
+                  or <code class="code">&lt;agentrole&gt;</code> (see <a class="xref" href="ch05s03.xhtml#agent" title="Agents">the section called “Agents”</a> or <a class="xref" href="ch05s03.xhtml#agentrole" title="Agent roles">the section called “Agent roles”</a>). </p><p>Roles will be defined quite differently from one project or culture to another.
+                  People can reasonably disagree on terminology or definition. You should put in
+                     <code class="code">&lt;IRI&gt;</code> values that you believe define those roles with the level
+                  of precision or vagueness you think most appropriate. If you have a very special
+                  definition of a job, you may wish to coin your own IRI and provide an exact
+                  definition in <code class="code">&lt;desc&gt;</code>. Or if you have chosen a URL for an IRI, you
+                  may wish to define it more precisely in a Linked Data approach. To draw from
+                  well-established vocabularies, see <a class="link" href="iris.xml" target="_top">iris.xml</a>.</p><p>Note that it is not necessary to declare a role of rights holder. This
+                  relationship is already built into the <code class="code">@rights-holder</code> (must point to
+                  one or more <code class="code">&lt;agent&gt;</code>s) in
+                     <code class="code">&lt;rights-excluding-sources&gt;</code> and
+                     <code class="code">&lt;rights-source-only&gt;</code>. See <a class="xref" href="ch05s03.xhtml#license" title="Rights and Licenses">the section called “Rights and Licenses”</a>.</p><div class="example"><a id="d5e2260"/><p class="title"><strong>Example 5.15. <code class="code">&lt;role&gt;</code></strong></p><div class="example-contents"><pre class="programlisting">      ...........
+   &lt;role xml:id="editor"&gt;
+      &lt;IRI&gt;http://schema.org/editor&lt;/IRI&gt;
+      &lt;name xml:lang="eng"&gt;Editor&lt;/name&gt;
+   &lt;/role&gt;
+   &lt;role xml:id="publisher"&gt;
+      &lt;IRI&gt;http://schema.org/publisher&lt;/IRI&gt;
+      &lt;name xml:lang="eng"&gt;Publisher&lt;/name&gt;
+   &lt;/role&gt;
+   &lt;role xml:id="caterer"&gt;
+      &lt;IRI&gt;urn:uuid:0cab862e-986f-4cd7-ac12-963cd5359c1b&lt;/IRI&gt;
+      &lt;name xml:lang="eng"&gt;Caterer (preparer and donator of food)&lt;/name&gt;
+   &lt;/role&gt;
+      ...........               </pre></div></div><br class="example-break"/></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="agentrole"/>Agent roles</h3></div></div></div><div class="table"><a id="d5e2267"/><p class="title"><strong>Table 5.14. Synopsis of <code class="code">&lt;agentrole&gt;</code></strong></p><div class="table-contents"><table summary="Synopsis of &lt;agentrole&gt;" border="1"><colgroup><col class="c1"/><col class="c3"/><col class="c4"/><col class="c5"/><col class="newCol7"/><col class="newCol6"/><col class="c6"/></colgroup><thead><tr><th>name</th><th>req?</th><th>qty</th><th>parent</th><th>attributes</th><th>children</th><th>purpose</th></tr></thead><tbody><tr><td><code class="code">&lt;agentrole&gt;</code></td><td>no</td><td>one or more</td><td><code class="code">&lt;head&gt;</code></td><td><code class="code">@when-from</code>, <code class="code">@when-to</code>,
+                                    <code class="code">@agents</code>, <code class="code">@roles</code>, <a class="xref" href="ch05.xhtml#edit_stamp" title="Edit Stamp">the section called “Edit Stamp”</a>?</td><td>----</td><td>specifies a time period when one or more agents held one or
+                                 more roles</td></tr></tbody></table></div></div><p><br class="table-break"/>To document a complex history of a TAN file, <code class="code">&lt;head&gt;</code> may
+                  have one or more <code class="code">&lt;agentrole&gt;</code> elements.
+                  <code class="code">&lt;agentrole&gt;</code>, an empty element, takes four required attributes:
+                     <code class="code">@when-from</code>, <code class="code">@when-to</code>, <code class="code">@agents</code>, and
+                     <code class="code">@roles</code>. The last two attributes carry identifying references to
+                  the appropriate <code class="code">&lt;agent&gt;</code> and <code class="code">&lt;role&gt;</code> elements,
+                  respectively (multiple values should be space delimited). The other two attributes
+                  contain ISO-compliant time values indicating when the agent(s) had that role(s). </p><p>Keep in mind that credit (or blame) for specific parts of the file will be
+                  based upon how you combine <code class="code">&lt;role&gt;</code> and <code class="code">&lt;agent&gt;</code>
+                  elements, so be certain that persons and their responsibilities are accurately
+                  described. Be sure to name and credit the person or organization that owns the
+                  namespace part of the IRI name (see above). Be sure to credit everyone involved in
+                  creating and editing your data.</p><div class="example"><a id="d5e2315"/><p class="title"><strong>Example 5.16. <code class="code">&lt;agentrole&gt;</code></strong></p><div class="example-contents"><pre class="programlisting">      ...........
+   &lt;agentrole when-from="2013-12-31" when-to="2014-01-21" 
+      who="johnson smith vanBuren" roles="editor"/&gt;
+      ...........               </pre></div></div><br class="example-break"/></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="change"/>Changes</h3></div></div></div><div class="table"><a id="d5e2322"/><p class="title"><strong>Table 5.15. Synopsis of <code class="code">&lt;change&gt;</code></strong></p><div class="table-contents"><table summary="Synopsis of &lt;change&gt;" border="1"><colgroup><col class="c1"/><col class="c3"/><col class="c4"/><col class="c5"/><col class="newCol7"/><col class="newCol6"/><col class="c6"/></colgroup><thead><tr><th>name</th><th>req?</th><th>qty</th><th>parent</th><th>attributes</th><th>children</th><th>purpose</th></tr></thead><tbody><tr><td><code class="code">&lt;change&gt;</code></td><td>yes</td><td>one or more</td><td><code class="code">&lt;head&gt;</code></td><td><code class="code">@who</code>, <code class="code">@when</code>, <a class="xref" href="ch05.xhtml#edit_stamp" title="Edit Stamp">the section called “Edit Stamp”</a></td><td>data (xsd:string)</td><td>specifies a change made to a TAN file</td></tr></tbody></table></div></div><p><br class="table-break"/>The element <code class="code">&lt;head&gt;</code> must have one or more
+                     <code class="code">&lt;change&gt;</code> children. Collectively, <code class="code">&lt;change&gt;</code>
+                  elements form the changelog, the revision history of the document. The content of
+                  each <code class="code">&lt;change&gt;</code> element is expected to be human-readable only. Each
+                  change element must have <code class="code">@when</code> and <code class="code">@who</code> values
+                  documenting the time the change was posted and the <code class="code">&lt;agent&gt;</code>s that
+                  made the change (multiple values should be space delimited). <code class="code">@when</code>
+                  must point to a time or a date + time (see <a class="xref" href="ch04s03.xhtml#date_and_datetime" title="xsd:date, xsd:dateTime">xsd:date, xsd:dateTime</a>)
+                  and <code class="code">@who</code> must refer to an <code class="code">&lt;agent&gt;</code> (multiple values
+                  should be space delimited). An edit stamp may be provided to specify who recorded
+                  the change.</p><p>It is up to you to decide how many <code class="code">&lt;change&gt;</code>s you should record
+                  and collect. Ideally, <code class="code">&lt;change&gt;</code>s documenting every published
+                  version should be retained.</p><p><code class="code">&lt;change&gt;</code> elements may appear in any order, but it is good
+                  practice to put the most recent at the top.</p><div class="example"><a id="d5e2372"/><p class="title"><strong>Example 5.17. <code class="code">&lt;change&gt;</code></strong></p><div class="example-contents"><pre class="programlisting">      ...........
+   &lt;change when="2014-02-07" who="park"&gt;Corrected word in p1s1.&lt;/change&gt;
+   &lt;change when="2014-02-07" who="cheh"&gt;Logged changes today on 
+      behalf of all agents.&lt;/change&gt;
+   &lt;change when="2014-02-02" who="park"&gt;Eliminated line breaks, hyphenations.&lt;/change&gt;
+   &lt;change when="2014-01-24" who="park"&gt;Began new file, based upon predecessor model,
+      urn:uuid:85c5a1cc-51a1-11e3-822c-ce3f5508acd9::2014-01-16 &lt;/change&gt;
+      ...........               </pre></div></div><br class="example-break"/></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="comment"/>Comments</h3></div></div></div><div class="table"><a id="d5e2379"/><p class="title"><strong>Table 5.16. Synopsis of <code class="code">&lt;comment&gt;</code></strong></p><div class="table-contents"><table summary="Synopsis of &lt;comment&gt;" border="1"><colgroup><col class="c1"/><col class="c3"/><col class="c4"/><col class="c5"/><col class="newCol7"/><col class="newCol6"/><col class="c6"/></colgroup><thead><tr><th>name</th><th>req?</th><th>qty</th><th>parent</th><th>attributes</th><th>children</th><th>purpose</th></tr></thead><tbody><tr><td><code class="code">&lt;comment&gt;</code></td><td>no</td><td>one or more</td><td>varies</td><td><code class="code">@who</code>, <code class="code">@when</code></td><td>data (xsd:string)</td><td>specify any comment</td></tr></tbody></table></div></div><p><br class="table-break"/>Although discussed here as the last child of <code class="code">&lt;head&gt;</code>,
+                     <code class="code">&lt;comment&gt;</code>s may placed anywhere in a TAN document except for the
+                     <code class="code">&lt;body&gt;</code> of class 1 files. Each <code class="code">&lt;comment&gt;</code> must
+                  have <code class="code">@when</code> and <code class="code">@who</code> values, documenting the time the
+                  comment was made and the <code class="code">&lt;agent&gt;</code>s that made it. <code class="code">@when</code>
+                  is part of the calculus to determine the version of a particular TAN file. See
+                     <a class="xref" href="ch05.xhtml#edit_stamp" title="Edit Stamp">the section called “Edit Stamp”</a>.</p><div class="example"><a id="d5e2420"/><p class="title"><strong>Example 5.18. <code class="code">&lt;comment&gt;</code></strong></p><div class="example-contents"><pre class="programlisting">      ...........
+   &lt;comment when="2014-02-02" who="example"&gt;This text still needs to be 
+      proofread carefully!&lt;/comment&gt;
+   &lt;comment when="2014-01-24" who="park"&gt;This document was prepared 
+      as a sample text for the Text Alignment Network (TAN-T).&lt;/comment&gt;
+      ...........               </pre></div></div><br class="example-break"/></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch05s02.xhtml">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch05.xhtml">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch05s04.xhtml">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Overall Structure (root) </td><td width="20%" align="center"><a accesskey="h" href="index.xhtml">Home</a></td><td width="40%" align="right" valign="top"> Data (<code class="code">&lt;body&gt;</code>)</td></tr></table></div></body></html>

@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-R-mor.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-R-mor.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TAN-R-mor TAN-version="1" id="tag:kalvesmaki.com,2014:tan-r-mor:eng:brown"
+   xmlns="tag:textalign.net,2015:ns">
+   <head>
+      <name>Brown Corpus rules for English morphology</name>
+      <master-location>http://kalvesmaki.com/tan-library/tan-r-mor/eng.kalvesmaki.com,2014.1.xml</master-location>
+      <rights-excluding-sources rights-holder="kalvesmaki">
+         <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
+         <name>Creative Commons Attribution 4.0 International License</name>
+         <name>This license is granted independent of rights and licenses associated with the
+            source. </name>
+      </rights-excluding-sources>
+      <source>
+         <IRI>http://dbpedia.org/resource/Brown_Corpus</IRI>
+         <name>Brown Corpus</name>
+      </source>
+      <comment when="2015-03-10" who="kalvesmaki">Codes developed as a synthesis of
+         http://clu.uni.no/icame/manuals/BROWN/INDEX.HTM and
+         http://en.wikipedia.org/wiki/Brown_Corpus</comment>
+      <declarations ed-when="2015-03-03" ed-who="kalvesmaki">
+         <for-lang>eng</for-lang>
+         <feature xml:id="period">
+            <IRI>tag:textalign.net,2015:morphology:option:punctuation:sentence-closer</IRI>
+            <name>sentence closer</name>
+            <desc>Examples: ; . ! ?</desc>
+         </feature>
+         <feature xml:id="paren-op">
+            <IRI>tag:textalign.net,2015:morphology:option:bracket-opening</IRI>
+            <name>opening bracket</name>
+            <desc>Examples: ( [ {</desc>
+         </feature>
+         <feature xml:id="paren-cl">
+            <IRI>tag:textalign.net,2015:morphology:option:bracket-closing</IRI>
+            <name>closing bracket</name>
+            <desc>Examples: ) ] }</desc>
+         </feature>
+         <feature xml:id="not">
+            <IRI>tag:textalign.net,2015:morphology:option:negation</IRI>
+            <name>not, n't</name>
+         </feature>
+         <feature xml:id="dash">
+            <IRI>http://dbpedia.org/resource/Dash</IRI>
+            <name>dash</name>
+         </feature>
+         <feature xml:id="comma">
+            <IRI>http://dbpedia.org/resource/Comma</IRI>
+            <name>comma</name>
+            <desc>Examples: ,</desc>
+         </feature>
+         <feature xml:id="colon">
+            <IRI>http://dbpedia.org/resource/Colon_(punctuation)</IRI>
+            <name>colon</name>
+         </feature>
+         <feature xml:id="ABL">
+            <IRI>tag:textalign.net,2015:morphology:option:qualifier-pre</IRI>
+            <name>pre-qualifier</name>
+            <desc>Examples: quite, rather</desc>
+         </feature>
+         <feature xml:id="ABN">
+            <IRI>tag:textalign.net,2015:morphology:option:quantifier-pre</IRI>
+            <name>pre-quantifier</name>
+            <desc>Examples: half, all</desc>
+         </feature>
+         <feature xml:id="ABX">
+            <IRI>tag:textalign.net,2015:morphology:option:quantifier-pre-or-double-conjunction</IRI>
+            <name>pre-quantifier or double conjunction</name>
+            <desc>Example: both</desc>
+         </feature>
+         <feature xml:id="AP">
+            <IRI>tag:textalign.net,2015:morphology:option:determiner:post</IRI>
+            <name>post-determiner</name>
+            <desc>Examples: many, several, next</desc>
+         </feature>
+         <feature xml:id="AT">
+            <IRI>http://dbpedia.org/resource/Article_(grammar)</IRI>
+            <name>article (a, the, no)</name>
+         </feature>
+         <feature xml:id="BE">
+            <IRI>tag:textalign.net,2015:morphology:option:eng:be</IRI>
+            <name>be</name>
+         </feature>
+         <feature xml:id="BED">
+            <IRI>tag:textalign.net,2015:morphology:option:eng:were</IRI>
+            <name>were</name>
+         </feature>
+         <feature xml:id="BEDZ">
+            <IRI>tag:textalign.net,2015:morphology:option:eng:was</IRI>
+            <name>was</name>
+         </feature>
+         <feature xml:id="BEG">
+            <IRI>tag:textalign.net,2015:morphology:option:eng:being</IRI>
+            <name>being</name>
+         </feature>
+         <feature xml:id="BEM">
+            <IRI>tag:textalign.net,2015:morphology:option:eng:am</IRI>
+            <name>am</name>
+         </feature>
+         <feature xml:id="BEN">
+            <IRI>tag:textalign.net,2015:morphology:option:eng:been</IRI>
+            <name>been</name>
+         </feature>
+         <feature xml:id="BER">
+            <IRI>tag:textalign.net,2015:morphology:option:eng:are</IRI>
+            <name>are, art</name>
+         </feature>
+         <feature xml:id="BEZ">
+            <IRI>tag:textalign.net,2015:morphology:option:eng:is</IRI>
+            <name>is</name>
+         </feature>
+         <feature xml:id="CC">
+            <IRI>tag:textalign.net,2015:morphology:option:conjunction:coordinating</IRI>
+            <name>coordinating conjunction</name>
+            <desc>Examples: and, or</desc>
+         </feature>
+         <feature xml:id="CD">
+            <IRI>http://dbpedia.org/resource/Cardinal_number_(linguistics)</IRI>
+            <name>cardinal numeral</name>
+            <desc>Examples: one, two, 2</desc>
+         </feature>
+         <feature xml:id="CS">
+            <IRI>tag:textalign.net,2015:morphology:option:conjunction:subordinating</IRI>
+            <name>subordinating conjunction</name>
+            <desc>Examples: if, although</desc>
+         </feature>
+         <feature xml:id="DO">
+            <IRI>tag:textalign.net,2015:morphology:option:eng:do</IRI>
+            <name>do</name>
+         </feature>
+         <feature xml:id="DOD">
+            <IRI>tag:textalign.net,2015:morphology:option:eng:did</IRI>
+            <name>did</name>
+         </feature>
+         <feature xml:id="DOZ">
+            <IRI>tag:textalign.net,2015:morphology:option:eng:does</IRI>
+            <name>does</name>
+         </feature>
+         <feature xml:id="DT">
+            <IRI>tag:textalign.net,2015:morphology:option:determiner-or-quantifier:singular</IRI>
+            <name>singular determiner/quantifier</name>
+            <desc>Examples: this, that</desc>
+         </feature>
+         <feature xml:id="DTI">
+            <IRI>tag:textalign.net,2015:morphology:option:determiner-or-quantifier:singular-or-plural</IRI>
+            <name>singular or plural determiner/quantifier</name>
+            <desc>Examples: some, any</desc>
+         </feature>
+         <feature xml:id="DTS">
+            <IRI>tag:textalign.net,2015:morphology:option:determiner:plural</IRI>
+            <name>plural determiner</name>
+            <desc>Examples: these, those</desc>
+         </feature>
+         <feature xml:id="DTX">
+            <IRI>tag:textalign.net,2015:morphology:option:determiner-or-double-conjunction</IRI>
+            <name>determiner/double conjunction</name>
+            <desc>Example: either</desc>
+         </feature>
+         <feature xml:id="EX">
+            <IRI>tag:textalign.net,2015:morphology:option:eng:there-existential</IRI>
+            <name>existential there</name>
+         </feature>
+         <feature xml:id="HV">
+            <IRI>tag:textalign.net,2015:morphology:option:eng:have</IRI>
+            <name>have</name>
+         </feature>
+         <feature xml:id="HVD">
+            <IRI>tag:textalign.net,2015:morphology:option:eng:had-pt</IRI>
+            <name>had (past tense)</name>
+         </feature>
+         <feature xml:id="HVG">
+            <IRI>tag:textalign.net,2015:morphology:option:eng:having</IRI>
+            <name>having</name>
+         </feature>
+         <feature xml:id="HVN">
+            <IRI>tag:textalign.net,2015:morphology:option:eng:had-pp</IRI>
+            <name>had (past participle)</name>
+         </feature>
+         <feature xml:id="IN">
+            <IRI>http://dbpedia.org/resource/Preposition</IRI>
+            <name>preposition</name>
+         </feature>
+         <feature xml:id="JJ">
+            <IRI>http://dbpedia.org/resource/Adjective</IRI>
+            <name>adjective</name>
+         </feature>
+         <feature xml:id="JJR">
+            <IRI>tag:textalign.net,2015:morphology:option:adjective:comparative</IRI>
+            <name>adjective, comparative</name>
+         </feature>
+         <feature xml:id="JJS">
+            <IRI>tag:textalign.net,2015:morphology:option:adjective:superlative:semantically</IRI>
+            <name>adjective, semantically superlative</name>
+            <desc>Examples: chief, top</desc>
+         </feature>
+         <feature xml:id="JJT">
+            <IRI>tag:textalign.net,2015:morphology:option:adjective:superlative:morphologically</IRI>
+            <name>adjective, morphologically superlative </name>
+            <desc>Examples: biggest</desc>
+         </feature>
+         <feature xml:id="MD">
+            <IRI>http://dbpedia.org/resource/Modal_verb</IRI>
+            <name>modal auxiliary</name>
+            <desc>Examples: can, should, will</desc>
+         </feature>
+         <feature xml:id="NN">
+            <IRI>tag:textalign.net,2015:morphology:option:noun:common:singular</IRI>
+            <name>singular or mass noun</name>
+         </feature>
+         <feature xml:id="NN-S">
+            <IRI>tag:textalign.net,2015:morphology:option:noun:possessive:singular</IRI>
+            <name>possessive singular noun</name>
+         </feature>
+         <feature xml:id="NNS">
+            <IRI>tag:textalign.net,2015:morphology:option:noun:common:plural</IRI>
+            <name>plural noun</name>
+         </feature>
+         <feature xml:id="NNS-S">
+            <IRI>tag:textalign.net,2015:morphology:option:noun:possessive:plural</IRI>
+            <name>possessive plural noun</name>
+         </feature>
+         <feature xml:id="NP">
+            <IRI>http://dbpedia.org/resource/Proper_noun</IRI>
+            <name>proper noun or part of name phrase</name>
+         </feature>
+         <feature xml:id="NP-S">
+            <IRI>tag:textalign.net,2015:morphology:option:noun:proper:possessive</IRI>
+            <name>possessive proper noun</name>
+         </feature>
+         <feature xml:id="NPS">
+            <IRI>tag:textalign.net,2015:morphology:option:noun:proper:plural</IRI>
+            <name>plural proper noun</name>
+         </feature>
+         <feature xml:id="NPS-S">
+            <IRI>tag:textalign.net,2015:morphology:option:noun:proper:plural:possessive</IRI>
+            <name>possessive plural proper noun</name>
+         </feature>
+         <feature xml:id="NR">
+            <IRI>tag:textalign.net,2015:morphology:option:noun:adverbial</IRI>
+            <name>adverbial noun</name>
+            <desc>Examples: home, today, west</desc>
+         </feature>
+         <feature xml:id="OD">
+            <IRI>tag:textalign.net,2015:morphology:option:number-ordinal</IRI>
+            <name>ordinal numeral</name>
+            <desc>Examples: first, 2nd</desc>
+         </feature>
+         <feature xml:id="PN">
+            <IRI>tag:textalign.net,2015:morphology:option:pronoun:nominal</IRI>
+            <name>nominal pronoun</name>
+            <desc>Examples: everybody, nothing</desc>
+         </feature>
+         <feature xml:id="PN-S">
+            <IRI>tag:textalign.net,2015:morphology:option:pronoun:possessive</IRI>
+            <name>possessive nominal pronoun</name>
+         </feature>
+         <feature xml:id="PP-S">
+            <IRI>tag:textalign.net,2015:morphology:option:pronoun-personal:possessive</IRI>
+            <name>possessive personal pronoun</name>
+            <desc>Examples: my, our</desc>
+         </feature>
+         <feature xml:id="PP-S-S">
+            <IRI>tag:textalign.net,2015:morphology:option:pronoun-second:possessive</IRI>
+            <name>second (nominal) possessive pronoun</name>
+            <desc>Examples: mine, ours</desc>
+         </feature>
+         <feature xml:id="PPL">
+            <IRI>tag:textalign.net,2015:morphology:option:pronoun-personal:reflexive-or-intensive:singular</IRI>
+            <name>singular reflexive/intensive personal pronoun</name>
+            <desc>Examples: myself</desc>
+         </feature>
+         <feature xml:id="PPLS">
+            <IRI>tag:textalign.net,2015:morphology:option:pronoun-personal:reflexive-or-intensive:plural</IRI>
+            <name>plural reflexive/intensive personal pronoun</name>
+            <desc>Examples: ourselves</desc>
+         </feature>
+         <feature xml:id="PPO">
+            <IRI>tag:textalign.net,2015:morphology:option:pronoun-personal:objective</IRI>
+            <name>objective personal pronoun</name>
+            <desc>Examples: me, him, it, them</desc>
+         </feature>
+         <feature xml:id="PPS">
+            <IRI>tag:textalign.net,2015:morphology:option:pronoun:nominative-3s</IRI>
+            <name>3rd. singular nominative pronoun</name>
+            <desc>Examples: he, she, it, one</desc>
+         </feature>
+         <feature xml:id="PPSS">
+            <IRI>tag:textalign.net,2015:morphology:option:pronoun-personal:nominative:other</IRI>
+            <name>other nominative personal pronoun</name>
+            <desc>Examples: I, we, they, you</desc>
+         </feature>
+         <feature xml:id="PRP">
+            <IRI>http://dbpedia.org/resource/Personal_pronoun</IRI>
+            <name>Personal pronoun</name>
+         </feature>
+         <feature xml:id="PRP-S">
+            <IRI>http://dbpedia.org/resource/Possessive_pronoun</IRI>
+            <name>Possessive pronoun</name>
+         </feature>
+         <feature xml:id="QL">
+            <IRI>tag:textalign.net,2015:morphology:option:qualifier</IRI>
+            <name>qualifier</name>
+            <desc>Examples: very, fairly</desc>
+         </feature>
+         <feature xml:id="QLP">
+            <IRI>tag:textalign.net,2015:morphology:option:qualifier-post</IRI>
+            <name>post-qualifier</name>
+            <desc>Examples: enough, indeed</desc>
+         </feature>
+         <feature xml:id="RB">
+            <IRI>http://dbpedia.org/resource/Adverb</IRI>
+            <name>adverb</name>
+         </feature>
+         <feature xml:id="RBR">
+            <IRI>tag:textalign.net,2015:morphology:option:adverb:comparative</IRI>
+            <name>comparative adverb</name>
+         </feature>
+         <feature xml:id="RBT">
+            <IRI>tag:textalign.net,2015:morphology:option:adverb:superlative</IRI>
+            <name>superlative adverb</name>
+         </feature>
+         <feature xml:id="RN">
+            <IRI>tag:textalign.net,2015:morphology:option:adverb:nominal</IRI>
+            <name>nominal adverb</name>
+            <desc>Examples: here, then, indoors</desc>
+         </feature>
+         <feature xml:id="RP">
+            <IRI>http://dbpedia.org/resource/Grammatical_particle</IRI>
+            <name>adverb/particle</name>
+            <desc>Examples: about, off, up</desc>
+         </feature>
+         <feature xml:id="TO">
+            <IRI>tag:textalign.net,2015:morphology:option:eng:to:infinitive</IRI>
+            <name>to, as infinitive marker</name>
+         </feature>
+         <feature xml:id="UH">
+            <IRI>http://dbpedia.org/resource/Interjection</IRI>
+            <name>interjection, exclamation</name>
+         </feature>
+         <feature xml:id="VB">
+            <IRI>tag:textalign.net,2015:morphology:option:verb-base</IRI>
+            <name>verb, base form</name>
+         </feature>
+         <feature xml:id="VBD">
+            <IRI>http://dbpedia.org/resource/Past_tense</IRI>
+            <name>verb, past tense</name>
+         </feature>
+         <feature xml:id="VBG">
+            <IRI>tag:textalign.net,2015:morphology:option:participle-present-or-gerund</IRI>
+            <name>verb, present participle/gerund</name>
+         </feature>
+         <feature xml:id="VBN">
+            <IRI>tag:textalign.net,2015:morphology:option:participle-past</IRI>
+            <name>verb, past participle</name>
+         </feature>
+         <feature xml:id="VBP">
+            <IRI>tag:textalign.net,2015:morphology:option:verb-present-3s-not</IRI>
+            <name>verb, non 3rd person, singular, present</name>
+         </feature>
+         <feature xml:id="VBZ">
+            <IRI>tag:textalign.net,2015:morphology:option:verb-present-3s</IRI>
+            <name>verb, 3rd. singular present</name>
+         </feature>
+         <feature xml:id="WDT">
+            <IRI>tag:textalign.net,2015:morphology:option:determiner-wh</IRI>
+            <name>wh- determiner</name>
+            <desc>Examples: what, which</desc>
+         </feature>
+         <feature xml:id="WP-S">
+            <IRI>tag:textalign.net,2015:morphology:option:pronoun-possessive-wh</IRI>
+            <name>possessive wh- pronoun</name>
+            <desc>Examples: whose</desc>
+         </feature>
+         <feature xml:id="WPO">
+            <IRI>tag:textalign.net,2015:morphology:option:pronoun-objective-wh</IRI>
+            <name>objective wh- pronoun</name>
+            <desc>Examples: whom, which, that</desc>
+         </feature>
+         <feature xml:id="WPS">
+            <IRI>tag:textalign.net,2015:morphology:option:pronoun-nominative-wh</IRI>
+            <name>nominative wh- pronoun</name>
+            <desc>Examples: who, which, that</desc>
+         </feature>
+         <feature xml:id="WQL">
+            <IRI>tag:textalign.net,2015:morphology:option:qualifier-wh</IRI>
+            <name>wh- qualifier</name>
+            <desc>Examples: how</desc>
+         </feature>
+         <feature xml:id="WRB">
+            <IRI>tag:textalign.net,2015:morphology:option:adverb-wh</IRI>
+            <name>wh- adverb</name>
+            <desc>Examples: how, where, when</desc>
+         </feature>
+         <feature xml:id="FW">
+            <IRI>tag:textalign.net,2015:morphology:option:foreign-word</IRI>
+            <name>foreign word</name>
+            <comment who="kalvesmaki" when="2015-03-10">This code was originally a prefix option,
+               now moved to end.</comment>
+         </feature>
+         <feature xml:id="NC">
+            <IRI>tag:textalign.net,2015:morphology:option:word-cited</IRI>
+            <name>cited word</name>
+         </feature>
+      </declarations>
+      <agent xml:id="kalvesmaki" roles="editor">
+         <IRI>http://viaf.org/viaf/299582703</IRI>
+         <IRI>tag:kalvesmaki.com,2014:self</IRI>
+         <name>Joel Kalvesmaki</name>
+      </agent>
+      <role xml:id="editor">
+         <IRI>http://schema.org/editor</IRI>
+         <name>Editor</name>
+      </role>
+      <change who="kalvesmaki" when="2015-03-04">started file</change>
+      <comment when="2015-03-10" who="kalvesmaki">The Brown Corpus adopted certain codes as kinds of
+         qualifiers, to be prefixes or suffixes to a main code. All prefix codes (FW) are moved to
+         the suffix. All qualifier codes are given their own categories.</comment>
+      <comment when="2015-03-10" who="kalvesmaki">Qualifier codes -HL (words in headlines) and -TL
+         (words in titles) suppressed, as these can be detected automatically by filtering a query
+         according to div types.</comment>
+   </head>
+   <body>
+      <comment when="2015-06-03-04:00" who="kalvesmaki">I haven't yet provided for FW or NC as
+         prefix or suffix codes</comment>
+      <option feature="period" code="."/>
+      <option feature="paren-op" code="["/>
+      <option feature="paren-cl" code="]"/>
+      <option feature="not" code="*"/>
+      <option feature="dash" code="--"/>
+      <option feature="comma" code=";"/>
+      <option feature="colon" code=":"/>
+      <option feature="NN-S" code="NN$"/>
+      <option feature="NNS-S" code="NNS$"/>
+      <option feature="NP-S" code="NP$"/>
+      <option feature="NPS-S" code="NPS$"/>
+      <option feature="PN-S" code="PN$"/>
+      <option feature="PP-S" code="PP$"/>
+      <option feature="PP-S-S" code="PP$$"/>
+      <option feature="PRP-S" code="PRP$"/>
+      <option feature="WP-S" code="WP$"/>
+      <report code-regex-test="\s+">tagging should have no spaces</report>
+   </body>
+</TAN-R-mor>

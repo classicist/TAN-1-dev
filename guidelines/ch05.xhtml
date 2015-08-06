@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Chapter 5. Patterns and Structures Common to All TAN Encoding Formats</title><link rel="stylesheet" type="text/css" href="../../../../css/TAN-guidelines.css"/><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"/><link rel="home" href="index.xhtml" title="The Text Alignment Network: Official Guidelines"/><link rel="up" href="pt02.xhtml" title="Part II. Detailed Description"/><link rel="prev" href="ch04s03.xhtml" title="Core Technology"/><link rel="next" href="ch05s02.xhtml" title="Overall Structure (root)"/></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 5. Patterns and Structures Common to All TAN Encoding Formats</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch04s03.xhtml">Prev</a> </td><th width="60%" align="center">Part II. Detailed Description</th><td width="20%" align="right"> <a accesskey="n" href="ch05s02.xhtml">Next</a></td></tr></table><hr/></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a id="class_common"/>Chapter 5. Patterns and Structures Common to All TAN Encoding Formats</h2></div></div></div><div class="toc"><p><strong>Table of Contents</strong></p><dl class="toc"><dt><span class="section"><a href="ch05.xhtml#patterns">Common Patterns</a></span></dt><dd><dl><dt><span class="section"><a href="ch05.xhtml#iri_and_name">IRI + name Pattern</a></span></dt><dt><span class="section"><a href="ch05.xhtml#digital_entity_metadata">Digital Entity Metadata Pattern</a></span></dt><dt><span class="section"><a href="ch05.xhtml#edit_stamp">Edit Stamp</a></span></dt><dt><span class="section"><a href="ch05.xhtml#languages">Languages</a></span></dt></dl></dd><dt><span class="section"><a href="ch05s02.xhtml">Overall Structure (root)</a></span></dt><dt><span class="section"><a href="ch05s03.xhtml">Metadata (<code class="code">&lt;head&gt;</code>)</a></span></dt><dd><dl><dt><span class="section"><a href="ch05s03.xhtml#uri_name">Core name, location metadata</a></span></dt><dt><span class="section"><a href="ch05s03.xhtml#license">Rights and Licenses</a></span></dt><dt><span class="section"><a href="ch05s03.xhtml#source_and_see-also">Sources and related files</a></span></dt><dt><span class="section"><a href="ch05s03.xhtml#declarations">Declarations</a></span></dt><dt><span class="section"><a href="ch05s03.xhtml#agent">Agents</a></span></dt><dt><span class="section"><a href="ch05s03.xhtml#role">Roles</a></span></dt><dt><span class="section"><a href="ch05s03.xhtml#agentrole">Agent roles</a></span></dt><dt><span class="section"><a href="ch05s03.xhtml#change">Changes</a></span></dt><dt><span class="section"><a href="ch05s03.xhtml#comment">Comments</a></span></dt></dl></dd><dt><span class="section"><a href="ch05s04.xhtml">Data (<code class="code">&lt;body&gt;</code>)</a></span></dt><dd><dl><dt><span class="section"><a href="ch05s04.xhtml#in_progress">@in-progress</a></span></dt></dl></dd></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="patterns"/>Common Patterns</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="iri_and_name"/>IRI + name Pattern</h3></div></div></div><p>Both humans and computers will need to read and write TAN metadata. Very often
+                  what is readable to humans is unreadable to computers, and vice versa. So the TAN
+                  format requires that all metadata be provided in both forms. Although this rule
+                  may appear to introduce redundancy and therefore new opportunities for error, the
+                  clarity is critical. It is the only way at present to ensure that anyone who
+                  approaches the data--computer or human--can parse and use it. And, in reality,
+                  doubly expressed metadata provides a safeguard much like a checksum: the human-
+                  and computer-readable descriptions should correspond. Any discrepancy is a signal
+                  that an error should be diagnosed and fixed.</p><p>Some metadata, such as comments, are neither easily nor profitably translated
+                  into a computer-actionable string. In such cases only the human-readable form is
+                  required. Other metadata use regular expressions or ISO-compliant dates, both of
+                  which are well formed and usually human-legible. In those cases the human- and
+                  computer-readable components are not separated. In cases where a datum is not
+                  understandable to humans, such as a complex regular expression, a
+                     <code class="code">&lt;comment&gt;</code> may be provided.</p><p>Those exceptions aside, all other metadata takes what is called the <span class="italic">IRI + name </span>pattern. (For IRI + name patterns applied
+                  to digital objects see <a class="xref" href="ch05.xhtml#digital_entity_metadata" title="Digital Entity Metadata Pattern">the section called “Digital Entity Metadata Pattern”</a>.)</p><p>
+                  </p><div class="table"><a id="d5e1174"/><p class="title"><strong>Table 5.1. Synopsis of <code class="code">&lt;IRI&gt;</code>, <code class="code">&lt;name&gt;</code>,
+                           <code class="code">&lt;desc&gt;</code></strong></p><div class="table-contents"><table summary="Synopsis of &lt;IRI&gt;, &lt;name&gt;,&#xA;                           &lt;desc&gt;" border="1"><colgroup><col class="c1"/><col class="c3"/><col class="c4"/><col class="c5"/><col class="newCol7"/><col class="newCol6"/><col class="c6"/></colgroup><thead><tr><th>name</th><th>req?</th><th>qty</th><th>parent</th><th>attributes</th><th>children</th><th>purpose</th></tr></thead><tbody><tr><td><code class="code">&lt;IRI&gt;</code></td><td>yes</td><td>one or more</td><td>varies</td><td><a class="xref" href="ch05.xhtml#edit_stamp" title="Edit Stamp">the section called “Edit Stamp”</a></td><td>data (xsd:URI)</td><td>Declare permanent, unique IRI as a name for a concept or
+                                 entity</td></tr><tr><td><code class="code">&lt;name&gt;</code></td><td>yes</td><td>one or more</td><td>varies</td><td><code class="code">@xml:lang</code>?, <a class="xref" href="ch05.xhtml#edit_stamp" title="Edit Stamp">the section called “Edit Stamp”</a></td><td>data (xsd:string)</td><td>Provide human-readable name of a concept or entity</td></tr><tr><td><code class="code">&lt;desc&gt;</code></td><td>no</td><td>one or more</td><td>varies</td><td><code class="code">@xml:lang</code>?, <a class="xref" href="ch05.xhtml#edit_stamp" title="Edit Stamp">the section called “Edit Stamp”</a></td><td>data (xsd:string)</td><td>Provide human-readable description of a concept or
+                                 entity</td></tr></tbody></table></div></div><p><br class="table-break"/>
+                  </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note: Synoptic tables"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="img/note.png"/></td><th align="left"><a id="synoptic_tables_of_elements"/>Synoptic tables</th></tr><tr><td align="left" valign="top"><p>The table above is the first of many that synoptically describe the
+                        elements (or sometimes attributes) under discussion. The first column
+                        contains element names, and assumes the TAN namespace unless otherwise
+                        specified (e.g., <code class="code">tei:body</code> would refer to the
+                           <code class="code">&lt;body&gt;</code> element defined by the TEI in its namespace). The
+                        second column indicates whether the element is required by its parent. (If
+                        its parent is optional and missing then it will be missing as well.) The
+                        third column shows how many instances of the element are allowed or
+                        required. The fourth column states the element's parent and the fifth, which
+                        attributes it takes. The sixth column states what children elements or data
+                        it takes (if data, the datatype is specified in parentheses). The last
+                        column summarizes the purpose of the element. For the meaning of ?, *, etc.
+                        see <a class="xref" href="ch04s03.xhtml#quantifiers" title="Table 4.5. Quantifiers">Table 4.5, “Quantifiers”</a>.</p><p>Each of these tables is meant to give a short, rough overview of the
+                        elements under discussion. For an authoritative explanation of the rules and
+                        best practices, see the corresponding master schema or the prose description
+                        that follows each table.</p><p>Because <code class="code">&lt;comment&gt;</code> is allowed to appear virtually
+                        everywhere, it has been dropped from the synoptic tables. For specific
+                        details on where this element is not allowed, see <a class="xref" href="ch05s03.xhtml#comment" title="Comments">the section called “Comments”</a>.</p></td></tr></table></div><p>
+               </p><p>One or more <code class="code">&lt;IRI&gt;</code>s supply a permanent computer-readable IRI
+                  that uniquely names a concept, person, or thing. Multiple <code class="code">&lt;IRI&gt;</code>
+                  values are to be treated as synonyms of the same thing, not as names of different
+                  things. In cases where the thing named is a TAN file, only one
+                     <code class="code">&lt;IRI&gt;</code> is allowed.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="img/note.png"/></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>For those familiar with the <a class="link" href="http://www.w3.org/TR/owl-ref/" target="_top">Web Ontology Language</a>:
+                        every pair of <code class="code">&lt;IRI&gt;</code>s with the same parent are assumed to
+                        share the relationship <code class="code">owl:sameAs</code>.</p></td></tr></table></div><p> The element is named IRI instead of URI to encourage internationalization.
+                  Alphabets other than the Latin are welcome to be used in the construction of IRIs.
+                  For names of well-known resources, a URL identifier might be preferred
+                     (<code class="code">http://...</code>), to facilitate linked data (see <a class="xref" href="ch04s03.xhtml#IRIs_and_linked_data" title="International Resource Identifiers and Linked Data">the section called “International Resource Identifiers and Linked Data”</a>). If an entity/resource lacks a suitable
+                  URL-type name, you may use or coin any other valid IRI, such as a UUID, a tag URN,
+                  or an OID. </p><p>One or more mandatory <code class="code">&lt;name&gt;</code>s furnish human-readable names of
+                  the entity identified in <code class="code">&lt;IRI&gt;</code>. Because TAN files may need to be
+                  shared across language communities, this data can be stated any number of times in
+                  any language, in any Unicode-compliant script. Each human-readable datum may be
+                  given the attribute <code class="code">@xml:lang</code>, which must take the value of a
+                  standard ISO language code (see <a class="xref" href="ch04s03.xhtml#language" title="xsd:language">xsd:language</a>). Declaring the
+                  language that is used is a courtesy to users who may wish to extract explanations
+                  written in a specific language. If you provide a comment in multiple languages, it
+                  best to make sure that each version says roughly the same thing.</p><p>One or more optional <code class="code">&lt;desc&gt;</code>s provide a human-readable
+                  description of the entity named in <code class="code">&lt;IRI&gt;</code>. <code class="code">&lt;desc&gt;</code>,
+                  which may also take an <code class="code">@xml:lang</code> that specifies the language of the
+                  description, is in effect merely a <code class="code">&lt;comment&gt;</code> that describes the
+                  entity.</p><p>All three elements above may take an edit stamp (see <a class="xref" href="ch05.xhtml#edit_stamp" title="Edit Stamp">the section called “Edit Stamp”</a>) to specify which <code class="code">&lt;agent&gt;</code> was responsible for creating or
+                  editing the data, and when. </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="img/note.png"/></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>Values for <code class="code">&lt;IRI&gt;</code> do not state where a source is, even
+                        though some of them may look like they do. If the value looks like a web
+                        page address (e.g., <code class="code">http://...</code>), beware—it might be simply a
+                        name that looks like a URL, but really isn't where you will find the source.
+                        Vice versa, any <code class="code">&lt;location&gt;</code> that happens fall in an IRI +
+                        name Pattern indicates only where the digital file was found; it is not to
+                        be interpreted by anyone using linked open data as the name of an entity.
+                        See <a class="xref" href="ch04s03.xhtml#IRIs_and_linked_data" title="International Resource Identifiers and Linked Data">the section called “International Resource Identifiers and Linked Data”</a> and <a class="xref" href="ch05.xhtml#digital_entity_metadata" title="Digital Entity Metadata Pattern">the section called “Digital Entity Metadata Pattern”</a>.</p></td></tr></table></div><p>
+                  </p><div class="example"><a id="d5e1272"/><p class="title"><strong>Example 5.1. IRI + name pattern: <code class="code">&lt;role&gt;</code></strong></p><div class="example-contents"><pre class="programlisting">      ...........
+   &lt;role xml:id="editor"&gt;
+      &lt;IRI&gt;http://schema.org/editor&lt;/IRI&gt;
+      &lt;name xml:lang="eng"&gt;editor&lt;/name&gt;
+   &lt;/role&gt;
+      ...........</pre></div></div><p><br class="example-break"/>
+                  </p><div class="example"><a id="d5e1276"/><p class="title"><strong>Example 5.2. IRI + name pattern: <code class="code">&lt;rights-excluding-sources&gt;</code></strong></p><div class="example-contents"><pre class="programlisting">      ...........
+   &lt;rights-excluding-sources rights-holder="cheh"&gt;
+      &lt;IRI&gt;http://creativecommons.org/licenses/by/4.0/deed.en_US&lt;/IRI&gt;
+      &lt;name xml:lang="eng"&gt;Creative Commons Attribution 4.0 International License.&lt;/name&gt;
+      &lt;desc xml:lang="eng"&gt;License granted exclusive of rights held and licenses 
+        held by rightsholders of the source or sources.&lt;/desc&gt;
+   &lt;/rights-excluding-sources&gt;
+      ...........</pre></div></div><p><br class="example-break"/>
+               </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="digital_entity_metadata"/>Digital Entity Metadata Pattern</h3></div></div></div><p>Some entities identified by the <a class="xref" href="ch05.xhtml#iri_and_name" title="IRI + name Pattern">the section called “IRI + name Pattern”</a> will be digital
+                  resources. In those cases, the IRI + name Pattern is extended in two different
+                  ways, according to whether the entity is a TAN file or not. If the entity is a TAN
+                  file, then <code class="code">&lt;IRI&gt;</code> must be a valid tag URN that matches the
+                     <code class="code">@id</code> value of the TAN file being referred to. If the entity is not
+                  a TAN file, then any IRI may be used. If you choose to use the URL of where the
+                  digital resource is as its name (as well as its location; see below), then it will
+                  be inferred that you mean to identify the digital resource that appeared at that
+                  URL at the date or time you accessed it.</p><p>Digital entities take the following extensions, in addition to their IRI + name
+                  pattern:</p><p>
+                  </p><div class="table"><a id="d5e1288"/><p class="title"><strong>Table 5.2. Synopsis of <code class="code">&lt;checksum&gt;</code>, <code class="code">&lt;location&gt;</code>,
+                           <code class="code">&lt;value&gt;</code>, </strong></p><div class="table-contents"><table summary="Synopsis of &lt;checksum&gt;, &lt;location&gt;,&#xA;                           &lt;value&gt;, " border="1"><colgroup><col class="c1"/><col class="c3"/><col class="c4"/><col class="c5"/><col class="newCol7"/><col class="newCol6"/><col class="c6"/></colgroup><thead><tr><th>name</th><th>req?</th><th>qty</th><th>parent</th><th>attributes</th><th>children</th><th>purpose</th></tr></thead><tbody><tr><td><code class="code">&lt;checksum&gt;</code></td><td>no</td><td>one or more</td><td>varies</td><td><a class="xref" href="ch05.xhtml#edit_stamp" title="Edit Stamp">the section called “Edit Stamp”</a></td><td><a class="xref" href="ch05.xhtml#iri_and_name" title="IRI + name Pattern">the section called “IRI + name Pattern”</a>, <code class="code">&lt;value&gt;</code></td><td>provide the checksum of a digital entity that has been
+                                 used</td></tr><tr><td><code class="code">&lt;location&gt;</code></td><td>yes</td><td>one or more</td><td>varies</td><td><a class="xref" href="ch05.xhtml#edit_stamp" title="Edit Stamp">the section called “Edit Stamp”</a>,
+                                 <code class="code">@when-accessed</code></td><td><a class="xref" href="ch05.xhtml#iri_and_name" title="IRI + name Pattern">the section called “IRI + name Pattern”</a></td><td>provide a location of a digital entity</td></tr><tr><td><code class="code">&lt;value&gt;</code></td><td>yes</td><td>one</td><td><code class="code">&lt;checksum&gt;</code></td><td><a class="xref" href="ch05.xhtml#edit_stamp" title="Edit Stamp">the section called “Edit Stamp”</a></td><td>data (xsd:string)</td><td>provide a checksum value</td></tr></tbody></table></div></div><p><br class="table-break"/>
+               </p><p>The optional <code class="code">&lt;checksum&gt;</code> specifies some string hash function
+                  that can be used to confirm the identity of a digital file believed to be the
+                  source. The type of hash is defined in a required <a class="xref" href="ch05.xhtml#iri_and_name" title="IRI + name Pattern">the section called “IRI + name Pattern”</a>,
+                  and the mandatory <code class="code">&lt;value&gt;</code> provides the value of the checksum. The
+                  checksum will not be generated, checked, or validated by TAN schemas. Validation
+                  must be provided by an external tool.</p><p>One or more <code class="code">&lt;location&gt;</code> elements provide URLs for where the
+                  resource can be found. Each <code class="code">&lt;location&gt;</code> element must carry a
+                     <code class="code">@when-accessed</code> value that indicates the date when the file at the
+                  URL was last consulted. If there are multiple <code class="code">&lt;location&gt;</code>s,
+                  validation will be checked only against the first one available to the validator.
+                  Any <code class="code">&lt;location&gt;</code> pointing to a document that is not available will
+                  marked with a warning. If no documents are available, an error message will be
+                  reported.</p><p>Note, if the digital file being referred to is a TAN file, it may have no more
+                  than one <code class="code">&lt;IRI&gt;</code> in its IRI + name Pattern.</p><div class="example"><a id="d5e1358"/><p class="title"><strong>Example 5.3. Digital entity metadata pattern of a TAN file</strong></p><div class="example-contents"><pre class="programlisting">      ...........
+   &lt;source xml:id="grc"&gt;
+      &lt;IRI&gt;tag:parkj@textalign.net,2014:Evagrius_Praktikos_grc_Guillaumonts.TAN-TEI.001&lt;/IRI&gt;
+      &lt;name&gt;Transcription of Greek edition by the Guillaumonts&lt;/name&gt;
+      &lt;location when-accessed="2014-10-15"
+          &gt;../TAN-T/cpg2430.grc.guillaumonts.tei.xml&lt;/location&gt;
+   &lt;/source&gt;
+      ...........</pre></div></div><br class="example-break"/><div class="example"><a id="d5e1361"/><p class="title"><strong>Example 5.4. Digital entity metadata pattern of a non-TAN file</strong></p><div class="example-contents"><pre class="programlisting">      ...........
+   &lt;source&gt;
+     &lt;IRI&gt;tag:textalign.net,2015:source:digital:http://insaph.kcl.ac.uk/iaph2007/xml/iAph010001.xml&lt;/IRI&gt;
+     &lt;name&gt;TEI transcription of boundary marker, set up by C. Julius Zoilos&lt;/name&gt;
+     &lt;checksum&gt;
+        &lt;IRI&gt;http://dbpedia.org/resource/Sha-1&lt;/IRI&gt;
+        &lt;name&gt;SHA-1&lt;/name&gt;
+        &lt;value&gt;8ac1146c86e06071f352bf3cb89614c0a0f0c7ee&lt;/value&gt;
+     &lt;/checksum&gt;
+     &lt;location when-accessed="2015-05-07"
+       &gt;http://insaph.kcl.ac.uk/iaph2007/xml/iAph010001.xml&lt;/location&gt;
+   &lt;/source&gt;
+      ...........</pre></div></div><br class="example-break"/></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="edit_stamp"/>Edit Stamp</h3></div></div></div><p>
+                  </p><div class="table"><a id="d5e1367"/><p class="title"><strong>Table 5.3. Synopsis of <code class="code">@ed-who</code>, <code class="code">@ed-when</code></strong></p><div class="table-contents"><table summary="Synopsis of @ed-who, @ed-when" border="1"><colgroup><col class="c1"/><col class="c3"/><col class="c4"/><col class="c5"/><col class="newCol6"/><col class="c6"/></colgroup><thead><tr><th>name</th><th>req?</th><th>qty</th><th>parent</th><th>contains</th><th>purpose</th></tr></thead><tbody><tr><td><code class="code">@ed-who</code></td><td>yes</td><td>one</td><td>varies</td><td><code class="code">d:IDREFS</code></td><td>Indicate who is responsible for edits</td></tr><tr><td><code class="code">@ed-when</code></td><td>yes</td><td>one</td><td>varies</td><td><a class="xref" href="ch04s03.xhtml#date_and_datetime" title="xsd:date, xsd:dateTime">xsd:date, xsd:dateTime</a>.</td><td>Indicate when edits occured</td></tr></tbody></table></div></div><p><br class="table-break"/>
+               </p><p>Most TAN elements allow for an optional edit stamp, an <code class="code">@ed-who</code> and
+                  an <code class="code">@ed-when</code> stating who created or edited the enclosed data and when.
+                  Neither attribute is allowed without the other. The value of <code class="code">@when</code>
+                  must always conform to an ISO date or dateTime pattern. See <a class="xref" href="ch04s03.xhtml#date_and_datetime" title="xsd:date, xsd:dateTime">xsd:date, xsd:dateTime</a>.</p><p><code class="code">@ed-when</code>, along with <code class="code">@when</code> (see <a class="xref" href="ch05s03.xhtml#change" title="Changes">the section called “Changes”</a> and <a class="xref" href="ch05s03.xhtml#comment" title="Comments">the section called “Comments”</a>), are the criterion by which a
+                  TAN file's version is calculated. </p><p>An edit stamp performs the same function as <code class="code">&lt;change&gt;</code>, except
+                  that no description can be provided and it points precisely to the element where a
+                  change has been made. If a description of the alteration is necessary,
+                     <code class="code">&lt;change&gt;</code> should be used.</p><p><span class="italic">Inheritability</span>. If without an edit stamp, an
+                  element inherits the edit stamp of its closest ancestor.</p><p>
+                  </p><div class="example"><a id="d5e1421"/><p class="title"><strong>Example 5.5. Edit stamp: <code class="code">&lt;role&gt;</code></strong></p><div class="example-contents"><pre class="programlisting">      ...........
+   &lt;role xml:id="creator" ed-when="2015-01-29" ed-who="smith"&gt;
+      &lt;IRI&gt;http://schema.org/creator&lt;/IRI&gt;
+      &lt;name ed-when="2015-01-31" ed-who="cheh"&gt;creator&lt;/name&gt;
+   &lt;/role&gt;
+      ...........</pre><div class="caption"><p>In this example, the Edit stamp in <code class="code">&lt;role&gt;</code> applies to
+                              <code class="code">&lt;role&gt;</code>, <code class="code">&lt;IRI&gt;</code>, and their contents, but
+                              <code class="code">&lt;name&gt;</code> has its own Edit Stamp.</p></div></div></div><p><br class="example-break"/>
+                  </p><div class="example"><a id="d5e1431"/><p class="title"><strong>Example 5.6. Edit stamp: <code class="code">&lt;change&gt;</code></strong></p><div class="example-contents"><pre class="programlisting">      ...........
+   &lt;change when="2015-02-04" who="cheh" ed-when="2015-02-28" ed-who="smith"&gt;Cheh corrected all
+      xml:lang values&lt;/change&gt;
+      ...........</pre><div class="caption"><p>In this example, <code class="code">&lt;change&gt;</code> ascribes an alteration to
+                           Cheh, but the edit stamp credits Smith with last changing the
+                              <code class="code">&lt;change&gt;</code>.</p></div></div></div><p><br class="example-break"/>
+               </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="languages"/>Languages</h3></div></div></div><div class="table"><a id="d5e1441"/><p class="title"><strong>Table 5.4. Synopsis of <code class="code">@xml:lang</code>, <code class="code">&lt;for-lang&gt;</code></strong></p><div class="table-contents"><table summary="Synopsis of @xml:lang, &lt;for-lang&gt;" border="1"><colgroup><col class="c1"/><col class="c3"/><col class="c4"/><col class="c5"/><col class="newCol7"/><col class="newCol6"/><col class="c6"/></colgroup><thead><tr><th>name</th><th>req?</th><th>qty</th><th>parent</th><th>attributes</th><th>children</th><th>purpose</th></tr></thead><tbody><tr><td><code class="code">@xml:lang</code></td><td>varies</td><td>only one</td><td>varies</td><td>----</td><td>---</td><td>Identify the language in which enclosed data is written</td></tr><tr><td><code class="code">&lt;for-lang&gt;</code></td><td>varies</td><td>varies</td><td>varies</td><td><a class="xref" href="ch05.xhtml#edit_stamp" title="Edit Stamp">the section called “Edit Stamp”</a></td><td>data (xsd:language)</td><td>Make a statement about a language</td></tr></tbody></table></div></div><br class="table-break"/><p>Languages are frequently named throughout TAN files, and always with standard
+                  ISO codes (see <a class="xref" href="ch04s03.xhtml#language" title="xsd:language">xsd:language</a>). A strong distinction is made within
+                  the TAN format between a language code used to label content versus a language
+                  code used to make a statement about the language itself. The former always occurs
+                  as an attribute, the latter as an element.</p><div class="example"><a id="d5e1484"/><p class="title"><strong>Example 5.7. <code class="code">@xml:lang</code></strong></p><div class="example-contents"><pre class="programlisting">...........
+   &lt;body xml:lang="eng"&gt;
+      ...........
+   &lt;/body&gt;
+...........</pre></div></div><br class="example-break"/><div class="example"><a id="d5e1488"/><p class="title"><strong>Example 5.8. <code class="code">&lt;for-lang&gt;</code></strong></p><div class="example-contents"><pre class="programlisting">&lt;TAN-R-tok ... &gt;
+   ...........
+      &lt;declarations&gt;
+         &lt;for-lang&gt;grc&lt;/for-lang&gt;
+      &lt;/declarations&gt;
+   ...........
+&lt;/TAN-R-tok&gt;</pre></div></div><br class="example-break"/></div></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch04s03.xhtml">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="pt02.xhtml">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch05s02.xhtml">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Core Technology </td><td width="20%" align="center"><a accesskey="h" href="index.xhtml">Home</a></td><td width="40%" align="right" valign="top"> Overall Structure (root)</td></tr></table></div></body></html>

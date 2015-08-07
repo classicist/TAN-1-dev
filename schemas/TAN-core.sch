@@ -93,13 +93,17 @@
       <let name="when-accessed" value="tan:dateTime-to-decimal(@when-accessed)"/>
       <let name="is-location-of-tan-file" value="tan:must-refer-to-external-tan-file(.)"/>
       <let name="is-first-da-location"
-         value="if (. except ../tan:location[doc-available(.)][1]) then false() else true()"/>
+         value="if ($loc-doc-is-available and 
+         not((preceding-sibling::tan:location, preceding-sibling::tan:master-location)[doc-available(tan:resolve-url(.))])) 
+         then true() else false()"/>
+      <let name="is-in-progress"
+         value="if ($loc-doc/*/(tan:body, tei:text/tei:body)/@in-progress = 'false') then false() else true()"/>
       <let name="version-of-target-important"
          value="if (name(..) = ('source-of','succeeded-by')) then false() else true()"/>
       <!-- START TESTING BLOCK -->
-      <let name="test1" value="true()"/>
-      <let name="test2" value="$loc-uri"/>
-      <let name="test3" value="$loc-doc-is-available"/>
+      <let name="test1" value="$is-location-of-tan-file"/>
+      <let name="test2" value="$is-first-da-location"/>
+      <let name="test3" value="$is-in-progress"/>
       <report test="false()">Testing. var1: <value-of select="$test1"/> var2: <value-of
             select="$test2"/> var3: <value-of select="$test3"/></report>
       <!-- END TESTING BLOCK -->
@@ -113,9 +117,7 @@
          XML.</assert>
       <report role="warn"
          test="if ($is-location-of-tan-file and $is-first-da-location) 
-         then
-            if (doc($loc-uri)/*/*/@in-progress = 'false') then false() else true()
-         else false()"
+         then $is-in-progress else false()"
          >Underlying TAN file is marked as being in progress (checked only against first document
          available)</report>
       <report sqf:fix="replace-with-current-date"

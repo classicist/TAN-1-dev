@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-div.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-div.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TAN-A-div xmlns="tag:textalign.net,2015:ns" TAN-version="1"
+    id="tag:parkj@textalign.net,2015:ring01-TAN-A-ring02">
+    <head>
+        <name>div-based alignment of multiple versions of Ring o Roses</name>
+        <master-location>http://textalign.net/release/1/dev/examples/TAN-A-div/ringoroses.div.1.xml</master-location>
+        <master-location>ringoroses.div.1.xml</master-location>
+        <rights-excluding-sources rights-holder="park">
+            <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
+            <name>Creative Commons Attribution 4.0 International License</name>
+            <desc>This data file is licensed under a Creative Commons Attribution 4.0 International
+                License. The license is granted independent of rights and licenses associated with
+                the source. </desc>
+        </rights-excluding-sources>
+        <source xml:id="eng-uk">
+            <IRI>tag:parkj@textalign.net,2015:ring01</IRI>
+            <name>Transcription of ring around the roses in English (UK)</name>
+            <location when-accessed="2015-03-10">../ring-o-roses.eng.1881.xml</location>
+        </source>
+        <source xml:id="eng-us">
+            <IRI>tag:parkj@textalign.net,2015:ring02</IRI>
+            <name>Transcription of ring around the roses in English (US)</name>
+            <location when-accessed="2014-08-13">../ring-o-roses.eng.1987.xml</location>
+        </source>
+        <source xml:id="ger">
+            <IRI>tag:hans@beispiel.com,2014:ringel</IRI>
+            <name>Transcription of an ancestor of Ring around the roses in German</name>
+            <!--<location when-accessed="2014-08-13">http://beispiel.com/TAN-T/ringel.xml</location>-->
+            <location when-accessed="2014-08-13">../ring-o-roses.deu.1897.xml</location>
+        </source>
+        <source xml:id="eng-1790">
+            <IRI>tag:parkj@textalign.net,2015:ring04</IRI>
+            <name>TAN transcription of 1790 version of Ring around the Rosie reported by Newell in
+                1883</name>
+            <location when-accessed="2015-07-26-04:00">../ring-o-roses.eng.1957.xml</location>
+        </source>
+        <declarations>
+            <implicit-div-type-refs src="eng-uk eng-us ger eng-1790"/>
+            <tokenization src="eng-us" which="general-1"></tokenization>
+        </declarations>
+        <agent xml:id="park" roles="creator">
+            <IRI>tag:parkj@textalign.net,2015:self</IRI>
+            <name xml:lang="eng">Jenny Park</name>
+        </agent>
+        <role xml:id="creator">
+            <IRI>http://schema.org/creator</IRI>
+            <name xml:lang="eng">creator</name>
+        </role>
+        <change when="2014-08-14" who="park">Started file</change>
+        <change when="2014-08-22" who="park">Added German version.</change>
+    </head>
+    <body>
+        <equate-works src="eng-uk ger"/>
+        <equate-div-types>
+            <div-type-ref src="ger" div-type-ref="Zeile"/>
+            <div-type-ref src="eng-uk" div-type-ref="line"/>
+        </equate-div-types>
+        <split-leaf-div-at>
+            <tok src="eng-us" ref="2" ord="last"></tok>
+        </split-leaf-div-at>
+        <realign>
+            <anchor-div-ref src="eng-us" ref="4"/>
+            <div-ref src="ger" ref="e"/>
+        </realign>
+    </body>
+</TAN-A-div>

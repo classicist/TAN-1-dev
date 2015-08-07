@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-tok.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-tok.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TAN-A-tok xmlns="tag:textalign.net,2015:ns" TAN-version="1"
+    id="tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring02">
+    <head>
+        <name>token-based alignment of two versions of Ring o Roses</name>
+        <master-location>http://textalign.net/release/1/dev/examples/TAN-A-tok/ringoroses.01+02.token.1.xml</master-location>
+        <rights-excluding-sources rights-holder="park">
+            <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
+            <name>Creative Commons Attribution 4.0 International License</name>
+            <desc>This data file is licensed under a Creative Commons Attribution 4.0 International
+                License. The license is granted independent of rights and licenses associated with
+                the source. </desc>
+        </rights-excluding-sources>
+        <source xml:id="ring1881">
+            <IRI>tag:parkj@textalign.net,2015:ring01</IRI>
+            <name>Ring o roses 1881</name>
+            <location when-accessed="2015-01-17">../TAN-T/ring-o-roses.eng.1881.xml</location>
+        </source>
+        <source xml:id="ring1987">
+            <IRI>tag:parkj@textalign.net,2015:ring02</IRI>
+            <name>Ring o roses 1987</name>
+            <location when-accessed="2015-01-17">../TAN-T/ring-o-roses.eng.1987.xml</location>
+        </source>
+        <declarations>
+            <bitext-relation xml:id="B-descends-from-A">
+                <IRI>tag:textalign.net,2015:bitext-relation:a/x+/b</IRI>
+                <name>B descends directly from A, unknown number of intermediaries</name>
+                <desc>The 1987 versions is hypothesized to descend somehow from the 1881 version,
+                    mainly for the sake of illustration.</desc>
+            </bitext-relation>
+            <reuse-type xml:id="adaptation">
+                <IRI>tag:textalign.net,2015:reuse-type:adaptation:general</IRI>
+                <name>general adaptation</name>
+            </reuse-type>
+            <tokenization src="ring1881 ring1987" which="general-1"/>
+        </declarations>
+        <agent xml:id="park" roles="creator">
+            <IRI>tag:parkj@textalign.net,2015:self</IRI>
+            <name xml:lang="eng">Jenny Park</name>
+        </agent>
+        <role xml:id="creator">
+            <IRI>http://schema.org/creator</IRI>
+            <name xml:lang="eng">creator</name>
+        </role>
+        <change when="2015-01-20" who="park">Started file</change>
+    </head>
+    <body bitext-relation="B-descends-from-A" reuse-type="adaptation" in-progress="false">
+        <!-- Examples of picking tokens by number -->
+        <align>
+            <tok src="ring1881" ref="line 1" ord="1"/>
+            <tok src="ring1987" ref="l 1" ord="1"/>
+        </align>
+        <align>
+            <tok src="ring1881" ref="line 1" ord="2"/>
+            <tok src="ring1987" ref="l 1" ord="2"/>
+        </align>
+        <align>
+            <tok src="ring1881" ref="line 1" ord="3"/>
+            <tok src="ring1987" ref="l 1" ord="3"/>
+        </align>
+        <align>
+            <tok src="ring1881" ref="line 1" ord="4"/>
+            <tok src="ring1987" ref="l 1" ord="4"/>
+        </align>
+        <align>
+            <tok src="ring1881" ref="line 1" ord="5"/>
+            <tok src="ring1987" ref="l 1" ord="5"/>
+        </align>
+        <!-- Examples of picking tokens by value -->
+        <align>
+            <tok src="ring1881" ref="line 2" val="A"/>
+            <tok src="ring1987" ref="l 2" val="A"/>
+        </align>
+        <align>
+            <tok src="ring1881" ref="line 2" val="pocket"/>
+            <tok src="ring1987" ref="l 2" val="pocket"/>
+        </align>
+        <align>
+            <tok src="ring1881" ref="line 2" val="full"/>
+            <tok src="ring1987" ref="l 2" val="full"/>
+        </align>
+        <align>
+            <tok src="ring1881" ref="line 2" val="of"/>
+            <tok src="ring1987" ref="l 2" val="of"/>
+        </align>
+        <align>
+            <tok src="ring1881" ref="line 2" val="posies"/>
+            <tok src="ring1987" ref="l 2" val="posies"/>
+        </align>
+        <!-- Examples of picking tokens by number with commas, hyphens, and 'last' -->
+        <align>
+            <tok src="ring1881" ref="line 3" ord="1, 2"/>
+            <tok src="ring1987" ref="l 3" ord="1"/>
+        </align>
+        <align>
+            <tok src="ring1881" ref="line 3" ord="3 - 4"/>
+            <tok src="ring1987" ref="l 3" ord="2"/>
+        </align>
+        <align>
+            <tok src="ring1881" ref="line 4" ord="1"/>
+            <tok src="ring1987" ref="l 4" ord="1"/>
+        </align>
+        <align>
+            <tok src="ring1881" ref="line 4" ord="2"/>
+        </align>
+        <align>
+            <tok src="ring1881" ref="line 4" ord="3"/>
+            <tok src="ring1987" ref="l 4" ord="2"/>
+        </align>
+        <align>
+            <tok src="ring1881" ref="line 4" ord="last-1"/>
+            <tok src="ring1987" ref="l 4" ord="last-1"/>
+        </align>
+        <align>
+            <tok src="ring1881" ref="line 4" ord="last"/>
+            <tok src="ring1987" ref="l 4" ord="last"/>
+        </align>
+    </body>
+</TAN-A-tok>

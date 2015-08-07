@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-T.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-T.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TAN-T xmlns="tag:textalign.net,2015:ns" TAN-version="1" id="tag:hans@beispiel.com,2014:ringel">
+   <head>
+      <name>TAN Transkription, Ringelreihen mit Riederfallen</name>
+      <master-location>http://beispiel.com/TAN-T/ringel.xml</master-location>
+      <rights-excluding-sources rights-holder="schmidt">
+         <IRI>http://creativecommons.org/licenses/by/4.0/</IRI>
+         <name>Creative Commons Namensnennung 4.0 International Lizenz</name>
+         <desc>Dieses Werk ist lizenziert unter einer Creative Commons Namensnennung 4.0
+            International Lizenz.</desc>
+      </rights-excluding-sources>
+      <source>
+         <IRI>http://www.worldcat.org/oclc/4574384</IRI>
+         <name>Franz Magnus Böhme, Deutsches Kinderlied und Kinderspiel: Volksüberlieferungen aus
+            allen Landen deutscher Zunge, gesammelt, geordnet und mit Angabe der Quellen. Leipzig,
+            1897.</name>
+      </source>
+      <declarations>
+         <work>
+            <IRI>tag:beispiel.com,2014:texte:holderbusch</IRI>
+            <name>"Die Kinder auf dem Holderbusch"</name>
+         </work>
+         <version>
+            <IRI>urn:uuid:31648039-3dbb-49b9-b66e-9bd2cd11630e</IRI>
+            <name>zweite Version</name>
+         </version>
+         <div-type xml:id="Zeile">
+            <IRI>http://dbpedia.org/resource/Gedichtzeile</IRI>
+            <name>Gedichtzeile</name>
+         </div-type>
+         <recommended-tokenization which="general-1"/>
+         <filter>
+            <normalization>
+               <IRI>tag:kalvesmaki@gmail.com,2014:normalization:hyphens-discretionary-off</IRI>
+               <name>Keine Bindestriche</name>
+            </normalization>
+         </filter>
+      </declarations>
+      <agent xml:id="schmidt" roles="Produzent">
+         <IRI>tag:hans@beispiel.com,2014:selbst</IRI>
+         <name xml:lang="eng">Hans Schmidt</name>
+      </agent>
+      <role xml:id="Produzent">
+         <IRI>http://schema.org/producer</IRI>
+         <name xml:lang="eng">Produzent</name>
+      </role>
+      <change when="2014-08-13" who="schmidt">Anfang</change>
+      <comment when="2014-08-13" who="schmidt">unten auf der Z. 438, recht</comment>
+   </head>
+   <body xml:lang="deu" in-progress="false">
+      <div type="Zeile" n="a">Ringel, Ringel, Reihe!</div>
+      <div type="Zeile" n="b">Sind der Kinder dreie,</div>
+      <div type="Zeile" n="c">Sitzen auf dem Holderbuch,</div>
+      <div type="Zeile" n="e">Schreien alle: husch, husch, husch!</div>
+   </body>
+</TAN-T>

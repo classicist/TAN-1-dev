@@ -8,7 +8,7 @@
    <let name="transcription-langs"
       value="/(tan:TAN-T/tan:body|tei:TEI/tei:text/tei:body)//@xml:lang"/>
    <!-- number of leafdivs allowed before enforcement of the Leaf Div Uniqueness Rule occurs at body instead of individual leaf divs -->
-   <let name="too-many-leafdivs" value="if (count($prep-body/*) ge 400) then true() else false()"/>
+   <let name="too-many-leafdivs" value="if (count($prep-body/*) ge 5000) then true() else false()"/>
    <rule context="tan:see-also">
       <let name="first-loc" value="tan:location[doc-available(tan:resolve-url(.))][1]"/>
       <let name="first-doc"
@@ -68,13 +68,6 @@
          value="for $i in $this-tokz-fails-modifiers-at-what-div return $i/@ref"/>
       <let name="tokz-error-vals"
          value="for $i in $this-tokz-fails-modifiers-at-what-div return tan:locate-modifiers($i)"/>
-      <!-- START TESTING BLOCK -->
-      <let name="test1" value="base-uri($this-tokz)"/>
-      <let name="test2" value="$doc-parent-directory"/>
-      <let name="test3" value="true()"/>
-      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
-            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
-      <!-- END TESTING BLOCK -->
       <report test="exists($this-which) and not($this-which-is-valid)">@which must be one of the
          following: <value-of select="string-join($tokenization-which-reserved,', ')"/></report>
       <report test="exists($this-tokz-fails-modifiers-at-what-div)">This tokenization pattern fails
@@ -103,14 +96,19 @@
             (<value-of select="$tokenization-langs"/>).</report>
    </rule>
    <rule context="tan:body|tei:body">
-      <let name="duplicate-leafdivs"
-         value="for $i in $leafdiv-flatrefs return
-         if (count(index-of($leafdiv-flatrefs,$i)) gt 1) then $i else ()"/>
+      <let name="duplicate-leafdivs" value="$leafdiv-flatrefs[index-of($leafdiv-flatrefs,.)[2]]"/>
+      <!-- START TESTING BLOCK -->
+      <let name="test1" value="$too-many-leafdivs"/>
+      <let name="test2" value="count($prep-body/*)"/>
+      <let name="test3" value="true()"/>
+      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
+         select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
+      <!-- END TESTING BLOCK -->
       <report
          test="if ($too-many-leafdivs)
          then if (exists($duplicate-leafdivs)) then true() else false() 
          else false()"
-         >Canonical references must be unique. Violations at <value-of
+         >Leaf div references must be unique. Violations at <value-of
             select="distinct-values($duplicate-leafdivs)"/>. (Reported at body for computational
          efficiency.) </report>
    </rule>
@@ -120,7 +118,7 @@
          value="if (not(descendant::tei:div|descendant::tan:div)) then true() else false()"/>
       <report
          test="if ($too-many-leafdivs) then false() else count(index-of($leafdiv-flatrefs,$node-ref)) > 1"
-         >Canonical references must be unique. </report>
+         >Leaf div references must be unique. </report>
       <report
          test="if ($is-leaf-div) then 
          if (string-length(normalize-space(string-join(//text(),''))) = 0) then true() else false()

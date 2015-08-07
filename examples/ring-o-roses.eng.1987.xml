@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-T.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-T.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TAN-T xmlns="tag:textalign.net,2015:ns" TAN-version="1" id="tag:parkj@textalign.net,2015:ring02">
+   <head>
+      <name>TAN transcription of Ring around the Rosie</name>
+      <master-location>ring-o-roses.eng.1987.xml</master-location>
+      <rights-excluding-sources rights-holder="park">
+         <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
+         <name>Creative Commons Attribution 4.0 International License</name>
+         <desc>This data file is licensed under a Creative Commons Attribution 4.0 International
+            License. The license is granted independent of rights and licenses associated with the
+            source. </desc>
+      </rights-excluding-sources>
+      <source>
+         <IRI>http://lccn.loc.gov/87042504</IRI>
+         <name>Mother Goose, from nursery to literature / by Gloria T. Delama, 1987.</name>
+      </source>
+      <declarations>
+         <work>
+            <IRI>http://dbpedia.org/resource/Ring_a_Ring_o%27_Roses</IRI>
+            <name>Ring around the Rosie</name>
+         </work>
+         <div-type xml:id="l">
+            <IRI>http://dbpedia.org/resource/Line_(poetry)</IRI>
+            <name>line</name>
+         </div-type>
+         <recommended-tokenization which="general-words-only-1"/>
+         <filter>
+            <normalization>
+               <IRI>tag:textalign.net,2015:normalization:hyphens-discretionary-removed</IRI>
+               <name>discretionary hyphens suppressed</name>
+            </normalization>
+         </filter>
+      </declarations>
+      <agent xml:id="park" roles="creator">
+         <IRI>tag:parkj@textalign.net,2015:self</IRI>
+         <name xml:lang="eng">Jenny Park</name>
+      </agent>
+      <role xml:id="creator">
+         <IRI>http://schema.org/creator</IRI>
+         <name xml:lang="eng">creator</name>
+      </role>
+      <change when="2014-10-24" who="park">Started file</change>
+      <comment when="2014-10-24" who="park">See p. 39 of source.</comment>
+   </head>
+   <body xml:lang="eng" in-progress="false">
+      <div type="l" n="1">Ring-a-round the rosie,</div>
+      <div type="l" n="2">A pocket full of posies,</div>
+      <div type="l" n="3">Ashes! Ashes!</div>
+      <div type="l" n="4">We all fall down.</div>
+   </body>
+</TAN-T>

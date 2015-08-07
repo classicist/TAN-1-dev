@@ -11,3 +11,6 @@ contributions.
 The best place to start is guidelines/, followed by examples/. The other
 three subdirectories -- functions/, schemas/, and TAN-R-tok/ -- carry
 the core files needed for validation.
+
+For more examples, consult https://github.com/orgs/textalign/people and
+look for libraries hosted by participants.

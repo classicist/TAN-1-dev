@@ -28,7 +28,7 @@
          </info>
          <revision>
             <revnumber>1/dev</revnumber>
-            <date>2015-07-08</date>
+            <date>2015-08-08</date>
             <revdescription>
                <para>Prepublication working draft, for private circulation only. Corrections are
                   actively solicited and should be sent to the author (see above).</para>
@@ -55,7 +55,7 @@
       <para>The reliance of TAN upon IRIs to describe many kinds of things or concepts means that
          anyone who creates TAN files will need to have at hand reliable resources from which to
          draw upon vocabulary that already exists. This chapter provides a guide to those resources,
-         beginning with stable, well-known vocabularies that already exist and then listing
+         beginning with stable, well-known vocabularies that already exist and then listing IRI
          vocabulary that the Text Alignment Network has minted.</para>
       <para>This appendix has been prepared to collect specialized IRI vocabularies recommended for
          use in TAN files. Listed below are TAN elements that require IRIs for concepts that are
@@ -164,10 +164,11 @@
                      <entry>
                         <itemizedlist>
                            <listitem>
-                              <para><link xlink:href="http://schema.org">Schema.org</link></para>
+                              <para><link xlink:href="http://id.loc.gov/vocabulary/relators.html"
+                                    >Library of Congress</link></para>
                            </listitem>
                            <listitem>
-                              <para><link xlink:href="http://dbpedia.org">DBpedia</link></para>
+                              <para><link xlink:href="http://schema.org">Schema.org</link></para>
                            </listitem>
                            <listitem>
                               <para><link xlink:href="http://dublincore.org/documents/dces/">Dublin
@@ -178,12 +179,13 @@
                      <entry>
                         <itemizedlist>
                            <listitem>
+                              <para><code>http://id.loc.gov/vocabulary/relators/pbl</code></para>
+                              <para><code>http://id.loc.gov/vocabulary/relators/pfr</code></para>
+                           </listitem>
+                           <listitem>
                               <para><code>http://schema.org/contributor</code></para>
                               <para><code>http://schema.org/editor</code></para>
                               <para><code>http://schema.org/producer</code></para>
-                           </listitem>
-                           <listitem>
-                              <para><code>http://dbpedia.org/resource/Proofreading</code></para>
                            </listitem>
                            <listitem>
                               <para><code>http://purl.org/dc/elements/1.1/contributor</code></para>
@@ -267,7 +269,10 @@
                   <row>
                      <entry><code>tag:textalign.net,2015:div-type:subcolumn</code></entry>
                      <entry>subcolumn</entry>
-                     <entry>divisions of a column</entry>
+                     <entry>Divisions of a column. Many early large books with two columns per page
+                        were printed with a few letters marking the vertical axis of the column, to
+                        make referencing easier. This is seen, for example, in the Patrologia Latina
+                        and Patrologia Graeca.</entry>
                   </row>
                   <row>
                      <entry><code>tag:textalign.net,2015:div-type:line:physical</code></entry>
@@ -287,9 +292,10 @@
    </chapter>
    <chapter xml:id="normalization_iris">
       <title>Normalization</title>
-      <para>The IRIs listed below attach to normalizations that should be understood as broadly and
+      <para>The IRIs listed below attach to normalizations that should be understood broadly and
          therefore subjectively defined. Such declarations are not meant to help restore an original
-         source, but to alert users as to what wholesale alterations have been made to a source.</para>
+         source, but to alert users as to what wholesale alterations have been made to a
+         source.</para>
       <para>
          <table frame="all">
             <title>Normalization IRIs</title>
@@ -375,12 +381,13 @@
                   </row>
                   <row>
                      <entry><code>tag:textalign.net,2015:normalization:space-prepunctuation-corrected</code></entry>
-                     <entry>All prepunctuation space has been removed.</entry>
+                     <entry>All prepunctuation space has been corrected according to standard
+                        forms.</entry>
                   </row>
                   <row>
                      <entry><code>tag:textalign.net,2015:normalization:nfc</code></entry>
                      <entry>All non-NFC-compliant Unicode converted to normalized Unicode. Same
-                        effect as if running <code>normalize-unicode(.)</code> on a node.</entry>
+                        effect as if applying <code>normalize-unicode()</code>.</entry>
                   </row>
                   <row>
                      <entry><code>tag:textalign.net,2015:normalization:html-to-tan-t</code></entry>
@@ -403,8 +410,8 @@
          source alphabet, (4) the language code that best fits the target alphabet, (5) a name of
          the transliteration scheme. Because these elements are not predictable, especially the last
          one, this section will accumulate names for valid, relevant transliteration schemes.</para>
-      <para>In the table below <code>TBD</code> indicates a code that has not yet been
-         placed.</para>
+      <para>In the table below <code>TBD</code> indicates a code that has not yet been placed (work
+         in progress).</para>
       <para>
          <table frame="all">
             <title>Transliteration IRIs</title>
@@ -1176,8 +1183,8 @@
    <chapter xml:id="morphology_iris">
 
       <title>Morphology (Part of Speech)</title>
-      <para>In general, values for <code>category</code> and <code>option</code> should be drawn
-         when possible from <link
+      <para>In general, values for <code>&lt;category></code> and <code>&lt;feature></code> should
+         be drawn when possible from <link
             xlink:href="http://www.acoli.informatik.uni-frankfurt.de/resources/olia/">Ontologies of
             Linguistic Annotation (OLiA)</link>. In the tables below core OLiA IRIs are listed,
          supplemented by TAN ones when appropriate. This list is intended to be a convenience to
@@ -1253,7 +1260,7 @@
             </tgroup>
          </table>
          <table frame="all">
-            <title>IRIs for options</title>
+            <title>IRIs for <code>&lt;feature></code>s</title>
             <tgroup cols="4">
                <colspec colname="c1" colnum="1" colwidth="1*"/>
                <colspec colname="c2" colnum="2" colwidth="1*"/>

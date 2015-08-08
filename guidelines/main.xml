@@ -28,7 +28,7 @@
          </info>
          <revision>
             <revnumber>1/dev</revnumber>
-            <date>2015-08-03</date>
+            <date>2015-08-08</date>
             <revdescription>
                <para>Prepublication working draft, under construction and for private circulation
                   only. Corrections are actively solicited and should be sent to the author (see
@@ -42,7 +42,7 @@
                      greatest weight is to be given to the RELAX-NG schemas, then to these
                      guidelines, and then to the Schematron schemas.</para>
                   <para>Chapters 1-2, 4-7 are relatively accurate. Revision last suspended at 8.2.2
-                     (TAN-R-mor)</para>
+                     (TAN-R-mor).</para>
                </warning>
             </revdescription>
          </revision>
@@ -272,7 +272,7 @@
                   </listitem>
                </itemizedlist>
             </para>
-            <para><emphasis><emphasis role="bold">Human-friendly digital utility:
+            <para><emphasis><emphasis role="bold">Utility to both computers and humans:
                   </emphasis>Computers should be able to import, process, and create human-friendly
                   data reliably, consistently, and interoperably.</emphasis>
             </para>
@@ -940,8 +940,8 @@
             <para>The conjunction of <code>&lt;IRI></code> and <code>&lt;desc></code>, the
                   <emphasis>IRI + name pattern</emphasis>, is a recurrent feature of TAN files. We
                may include any number of <code>&lt;IRI></code> or <code>&lt;desc></code> elements in
-               an IRI + name pattern. But if we do so, we are stating that they are all synonymous.
-               The all name the same thing, not different things.</para>
+               an IRI + name pattern. But if we do so, we are stating that they all name the same
+               thing, not different things.</para>
             <para><code>&lt;source></code> points, through its IRI + name pattern, to a computer-
                and human-readable description of the book we have chosen. </para>
             <para><code>&lt;declarations></code> contains data that is specific to the type of TAN
@@ -2503,14 +2503,35 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                </para>
                <para>One or more <code>&lt;IRI></code>s supply a permanent computer-readable IRI
                   that uniquely names a concept, person, or thing. Multiple <code>&lt;IRI></code>
-                  values are to be treated as synonyms of the same thing, not as names of different
+                  values are to be treated as names for the same thing, not as names of different
                   things. In cases where the thing named is a TAN file, only one
-                     <code>&lt;IRI></code> is allowed.<note>
-                     <para>For those familiar with the <link
-                           xlink:href="http://www.w3.org/TR/owl-ref/">Web Ontology Language</link>:
-                        every pair of <code>&lt;IRI></code>s with the same parent are assumed to
-                        share the relationship <code>owl:sameAs</code>.</para>
-                  </note> The element is named IRI instead of URI to encourage internationalization.
+                     <code>&lt;IRI></code> is allowed.</para>
+               <para>Sibling <code>&lt;IRI></code>s cannot be taken to be synonymous (but they must
+                  be poecilonymic). (For those familiar with the <link
+                     xlink:href="http://www.w3.org/TR/owl-ref/">Web Ontology Language</link>, this
+                  means that sibling <code>&lt;IRI></code>s <emphasis>cannot</emphasis> be assumed
+                  to share the relationship <code>owl:sameAs</code>.) This is because you may need
+                  the freedom to use IRIs from different vocabularies, which may define their
+                  concepts with slight differences. For example, if you wish to define the job of
+                  editor in a <code>&lt;role></code>, you might deliberate between Schema.org's URL
+                  and that of the Library of congress, where the former,
+                     <code>http://schema.org/editor</code>, is defined as "the Person who edited the
+                  CreativeWork" and the latter,
+                     <code>http://id.loc.gov/vocabulary/relators/edt</code>, as "a person, family,
+                  or organization contributing to a resource by revising or elucidating the content,
+                  e.g., adding an introduction, notes, or other critical matter. An editor may also
+                  prepare a resource for production, publication, or distribution." These may or may
+                  not be equivalent. But may include both, if we feel that either satisfactorily
+                  covers what we mean, we may include them both. A TAN element defined with multiple
+                     <code>&lt;IRI></code>s is to be understood as being within the intersection of
+                  those definitions.<warning>
+                     <para>[The previous paragraph has an important conceptual problem that will be
+                        addressed in future versions. That problem is, in sum, whether multiple IRIs
+                        should be taken to indicatethe union or the intersection of those IRIs. This
+                        has tremendous ramifications for inferences that can be made when comparing
+                        IRIs across independently written files.]</para>
+                  </warning></para>
+               <para>The element is named IRI instead of URI to encourage internationalization.
                   Alphabets other than the Latin are welcome to be used in the construction of IRIs.
                   For names of well-known resources, a URL identifier might be preferred
                      (<code>http://...</code>), to facilitate linked data (see <xref
@@ -4342,8 +4363,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                      the same work. Similarly, if you find that another TAN-T file has transcribed a
                      version of your work, you may also use that URN (you don't need to ask
                      permission, since no URN can be copyrighted). As with other parts of the
-                     metadata, multiple <code>&lt;IRI></code>s and <code>&lt;name></code>s are
-                     synonyms for the same work, not individual names for different works. </para>
+                     metadata, multiple <code>&lt;IRI></code>s and <code>&lt;name></code>s are names
+                     for the same work, not individual names for different works. </para>
                   <example>
                      <title><code>&lt;work></code></title>
                      <programlisting>      ...........
@@ -9074,22 +9095,37 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
    </part>
    <part>
       <title>Working with the Text Alignment Network</title>
+      <partintro><para>[This part has not been drafted. Individual chapters may contain ideas in the rough that will
+            later be developed into comprehensive prose.]</para></partintro>
       <chapter>
          <title>Best Practices in Creating and Editing TAN Files</title>
-         <para>
-            <warning xml:id="draft_boundary">
-               <title>Draft Boundary</title>
-               <para><emphasis role="bold">AUTHOR SUSPENDED WRITING HERE; THIS POINT FORWARD IS
-                     INCOMPLETE</emphasis></para>
-            </warning>
-         </para>
-         <para>Filenames: Good idea to give core TAN files a pre-extension corresponding to their
-            file type. For example, a project on Shakespeare's Hamlet converts their TEI files,
-            WS_Hamlet_eng.xml and WS_Hamlet_fra.xml to TAN-T files and so names them
-            WS_Hamlet_eng.TAN-T.xml and WS_Hamlet_fra.TAN-T.xml. Morphological files of these two
-            might be called WS_Hamlet_eng.TAN-LM.xml and WS_Hamlet_fra.TAN-LM.xml. An alignment file
-            that joins the two TAN-T files might be called WS_Hamlet_eng_fra.TAN-A.xml (or maybe
-            WS_Hamlet_eng.TAN-A.WS_Hamlet_fra.xml).</para>
+         <para>Filenames: Class 1: good idea to construct a filename that starts with an acronym for
+            the work, followed by the language code, then the date or editor's last name. If you
+            think you're going to branch it off into different editions, then provide a version
+            number at the end. Class 2 files are tougher, because you want to specify for TAN-A-tok
+            which two versions are being compared. You might wind up with very long filenames if you
+            try to include both. And for TAN-A-div, all hope is lost for specifying the names of the
+            sources. But that format is really about collating works, so you may want simply to
+            indicate the work or works that are being aligned. TAN-LM files should adopt the name of
+            their one and only source, but make clear that they are LM files. Class 3: TAN-R-mor:
+            start with the language code then the namespace of the document's @id then a version
+            number. TAN-R-tok: tok + description + version number.</para>
+      </chapter>
+      <chapter>
+         <title>Best Practices in Managing and Sharing TAN Files</title>
+         <para>Good idea to think about TAN files as resting in controlled libraries of a manageable
+            size and, to you at any rate, coherent theme.</para>
+         <para>Put your class 1 files in the root of the library directory. Then put your class 2 or
+            class 3 files in their own subdirectory, given the name of their TAN type, e.g.,
+            TAN-A-div.</para>
+         <para>If class 2 or class 1 files point to other members of that same project, use a local
+            URL for &lt;location>. You may wish to provide other &lt;location>s with the absolute
+            URL.</para>
+         <para>Put your TAN libraries in a single folder. If you import someone else's TAN library
+            for local use, put it in that same folder, using a descriptor for the filename that
+            makes sense to you.</para>
+         <para>When you poin to external libraries, include along with the absolute URL another
+            &lt;location> that points to the local version.</para>
       </chapter>
       <chapter>
          <title>Best Practices in Using TAN Files</title>

@@ -123,9 +123,7 @@
       <rule context="tan:div-ref">
          <let name="this" value="."/>
          <let name="this-src-list"
-            value="for $i in tokenize(@src, '\s+')
-               return
-                  index-of($src-ids, $i)"/>
+            value="tan:src-ids-to-nos(@src)"/>
          <let name="this-refs-norm"
             value="for $i in $this-src-list
                return

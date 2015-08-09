@@ -8,8 +8,8 @@ include "TAN-core.rnc" {
     tokenization-ref-text = xsd:string { pattern = "(precise|general(-words-only)?)-\d+" }
 }
 # Class 1 files must declare a single work, perhaps one version, one or more divisions, one or more
-# recommended tokenizations, and perhaps one filter
-decl-class-1 = decl-work & decl-vers? & decl-div+ & decl-tok-rec+ & decl-filt?
+# recommended tokenizations, perhaps one filter, and perhaps one 
+decl-class-1 = decl-work & decl-vers? & decl-div+ & decl-tok-rec+ & decl-ref-rec? & decl-filt?
 # Reserved for declarations specific to individual types of class 1 files
 decl-non-class-1 = empty
 # Types of textual divisions into which a transcription has been segmented (e.g., title, paragraph, stanza)
@@ -24,6 +24,8 @@ decl-tok-rec =
         | tokenization-ref
         | (internal-id, ed-stamp?, (comment* & entity-digital-tan-other-ref))
     }
+# Recommendation on whether references to the transcription should make div types explicit or implicit.
+decl-ref-rec = element recommended-div-type-refs { xsd:string { pattern = "implicit|explicit" } }
 # Version of the work has been transcribed (for text-bearing objects that have multiple versions of the work)
 decl-vers = element version { ed-stamp?, (comment* & entity-nondigital-ref) }
 # The work that has been transcribed

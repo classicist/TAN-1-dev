@@ -4306,6 +4306,7 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                               <entry><code>&lt;work></code>, <code>&lt;version></code>?,
                                     <code>&lt;div-type></code>+,
                                     <code>&lt;recommended-tokenization></code>+,
+                                    <code>&lt;recommended-div-type-refs></code>?,
                                     <code>&lt;filter></code>?</entry>
                               <entry>identifies the work that has been transcribed</entry>
                            </row>
@@ -4314,9 +4315,9 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   </table>
                </para>
                <para>The TAN-T <code>&lt;declarations></code> takes five possible child
-                  elements—three mandatory, two optional. These declarations pertain to the work and
-                  version chosen, the types of segementation, the tokenization patterns adopted, and
-                  normalizations made to the transcription.</para>
+                  elements—three mandatory, three optional. These declarations pertain to the work
+                  and version chosen, the types of segementation, the tokenization and reference
+                  patterns adopted, and normalizations made to the transcription.</para>
                <section>
                   <title>Works</title>
                   <para><table frame="all">
@@ -4590,7 +4591,7 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
       ...........               </programlisting>
                   </example>
                </section>
-               <section xml:id="recommended-tokenizations">
+               <section>
                   <title>Recommended Tokenizations</title>
                   <para><table frame="all">
                         <title>Synopsis of <code>&lt;recommended-tokenization></code></title>
@@ -4691,6 +4692,56 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
       &lt;location when-accessed="2015-03-17">../TAN-R-tok/tok.eng.1.xml&lt;/location>
    &lt;/recommended-tokenization>
    &lt;recommended-tokenization which="general"/>
+      ...........               </programlisting>
+                  </example>
+               </section>
+               <section xml:id="recommended-tokenizations">
+                  <title>Recommended Referencing</title>
+                  <para><table frame="all">
+                        <title>Synopsis of <code>&lt;recommended-div-type-refs></code></title>
+                        <tgroup cols="7">
+                           <colspec colname="c1" colnum="1" colwidth="2.37*"/>
+                           <colspec colname="c3" colnum="2" colwidth="1*"/>
+                           <colspec colname="c4" colnum="3" colwidth="1.48*"/>
+                           <colspec colname="c5" colnum="4" colwidth="1.58*"/>
+                           <colspec colname="newCol7" colnum="5" colwidth="3.92*"/>
+                           <colspec colname="newCol6" colnum="6" colwidth="1.72*"/>
+                           <colspec colname="c6" colnum="7" colwidth="4.21*"/>
+                           <thead>
+                              <row>
+                                 <entry>name</entry>
+                                 <entry>req?</entry>
+                                 <entry>qty</entry>
+                                 <entry>parent</entry>
+                                 <entry>attributes</entry>
+                                 <entry>children</entry>
+                                 <entry>purpose</entry>
+                              </row>
+                           </thead>
+                           <tbody>
+                              <row>
+                                 <entry><code>&lt;recommended-div-type-refs></code></entry>
+                                 <entry>no</entry>
+                                 <entry>one</entry>
+                                 <entry><code>&lt;declaration></code></entry>
+                                 <entry><xref linkend="edit_stamp"/>?</entry>
+                                 <entry>xs:string</entry>
+                                 <entry>Indicates whether the @type values can be suppressed in
+                                    references to the work.</entry>
+                              </row>
+                           </tbody>
+                        </tgroup>
+                     </table>At most one <code>&lt;recommended-div-type-refs></code> may be
+                     supplied, to indicate whether references to the transcription are recommended
+                     to be implicit or explicit. The only values this element takes are
+                        <code>implicit</code> or <code>explicit</code>. If the value is
+                        <code>implicit</code>, then no <code>@n</code> may be empty, and when each
+                        <code>&lt;div></code>s references are resolved, there may be no duplicate
+                     values.</para>
+                  <example>
+                     <title><code>&lt;recommended-tokenization></code>: none</title>
+                     <programlisting>      ...........
+   &lt;recommended-div-type-refs>implicit&lt;/recommended-div-type-refs>
       ...........               </programlisting>
                   </example>
                </section>

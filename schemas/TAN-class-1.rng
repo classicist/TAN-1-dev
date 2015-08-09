@@ -20,7 +20,7 @@
   </include>
   <!--
     Class 1 files must declare a single work, perhaps one version, one or more divisions, one or more
-    recommended tokenizations, and perhaps one filter
+    recommended tokenizations, perhaps one filter, and perhaps one 
   -->
   <define name="decl-class-1">
     <interleave>
@@ -34,6 +34,9 @@
       <oneOrMore>
         <ref name="decl-tok-rec"/>
       </oneOrMore>
+      <optional>
+        <ref name="decl-ref-rec"/>
+      </optional>
       <optional>
         <ref name="decl-filt"/>
       </optional>
@@ -80,6 +83,14 @@
           </interleave>
         </group>
       </choice>
+    </element>
+  </define>
+  <!-- Recommendation on whether references to the transcription should make div types explicit or implicit. -->
+  <define name="decl-ref-rec">
+    <element name="recommended-div-type-refs">
+      <data type="string">
+        <param name="pattern">implicit|explicit</param>
+      </data>
     </element>
   </define>
   <!-- Version of the work has been transcribed (for text-bearing objects that have multiple versions of the work) -->

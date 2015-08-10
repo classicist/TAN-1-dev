@@ -7,8 +7,6 @@
    <let name="leafdiv-flatrefs" value="$prep-body/tan:div/@ref"/>
    <let name="transcription-langs"
       value="/(tan:TAN-T/tan:body|tei:TEI/tei:text/tei:body)//@xml:lang"/>
-   <!-- number of leafdivs allowed before enforcement of the Leaf Div Uniqueness Rule occurs at body instead of individual leaf divs -->
-   <let name="too-many-leafdivs" value="if (count($prep-body/*) ge 5000) then true() else false()"/>
    <rule context="tan:see-also">
       <let name="first-loc" value="tan:location[doc-available(tan:resolve-url(.))][1]"/>
       <let name="first-doc"
@@ -95,29 +93,41 @@
             select="$transcription-langs"/>) is explicitly provided for in the TAN-R-tok file
             (<value-of select="$tokenization-langs"/>).</report>
    </rule>
+   <rule context="tan:recommended-div-type-refs">
+      <let name="implicit-is-recommended" value="if (. = 'implicit') then true() else false()"/>
+      <let name="divs-with-empty-ns"
+         value="for $i in //(tan:div, tei:div)[@n=''] return tan:flatref($i)"/>
+      <let name="all-implicit-refs" value="$prep-body/tan:div/@impl-ref"/>
+      <let name="duplicate-implicit-refs"
+         value="$all-implicit-refs[index-of($all-implicit-refs,.)[2]]"/>
+      <report test="$implicit-is-recommended and exists($divs-with-empty-ns)">Implicit div refs
+         cannot be recommended if any @n have empty values (<value-of select="$divs-with-empty-ns"
+         />). </report>
+      <report test="$implicit-is-recommended and exists($duplicate-implicit-refs)">Implicit div refs
+         cannot be recommended if any flattened refs result in duplicates (<value-of
+            select="string-join($prep-body/tan:div[@impl-ref = $duplicate-implicit-refs]/@ref,', ')"
+         /> would equally resolve to <value-of select="$duplicate-implicit-refs"/>). </report>
+   </rule>
    <rule context="tan:body|tei:body">
       <let name="duplicate-leafdivs" value="$leafdiv-flatrefs[index-of($leafdiv-flatrefs,.)[2]]"/>
       <!-- START TESTING BLOCK -->
-      <let name="test1" value="$too-many-leafdivs"/>
-      <let name="test2" value="count($prep-body/*)"/>
+      <let name="test1" value="false()"/>
+      <let name="test2" value="false()"/>
       <let name="test3" value="true()"/>
       <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
-         select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
+            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
       <!-- END TESTING BLOCK -->
-      <report
-         test="if ($too-many-leafdivs)
-         then if (exists($duplicate-leafdivs)) then true() else false() 
-         else false()"
-         >Leaf div references must be unique. Violations at <value-of
-            select="distinct-values($duplicate-leafdivs)"/>. (Reported at body for computational
-         efficiency.) </report>
+      <report test="if (exists($duplicate-leafdivs)) then true() else false()">Leaf div references
+         must be unique. Violations at <value-of select="distinct-values($duplicate-leafdivs)"
+         />.</report>
    </rule>
    <rule context="tei:div | tan:div">
-      <let name="node-ref" value="tan:flatref(.)"/>
+      <let name="this-type" value="@type"/>
+      <let name="this-n" value="@n"/>
       <let name="is-leaf-div"
          value="if (not(descendant::tei:div|descendant::tan:div)) then true() else false()"/>
       <report
-         test="if ($too-many-leafdivs) then false() else count(index-of($leafdiv-flatrefs,$node-ref)) > 1"
+         test="if ($is-leaf-div) then (preceding-sibling::*, following-sibling::*)[@n=$this-n][@type=$this-type] else false()"
          >Leaf div references must be unique. </report>
       <report
          test="if ($is-leaf-div) then 

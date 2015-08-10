@@ -20,12 +20,14 @@
                //(tan:div,
                tei:div)[not((tan:div,
                tei:div))]">
+            <xsl:variable name="this-flatref" select="tan:flatref(.)"/>
             <xsl:element name="tan:div">
                <xsl:copy-of select="@*"/>
-               <xsl:attribute name="ref" select="tan:flatref(.)"/>
+               <xsl:attribute name="ref" select="$this-flatref"/>
+               <xsl:attribute name="impl-ref"
+                  select="replace($this-flatref, concat('\w+', $separator-type-and-n-regex), '')"/>
                <xsl:copy-of select="normalize-space(string-join(.//text(), ''))"/>
             </xsl:element>
-
          </xsl:for-each>
       </xsl:element>
    </xsl:variable>
@@ -39,7 +41,7 @@
             ....
          </tan:modifiers>
       -->
-      
+
       <xsl:param name="text" as="xs:string?"/>
       <xsl:variable name="raw-char-seq" select="tokenize(replace($text, '(.)', '$1 '), ' ')"/>
       <xsl:variable name="combchar-seq" select="distinct-values($raw-char-seq[matches(., '\p{M}')])"/>

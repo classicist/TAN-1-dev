@@ -67,15 +67,25 @@
    </rule>
    <rule context="tan:implicit-div-type-refs">
       <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
-      <let name="empty-ns"
+      <let name="srcs-without-recommended-div-type-refs"
          value="for $i in $this-src-list return
+         if ($src-1st-da-heads[$i]/tan:declarations/tan:recommended-div-type-refs) then () else $i"/>
+      <let name="empty-ns"
+         value="for $i in $srcs-without-recommended-div-type-refs return
          if (some $j in $src-1st-da-data[$i]//@ref satisfies matches($j,concat($separator-type-and-n-regex,'$|',$separator-hierarchy-regex,$separator-type-and-n-regex))) then $i else ()"/>
       <let name="duplicate-refs"
-         value="for $i in $this-src-list, $j in distinct-values($src-1st-da-data[$i]/tan:div/@impl-ref) return 
+         value="for $i in $srcs-without-recommended-div-type-refs, $j in distinct-values($src-1st-da-data[$i]/tan:div/@impl-ref) return 
          if (count(distinct-values($src-1st-da-data[$i]/tan:div[@impl-ref = $j]/@ref)) gt 1) then concat($src-ids[$i],': ',replace($j,$separator-hierarchy-regex,' ')) else ()"/>
-      <!-- alternative variable, less computationally intensive for large texts -->
+      <!-- alternative variable, perhaps for large texts -->
       <!--<let name="duplicate-refs"
          value="for $i in $this-src-list return if (count($src-1st-da-data[$i]/tan:div/@impl-ref) ne count(distinct-values($src-1st-da-data[$i]/tan:div/@impl-ref)) ) then $i else ()"/>-->
+      <!-- START TESTING BLOCK -->
+      <let name="test1" value="$srcs-without-recommended-div-type-refs"/>
+      <let name="test2" value="true()"/>
+      <let name="test3" value="true()"/>
+      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
+            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
+      <!-- END TESTING BLOCK -->
       <report test="exists($empty-ns)">Implicitation not allowed for sources with empty values for
          @n (<value-of select="for $i in $empty-ns return $src-ids[$i]"/>).</report>
       <report test="exists($duplicate-refs)">Implicitation not allowed for sources where ignoring
@@ -163,13 +173,6 @@
          if (deep-equal($i,$j)) then 
          if ($i/../@ref = $j/../@ref and $i/../../@id = $j/../../@id) then true() else () 
          else ()"/>
-      <!-- START TESTING BLOCK -->
-      <let name="test1" value="count($src-data-for-sibling-toks)"/>
-      <let name="test2" value="$src-data-for-sibling-toks"/>
-      <let name="test3" value="$src-data-for-sibling-toks//@*"/>
-      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
-            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
-      <!-- END TESTING BLOCK -->
       <report test="exists($duplicate-tokens)">Sibling tok elements may not point to the same
          token.</report>
       <report test="$src-data-for-this-tok/tan:div/@error">Every ref cited must be found in every

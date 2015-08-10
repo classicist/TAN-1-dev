@@ -4732,12 +4732,15 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                            </tbody>
                         </tgroup>
                      </table>At most one <code>&lt;recommended-div-type-refs></code> may be
-                     supplied, to indicate whether references to the transcription are recommended
-                     to be implicit or explicit. The only values this element takes are
-                        <code>implicit</code> or <code>explicit</code>. If the value is
-                        <code>implicit</code>, then no <code>@n</code> may be empty, and when each
-                        <code>&lt;div></code>s references are resolved, there may be no duplicate
-                     values.</para>
+                     supplied, to indicate whether class 2 files referring to the transcription
+                     should use div types in those references or should suppress them, i.e., whether
+                     a value of <code>@ref</code> should be <code>book.5:chapter.4</code> or merely
+                        <code>5:4</code>. The only values this element takes are
+                        <code>implicit</code> or <code>explicit</code>. If no value is present,
+                        <code>explicit</code> is assumed. </para>
+                  <para>If the value is <code>implicit</code>, then no <code>@n</code> may be empty,
+                     and when each <code>&lt;div></code>s references are resolved, there may be no
+                     duplicate values.</para>
                   <example>
                      <title><code>&lt;recommended-tokenization></code>: none</title>
                      <programlisting>      ...........

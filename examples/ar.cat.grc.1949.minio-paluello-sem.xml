@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-T.rnc" type="application/relax-ng-compact-syntax"?>
 <?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-T.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<!--<?xml-model href="../schemas/TAN-T.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="../schemas/TAN-T.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>-->
 <TAN-T xmlns="tag:textalign.net,2015:ns"
     id="tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:semantic-refs" TAN-version="1">
     <head>
@@ -18,7 +20,7 @@
                 1949 </name>
         </source>
         <see-also>
-            <relationship>alternative edition</relationship>
+            <relationship>alternatively divided edition</relationship>
             <IRI>tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:object-refs</IRI>
             <name>Categories, Aristotle, Greek text by Minio-Paluello, object-based
                 references</name>

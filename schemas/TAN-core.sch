@@ -99,8 +99,8 @@
          then true() else false()"/>
       <let name="is-in-progress"
          value="if ($loc-doc/*/(tan:body, tei:text/tei:body)/@in-progress = 'false') then false() else true()"/>
-      <let name="version-of-target-important"
-         value="if (../tan:relationship = $relationship-keywords-all) then false() else true()"/>
+      <let name="updates-should-be-checked"
+         value="if (../tan:relationship = ('old version') or matches(../tan:relationship,'edition$')) then true() else false()"/>
       <!-- START TESTING BLOCK -->
       <let name="test1" value="$is-location-of-tan-file"/>
       <let name="test2" value="$is-first-da-location"/>
@@ -116,13 +116,15 @@
       <assert test="$loc-doc-is-available = true()" role="warn">The <value-of
             select="$resource-type"/> is either unavailable or is available but is not valid
          XML.</assert>
+      <assert test="if (exists($loc-doc) and $is-master-location) then deep-equal(root(.),$loc-doc) else true()" role="warning">The
+      current document does not match the master document</assert>
       <report role="warn"
          test="if ($is-location-of-tan-file and $is-first-da-location) 
          then $is-in-progress else false()"
          >Underlying TAN file is marked as being in progress (checked only against first document
          available)</report>
       <report sqf:fix="replace-with-current-date"
-         test="if ($is-location-of-tan-file and $is-first-da-location and $version-of-target-important
+         test="if ($is-location-of-tan-file and $is-first-da-location and $updates-should-be-checked
          and exists($when-accessed)) 
          then (max($loc-ver-nos) gt $when-accessed) 
          else false()"

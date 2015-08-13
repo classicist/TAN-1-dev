@@ -9,8 +9,8 @@
       <let name="this-pos" value="count(preceding-sibling::tan:source) + 1"/>
       <let name="ldur-violations"
          value="if (count($src-1st-da-data[$this-pos]/tan:div[@lang]/@ref) ne count(distinct-values($src-1st-da-data[$this-pos]/tan:div[@lang]/@ref)) ) then true() else false()"/>
-      <let name="exists-new-edition"
-         value="$src-1st-da-heads[$this-pos]/tan:see-also[tan:relationship = 'new edition']"/>
+      <let name="exists-new-version"
+         value="$src-1st-da-heads[$this-pos]/tan:see-also[tan:relationship = 'new version']"/>
       <report test="$ldur-violations">After declarations are applied, source breaks the Leaf Div
          Uniqueness Rule (to diagnose open source and validate)</report>
       <!-- alternative variable and report, very time-consuming for long source documents (n ^ 2 operations) -->
@@ -21,18 +21,18 @@
          <report test="exists($ldur-violations-verbose)">After declarations are applied, source breaks the
          Leaf Div Uniqueness Rule at <value-of select="string-join($ldur-violations-verbose,', ')"/></report>
       -->
-      <report test="$exists-new-edition" role="warning" sqf:fix="use-new-edition">New edition
-         exists. IRI: <value-of select="$exists-new-edition/tan:IRI"/> Name: <value-of
-            select="$exists-new-edition/tan:name"/>
-         <value-of select="$exists-new-edition/tan:desc"/> Location: <value-of
-            select="$exists-new-edition/tan:location"/></report>
+      <report test="$exists-new-version" role="warning" sqf:fix="use-new-edition">New edition
+         exists. IRI: <value-of select="$exists-new-version/tan:IRI"/> Name: <value-of
+            select="$exists-new-version/tan:name"/>
+         <value-of select="$exists-new-version/tan:desc"/> Location: <value-of
+            select="$exists-new-version/tan:location"/></report>
       <sqf:fix id="use-new-edition">
          <sqf:description>
             <sqf:title>Replace with new edition</sqf:title>
          </sqf:description>
          <sqf:delete match="child::*"/>
          <sqf:add match="."
-            select="$exists-new-edition/* except $exists-new-edition/tan:relationship"/>
+            select="$exists-new-version/* except $exists-new-version/tan:relationship"/>
       </sqf:fix>
    </rule>
    <rule context="tan:tokenization">

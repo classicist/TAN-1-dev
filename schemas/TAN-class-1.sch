@@ -13,14 +13,13 @@
          value="if (doc-available($first-loc)) then doc($first-loc) 
          else if (doc-available(concat($doc-parent-directory,$first-loc))) 
          then doc(concat($doc-parent-directory,$first-loc)) else ()"/>
-      <let name="is-same-source-work-and-version"
-         value="if (tan:relationship = 'alternative edition' and 
-         /*/tan:head/tan:source/tan:IRI = $first-doc/*/tan:head/tan:source/tan:IRI and 
-         /*/tan:head/tan:declarations/tan:work/tan:IRI = $first-doc/*/tan:head/tan:declarations/tan:work/tan:IRI and 
-         (if (/*/tan:head/tan:declarations/tan:version/tan:IRI and $first-doc/*/tan:head/tan:declarations/tan:work/tan:IRI) 
-            then /*/tan:head/tan:declarations/tan:version/tan:IRI and $first-doc/*/tan:head/tan:declarations/tan:work/tan:IRI 
-            else //tan:body/@xml:lang = $first-doc//tan:body/@xml:lang)) 
-         then true() else false()"/>
+      <let name="is-alternatively-divided-edition" value="tan:relationship = 'alternatively divided edition'"/>
+      <let name="is-alternatively-normalized-edition" value="tan:relationship = 'alternatively divided edition'"/>
+      <let name="is-strict-alternative" value="$is-alternatively-divided-edition or $is-alternatively-normalized-edition"/>
+      <let name="shares-same-source" value="$head/tan:source/tan:IRI = $first-doc/*/tan:head/tan:source/tan:IRI"/>
+      <let name="shares-same-work" value="$head/tan:declarations/tan:work/tan:IRI = $first-doc/*/tan:head/tan:declarations/tan:work/tan:IRI"/>
+      <let name="shares-same-work-version" value="if ($head/tan:declarations/tan:version/tan:IRI and $first-doc/*/tan:head/tan:declarations/tan:version/tan:IRI) then $head/tan:declarations/tan:version/tan:IRI = $first-doc/*/tan:head/tan:declarations/tan:version/tan:IRI else true()"/>
+      <let name="shares-same-language" value="$body/@xml:lang = $first-doc//(tan:body, tei:body)/@xml:lang"/>
       <let name="this-text" value="normalize-space(string-join(//(tan:body, tei:body)//text(),''))"/>
       <let name="alternative-text"
          value="normalize-space(string-join($first-doc//(tan:body, tei:body)//text(),''))"/>
@@ -31,8 +30,14 @@
       <let name="discrepancies-there"
          value="for $i in $first-doc//(tan:div, tei:div)[not((tan:div, tei:div))] return 
          if (contains($this-text,normalize-space(string-join($i//text(),'')))) then () else tan:flatref($i)"/>
-      <report test="$is-same-source-work-and-version and not($is-same-text)">Alternative edition
-         claims to be the same source, work, and version, yet text differs. <value-of
+      <report test="$is-strict-alternative and not($shares-same-source)">Alternative editions 
+         must share the same source.</report>
+      <report test="$is-strict-alternative and not($shares-same-work)">Alternative editions 
+         must share the same work.</report>
+      <report test="$is-strict-alternative and not($shares-same-work-version)">Alternative editions 
+         must share the same work-version.</report>
+      <report test="$is-alternatively-divided-edition and not($is-same-text)">Alternatively divided editions
+         must treat the identical transcription. <value-of
             select="if (exists($discrepancies-here)) then concat('Discrepancies here: ',string-join(($discrepancies-here),', '),'. ') else ()"
             /><value-of
             select="if (exists($discrepancies-there)) then concat('Discrepancies in alternative edition: ',string-join(($discrepancies-there),', '),'. ') else ()"

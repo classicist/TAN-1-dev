@@ -78,8 +78,9 @@
    </rule>
    <rule context="tan:master-location|tan:location">
       <let name="loc" value="text()"/>
+      <let name="is-master-location" value="if (name() = 'master-location') then true() else false()"/>
       <let name="resource-type"
-         value="if (name() = 'master-location') then 'master document' else name(..)"/>
+         value="if ($is-master-location) then 'master document' else name(..)"/>
       <let name="loc-uri" value="tan:resolve-url($loc)"/>
       <let name="loc-doc-is-available" value="doc-available($loc-uri)"/>
       <let name="loc-doc" value="if ($loc-doc-is-available) then doc($loc-uri) else ()"/>
@@ -99,7 +100,7 @@
       <let name="is-in-progress"
          value="if ($loc-doc/*/(tan:body, tei:text/tei:body)/@in-progress = 'false') then false() else true()"/>
       <let name="version-of-target-important"
-         value="if (name(..) = ('source-of','succeeded-by')) then false() else true()"/>
+         value="if (../tan:relationship = $relationship-keywords-all) then false() else true()"/>
       <!-- START TESTING BLOCK -->
       <let name="test1" value="$is-location-of-tan-file"/>
       <let name="test2" value="$is-first-da-location"/>

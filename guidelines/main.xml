@@ -3420,7 +3420,11 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                               <entry>one</entry>
                               <entry><code>&lt;auxiliary></code></entry>
                               <entry><xref linkend="edit_stamp"/>?</entry>
-                              <entry>keyword <code>old version</code>, <code>new version</code>,
+                              <entry>keyword: <code>old version</code>, <code>new version</code>,
+                                    <code>parent edition</code>, <code>child edition</code>,
+                                    <code>ancestor edition</code>, <code>descendant edition</code>,
+                                    <code>cousin edition</code>, <code>alternatively divided
+                                    edition</code>, <code>alternatively normalized edition</code>,
                                     <code>dependent</code>, <code>auxiliary</code> or <xref
                                     linkend="iri_and_name"/>
                               </entry>
@@ -3513,7 +3517,7 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   pattern.</para>
                <para><code>&lt;relationship></code> takes either a reserved keyword or the IRI +
                   name pattern, to define a relationship not covered by the keywords. The reserved
-                  keywords:</para>
+                  keywords are as follows:</para>
                <para>
                   <table frame="all">
                      <title><code>&lt;relationship></code> reserved keywords</title>
@@ -3530,19 +3534,49 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                         </thead>
                         <tbody>
                            <row>
-                              <entry><code>alternative edition</code></entry>
-                              <entry><code>tag:textalign.net,2015:relationship:alternative-edition</code></entry>
-                              <entry>Alternative edition of the present file.</entry>
-                           </row>
-                           <row>
-                              <entry><code>old edition</code></entry>
-                              <entry><code>tag:textalign.net,2015:relationship:old-edition</code></entry>
+                              <entry><code>old version</code></entry>
+                              <entry><code>tag:textalign.net,2015:relationship:old-version</code></entry>
                               <entry>TAN file superceded by the present file.</entry>
                            </row>
                            <row>
-                              <entry><code>new edition</code></entry>
-                              <entry><code>tag:textalign.net,2015:relationship:new-edition</code></entry>
+                              <entry><code>new version</code></entry>
+                              <entry><code>tag:textalign.net,2015:relationship:new-version</code></entry>
                               <entry>TAN file that supercedes the present file.</entry>
+                           </row>
+                           <row>
+                              <entry><code>parent edition</code></entry>
+                              <entry><code>tag:textalign.net,2015:relationship:parent-edition</code></entry>
+                              <entry/>
+                           </row>
+                           <row>
+                              <entry><code>child edition</code></entry>
+                              <entry><code>tag:textalign.net,2015:relationship:child-edition</code></entry>
+                              <entry/>
+                           </row>
+                           <row>
+                              <entry><code>ancestor edition</code></entry>
+                              <entry><code>tag:textalign.net,2015:relationship:ancestor-edition</code></entry>
+                              <entry/>
+                           </row>
+                           <row>
+                              <entry><code>descendant edition</code></entry>
+                              <entry><code>tag:textalign.net,2015:relationship:descendant-edition</code></entry>
+                              <entry/>
+                           </row>
+                           <row>
+                              <entry><code>cousin edition</code></entry>
+                              <entry><code>tag:textalign.net,2015:relationship:cousin-edition</code></entry>
+                              <entry/>
+                           </row>
+                           <row>
+                              <entry><code>alternatively divided edition</code></entry>
+                              <entry><code>tag:textalign.net,2015:relationship:alternatively-divided-edition</code></entry>
+                              <entry/>
+                           </row>
+                           <row>
+                              <entry><code>alternatively normalized edition</code></entry>
+                              <entry><code>tag:textalign.net,2015:relationship:alternatively-normalized-edition</code></entry>
+                              <entry/>
                            </row>
                            <row>
                               <entry><code>dependent</code></entry>
@@ -3559,30 +3593,57 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                      </tgroup>
                   </table>
                </para>
-               <para><code>alternative edition</code>: Used when one wishes to refer to another TAN
-                  file that provides essentially the same data with a different approach. There is
-                  no assumption that this edition is necessarily better. For class 1 files, this
-                  option may be used to point to an edition of the transcription that uses a
-                  different reference system for segmenting and labeling the text. For class 2
-                  files, to alterantives that use largely the same sources or works, but with
-                  different declarative assumptions (e.g., tokenization). Class 3 alternative
-                  editions might be similar rules for the same languages.</para>
-               <para><code>old edition</code>: Used to point to a TAN file superceded by the present
-                  one. The alterations have been significant enough to warrant a new
-                     <code>@id</code> in the rootmost element and you believe the current file is
-                  superior.</para>
-               <para><code>new edition</code>: Used to point to a TAN file that supercedes the
-                  present one. The alterations have been significant enough to warrant a new
-                     <code>@id</code> in the rootmost element and you believe the current file is
-                  inferior. This is useful for officially deprecating a TAN file without deleting
-                  it. If it is used as a source by other TAN files, when the latter are validated a
+               <para>Behind these keywords lies a sharp distinction between versions and editions of
+                  TAN files. </para>
+               <para>One TAN file is a <emphasis>version</emphasis> of another if it derives from it
+                  (either directly or through a chain of versions) and if the later version
+                  supersedes the older one. Versions of a TAN file stand on a linear path. They
+                  share the same TAN id, and if they do not share the same <code>&lt;source></code>
+                  and <code>&lt;declarations></code> content, the changes are minor or are intended
+                  to correct errors. Versions are distinguished exclusively by the latest
+                  ISO-compliant date.</para>
+               <para>Two TAN files are different <emphasis>editions</emphasis> if they are
+                  genetically related to each other, but neither one supersedes the other or renders
+                  the other obsolete. Editions may share a common ancestry, but they stand in
+                  different branches of that ancestry. Editions may not have the same TAN id. They
+                  normally differ in the content of <code>&lt;source></code> or
+                     <code>&lt;declarations></code> or both. Editions that stand closely in
+                  parallel, such as alternatively divided editions, can serve special roles (see
+                  below).</para>
+               <para><code>old version</code>: Points to a TAN file superseded by the present one.
+                  The alterations are considered not to warrant a new <code>@id</code> in the
+                  rootmost element.</para>
+               <para><code>new version</code>: Points to a TAN file that supersedes the present one.
+                  The alterations have not been significant enough to warrant a new <code>@id</code>
+                  in the rootmost element. This is useful for officially deprecating a TAN file
+                  without deleting it. When validating a TAN file that uses as a source another TAN
+                  file with a <code>&lt;relationship></code> value of <code>new edition</code>, a
                   warning will be returned.</para>
-               <para><code>dependent</code>: Used to point to a TAN file that uses the current file
-                  as a source.</para>
-               <para><code>auxiliary</code>: points to an item, whether physical or digital, that
-                  assisted in creating or editing the current file. This may be useful for cases
-                  where you begin with an item as a source, but in the course of editing you find a
-                  better source, but still want to credit the intermediary item. </para>
+               <para><code>(parent|child|ancestor|descedant|cousin) edition</code>: Points to a TAN
+                  file that shares a common editorial history with the present one, and treats the
+                  same basic material but with a different approach, normally marked by different
+                     <code>&lt;source></code>s or <code>&lt;declarations></code>. Neither inherently
+                  supersedes the other. Although these may be applied to any class of TAN file,
+                  class 1 files have their own specific nomenclature that may be more suitable (see
+                  below).</para>
+               <para><code>alternatively divided edition</code>: Used by a class 1 file to point to
+                  another class 1 file that contains the identical transcription for the same
+                  version of the same work on the same textual object, but divides that
+                  transcription into a different reference system. If this value is invoked, the
+                  concatenated text content of <code>&lt;body></code> must be identical, after space
+                  normalization. This <code>&lt;relationship></code> is valuable as a concordance
+                  between alternative reference systems.</para>
+               <para><code>alternatively normalized edition</code>: Used by a class 1 file to point
+                  to another class 1 file that treats the same version of the same work on the same
+                  textual object, but normalizes the transcription differently. This
+                     <code>&lt;relationship></code> may be valuable in cases where normalization
+                  standards for a particular language are not settled.</para>
+               <para><code>dependent</code>: Points to a TAN file that uses the current file as a
+                  source.</para>
+               <para><code>auxiliary</code>: Points to a textual item, whether physical or digital,
+                  that assisted in creating or editing the current file. This may be useful for
+                  cases where you begin with an item as a source, but in the course of editing you
+                  find a better source, but still want to credit the intermediary item. </para>
                <para>If these keywords are insufficient, you may define your own relationship by
                   specifing it through the IRI + name pattern.</para>
                <para>

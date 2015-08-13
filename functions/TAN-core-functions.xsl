@@ -19,6 +19,8 @@
     <xsl:param name="separator-hierarchy" select="':'" as="xs:string"/>
     <xsl:param name="separator-hierarchy-regex" select="':'" as="xs:string"/>
 
+    <xsl:variable name="head" select="/*/tan:head"/>
+    <xsl:variable name="body" select="/*/tan:body|/*/*/tei:body"/>
     <xsl:variable name="doc-id" select="/*/@id"/>
     <xsl:variable name="doc-uri" select="base-uri(.)"/>
     <xsl:variable name="doc-parent-directory" select="replace($doc-uri, '[^/]+$', '')"/>
@@ -50,14 +52,26 @@
             $class-1-root-names,
             $class-2-root-names,
             $class-3-root-names"/>
+    <xsl:variable name="relationship-keywords-for-tan-versions"
+        select="
+            ('new version',
+            'old version')"/>
     <xsl:variable name="relationship-keywords-for-tan-editions"
         select="
-            ('old edition',
-            'new edition',
-            'alternative edition')"/>
+            ('parent edition',
+            'child edition',
+            'ancestor edition',
+            'descendant edition',
+            'cousin edition')"/>
+    <xsl:variable name="relationship-keywords-for-class-1-editions"
+        select="
+            ('alternatively divided edition',
+            'alternatively normalized edition')"/>
     <xsl:variable name="relationship-keywords-for-tan-files"
         select="
-            ($relationship-keywords-for-tan-editions,
+            ($relationship-keywords-for-tan-versions,
+            $relationship-keywords-for-tan-editions,
+            $relationship-keywords-for-class-1-editions,
             'dependent')"/>
     <xsl:variable name="relationship-keywords-all"
         select="

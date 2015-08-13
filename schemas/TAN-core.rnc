@@ -234,7 +234,7 @@ relationship =
     element relationship {
         ed-stamp?,
         (entity-nondigital-ref
-         | xsd:string { pattern = "(new|old|alternative) edition|auxiliary|dependent" })
+         | xsd:string { pattern = "(new|old) version|(parent|child|ancestor|descendant|cousin) edition|alternatively (divided|normalized) edition|dependent|auxiliary" })
     }
 #        The agents (persons, organizations) that played a role in creating or editing the data   
 agent-list = element agent { ed-stamp?, role-ref?, internal-id, (comment* & entity-nondigital-ref) }

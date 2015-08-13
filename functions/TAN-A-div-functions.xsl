@@ -12,7 +12,6 @@
       </xd:desc>
    </xd:doc>
    <xsl:include href="TAN-class-2-functions.xsl"/>
-   <xsl:variable name="body" select="/tan:TAN-A-div/tan:body"/>
    <xsl:variable name="equate-works" as="xs:integer+">
       <xsl:for-each select="$src-count">
          <xsl:variable name="this-src" select="."/>

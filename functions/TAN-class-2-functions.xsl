@@ -17,7 +17,6 @@
    <xsl:include href="TAN-core-functions.xsl"/>
 
    <!-- GENERAL -->
-   <xsl:variable name="head" select="/*/tan:head"/>
    <xsl:variable name="reference-errors"
       select="
          ('@ref must refer to leaf div',

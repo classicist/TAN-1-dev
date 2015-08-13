@@ -117,7 +117,8 @@
             'no @which',
             '@which is neither in the source nor is it a reserved keyword',
             'core TAN-R-tok invoked, but no document available',
-            'source uses language unsupported by tokenization'"/>
+            'source uses language unsupported by tokenization',
+            'no location points to an available document'"/>
 
     <!-- If one wishes to see if the an entire string matches the following patterns defined by these 
         variables, they must appear between the regular expression anchors ^ and $. -->
@@ -150,13 +151,11 @@
         />
     </xsl:function>
 
-    <xsl:function name="tan:hex-to-dec" as="xs:integer">
+    <xsl:function name="tan:hex-to-dec" as="xs:integer?">
         <!-- Change any hexadecimal string into an integer
-         Input: hexadecimal equivalent as a string 
-         Output: xs:integer 
          E.g., '1F' - > 31
       -->
-        <xsl:param name="str"/>
+        <xsl:param name="str" as="xs:string?"/>
         <xsl:variable name="len" select="string-length($str)"/>
         <xsl:value-of
             select="

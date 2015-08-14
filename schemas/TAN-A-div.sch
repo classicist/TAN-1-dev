@@ -89,7 +89,11 @@
             tokenization under TAN-A-div/head/ declarations/filter.</assert>
       </rule>
       <rule context="tan:tok">
+         <let name="this-pos" value="count(preceding-sibling::tan:tok) + 1"/>
          <let name="these-splits" value="tan:pick-tokenized-prepped-class-1-data(.)"/>
+         <let name="duplicate-splits" value="for $i in $these-splits//tan:tok return
+            if ($leaf-div-splits-raw[position() ne $this-pos]/tan:source[@id = $i/../../@id]/tan:div[@ref = $i/../@ref]/tan:tok[@n = $i/@n]) 
+            then concat($i/../../@id,': ',$i/../@ref,' tok ',$i/@n) else ()"/>
          <!-- START TESTING BLOCK -->
          <let name="test1" value="$these-splits//@*"/>
          <let name="test2" value="$these-splits"/>
@@ -97,8 +101,8 @@
          <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
             select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
          <!-- END TESTING BLOCK -->
-         <!--<report test="some $i in $is-duplicate satisfies $i = true()">Splitting a leaf div more
-            than once in the same place is not allowed.</report>-->
+         <report test="exists($duplicate-splits)">Splitting a leaf div more than once in the 
+            same place is not allowed (<value-of select="string-join($duplicate-splits,' ')"/>).</report>
       </rule>
       <rule context="tan:realign">
          <let name="these-srcs"

@@ -113,6 +113,15 @@
          </xml:source>
       </xsl:for-each>
    </xsl:variable>
+   <xsl:variable name="leaf-div-splits-raw" as="element()*">
+      <xsl:for-each select="$body/tan:split-leaf-div-at/tan:tok">
+         <xsl:copy>
+            <xsl:copy-of select="tan:pick-tokenized-prepped-class-1-data(.)"/>
+         </xsl:copy>
+      </xsl:for-each>
+   </xsl:variable>
+   
+   <!-- FUNCTIONS -->
    <xsl:function name="tan:convert-ns-to-numerals" as="xs:string">
       <!-- converts a flattened ref's @n values to numerals according to their use in a given source
             Input: single flatref as a string, source number as integer

@@ -181,7 +181,7 @@
             return
                if ($suppress-div-types[tokenize(@src, '\s+') = $i]/@div-type-ref)
                then
-                  string-join($suppress-div-types[matches(@src, $i)]/@div-type-ref, ' ')
+                  string-join($suppress-div-types[tokenize(@src, '\s+') = $i]/@div-type-ref, ' ')
                else
                   ''"/>
    <!-- Derivative regex patterns, to find the div types to be suppressed in any flattened 
@@ -205,7 +205,7 @@
             ()"/>
 
    <!-- DECLARATIONS: rename-div-types -->
-   <xsl:variable name="rename-div-types" as="node()">
+   <xsl:variable name="rename-div-types" as="element()">
       <tan:rename-div-types>
          <xsl:for-each select="$src-count">
             <xsl:variable name="this-src" select="."/>
@@ -215,7 +215,7 @@
                      if ($source-lacks-id) then
                         $head/tan:declarations/tan:rename-div-types
                      else
-                        $head/tan:declarations/tan:rename-div-types[$src-ids[$this-src] = tokenize(@src, '\s+')]/tan:rename"
+                        $head/tan:declarations/tan:rename-div-types[$this-src = tan:src-ids-to-nos(@src)]/tan:rename"
                />
             </tan:src>
          </xsl:for-each>
@@ -223,7 +223,7 @@
    </xsl:variable>
 
    <!-- DECLARATIONS: rename-div-ns -->
-   <xsl:variable name="rename-div-ns" as="node()">
+   <xsl:variable name="rename-div-ns" as="element()">
       <tan:rename-div-ns>
          <xsl:for-each select="$src-count">
             <xsl:variable name="this-src" select="."/>
@@ -233,7 +233,7 @@
                      distinct-values(tokenize(if ($source-lacks-id) then
                         string-join($head/tan:declarations/tan:rename-div-ns/@div-type-ref, ' ')
                      else
-                        string-join($head/tan:declarations/tan:rename-div-ns[$src-ids[$this-src] = tokenize(@src, '\s+')]/@div-type-ref, ' '), '\s+'))">
+                     string-join($head/tan:declarations/tan:rename-div-ns[$this-src = tan:src-ids-to-nos(@src)]/@div-type-ref, ' '), '\s+'))">
                   <xsl:variable name="this-div-type" select="."/>
                   <tan:div-type div-type="{$this-div-type}">
                      <xsl:copy-of
@@ -241,7 +241,7 @@
                            if ($source-lacks-id) then
                               $head/tan:declarations/tan:rename-div-ns[tokenize(@div-type-ref, '\s+') = $this-div-type]/tan:rename
                            else
-                              $head/tan:declarations/tan:rename-div-ns[$src-ids[$this-src] = tokenize(@src, '\s+')][tokenize(@div-type-ref, '\s+') = $this-div-type]/tan:rename"
+                              $head/tan:declarations/tan:rename-div-ns[$this-src = tan:src-ids-to-nos(@src)][tokenize(@div-type-ref, '\s+') = $this-div-type]/tan:rename"
                      />
                   </tan:div-type>
                </xsl:for-each>
@@ -275,7 +275,7 @@
          concat('^(', $letter-numeral-pattern, ')(\d+)$'),
          '(.)')"/>
    <!-- Calculated types of @n values per div type per source -->
-   <xsl:variable name="div-type-ord-check" as="node()">
+   <xsl:variable name="div-type-ord-check" as="element()">
       <tan:div-types-ord-check>
          <xsl:for-each select="$src-1st-da-all-div-types/tan:source">
             <xsl:variable name="this-src" select="count(preceding-sibling::tan:source) + 1"/>
@@ -336,11 +336,11 @@
 
 
    <!-- CONTEXT INDEPENDENT FUNCTIONS -->
-   <xsl:function name="tan:counts-to-lasts" as="xs:integer+">
+   <xsl:function name="tan:counts-to-lasts" as="xs:integer*">
       <!-- Input: sequence of numbers representing counts of items. 
          Output: sequence of numbers representing the last position of each item within the total count.
       E.g., (4, 12, 0, 7) - > (4, 16, 16, 23)-->
-      <xsl:param name="seq" as="xs:integer+"/>
+      <xsl:param name="seq" as="xs:integer*"/>
       <xsl:copy-of
          select="
             for $i in (1 to count($seq))
@@ -350,11 +350,11 @@
                   $seq[$j])"
       />
    </xsl:function>
-   <xsl:function name="tan:counts-to-firsts" as="xs:integer+">
+   <xsl:function name="tan:counts-to-firsts" as="xs:integer*">
       <!-- Input: sequence of numbers representing counts of items. 
          Output: sequence of numbers representing the first position of each item within the total count.
       E.g., (4, 12, 0, 7) - > (1, 5, 17, 17)-->
-      <xsl:param name="seq" as="xs:integer+"/>
+      <xsl:param name="seq" as="xs:integer*"/>
       <xsl:copy-of
          select="
             for $i in (1 to count($seq))

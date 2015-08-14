@@ -130,7 +130,10 @@
          a numeration system pattern (#a, #i, or #1) must appear in both @old and @new</assert>
       <report test="@old = @new">@old and @new may not take the same value</report>
       <assert test="if (@old = '#a') then ($ns-are-type-a) else true()">Div types for each source
-         are not predominantly letters (<value-of select="string-join($ns-are-what-type,', ')"
+         must be predominantly letter numerals (currently <value-of select="string-join($ns-are-what-type,', ')"
+         />)</assert>
+      <assert test="if (@old = '#i') then ($ns-are-type-a) else true()">Div types for each source
+         must be predominantly Roman numerals (currently <value-of select="string-join($ns-are-what-type,', ')"
          />)</assert>
    </rule>
    <rule context="@ref">

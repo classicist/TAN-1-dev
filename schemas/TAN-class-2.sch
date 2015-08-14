@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- To do: 
+   add rule to <tokenization>: for any tokenization not already recommended by 
+a source, run the same test as run on recommended-tokenizations within class 1 validation. 
+That is, ensure that tokenization on the source text in both ways of handling modifying 
+characters is identical.
+   add rule to <tok>: if the value is a question mark provide a list of distinct word tokens that
+would be valid, along with the number of times each word appears. Keep it in document order 
+(distinct values mean some alteration is necessary). -->
 
 <pattern xmlns="http://purl.oclc.org/dsdl/schematron" xmlns:tan="tag:textalign.net,2015:ns"
    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
@@ -204,10 +212,6 @@
             (<value-of
             select="string-join(for $i in $src-data-for-this-tok/tan:div[not(@lang)] return concat($i/../@id,':',$i/@ref),', ')"
          />)</report>
-      <report test="exists($this-chars) and matches($src-data-for-this-tok//text(),'\p{M}')"
-         role="warning">Refers to text that has combining characters, which may not be handled
-         consistently by regular expression engines during tokenization. Open source and validate
-         against tokenization pattern.</report>
       <report test="matches(@ord,'\?')" role="warning">Acceptable values 1 through <value-of
             select="$token-ceiling"/></report>
       <report test="matches(@chars,'\?')" role="warning">Acceptable values 1 through <value-of

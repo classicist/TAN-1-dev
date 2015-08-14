@@ -27,10 +27,10 @@
    <xsl:variable name="src-count" select="1 to count($sources)"/>
    <xsl:variable name="source-lacks-id"
       select="
-      if (name(/*) = 'TAN-LM') then
-      true()
-      else
-      false()"/>
+         if (name(/*) = 'TAN-LM') then
+            true()
+         else
+            false()"/>
    <xsl:variable name="src-ids"
       select="
          if ($source-lacks-id) then
@@ -88,10 +88,12 @@
                         if ($this-tokz/tan:location)
                         then
                            (: ...if one of them can be resolved, use that, otherwise... :)
-                           if ($this-tokz/tan:location[doc-available(tan:resolve-url(.))]) 
-                           then $this-tokz/tan:location[doc-available(tan:resolve-url(.))][1]
-                           (: ...Oops, there's no document available; but... :)
-                           else $tokenization-errors[5]
+                           if ($this-tokz/tan:location[doc-available(tan:resolve-url(.))])
+                           then
+                              $this-tokz/tan:location[doc-available(tan:resolve-url(.))][1]
+                              (: ...Oops, there's no document available; but... :)
+                           else
+                              $tokenization-errors[5]
                         else
                            (: ...if there's no location, then look for @which; if present... :)
                            if ($this-tokz/@which)
@@ -130,7 +132,8 @@
                         <xsl:when
                            test="document($this-tokz-1st-da-location)/tan:TAN-R-tok/tan:head/tan:declarations/tan:for-lang">
                            <xsl:copy-of
-                              select="document($this-tokz-1st-da-location)/tan:TAN-R-tok/tan:head/tan:declarations/tan:for-lang"></xsl:copy-of>
+                              select="document($this-tokz-1st-da-location)/tan:TAN-R-tok/tan:head/tan:declarations/tan:for-lang"
+                           />
                         </xsl:when>
                         <xsl:otherwise>
                            <xsl:element name="tan:for-lang">
@@ -233,7 +236,7 @@
                      distinct-values(tokenize(if ($source-lacks-id) then
                         string-join($head/tan:declarations/tan:rename-div-ns/@div-type-ref, ' ')
                      else
-                     string-join($head/tan:declarations/tan:rename-div-ns[$this-src = tan:src-ids-to-nos(@src)]/@div-type-ref, ' '), '\s+'))">
+                        string-join($head/tan:declarations/tan:rename-div-ns[$this-src = tan:src-ids-to-nos(@src)]/@div-type-ref, ' '), '\s+'))">
                   <xsl:variable name="this-div-type" select="."/>
                   <tan:div-type div-type="{$this-div-type}">
                      <xsl:copy-of
@@ -559,22 +562,30 @@
    </xsl:function>
 
    <!-- CONTEXT DEPENDENT FUNCTIONS -->
-   <xsl:function name="tan:src-ids-to-nos" as="xs:integer*">
+   <xsl:function name="tan:src-ids-to-nos" as="xs:integer+">
       <!-- Input: values of @src (@xml:id values of sources)
       Output: sequence of integers for all sources 
-      E.g., ('src-a src-d', 'src-b src-d') - > (1, 4, 2, 4) -->
+      If input is an empty string, or the format lacks ids for sources, output = 1
+      E.g., ('src-a src-d', 'src-b src-d') - > (1, 4, 2, 4)
+      () - > 1
+      -->
       <xsl:param name="att-src" as="xs:string*"/>
-      <xsl:for-each select="$att-src">
-         <xsl:variable name="this-src-string" select="."/>
-         <xsl:copy-of
-         select="
-            if ($source-lacks-id) then
-               1
-            else
-               for $i in tokenize($this-src-string, '\s+')
-               return
-                  index-of($src-ids, $i)"
-      /></xsl:for-each>
+      <xsl:choose>
+         <xsl:when test="exists($att-src) and not($source-lacks-id)">
+            <xsl:for-each select="$att-src">
+               <xsl:variable name="this-src-string" select="."/>
+               <xsl:copy-of
+                  select="
+                     for $i in tokenize($this-src-string, '\s+')
+                     return
+                        index-of($src-ids, $i)"
+               />
+            </xsl:for-each>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:value-of select="1"/>
+         </xsl:otherwise>
+      </xsl:choose>
    </xsl:function>
    <xsl:function name="tan:prep-class-1-data" as="element()*">
       <!-- Input: sequence of URLs for class 1 TAN sources

@@ -38,12 +38,10 @@
    </rule>
    <rule context="tan:tokenization">
       <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
-      <let name="qty-tokenizations-per-source"
-         value="if ($source-lacks-id) 
-         then count(preceding-sibling::tan:tokenization) + 1 
-         else for $i in $this-src-list return count(preceding-sibling::tan:tokenization[$src-ids[$i] = tokenize(@src,'\s+')]) + 1"/>
+      <let name="pos-per-source"
+         value="for $i in $this-src-list return count(preceding-sibling::tan:tokenization[$i = tan:src-ids-to-nos(@src)]) + 1"/>
       <let name="error-check"
-         value="for $i in $this-src-list return $tokenizations-per-source[$i]/tan:tokenization[$qty-tokenizations-per-source[index-of($this-src-list,$i)]]/tan:location"/>
+         value="for $i in $this-src-list return $tokenizations-per-source[$i]/tan:tokenization[$pos-per-source[index-of($this-src-list,$i)]]/tan:location"/>
       <report test="some $i in $error-check satisfies $i = $tokenization-errors">Error: <value-of
             select="for $i in (1 to count($error-check)) return if ($error-check[$i] = $tokenization-errors) then concat($src-ids[$this-src-list[$i]],' : ',$error-check[$i]) else ()"
          />

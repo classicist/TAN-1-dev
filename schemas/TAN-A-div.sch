@@ -4,7 +4,6 @@
       point to the same number of atomic references, so that they can be distributed one to one.
    Report on @seg: every @ref in the parent element must point to a leaf div.
    Report on @seg: for every ref in every source, a @seg's number may not exceed the number of splits + 1.
-   Report on @distribute: has no effect on an <align> that invokes only one source/work.
 -->
 <schema xmlns="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2"
    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
@@ -55,13 +54,6 @@
                      concat($src-ids[$this-src-list[$i]], ' : ', $this-div-type-list[$i], ' = ', $src-ids[$this-src-list[$j]], ' : ', $this-div-type-list[$j])
                   else
                      ()"/>
-         <!-- START TESTING BLOCK -->
-         <let name="test1" value="true()"/>
-         <let name="test2" value="$this-src-list"/>
-         <let name="test3" value="true()"/>
-         <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
-            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
-         <!-- END TESTING BLOCK -->
          <report test="exists($this-src-div-type-equivs)">Sources' div types already share IRIs.
                <value-of select="string-join($this-src-div-type-equivs, ', ')"/>. No
             equate-div-types is needed.</report>
@@ -98,6 +90,13 @@
       </rule>
       <rule context="tan:tok">
          <let name="these-splits" value="tan:pick-tokenized-prepped-class-1-data(.)"/>
+         <!-- START TESTING BLOCK -->
+         <let name="test1" value="$these-splits//@*"/>
+         <let name="test2" value="$these-splits"/>
+         <let name="test3" value="true()"/>
+         <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
+            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
+         <!-- END TESTING BLOCK -->
          <!--<report test="some $i in $is-duplicate satisfies $i = true()">Splitting a leaf div more
             than once in the same place is not allowed.</report>-->
       </rule>
@@ -122,8 +121,7 @@
       </rule>
       <rule context="tan:div-ref">
          <let name="this" value="."/>
-         <let name="this-src-list"
-            value="tan:src-ids-to-nos(@src)"/>
+         <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
          <let name="this-refs-norm"
             value="for $i in $this-src-list
                return

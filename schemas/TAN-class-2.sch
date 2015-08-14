@@ -79,13 +79,6 @@
       <!-- alternative variable, perhaps for large texts -->
       <!--<let name="duplicate-refs"
          value="for $i in $this-src-list return if (count($src-1st-da-data[$i]/tan:div/@impl-ref) ne count(distinct-values($src-1st-da-data[$i]/tan:div/@impl-ref)) ) then $i else ()"/>-->
-      <!-- START TESTING BLOCK -->
-      <let name="test1" value="$srcs-without-recommended-div-type-refs"/>
-      <let name="test2" value="true()"/>
-      <let name="test3" value="true()"/>
-      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
-            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
-      <!-- END TESTING BLOCK -->
       <report test="exists($empty-ns)">Implicitation not allowed for sources with empty values for
          @n (<value-of select="for $i in $empty-ns return $src-ids[$i]"/>).</report>
       <report test="exists($duplicate-refs)">Implicitation not allowed for sources where ignoring
@@ -173,6 +166,13 @@
          if (deep-equal($i,$j)) then 
          if ($i/../@ref = $j/../@ref and $i/../../@id = $j/../../@id) then true() else () 
          else ()"/>
+      <!-- START TESTING BLOCK -->
+      <let name="test1" value="$src-data-for-this-tok"/>
+      <let name="test2" value="true()"/>
+      <let name="test3" value="true()"/>
+      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
+            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
+      <!-- END TESTING BLOCK -->
       <report test="exists($duplicate-tokens)">Sibling tok elements may not point to the same
          token.</report>
       <report test="$src-data-for-this-tok/tan:div/@error">Every ref cited must be found in every
@@ -186,7 +186,10 @@
       <report test="not(@ord or @val)">tok must point to a string value, a sequence, or
          both.</report>
       <report test="$src-data-for-this-tok/tan:div/tan:tok[@error]">Every token picked must appear
-         in every ref in every source. Errors: <value-of
+         in every ref in every source<value-of
+            select="if (tokenize(@val,'\s+') = 'last') then ' (&quot;last&quot; 
+            usually goes with the attribute @ord, not @val)' else ()"
+         />. Errors: <value-of
             select="for $i in $src-data-for-this-tok/tan:div[tan:tok[@error]] return 
             concat($i/../@id,':',$i/@ref,' : ',string-join($i/tan:tok/@error,' '))"
          /></report>
@@ -213,8 +216,9 @@
          >Either all or none of the sources mentioned in @src should be declared in
          implicit-div-type-refs (<value-of select="$this-src-qty-with-implicit-div-types"/>,
             <value-of select="count(tan:src-ids-to-nos(@src))"/>)</report>
-      <report test="$src-data-for-this-tok//tan:tok[@n='1'] and parent::tan:split-leaf-div-at">No
-         leaf div may be split at the first token.</report>
+      <report
+         test="$src-data-for-this-tok//tan:tok[@n='1'][not(@error)] and parent::tan:split-leaf-div-at"
+         >No leaf div may be split at the first token.</report>
    </rule>
 
 </pattern>

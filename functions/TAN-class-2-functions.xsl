@@ -380,7 +380,7 @@
       />
    </xsl:function>
    <xsl:function name="tan:normalize-ref-punctuation" as="xs:string">
-      <!-- Input: reference where pattern = "\w+\W\w*(\W\w+\W\w*)*"
+      <!-- Input: reference where pattern = "\w+\W\w*(\W\w+\W\w*)*" (i.e., div types are explicit)
         Output: first \W (type + n separator) - > . and second \W (hierarchy separator) - > :
         E.g., bk/Gen 2.1 epigraph.  ->  bk.Gen:2.1:epigraph. 
         -->

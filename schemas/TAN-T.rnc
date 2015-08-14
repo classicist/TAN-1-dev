@@ -13,5 +13,5 @@ text-div =
         attribute type { d:IDREF },
         attribute n { n-val },
         lang-of-content?,
-        (text-div* | text)
+        (text-div+ | text )
     }

@@ -130,24 +130,11 @@
       <let name="this-type" value="@type"/>
       <let name="this-n" value="@n"/>
       <let name="is-leaf-div"
-         value="if (not(descendant::tei:div|descendant::tan:div)) then true() else false()"/>
+         value="if (not(tei:div|tan:div)) then true() else false()"/>
       <report
          test="if ($is-leaf-div) then (preceding-sibling::*, following-sibling::*)[@n=$this-n][@type=$this-type] else false()"
          >Leaf div references must be unique. </report>
-      <report
-         test="if ($is-leaf-div) then 
-         if (string-length(normalize-space(string-join(//text(),''))) = 0) then true() else false()
-         else false()"
-         >A leaf div should not be empty.</report>
-   </rule>
-   <rule context="*[ancestor::tei:div[not(descendant::tei:div)]]" role="warning">
-      <report test="@xml:lang" sqf:fix="remove-xmllang">Language differentiations below leaf div
-         level may be ignored in alignments.</report>
-      <sqf:fix id="remove-xmllang">
-         <sqf:description>
-            <sqf:title>Remove @xml:lang</sqf:title>
-         </sqf:description>
-         <sqf:replace match="@xml:lang"/>
-      </sqf:fix>
+      <report test="$is-leaf-div and not(matches(.,'\S'))">Every leaf div must have
+         at least some non-space text.</report>
    </rule>
 </pattern>

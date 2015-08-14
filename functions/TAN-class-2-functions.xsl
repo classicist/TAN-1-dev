@@ -25,18 +25,18 @@
    <!-- SOURCES -->
    <xsl:variable name="sources" select="$head/tan:source"/>
    <xsl:variable name="src-count" select="1 to count($sources)"/>
+   <xsl:variable name="source-lacks-id"
+      select="
+      if (name(/*) = 'TAN-LM') then
+      true()
+      else
+      false()"/>
    <xsl:variable name="src-ids"
       select="
          if ($source-lacks-id) then
             '1'
          else
             $sources/@xml:id"/>
-   <xsl:variable name="source-lacks-id"
-      select="
-         if (name(/*) = 'TAN-LM') then
-            true()
-         else
-            false()"/>
    <xsl:variable name="src-1st-da-locations"
       select="
          for $i in $sources/tan:location[doc-available(tan:resolve-url(.))][1]
@@ -67,8 +67,8 @@
          document-available location, and the languages covered:
          <tokenization>
             <location>[URL]</location>
-            <lang>[LANG1 or *]<lang>
-            <lang>[LANG2]<lang>
+            <for-lang>[LANG1 or *]<lang>
+            <for-lang>[LANG2]<lang>
             ...
          </tokenization>-->
       <xsl:for-each select="$src-count">
@@ -125,16 +125,12 @@
                      <xsl:choose>
                         <xsl:when
                            test="document($this-tokz-1st-da-location)/tan:TAN-R-tok/tan:head/tan:declarations/tan:for-lang">
-                           <xsl:for-each
-                              select="document($this-tokz-1st-da-location)/tan:TAN-R-tok/tan:head/tan:declarations/tan:for-lang">
-                              <xsl:element name="tan:lang">
-                                 <xsl:value-of select="."/>
-                              </xsl:element>
-                           </xsl:for-each>
+                           <xsl:copy-of
+                              select="document($this-tokz-1st-da-location)/tan:TAN-R-tok/tan:head/tan:declarations/tan:for-lang"></xsl:copy-of>
                         </xsl:when>
                         <xsl:when
                            test="document($this-tokz-1st-da-location)/tan:TAN-R-tok/tan:head/tan:declarations[not(tan:for-lang)]">
-                           <xsl:element name="tan:lang">
+                           <xsl:element name="tan:for-lang">
                               <xsl:text>*</xsl:text>
                            </xsl:element>
                         </xsl:when>
@@ -709,11 +705,11 @@
                      <xsl:choose>
                         <xsl:when
                            test="
-                              $tokenizations-per-source[$this-src]/tan:tokenization[tan:lang = ('*',
+                              $tokenizations-per-source[$this-src]/tan:tokenization[tan:for-lang = ('*',
                               $this-lang)]">
                            <xsl:variable name="this-tokz"
                               select="
-                                 $tokenizations-per-source[$this-src]/tan:tokenization[tan:lang = ('*',
+                                 $tokenizations-per-source[$this-src]/tan:tokenization[tan:for-lang = ('*',
                                  $this-lang)][1]/tan:location"/>
                            <xsl:variable name="this-replaces"
                               select="$distinct-tokenizations[tan:location = $this-tokz]/tan:replace"/>

@@ -20,7 +20,7 @@
     <xsl:param name="separator-hierarchy-regex" select="':'" as="xs:string"/>
 
     <xsl:variable name="head" select="/*/tan:head"/>
-    <xsl:variable name="body" select="/*/tan:body|/*/*/tei:body"/>
+    <xsl:variable name="body" select="/*/tan:body | /*/*/tei:body"/>
     <xsl:variable name="doc-id" select="/*/@id"/>
     <xsl:variable name="doc-uri" select="base-uri(.)"/>
     <xsl:variable name="doc-parent-directory" select="replace($doc-uri, '[^/]+$', '')"/>
@@ -224,7 +224,7 @@
         <!-- Change any numerical sequence in the form of a, b, c, ... z, aa, bb, ..., aaa, bbb, .... into an integer
          E.g., 'ccc' - > 55
       -->
-        <xsl:param name="arg" as="xs:string"/>
+        <xsl:param name="arg" as="xs:string?"/>
         <xsl:variable name="arg-lower" select="lower-case($arg)"/>
         <xsl:choose>
             <xsl:when test="matches($arg-lower, concat('^', $letter-numeral-pattern, '$'))">
@@ -236,8 +236,8 @@
     </xsl:function>
 
     <xsl:function name="tan:replace-sequence" as="xs:string?">
-        <!-- Input: single string and a sequence of tan:replace nodes.
-         Output: string that results from each tan:replace sequentially applied to the input string.
+        <!-- Input: single string and a sequence of tan:replace elements.
+         Output: string that results from each tan:replace being sequentially applied to the input string.
          Invoked by class 2 and class 3 (TAN-R-tok) files -->
         <xsl:param name="text" as="xs:string?"/>
         <xsl:param name="replace" as="node()+"/>
@@ -257,9 +257,7 @@
         </xsl:variable>
         <xsl:choose>
             <xsl:when test="count($replace) = 1">
-                <xsl:value-of
-                    select="replace($newtext, $replace[1]/tan:pattern, $replace[1]/tan:replacement)"
-                />
+                <xsl:value-of select="$newtext"/>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:value-of select="tan:replace-sequence($newtext, $replace except $replace[1])"/>
@@ -270,7 +268,7 @@
     <xsl:function name="tan:tokenize" as="xs:string*">
         <!-- Input: single string and a tokenize node from a TAN-R-tok file. 
          Output: tokenized sequence of strings -->
-        <xsl:param name="text" as="xs:string"/>
+        <xsl:param name="text" as="xs:string?"/>
         <xsl:param name="tokenize" as="node()"/>
         <xsl:copy-of
             select="
@@ -284,8 +282,10 @@
 
     <xsl:function name="tan:dateTime-to-decimal" as="xs:decimal?">
         <!-- Input: ISO-compliant date or dateTime 
-         Output: decimal between 0 and 1 reflecting a decimal that acts as a proxy of the date and time.
-         These decimal values can then be sorted and compared. -->
+         Output: decimal between 0 and 1 that acts as a proxy for the date and time.
+         These decimal values can then be sorted and compared.
+         E.g., (2015-05-10) - > 0.2015051
+        -->
         <xsl:param name="time-or-dateTime" as="item()?"/>
         <xsl:variable name="utc" select="xs:dayTimeDuration('PT0H')"/>
         <xsl:variable name="dateTime">

@@ -72,31 +72,35 @@
             ...
          </tokenization>-->
       <xsl:for-each select="$src-count">
-         <xsl:variable name="this-source-index" select="."/>
+         <xsl:variable name="this-src" select="."/>
          <xsl:element name="tan:source">
             <xsl:for-each
                select="
                   if ($source-lacks-id) then
                      $tokenizations
                   else
-                     $tokenizations[$src-ids[$this-source-index] = tokenize(@src, '\s+')]">
+                     $tokenizations[$this-src = tan:src-ids-to-nos(@src)]">
                <xsl:variable name="this-tokz" select="."/>
                <xsl:variable name="this-tokz-1st-da-location">
                   <xsl:value-of
                      select="
-                        (: ...if there's a location in the class 2 file, use that; if not... :)
+                        (: ...if there's a location in the class 2 file, then... :)
                         if ($this-tokz/tan:location)
                         then
-                           $this-tokz/tan:location
-                           (: ...look for @which; if present... :)
+                           (: ...if one of them can be resolved, use that, otherwise... :)
+                           if ($this-tokz/tan:location[doc-available(tan:resolve-url(.))]) 
+                           then $this-tokz/tan:location[doc-available(tan:resolve-url(.))][1]
+                           (: ...Oops, there's no document available; but... :)
+                           else $tokenization-errors[5]
                         else
+                           (: ...if there's no location, then look for @which; if present... :)
                            if ($this-tokz/@which)
                            (: ...go into the source tree and look for that value of @which in an @xml:id in a recommended-tokenization; if found... :)
                            then
-                              if ($src-1st-da-heads[$this-source-index]/tan:declarations/tan:recommended-tokenization[@xml:id = $this-tokz/@which])
+                              if ($src-1st-da-heads[$this-src]/tan:declarations/tan:recommended-tokenization[@xml:id = $this-tokz/@which])
                               (: ...get the URL of the first doc available; if not found... :)
                               then
-                                 $src-1st-da-heads[$this-source-index]/tan:declarations/tan:recommended-tokenization[@xml:id = $this-tokz/@which][1]/tan:location[doc-available(.)][1]/text()
+                                 $src-1st-da-heads[$this-src]/tan:declarations/tan:recommended-tokenization[@xml:id = $this-tokz/@which][1]/tan:location[doc-available(tan:resolve-url(.))][1]
                                  (: ...look for @which in the reserved keywords; if found... :)
                               else
                                  if (index-of($tokenization-which-reserved, $this-tokz/@which) gt 0)
@@ -128,12 +132,11 @@
                            <xsl:copy-of
                               select="document($this-tokz-1st-da-location)/tan:TAN-R-tok/tan:head/tan:declarations/tan:for-lang"></xsl:copy-of>
                         </xsl:when>
-                        <xsl:when
-                           test="document($this-tokz-1st-da-location)/tan:TAN-R-tok/tan:head/tan:declarations[not(tan:for-lang)]">
+                        <xsl:otherwise>
                            <xsl:element name="tan:for-lang">
                               <xsl:text>*</xsl:text>
                            </xsl:element>
-                        </xsl:when>
+                        </xsl:otherwise>
                      </xsl:choose>
                   </xsl:if>
                </xsl:element>

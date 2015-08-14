@@ -39,6 +39,16 @@
             </sqf:replace>
          </sqf:fix>
       </rule>
+      <rule context="tei:div[not(tei:div)]//*" role="warning">
+         <report test="@xml:lang" sqf:fix="remove-xmllang">Language differentiations below leaf div
+            level may be ignored in alignments.</report>
+         <sqf:fix id="remove-xmllang">
+            <sqf:description>
+               <sqf:title>Remove @xml:lang</sqf:title>
+            </sqf:description>
+            <sqf:replace match="@xml:lang"/>
+         </sqf:fix>
+      </rule>
    </pattern>
 
    <!-- FUNCTIONS -->

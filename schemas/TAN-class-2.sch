@@ -7,8 +7,9 @@
 
    <rule context="tan:source">
       <let name="this-pos" value="count(preceding-sibling::tan:source) + 1"/>
+      <let name="all-flatrefs" value="$src-1st-da-data[$this-pos]/tan:div[@lang]/@ref"/>
       <let name="ldur-violations"
-         value="if (count($src-1st-da-data[$this-pos]/tan:div[@lang]/@ref) ne count(distinct-values($src-1st-da-data[$this-pos]/tan:div[@lang]/@ref)) ) then true() else false()"/>
+         value="if (count($all-flatrefs) ne count(distinct-values($all-flatrefs)) ) then true() else false()"/>
       <let name="exists-new-version"
          value="$src-1st-da-heads[$this-pos]/tan:see-also[tan:relationship = 'new version']"/>
       <report test="$ldur-violations">After declarations are applied, source breaks the Leaf Div
@@ -21,14 +22,14 @@
          <report test="exists($ldur-violations-verbose)">After declarations are applied, source breaks the
          Leaf Div Uniqueness Rule at <value-of select="string-join($ldur-violations-verbose,', ')"/></report>
       -->
-      <report test="$exists-new-version" role="warning" sqf:fix="use-new-edition">New edition
+      <report test="$exists-new-version" role="warning" sqf:fix="use-new-edition">New version
          exists. IRI: <value-of select="$exists-new-version/tan:IRI"/> Name: <value-of
             select="$exists-new-version/tan:name"/>
          <value-of select="$exists-new-version/tan:desc"/> Location: <value-of
             select="$exists-new-version/tan:location"/></report>
       <sqf:fix id="use-new-edition">
          <sqf:description>
-            <sqf:title>Replace with new edition</sqf:title>
+            <sqf:title>Replace with new version</sqf:title>
          </sqf:description>
          <sqf:delete match="child::*"/>
          <sqf:add match="."

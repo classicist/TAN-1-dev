@@ -6,7 +6,7 @@
    xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" exclude-result-prefixes="xs math xd" version="3.0">
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Revised</xd:b>July 28, 2015</xd:p>
+         <xd:p><xd:b>Revised</xd:b>Aug 15, 2015</xd:p>
          <xd:p>Core functions for TAN-A-div files. Used by Schematron validation, but suitable for
             general use in other contexts</xd:p>
       </xd:desc>
@@ -15,22 +15,22 @@
    <xsl:variable name="equate-works" as="xs:integer+">
       <xsl:for-each select="$src-count">
          <xsl:variable name="this-src" select="."/>
+         <xsl:variable name="this-src-work-iris"
+            select="$src-1st-da-heads[$this-src]//tan:work/tan:IRI"/>
+         <xsl:variable name="these-eq-works"
+            select="$body/tan:equate-works[$this-src = tan:src-ids-to-nos(@src)]/@src"/>
          <xsl:value-of
             select="
-               if ($this-src gt 1 and $src-ids[$this-src] = (for $i in $body/tan:equate-works/@src
-               return
-                  tokenize($i, '\s+'))) then
-                  min(for $i in $body/tan:equate-works/@src,
-                     $j in tokenize($i, '\s+')
-                  return
-                     index-of($src-ids, $j))
+               if ($this-src gt 1 and exists($these-eq-works)) then
+                  min(tan:src-ids-to-nos($these-eq-works))
                else
-                  min(for $i in (1 to $this-src)
+                  min(($this-src,
+                  (for $i in (1 to $this-src - 1)
                   return
-                     if ($src-1st-da-heads[$i]//tan:work/tan:IRI/text() = $src-1st-da-heads[$this-src]//tan:work/tan:IRI) then
+                     if ($src-1st-da-heads[$i]//tan:work/tan:IRI = $this-src-work-iris) then
                         $i
                      else
-                        ())"
+                        ())))"
          />
       </xsl:for-each>
    </xsl:variable>
@@ -120,7 +120,7 @@
          </xsl:copy>
       </xsl:for-each>
    </xsl:variable>
-   
+
    <!-- FUNCTIONS -->
    <xsl:function name="tan:convert-ns-to-numerals" as="xs:string">
       <!-- converts a flattened ref's @n values to numerals according to their use in a given source

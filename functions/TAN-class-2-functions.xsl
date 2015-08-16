@@ -24,7 +24,7 @@
 
    <!-- SOURCES -->
    <xsl:variable name="sources" select="$head/tan:source"/>
-   <xsl:variable name="src-count" select="1 to count($sources)"/>
+   <xsl:variable name="src-count" select="1 to count($sources)" as="xs:integer+"/>
    <xsl:variable name="source-lacks-id"
       select="
          if (name(/*) = 'TAN-LM') then

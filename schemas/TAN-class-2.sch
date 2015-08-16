@@ -59,13 +59,13 @@ would be valid, along with the number of times each word appears. Keep it in doc
       <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
       <let name="this-div-types" value="tokenize(@div-type-ref,'\s+')"/>
       <let name="src-div-type-mismatch"
-         value="for $i in $this-src-list, $j in $this-div-types, $k in ($rename-div-types/tan:src[$i]/tan:rename[@new = $j]/@old,$j)[1] 
+         value="for $i in $this-src-list, $j in $this-div-types, $k in ($rename-div-types/tan:source[$i]/tan:rename[@new = $j]/@old,$j)[1] 
          return
          if($src-1st-da-heads[$i]/tan:declarations/tan:div-type[@xml:id = $k])
          then ()
          else concat($src-ids[$i],':',$j)"/>
       <let name="src-div-type-uses-old"
-         value="for $i in $this-src-list, $j in $this-div-types, $k in $rename-div-types/tan:src[$i]/tan:rename[@old = $j]
+         value="for $i in $this-src-list, $j in $this-div-types, $k in $rename-div-types/tan:source[$i]/tan:rename[@old = $j]
          return concat($src-ids[$i],':',$j)"/>
       <report test="count($src-div-type-mismatch) gt 0">Every div type must refer to a div type id
          in every source (<value-of select="$src-div-type-mismatch"/>).</report>

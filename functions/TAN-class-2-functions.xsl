@@ -24,7 +24,7 @@
 
    <!-- SOURCES -->
    <xsl:variable name="sources" select="$head/tan:source"/>
-   <xsl:variable name="src-count" select="1 to count($sources)"/>
+   <xsl:variable name="src-count" select="1 to count($sources)" as="xs:integer+"/>
    <xsl:variable name="source-lacks-id"
       select="
          if (name(/*) = 'TAN-LM') then
@@ -212,7 +212,7 @@
       <tan:rename-div-types>
          <xsl:for-each select="$src-count">
             <xsl:variable name="this-src" select="."/>
-            <tan:src>
+            <tan:source>
                <xsl:copy-of
                   select="
                      if ($source-lacks-id) then
@@ -220,7 +220,7 @@
                      else
                         $head/tan:declarations/tan:rename-div-types[$this-src = tan:src-ids-to-nos(@src)]/tan:rename"
                />
-            </tan:src>
+            </tan:source>
          </xsl:for-each>
       </tan:rename-div-types>
    </xsl:variable>
@@ -230,7 +230,7 @@
       <tan:rename-div-ns>
          <xsl:for-each select="$src-count">
             <xsl:variable name="this-src" select="."/>
-            <tan:src>
+            <tan:source>
                <xsl:for-each
                   select="
                      distinct-values(tokenize(if ($source-lacks-id) then
@@ -248,7 +248,7 @@
                      />
                   </tan:div-type>
                </xsl:for-each>
-            </tan:src>
+            </tan:source>
          </xsl:for-each>
       </tan:rename-div-ns>
    </xsl:variable>
@@ -648,8 +648,8 @@
       </xsl:for-each>
    </xsl:function>
    <xsl:function name="tan:pick-prepped-class-1-data" as="element()*">
-      <!-- Used to create a subset of anything that results from the function tan:prep-class-1-data() 
-         Input: integer+ (source numbers), string+ (normalized reference sequences [atoms joined by 
+      <!-- Used to create a subset of $src-1st-da-data (the result of tan:prep-class-1-data()) 
+         Input: integer* (source numbers), string* (normalized reference sequences [atoms joined by 
          hyphens or commas], one per source)
          Output: nodes, 1 per source, proper subset of tan:prep-class-1-data()
       -->
@@ -705,12 +705,12 @@
          by tan:div/tan:tok. If no tokenization pattern exists for a language, 
          the node is copied with the @error="true" and an error message replacing 
          the text of the leaf div.-->
-      <xsl:param name="this-subset" as="element()+"/>
+      <xsl:param name="this-prepped-c1-data" as="element()+"/>
       <xsl:for-each select="$src-count">
          <xsl:variable name="this-src" select="."/>
          <xsl:element name="tan:source">
             <xsl:attribute name="id" select="$src-ids[$this-src]"/>
-            <xsl:for-each select="$this-subset[$this-src]/tan:div">
+            <xsl:for-each select="$this-prepped-c1-data[$this-src]/tan:div">
                <xsl:variable name="this-div" select="."/>
                <xsl:element name="tan:div">
                   <xsl:copy-of select="@*"/>
@@ -880,10 +880,10 @@
                select="tokenize($this-ref, $separator-type-and-n-regex)[1]"/>
             <xsl:variable name="this-n" select="tokenize($this-ref, $separator-type-and-n-regex)[2]"/>
             <xsl:variable name="this-type-rename"
-               select="$rename-div-types/tan:src[$src-no]/tan:rename[@old = $this-type]/@new"/>
+               select="$rename-div-types/tan:source[$src-no]/tan:rename[@old = $this-type]/@new"/>
             <xsl:variable name="this-n-rename-prep"
                select="
-                  $rename-div-ns/tan:src[$src-no]/tan:div-type[@div-type = ($this-type-rename,
+                  $rename-div-ns/tan:source[$src-no]/tan:div-type[@div-type = ($this-type-rename,
                   $this-type)[1]]"/>
             <xsl:variable name="this-n-rename"
                select="

@@ -6,31 +6,33 @@
    xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" exclude-result-prefixes="xs math xd" version="3.0">
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Revised</xd:b>July 28, 2015</xd:p>
+         <xd:p><xd:b>Revised</xd:b>Aug 15, 2015</xd:p>
          <xd:p>Core functions for TAN-A-div files. Used by Schematron validation, but suitable for
             general use in other contexts</xd:p>
       </xd:desc>
    </xd:doc>
    <xsl:include href="TAN-class-2-functions.xsl"/>
+   <xsl:variable name="src-1st-da-data-segmented"
+      select="tan:segment-tokenized-prepped-class-1-data(tan:tokenize-prepped-class-1-data($src-1st-da-data))"/>
    <xsl:variable name="equate-works" as="xs:integer+">
       <xsl:for-each select="$src-count">
          <xsl:variable name="this-src" select="."/>
+         <xsl:variable name="this-src-work-iris"
+            select="$src-1st-da-heads[$this-src]//tan:work/tan:IRI"/>
+         <xsl:variable name="these-eq-works"
+            select="$body/tan:equate-works[$this-src = tan:src-ids-to-nos(@src)]/@src"/>
          <xsl:value-of
             select="
-               if ($this-src gt 1 and $src-ids[$this-src] = (for $i in $body/tan:equate-works/@src
-               return
-                  tokenize($i, '\s+'))) then
-                  min(for $i in $body/tan:equate-works/@src,
-                     $j in tokenize($i, '\s+')
-                  return
-                     index-of($src-ids, $j))
+               if ($this-src gt 1 and exists($these-eq-works)) then
+                  min(tan:src-ids-to-nos($these-eq-works))
                else
-                  min(for $i in (1 to $this-src)
+                  min(($this-src,
+                  (for $i in (1 to $this-src - 1)
                   return
-                     if ($src-1st-da-heads[$i]//tan:work/tan:IRI/text() = $src-1st-da-heads[$this-src]//tan:work/tan:IRI) then
+                     if ($src-1st-da-heads[$i]//tan:work/tan:IRI = $this-src-work-iris) then
                         $i
                      else
-                        ())"
+                        ())))"
          />
       </xsl:for-each>
    </xsl:variable>
@@ -41,15 +43,15 @@
             <xsl:for-each select="$src-count">
                <xsl:variable name="this-src" select="."/>
                <xsl:for-each
-                  select="$this-edt/tan:div-type-ref[$src-ids[$this-src] = tokenize(@src, '\s+')]">
-                  <tan:div-type-ref src="{$src-ids[$this-src]}" div-type-ref="{@div-type-ref}"/>
+                  select="$this-edt/tan:div-type-ref[$this-src = tan:src-ids-to-nos(@src)]">
+                  <tan:div-type-ref src-no="{$this-src}" div-type-ref="{@div-type-ref}"/>
                </xsl:for-each>
             </xsl:for-each>
          </tan:equate-div-types>
       </xsl:for-each>
    </xsl:variable>
    <xsl:variable name="src-1st-da-div-types-equiv-replace" as="node()+">
-      <!-- Creates one element per source, then one element per div-type, correlating @xml:id or its renamed 
+      <!-- Sequence of one element per source, then one element per div-type, correlating @xml:id or its renamed 
          value with an integer for the position of the first div-type within all div-types that share 
          an IRI value -->
       <xsl:for-each select="$src-count">
@@ -58,7 +60,7 @@
             <xsl:for-each select="$src-1st-da-all-div-types/tan:source[$this-src]/tan:div-type">
                <xsl:variable name="this-div-type-orig" select="@xml:id"/>
                <xsl:variable name="this-div-type-alias"
-                  select="$rename-div-types/tan:src[$this-src]/tan:rename[@old = $this-div-type-orig]/@new"/>
+                  select="$rename-div-types/tan:source[$this-src]/tan:rename[@old = $this-div-type-orig]/@new"/>
                <xsl:variable name="this-div-type"
                   select="
                      ($this-div-type-alias,
@@ -66,16 +68,16 @@
 
                <xsl:variable name="this-div-type-equiv"
                   select="
-                     if ($equate-div-types-sorted/tan:div-type-ref[@src = $src-ids[$this-src]][@div-type-ref = $this-div-type])
+                     if ($equate-div-types-sorted/tan:div-type-ref[@src-no = $this-src][@div-type-ref = $this-div-type])
                      then
-                        $equate-div-types-sorted[tan:div-type-ref[@src = $src-ids[$this-src]][@div-type-ref = $this-div-type]]/tan:div-type-ref[1]/@div-type-ref
+                        $equate-div-types-sorted[tan:div-type-ref[@src-no = $this-src][@div-type-ref = $this-div-type]]/tan:div-type-ref[1]/@div-type-ref
                      else
                         $this-div-type"/>
                <xsl:variable name="this-src-equiv"
                   select="
-                     if ($equate-div-types-sorted/tan:div-type-ref[@src = $src-ids[$this-src]][@div-type-ref = $this-div-type])
+                     if ($equate-div-types-sorted/tan:div-type-ref[@src-no = $this-src][@div-type-ref = $this-div-type])
                      then
-                        index-of($src-ids, $equate-div-types-sorted[tan:div-type-ref[@src = $src-ids[$this-src]][@div-type-ref = $this-div-type]]/tan:div-type-ref[1]/@src)
+                        $equate-div-types-sorted[tan:div-type-ref[@src-no = $this-src][@div-type-ref = $this-div-type]]/tan:div-type-ref[1]/@src-no
                      else
                         $this-src"/>
                <tan:replace>
@@ -106,7 +108,7 @@
                </tan:replace>
             </xsl:for-each>
             <tan:replace>
-               <!-- Used to strip out leading periods -->
+               <!-- Used to strip out leading punctuation -->
                <tan:pattern>^:</tan:pattern>
                <tan:replacement/>
             </tan:replace>
@@ -114,14 +116,71 @@
       </xsl:for-each>
    </xsl:variable>
    <xsl:variable name="leaf-div-splits-raw" as="element()*">
+      <!-- one element per <tok> that is a child of <splet-leaf-divs-at>. Used to check for
+      duplicates and to prepare texets for leaf div segmentation. -->
       <xsl:for-each select="$body/tan:split-leaf-div-at/tan:tok">
          <xsl:copy>
             <xsl:copy-of select="tan:pick-tokenized-prepped-class-1-data(.)"/>
          </xsl:copy>
       </xsl:for-each>
    </xsl:variable>
-   
-   <!-- FUNCTIONS -->
+
+   <!-- CONTEXT DEPENDENT FUNCTIONS -->
+
+   <xsl:function name="tan:segment-tokenized-prepped-class-1-data" as="element()+">
+      <!-- Input: element()+ resulting from tan:tokenize-prepped-class-1-data()
+      output: elements, one per source, deep copy of niput, but inserting <tan:seg> between 
+      <tan:div> and <tan:tok>, reflecting all <split-leaf-div-at>s-->
+      <xsl:param name="this-tokd-prepped-c1-data" as="element()+"/>
+      <xsl:for-each select="$src-count">
+         <xsl:variable name="this-src" select="."/>
+         <xsl:element name="tan:source">
+            <xsl:attribute name="id" select="$src-ids[$this-src]"/>
+            <xsl:for-each select="$this-tokd-prepped-c1-data[$this-src]/tan:div">
+               <xsl:choose>
+                  <xsl:when test="@lang">
+                     <xsl:variable name="this-div" select="."/>
+                     <xsl:variable name="this-div-splits"
+                        select="
+                           for $i in $leaf-div-splits-raw/tan:source[$this-src]/tan:div[@ref = $this-div/@ref]/tan:tok[not(@error)]/@n
+                           return
+                              xs:integer($i)"/>
+                     <xsl:variable name="this-div-seg-starts"
+                        select="
+                           (1,
+                           $this-div-splits)"/>
+                     <xsl:variable name="this-div-seg-ends"
+                        select="
+                           ((for $i in $this-div-splits
+                           return
+                              $i - 1),
+                           count($this-div/tan:tok))"/>
+                     <xsl:copy>
+                        <xsl:copy-of select="@*"/>
+                        <xsl:for-each select="(1 to count($this-div-splits) + 1)">
+                           <xsl:variable name="pos" select="."/>
+                           <xsl:variable name="start" select="$this-div-seg-starts[$pos]"/>
+                           <xsl:variable name="end" select="$this-div-seg-ends[$pos]"/>
+                           <xsl:element name="tan:seg">
+                              <xsl:copy-of
+                                 select="$this-div/tan:tok[position() = ($start to $end)]"
+                              />
+                              <!--<xsl:copy-of
+                                 select="$this-div/tan:tok[position() ge $start][position() le $end]"
+                              />-->
+                           </xsl:element>
+                        </xsl:for-each>
+                     </xsl:copy>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:copy-of select="."/>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:for-each>
+         </xsl:element>
+      </xsl:for-each>
+   </xsl:function>
+
    <xsl:function name="tan:convert-ns-to-numerals" as="xs:string">
       <!-- converts a flattened ref's @n values to numerals according to their use in a given source
             Input: single flatref as a string, source number as integer

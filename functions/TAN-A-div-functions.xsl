@@ -41,15 +41,15 @@
             <xsl:for-each select="$src-count">
                <xsl:variable name="this-src" select="."/>
                <xsl:for-each
-                  select="$this-edt/tan:div-type-ref[$src-ids[$this-src] = tokenize(@src, '\s+')]">
-                  <tan:div-type-ref src="{$src-ids[$this-src]}" div-type-ref="{@div-type-ref}"/>
+                  select="$this-edt/tan:div-type-ref[$this-src = tan:src-ids-to-nos(@src)]">
+                  <tan:div-type-ref src-no="{$this-src}" div-type-ref="{@div-type-ref}"/>
                </xsl:for-each>
             </xsl:for-each>
          </tan:equate-div-types>
       </xsl:for-each>
    </xsl:variable>
    <xsl:variable name="src-1st-da-div-types-equiv-replace" as="node()+">
-      <!-- Creates one element per source, then one element per div-type, correlating @xml:id or its renamed 
+      <!-- Sequence of one element per source, then one element per div-type, correlating @xml:id or its renamed 
          value with an integer for the position of the first div-type within all div-types that share 
          an IRI value -->
       <xsl:for-each select="$src-count">
@@ -66,16 +66,16 @@
 
                <xsl:variable name="this-div-type-equiv"
                   select="
-                     if ($equate-div-types-sorted/tan:div-type-ref[@src = $src-ids[$this-src]][@div-type-ref = $this-div-type])
+                     if ($equate-div-types-sorted/tan:div-type-ref[@src-no = $this-src][@div-type-ref = $this-div-type])
                      then
-                        $equate-div-types-sorted[tan:div-type-ref[@src = $src-ids[$this-src]][@div-type-ref = $this-div-type]]/tan:div-type-ref[1]/@div-type-ref
+                        $equate-div-types-sorted[tan:div-type-ref[@src-no = $this-src][@div-type-ref = $this-div-type]]/tan:div-type-ref[1]/@div-type-ref
                      else
                         $this-div-type"/>
                <xsl:variable name="this-src-equiv"
                   select="
-                     if ($equate-div-types-sorted/tan:div-type-ref[@src = $src-ids[$this-src]][@div-type-ref = $this-div-type])
+                     if ($equate-div-types-sorted/tan:div-type-ref[@src-no = $this-src][@div-type-ref = $this-div-type])
                      then
-                        index-of($src-ids, $equate-div-types-sorted[tan:div-type-ref[@src = $src-ids[$this-src]][@div-type-ref = $this-div-type]]/tan:div-type-ref[1]/@src)
+                        $equate-div-types-sorted[tan:div-type-ref[@src-no = $this-src][@div-type-ref = $this-div-type]]/tan:div-type-ref[1]/@src-no
                      else
                         $this-src"/>
                <tan:replace>
@@ -106,7 +106,7 @@
                </tan:replace>
             </xsl:for-each>
             <tan:replace>
-               <!-- Used to strip out leading periods -->
+               <!-- Used to strip out leading punctuation -->
                <tan:pattern>^:</tan:pattern>
                <tan:replacement/>
             </tan:replace>
@@ -114,6 +114,8 @@
       </xsl:for-each>
    </xsl:variable>
    <xsl:variable name="leaf-div-splits-raw" as="element()*">
+      <!-- one element per <tok> that is a child of <splet-leaf-divs-at>. Used to check for
+      duplicates and to prepare texets for leaf div segmentation. -->
       <xsl:for-each select="$body/tan:split-leaf-div-at/tan:tok">
          <xsl:copy>
             <xsl:copy-of select="tan:pick-tokenized-prepped-class-1-data(.)"/>
@@ -121,7 +123,7 @@
       </xsl:for-each>
    </xsl:variable>
 
-   <!-- FUNCTIONS -->
+   <!-- CONTEXT DEPENDENT FUNCTIONS -->
    <xsl:function name="tan:convert-ns-to-numerals" as="xs:string">
       <!-- converts a flattened ref's @n values to numerals according to their use in a given source
             Input: single flatref as a string, source number as integer

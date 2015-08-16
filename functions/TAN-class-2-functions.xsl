@@ -206,6 +206,18 @@
             tan:src-ids-to-nos($head/tan:declarations/tan:implicit-div-type-refs/@src)
          else
             ()"/>
+   <!-- next variables used to check to see if implicit syntax is ok in a class 1 file that doesn't make a 
+      recommendation one way or another -->
+   <xsl:variable name="src-impl-div-types-not-already-recommended" select="for $i in $src-impl-div-types return
+      if ($src-1st-da-heads[$i]/tan:declarations/tan:recommended-div-type-refs) then () else $i"/>
+   <xsl:variable name="duplicate-implicit-refs" as="xs:string*">
+      <xsl:for-each select="$src-impl-div-types-not-already-recommended">
+         <xsl:variable name="this-src" select="."/>
+         <xsl:variable name="these-impl-refs" select="$src-1st-da-data[$this-src]/tan:div[@lang]/@impl-ref" as="xs:string*"/>
+         <xsl:variable name="these-duplicates" select="$these-impl-refs[index-of($these-impl-refs,.)[2]]"/>
+         <xsl:copy-of select="if (exists($these-duplicates)) then $these-duplicates else ()"/>
+      </xsl:for-each>
+   </xsl:variable>
 
    <!-- DECLARATIONS: rename-div-types -->
    <xsl:variable name="rename-div-types" as="element()">

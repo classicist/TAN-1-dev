@@ -73,24 +73,16 @@ would be valid, along with the number of times each word appears. Keep it in doc
             (<value-of select="$src-div-type-uses-old"/>).</report>
    </rule>
    <rule context="tan:implicit-div-type-refs">
-      <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
-      <let name="srcs-without-recommended-div-type-refs"
-         value="for $i in $this-src-list return
-         if ($src-1st-da-heads[$i]/tan:declarations/tan:recommended-div-type-refs) then () else $i"/>
+      <let name="this-src-list" value="$src-impl-div-types"/>
       <let name="empty-ns"
-         value="for $i in $srcs-without-recommended-div-type-refs return
-         if (some $j in $src-1st-da-data[$i]//@ref satisfies matches($j,concat($separator-type-and-n-regex,'$|',$separator-hierarchy-regex,$separator-type-and-n-regex))) then $i else ()"/>
-      <let name="duplicate-refs"
-         value="for $i in $srcs-without-recommended-div-type-refs, $j in distinct-values($src-1st-da-data[$i]/tan:div/@impl-ref) return 
-         if (count(distinct-values($src-1st-da-data[$i]/tan:div[@impl-ref = $j]/@ref)) gt 1) then concat($src-ids[$i],': ',replace($j,$separator-hierarchy-regex,' ')) else ()"/>
-      <!-- alternative variable, perhaps for large texts -->
-      <!--<let name="duplicate-refs"
-         value="for $i in $this-src-list return if (count($src-1st-da-data[$i]/tan:div/@impl-ref) ne count(distinct-values($src-1st-da-data[$i]/tan:div/@impl-ref)) ) then $i else ()"/>-->
+         value="for $i in $src-impl-div-types-not-already-recommended return
+         if (some $j in $src-1st-da-data[$i]//@ref satisfies 
+         matches($j,concat($separator-type-and-n-regex,'$|',$separator-hierarchy-regex,$separator-type-and-n-regex))) then $i else ()"/>
       <report test="exists($empty-ns)">Implicitation not allowed for sources with empty values for
          @n (<value-of select="for $i in $empty-ns return $src-ids[$i]"/>).</report>
-      <report test="exists($duplicate-refs)">Implicitation not allowed for sources where ignoring
+      <report test="exists($duplicate-implicit-refs)">Implicitation not allowed for sources where ignoring
          types would result in duplicate flattened references (<value-of
-            select="string-join($duplicate-refs,'; ')"/>).</report>
+            select="string-join($duplicate-implicit-refs,'; ')"/>).</report>
    </rule>
    <rule context="tan:rename-div-types">
       <report role="warning" test="@src = tokenize(../tan:implicit-div-type-refs/@src,'\s+')"

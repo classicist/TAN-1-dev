@@ -212,7 +212,7 @@
       <tan:rename-div-types>
          <xsl:for-each select="$src-count">
             <xsl:variable name="this-src" select="."/>
-            <tan:src>
+            <tan:source>
                <xsl:copy-of
                   select="
                      if ($source-lacks-id) then
@@ -220,7 +220,7 @@
                      else
                         $head/tan:declarations/tan:rename-div-types[$this-src = tan:src-ids-to-nos(@src)]/tan:rename"
                />
-            </tan:src>
+            </tan:source>
          </xsl:for-each>
       </tan:rename-div-types>
    </xsl:variable>
@@ -230,7 +230,7 @@
       <tan:rename-div-ns>
          <xsl:for-each select="$src-count">
             <xsl:variable name="this-src" select="."/>
-            <tan:src>
+            <tan:source>
                <xsl:for-each
                   select="
                      distinct-values(tokenize(if ($source-lacks-id) then
@@ -248,7 +248,7 @@
                      />
                   </tan:div-type>
                </xsl:for-each>
-            </tan:src>
+            </tan:source>
          </xsl:for-each>
       </tan:rename-div-ns>
    </xsl:variable>
@@ -880,10 +880,10 @@
                select="tokenize($this-ref, $separator-type-and-n-regex)[1]"/>
             <xsl:variable name="this-n" select="tokenize($this-ref, $separator-type-and-n-regex)[2]"/>
             <xsl:variable name="this-type-rename"
-               select="$rename-div-types/tan:src[$src-no]/tan:rename[@old = $this-type]/@new"/>
+               select="$rename-div-types/tan:source[$src-no]/tan:rename[@old = $this-type]/@new"/>
             <xsl:variable name="this-n-rename-prep"
                select="
-                  $rename-div-ns/tan:src[$src-no]/tan:div-type[@div-type = ($this-type-rename,
+                  $rename-div-ns/tan:source[$src-no]/tan:div-type[@div-type = ($this-type-rename,
                   $this-type)[1]]"/>
             <xsl:variable name="this-n-rename"
                select="

@@ -58,7 +58,7 @@
             <xsl:for-each select="$src-1st-da-all-div-types/tan:source[$this-src]/tan:div-type">
                <xsl:variable name="this-div-type-orig" select="@xml:id"/>
                <xsl:variable name="this-div-type-alias"
-                  select="$rename-div-types/tan:src[$this-src]/tan:rename[@old = $this-div-type-orig]/@new"/>
+                  select="$rename-div-types/tan:source[$this-src]/tan:rename[@old = $this-div-type-orig]/@new"/>
                <xsl:variable name="this-div-type"
                   select="
                      ($this-div-type-alias,

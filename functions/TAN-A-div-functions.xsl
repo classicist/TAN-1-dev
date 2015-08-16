@@ -12,6 +12,8 @@
       </xd:desc>
    </xd:doc>
    <xsl:include href="TAN-class-2-functions.xsl"/>
+   <xsl:variable name="src-1st-da-data-segmented"
+      select="tan:segment-tokenized-prepped-class-1-data(tan:tokenize-prepped-class-1-data($src-1st-da-data))"/>
    <xsl:variable name="equate-works" as="xs:integer+">
       <xsl:for-each select="$src-count">
          <xsl:variable name="this-src" select="."/>
@@ -124,6 +126,61 @@
    </xsl:variable>
 
    <!-- CONTEXT DEPENDENT FUNCTIONS -->
+
+   <xsl:function name="tan:segment-tokenized-prepped-class-1-data" as="element()+">
+      <!-- Input: element()+ resulting from tan:tokenize-prepped-class-1-data()
+      output: elements, one per source, deep copy of niput, but inserting <tan:seg> between 
+      <tan:div> and <tan:tok>, reflecting all <split-leaf-div-at>s-->
+      <xsl:param name="this-tokd-prepped-c1-data" as="element()+"/>
+      <xsl:for-each select="$src-count">
+         <xsl:variable name="this-src" select="."/>
+         <xsl:element name="tan:source">
+            <xsl:attribute name="id" select="$src-ids[$this-src]"/>
+            <xsl:for-each select="$this-tokd-prepped-c1-data[$this-src]/tan:div">
+               <xsl:choose>
+                  <xsl:when test="@lang">
+                     <xsl:variable name="this-div" select="."/>
+                     <xsl:variable name="this-div-splits"
+                        select="
+                           for $i in $leaf-div-splits-raw/tan:source[$this-src]/tan:div[@ref = $this-div/@ref]/tan:tok[not(@error)]/@n
+                           return
+                              xs:integer($i)"/>
+                     <xsl:variable name="this-div-seg-starts"
+                        select="
+                           (1,
+                           $this-div-splits)"/>
+                     <xsl:variable name="this-div-seg-ends"
+                        select="
+                           ((for $i in $this-div-splits
+                           return
+                              $i - 1),
+                           count($this-div/tan:tok))"/>
+                     <xsl:copy>
+                        <xsl:copy-of select="@*"/>
+                        <xsl:for-each select="(1 to count($this-div-splits) + 1)">
+                           <xsl:variable name="pos" select="."/>
+                           <xsl:variable name="start" select="$this-div-seg-starts[$pos]"/>
+                           <xsl:variable name="end" select="$this-div-seg-ends[$pos]"/>
+                           <xsl:element name="tan:seg">
+                              <xsl:copy-of
+                                 select="$this-div/tan:tok[position() = ($start to $end)]"
+                              />
+                              <!--<xsl:copy-of
+                                 select="$this-div/tan:tok[position() ge $start][position() le $end]"
+                              />-->
+                           </xsl:element>
+                        </xsl:for-each>
+                     </xsl:copy>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:copy-of select="."/>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:for-each>
+         </xsl:element>
+      </xsl:for-each>
+   </xsl:function>
+
    <xsl:function name="tan:convert-ns-to-numerals" as="xs:string">
       <!-- converts a flattened ref's @n values to numerals according to their use in a given source
             Input: single flatref as a string, source number as integer

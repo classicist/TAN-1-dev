@@ -648,8 +648,8 @@
       </xsl:for-each>
    </xsl:function>
    <xsl:function name="tan:pick-prepped-class-1-data" as="element()*">
-      <!-- Used to create a subset of anything that results from the function tan:prep-class-1-data() 
-         Input: integer+ (source numbers), string+ (normalized reference sequences [atoms joined by 
+      <!-- Used to create a subset of $src-1st-da-data (the result of tan:prep-class-1-data()) 
+         Input: integer* (source numbers), string* (normalized reference sequences [atoms joined by 
          hyphens or commas], one per source)
          Output: nodes, 1 per source, proper subset of tan:prep-class-1-data()
       -->
@@ -705,12 +705,12 @@
          by tan:div/tan:tok. If no tokenization pattern exists for a language, 
          the node is copied with the @error="true" and an error message replacing 
          the text of the leaf div.-->
-      <xsl:param name="this-subset" as="element()+"/>
+      <xsl:param name="this-prepped-c1-data" as="element()+"/>
       <xsl:for-each select="$src-count">
          <xsl:variable name="this-src" select="."/>
          <xsl:element name="tan:source">
             <xsl:attribute name="id" select="$src-ids[$this-src]"/>
-            <xsl:for-each select="$this-subset[$this-src]/tan:div">
+            <xsl:for-each select="$this-prepped-c1-data[$this-src]/tan:div">
                <xsl:variable name="this-div" select="."/>
                <xsl:element name="tan:div">
                   <xsl:copy-of select="@*"/>

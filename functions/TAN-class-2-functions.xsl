@@ -562,7 +562,7 @@
    </xsl:function>
 
    <!-- CONTEXT DEPENDENT FUNCTIONS -->
-   <xsl:function name="tan:src-ids-to-nos" as="xs:integer+">
+   <xsl:function name="tan:src-ids-to-nos" as="xs:integer*">
       <!-- Input: values of @src (@xml:id values of sources)
       Output: sequence of integers for all sources 
       If input is an empty string, or the format lacks ids for sources, output = 1

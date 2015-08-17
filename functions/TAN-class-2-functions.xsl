@@ -7,10 +7,10 @@
 
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Updated </xd:b>July 28, 2015</xd:p>
+         <xd:p><xd:b>Updated </xd:b>Aug 17, 2015</xd:p>
          <xd:p>Core variables and functions for class 2 TAN files (i.e., applicable to multiple
-            class 2 TAN file types). Used by Schematron validation, but suitable for general use in
-            other contexts </xd:p>
+            class 2 TAN file types). Written principally for Schematron validation, but suitable for
+            general use in other contexts </xd:p>
       </xd:desc>
    </xd:doc>
 
@@ -52,7 +52,7 @@
       <tan:all-div-types>
          <xsl:for-each select="$src-1st-da-heads">
             <tan:source>
-               <xsl:copy-of select=".//tan:div-type"/>
+               <xsl:copy-of select="tan:declarations/tan:div-type"/>
             </tan:source>
          </xsl:for-each>
       </tan:all-div-types>
@@ -208,14 +208,28 @@
             ()"/>
    <!-- next variables used to check to see if implicit syntax is ok in a class 1 file that doesn't make a 
       recommendation one way or another -->
-   <xsl:variable name="src-impl-div-types-not-already-recommended" select="for $i in $src-impl-div-types return
-      if ($src-1st-da-heads[$i]/tan:declarations/tan:recommended-div-type-refs) then () else $i"/>
+   <xsl:variable name="src-impl-div-types-not-already-recommended"
+      select="
+         for $i in $src-impl-div-types
+         return
+            if ($src-1st-da-heads[$i]/tan:declarations/tan:recommended-div-type-refs) then
+               ()
+            else
+               $i"/>
    <xsl:variable name="duplicate-implicit-refs" as="xs:string*">
       <xsl:for-each select="$src-impl-div-types-not-already-recommended">
          <xsl:variable name="this-src" select="."/>
-         <xsl:variable name="these-impl-refs" select="$src-1st-da-data[$this-src]/tan:div[@lang]/@impl-ref" as="xs:string*"/>
-         <xsl:variable name="these-duplicates" select="$these-impl-refs[index-of($these-impl-refs,.)[2]]"/>
-         <xsl:copy-of select="if (exists($these-duplicates)) then $these-duplicates else ()"/>
+         <xsl:variable name="these-impl-refs"
+            select="$src-1st-da-data[$this-src]/tan:div[@lang]/@impl-ref" as="xs:string*"/>
+         <xsl:variable name="these-duplicates"
+            select="$these-impl-refs[index-of($these-impl-refs, .)[2]]"/>
+         <xsl:copy-of
+            select="
+               if (exists($these-duplicates)) then
+                  $these-duplicates
+               else
+                  ()"
+         />
       </xsl:for-each>
    </xsl:variable>
 

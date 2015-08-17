@@ -6,9 +6,9 @@
    xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" exclude-result-prefixes="xs math xd" version="3.0">
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Revised</xd:b>Aug 15, 2015</xd:p>
-         <xd:p>Core functions for TAN-A-div files. Used by Schematron validation, but suitable for
-            general use in other contexts</xd:p>
+         <xd:p><xd:b>Revised</xd:b>Aug 17, 2015</xd:p>
+         <xd:p>Core functions for TAN-A-div files. Written principally for Schematron validation,
+            but suitable for general use in other contexts</xd:p>
       </xd:desc>
    </xd:doc>
    <xsl:include href="TAN-class-2-functions.xsl"/>
@@ -18,7 +18,7 @@
       <xsl:for-each select="$src-count">
          <xsl:variable name="this-src" select="."/>
          <xsl:variable name="this-src-work-iris"
-            select="$src-1st-da-heads[$this-src]//tan:work/tan:IRI"/>
+            select="$src-1st-da-heads[$this-src]/tan:declarations/tan:work/tan:IRI"/>
          <xsl:variable name="these-eq-works"
             select="$body/tan:equate-works[$this-src = tan:src-ids-to-nos(@src)]/@src"/>
          <xsl:value-of
@@ -96,7 +96,7 @@
                            <xsl:variable name="this-div-type-iris"
                               select="$src-1st-da-all-div-types/tan:source[$this-src-equiv]/tan:div-type[@xml:id = $this-div-type-equiv]/tan:IRI"/>
                            <xsl:variable name="this-div-type-iris-first-match"
-                              select="$src-1st-da-all-div-types/tan:source[.//tan:IRI = $this-div-type-iris][1]"/>
+                              select="$src-1st-da-all-div-types/tan:source[tan:div-types/tan:IRI = $this-div-type-iris][1]"/>
                            <xsl:value-of
                               select="
                                  concat(':', string(count($this-div-type-iris-first-match/tan:div-type[tan:IRI = $this-div-type-iris]/(preceding-sibling::tan:div-type,
@@ -116,8 +116,8 @@
       </xsl:for-each>
    </xsl:variable>
    <xsl:variable name="leaf-div-splits-raw" as="element()*">
-      <!-- one element per <tok> that is a child of <splet-leaf-divs-at>. Used to check for
-      duplicates and to prepare texets for leaf div segmentation. -->
+      <!-- one element per <tok> that is a child of <split-leaf-divs-at>. Used to check for
+      duplicates and to prepare texts for leaf div segmentation. -->
       <xsl:for-each select="$body/tan:split-leaf-div-at/tan:tok">
          <xsl:copy>
             <xsl:copy-of select="tan:pick-tokenized-prepped-class-1-data(.)"/>
@@ -129,7 +129,7 @@
 
    <xsl:function name="tan:segment-tokenized-prepped-class-1-data" as="element()+">
       <!-- Input: element()+ resulting from tan:tokenize-prepped-class-1-data()
-      output: elements, one per source, deep copy of niput, but inserting <tan:seg> between 
+      Output: elements, one per source, deep copy of input, but inserting <tan:seg> between 
       <tan:div> and <tan:tok>, reflecting all <split-leaf-div-at>s-->
       <xsl:param name="this-tokd-prepped-c1-data" as="element()+"/>
       <xsl:for-each select="$src-count">
@@ -162,12 +162,7 @@
                            <xsl:variable name="start" select="$this-div-seg-starts[$pos]"/>
                            <xsl:variable name="end" select="$this-div-seg-ends[$pos]"/>
                            <xsl:element name="tan:seg">
-                              <xsl:copy-of
-                                 select="$this-div/tan:tok[position() = ($start to $end)]"
-                              />
-                              <!--<xsl:copy-of
-                                 select="$this-div/tan:tok[position() ge $start][position() le $end]"
-                              />-->
+                              <xsl:copy-of select="$this-div/tan:tok[position() = ($start to $end)]"/>
                            </xsl:element>
                         </xsl:for-each>
                      </xsl:copy>

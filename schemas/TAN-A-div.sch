@@ -2,8 +2,6 @@
 <!-- to do: 
    Report on tan:align[@distribute = true] and tan:realign: children div-ref/(@ref,@seg), grouped by work, must 
       point to the same number of atomic references, so that they can be distributed one to one.
-   Report on @seg: every @ref in the parent element must point to a leaf div.
-   Report on @seg: for every ref in every source, a @seg's number may not exceed the number of splits + 1.
 -->
 <schema xmlns="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2"
    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
@@ -94,13 +92,6 @@
          <let name="duplicate-splits" value="for $i in $these-splits//tan:tok return
             if ($leaf-div-splits-raw[position() ne $this-pos]/tan:source[@id = $i/../../@id]/tan:div[@ref = $i/../@ref]/tan:tok[@n = $i/@n]) 
             then concat($i/../../@id,': ',$i/../@ref,' tok ',$i/@n) else ()"/>
-         <!-- START TESTING BLOCK -->
-         <let name="test1" value="$these-splits//@*"/>
-         <let name="test2" value="$these-splits"/>
-         <let name="test3" value="true()"/>
-         <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
-            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
-         <!-- END TESTING BLOCK -->
          <report test="exists($duplicate-splits)">Splitting a leaf div more than once in the 
             same place is not allowed (<value-of select="string-join($duplicate-splits,' ')"/>).</report>
       </rule>
@@ -133,10 +124,10 @@
                      tan:normalize-impl-refs(@ref, $i)
                   else
                      tan:normalize-refs(@ref)"/>
-         <let name="this-src-qty-with-implicit-div-types"
+         <let name="qty-of-srcs-with-implicit-div-types"
             value="count($this-src-list[. = $src-impl-div-types])"/>
-         <let name="src-ref-subset"
-            value="tan:pick-prepped-class-1-data($this-src-list, $this-refs-norm)"/>
+         <let name="src-data-for-this-div-ref"
+            value="tan:segment-tokenized-prepped-class-1-data(tan:tokenize-prepped-class-1-data(tan:pick-prepped-class-1-data($this-src-list, $this-refs-norm)))"/>
          <let name="duplicate-sibling"
             value="for $i in (preceding-sibling::node(),
                following-sibling::node())
@@ -146,52 +137,37 @@
                   else
                      ()"/>
          <let name="ref-has-errors" value="matches($this-refs-norm,'!!error')"/>
-         <!-- need to convert this from :seg concept to @seg -->
-         <!--<let name="this-refs-norm-no-seg"
-            value="for $i in $this-refs-norm
-               return
-                  string-join((for $j in tokenize($i, '\s+-\s+')
-                  return
-                     if (matches($j, ':seg.\d+$', '') and (for $k in $this-src-list
-                     return
-                        exists($src-1st-da-data[$k]/tan:div[@lang][@ref = replace($j, ':seg.\d+$', '')]))) then
-                        replace($j, ':seg.\d+$', '')
-                     else
-                        $j), ' - ')"/>-->
-         <!--<let name="src-ref-mismatch"
-            value="for $i in $this-src-list
-               return
-                  for $j in $this-refs-norm
-                  return
-                     for $k in tokenize($j, '\s+-\s+')
-                     return
-                        if (exists($src-1st-da-data[$i]/tan:div[@ref = $k])) then
-                           ()
-                        else
-                           concat($src-ids[$i], ':', $k)"/>-->
-         <!--<let name="ref-seg-test-1" value="tokenize(@ref,'\s+[-,]\s+')"/>
-         <let name="ref-seg-test-2" value="for $i in $ref-seg-test-1 return replace(replace($i,'(.+)\Wseg\W\d+','$1'),'\W','.')"/>
-         <let name="ref-seg-test-exp-1" value="for $i in $this-src, $j in $ref-seg-test-2 return 
-            $all-splits-experiment[min(index-of($experimental-all-div-flatrefs,concat($i,' ',$j)))]"/>
-         <let name="ref-seg-test-exp-2" value="for $i in $this-src,$j in $ref-seg-test-1 return number(replace($j,'.+\Wseg\W(\d+)','$1'))"></let>
-         <let name="ref-seg-test-exp-3" value="for $i in (1 to count($ref-seg-test-exp-1)) return
-            if ($ref-seg-test-exp-2[$i] - 1 > number($ref-seg-test-exp-1[$i])) then false() else true()"></let>-->
-         <!--<report test="exists($src-ref-mismatch)">Every ref cited must be found in every source
-               (<value-of select="$src-ref-mismatch"/>).</report>-->
-         <!--<report test="(../../tan:split-leaf-div-at) and (some $i in $ref-seg-test-exp-3 satisfies $i = false())">There have not been enough splits made to accommodate that
-            number of segments.
-         </report>-->
-         <report test="$src-ref-subset/tan:div/@error or $ref-has-errors">Every
+         <let name="this-segs" value="if (@seg) then normalize-space(replace(@seg,'\?','')) else ()"/>
+         <let name="seg-count" value="for $i in $src-data-for-this-div-ref/tan:div return count($i/tan:seg)"/>
+         <let name="seg-ceiling" value="min($seg-count)"/>
+         <let name="this-seg-max" value="if (exists($this-segs)) then tan:max-integer($this-segs) else 1"/>
+         <let name="this-seg-min-last" value="if (exists($this-segs) and exists($seg-ceiling)) 
+            then tan:min-last($this-segs,$seg-ceiling) else 1"/>
+         <!-- START TESTING BLOCK -->
+         <let name="test1" value="$this-seg-max"/>
+         <let name="test2" value="$this-seg-min-last"/>
+         <let name="test3" value="true()"/>
+         <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
+            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
+         <!-- END TESTING BLOCK -->
+         <report test="$src-data-for-this-div-ref/tan:div/@error or $ref-has-errors">Every
             ref cited must be found in every source (<value-of
                select="for $i in $src-count,
-                     $j in $src-ref-subset[$i]/tan:div[@error]
+                     $j in $src-data-for-this-div-ref[$i]/tan:div[@error]
                   return
                      concat($src-ids[$i], ': ', $j/@ref)"
             /><value-of select="if ($ref-has-errors) then $this-refs-norm else ()"/>).</report>
          <report
-            test="$this-src-qty-with-implicit-div-types gt 0 and $this-src-qty-with-implicit-div-types ne count($this-src-list)"
+            test="$qty-of-srcs-with-implicit-div-types gt 0 and $qty-of-srcs-with-implicit-div-types ne count($this-src-list)"
             >Either all sources or no sources must be declared in implicit-div-type-refs</report>
-         <report test="exists($duplicate-sibling)">No div-ref may have a duplicate sibling.</report>
+         <report test="exists($duplicate-sibling)">Sibling div-refs may not duplicate each other.</report>
+         <report test="if (exists($this-segs)) then (($this-seg-max gt $seg-ceiling) or ($this-seg-min-last lt 1)) 
+            else false()">Every segment cited must appear in every div in every source (divs chosen have
+            <value-of select="$seg-ceiling"/> segments max)</report>
+         <report test="if (exists($this-segs)) then $seg-count = 1 else false()">@seg should not be
+            used on a div that has not been split</report>
+         <report test="if (exists($this-segs)) then $seg-count = 0 else false()">@seg may be used
+            only with leaf divs</report>
       </rule>
    </pattern>
 

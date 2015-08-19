@@ -28,7 +28,7 @@
          </info>
          <revision>
             <revnumber>1/dev</revnumber>
-            <date>2015-08-08</date>
+            <date>2015-08-18</date>
             <revdescription>
                <para>Prepublication working draft, under construction and for private circulation
                   only. Corrections are actively solicited and should be sent to the author (see
@@ -9231,6 +9231,27 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
             their one and only source, but make clear that they are LM files. Class 3: TAN-R-mor:
             start with the language code then the namespace of the document's @id then a version
             number. TAN-R-tok: tok + description + version number.</para>
+         <para>If you have a text with notes, distinguish between whether the notes are intrinsic or
+            extrinsic to the work. </para>
+         <para>If the former, treat them as such and give them <code>&lt;div></code>s. But don't try
+            to keep everything in document order. That is, either put notes at the end of every
+            relevant div, or put them all the way at the end of the work. And you can also probably
+            delete the note signals. You can use self-alignment to make sure that notes are pegged
+            to their proper place. And there you have the opportunity to attach the note not only to
+            the word or punctuation to which it is attached, but you can try to sense the entire
+            range of text that the author wished the note to apply to.</para>
+         <para>If the notes are not part of the work per se -- for example, translator's notes in a
+            translation of a primary source -- you may treat the notes as a work in their own right.
+            Just create a separate TAN file for those notes, then create an alignment file to
+            correlate the notes with the translation.</para>
+         <para>Remember that the note signals in the main text and in the footnote area are metadata
+            meant to help readers link corresponding passages of texts. So if you've already
+            accommodated those alignments through a TAN-A file, the note signals are otiose, and
+            they are good candidates for normalization.</para>
+         <para>What about if you are transcribing a text that has variants to the work integrated
+            into the document? For example, a manuscript may have correctors' marks. Or a critical
+            edition can be seen as a modern instatiation, noting where corrections and deviations
+            occur. In those cases...</para>
       </chapter>
       <chapter>
          <title>Best Practices in Managing and Sharing TAN Files</title>

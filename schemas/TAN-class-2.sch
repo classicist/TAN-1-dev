@@ -15,21 +15,14 @@ would be valid, along with the number of times each word appears. Keep it in doc
 
    <rule context="tan:source">
       <let name="this-pos" value="count(preceding-sibling::tan:source) + 1"/>
-      <let name="all-flatrefs" value="$src-1st-da-data[$this-pos]/tan:div[@lang]/@ref"/>
-      <let name="ldur-violations"
-         value="if (count($all-flatrefs) ne count(distinct-values($all-flatrefs)) ) then true() else false()"/>
+      <let name="all-leafdiv-flatrefs" value="$src-1st-da-data[$this-pos]/tan:div[@lang]/@ref"/>
       <let name="exists-new-version"
          value="$src-1st-da-heads[$this-pos]/tan:see-also[tan:relationship = 'new version']"/>
-      <report test="$ldur-violations">After declarations are applied, source breaks the Leaf Div
-         Uniqueness Rule (to diagnose open source and validate)</report>
-      <!-- alternative variable and report, very time-consuming for long source documents (n ^ 2 operations) -->
-      <!--<let name="ldur-violations"
-         value="for $i in $src-1st-da-data[$this-pos]/tan:div[@lang]/@ref return
-         if(count($src-1st-da-data[$this-pos]/tan:div[@ref = $i]) gt 1)
-         then $i else ()"/>
-         <report test="exists($ldur-violations-verbose)">After declarations are applied, source breaks the
-         Leaf Div Uniqueness Rule at <value-of select="string-join($ldur-violations-verbose,', ')"/></report>
-      -->
+      <let name="duplicate-leafdiv-flatrefs"
+         value="$all-leafdiv-flatrefs[index-of($all-leafdiv-flatrefs,.)[2]]"/>
+      <report test="exists($duplicate-leafdiv-flatrefs)">After declarations are applied, source breaks
+         the Leaf Div Uniqueness Rule at <value-of
+            select="string-join($duplicate-leafdiv-flatrefs,', ')"/></report>
       <report test="$exists-new-version" role="warning" sqf:fix="use-new-edition">New version
          exists. IRI: <value-of select="$exists-new-version/tan:IRI"/> Name: <value-of
             select="$exists-new-version/tan:name"/>
@@ -54,7 +47,7 @@ would be valid, along with the number of times each word appears. Keep it in doc
       <let name="test1" value="$src-1st-da-uri"/>
       <let name="test2" value="$src-1st-da-parent-directory"/>
       <let name="test3" value="true()"/>
-      <report test="true()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
+      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
          select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
       <!-- END TESTING BLOCK -->
       <report test="some $i in $error-check satisfies $i = $tokenization-errors">Error: <value-of

@@ -79,6 +79,9 @@
             return concat($tokz-error-refs[$i],' ',string-join(for $j in $tokz-error-vals[$i]/tan:modifier return
             concat('pos ',$j/@where,' (U+',$j/@cp,')'),' '))"
          />.</report>
+      <report
+         test="(@which,@xml:id) = (preceding-sibling::tan:recommended-tokenization, following-sibling::tan:recommended-tokenization)/(@which, @xml:id)"
+         >@which and @xml:id values may duplicate each other.</report>
    </rule>
    <rule context="tan:IRI[parent::tan:recommended-tokenization]">
       <let name="this-tokz-loc-urls"

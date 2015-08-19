@@ -54,7 +54,7 @@ would be valid, along with the number of times each word appears. Keep it in doc
       <let name="test1" value="$src-1st-da-uri"/>
       <let name="test2" value="$src-1st-da-parent-directory"/>
       <let name="test3" value="true()"/>
-      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
+      <report test="true()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
          select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
       <!-- END TESTING BLOCK -->
       <report test="some $i in $error-check satisfies $i = $tokenization-errors">Error: <value-of

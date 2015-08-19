@@ -7,10 +7,10 @@
 
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Updated </xd:b>Aug 17, 2015</xd:p>
+         <xd:p><xd:b>Updated </xd:b>Aug 19, 2015</xd:p>
          <xd:p>Core variables and functions for class 2 TAN files (i.e., applicable to multiple
             class 2 TAN file types). Written principally for Schematron validation, but suitable for
-            general use in other contexts </xd:p>
+            general use in other contexts.</xd:p>
       </xd:desc>
    </xd:doc>
 
@@ -67,8 +67,8 @@
    <xsl:variable name="tokenizations-per-source" as="element()+">
       <!-- Sequence of one node/tree per source listing possible tokenizations, their first
          document-available location, and the languages covered:
-         <tokenization>
-            <location>[URL]</location>
+         <tokenization via-src='[TRUE/FALSE]'>
+            <location>[URL or ERROR MESSAGE]</location>
             <for-lang>[LANG1 or *]<lang>
             <for-lang>[LANG2]<lang>
             ...
@@ -83,49 +83,63 @@
                   else
                      $tokenizations[$this-src = tan:src-ids-to-nos(@src)]">
                <xsl:variable name="this-tokz" select="."/>
-               <xsl:variable name="this-tokz-1st-da-location">
-                  <xsl:value-of
-                     select="
-                        (: ...if there's a location in the class 2 file, then... :)
-                        if ($this-tokz/tan:location)
-                        then
-                           (: ...if one of them can be resolved, use that, otherwise... :)
-                           if ($this-tokz/tan:location[doc-available(tan:resolve-url(.,''))])
-                           then
-                              $this-tokz/tan:location[doc-available(tan:resolve-url(.,''))][1]
-                              (: ...Oops, there's no document available; but... :)
-                           else
-                              $tokenization-errors[5]
+               <!-- The next variables trace the process used to determine which tokenization should be applied to
+                  each source. The local <location> takes precedence, followed by a @which that corresponds to a
+                  <recommended-tokenization> in the source, followed by a @which that uses a reserved keyword.-->
+               <xsl:variable name="cl-2-loc"
+                  select="
+                     if ($this-tokz/tan:location) then
+                        ($this-tokz/tan:location[doc-available(tan:resolve-url(., ''))],
+                        $tokenization-errors[1])[1]
+                     else
+                        ()"
+               />
+               <xsl:variable name="cl-2-no-which" select="if ($this-tokz/@which) then () else $tokenization-errors[2]"/>
+               <xsl:variable name="src-rec-tokz-chosen"
+                  select="$src-1st-da-heads[$this-src]/tan:declarations/tan:recommended-tokenization[@xml:id = $this-tokz/@which]"
+               />
+               <xsl:variable name="cl-1-loc"
+                  select="
+                     if (exists($src-rec-tokz-chosen)) then
+                        ($src-rec-tokz-chosen/tan:location[doc-available(tan:resolve-url(., $src-1st-da-parent-directory[$this-src]))],
+                        $tokenization-errors[3])[1]
+                     else
+                        ()"
+               />
+               <xsl:variable name="not-a-keyword"
+                  select="
+                     if (exists($src-rec-tokz-chosen) or $tokenization-which-reserved = $this-tokz/@which) then
+                        ()
+                     else
+                        $tokenization-errors[4]"
+               />
+               <xsl:variable name="keyword-loc"
+                  select="$tokenization-which-reserved-doc-available[index-of($tokenization-which-reserved, $this-tokz/@which)]"
+               />
+               <xsl:variable name="this-tokz-1st-da-location"
+                  select="
+                     if (exists($cl-2-loc)) then
+                        $cl-2-loc
+                     else
+                        if (exists($cl-2-no-which)) then
+                           $cl-2-no-which
                         else
-                           (: ...if there's no location, then look for @which; if present... :)
-                           if ($this-tokz/@which)
-                           (: ...go into the source tree and look for that value of @which in an @xml:id in a recommended-tokenization; if found... :)
-                           then
-                              if ($src-1st-da-heads[$this-src]/tan:declarations/tan:recommended-tokenization[@xml:id = $this-tokz/@which])
-                              (: ...get the URL of the first doc available; if not found... :)
-                              then
-                                 $src-1st-da-heads[$this-src]/tan:declarations/tan:recommended-tokenization[@xml:id = $this-tokz/@which][1]/tan:location[doc-available(tan:resolve-url(.,$src-1st-da-parent-directory[$this-src]))][1]
-                                 (: ...look for @which in the reserved keywords; if found... :)
-                              else
-                                 if (index-of($tokenization-which-reserved, $this-tokz/@which) gt 0)
-                                 (: ...get the URL of the first document available; if URL is empty... :)
-                                 then
-                                    if ($tokenization-which-reserved-doc-available[index-of($tokenization-which-reserved, $this-tokz/@which)] = '')
-                                    (: ...oops, core TAN-R-tok invoked, but no document available; if URL is not empty... :)
-                                    then
-                                       $tokenization-errors[3]
-                                       (: ...then return the URL for the core TAN-R-tok file. :)
-                                    else
-                                       $tokenization-which-reserved-url[index-of($tokenization-which-reserved, $this-tokz/@which)]
-                                       (: Oops, @which is neither in the source nor is it a reserved keyword :)
-                                 else
-                                    $tokenization-errors[2]
-                                    (: Oops, there's no @which :)
+                           if (exists($cl-1-loc)) then
+                              $cl-1-loc
                            else
-                              $tokenization-errors[1]"
-                  />
-               </xsl:variable>
+                              if (exists($not-a-keyword)) then
+                                 $not-a-keyword
+                              else
+                                 $keyword-loc"
+               />
                <xsl:element name="tan:tokenization">
+                  <xsl:attribute name="via-src"
+                     select="
+                        if (exists($src-rec-tokz-chosen)) then
+                           true()
+                        else
+                           false()"
+                  />
                   <xsl:element name="tan:location">
                      <xsl:value-of select="$this-tokz-1st-da-location"/>
                   </xsl:element>

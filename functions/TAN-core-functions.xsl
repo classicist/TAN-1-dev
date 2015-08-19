@@ -7,10 +7,10 @@
     version="3.0">
     <xd:doc scope="stylesheet">
         <xd:desc>
-            <xd:p><xd:b>Updated </xd:b>July 28, 2015</xd:p>
-            <xd:p>Set of functions for core TAN files (i.e., applicable to TAN file types of more
-                than one class). Used by Schematron validation, but suitable for general use in
-                other contexts </xd:p>
+            <xd:p><xd:b>Updated </xd:b>Aug 19, 2015</xd:p>
+            <xd:p>Functions and variables for core TAN files (i.e., applicable to TAN file types of
+                more than one class). Used by Schematron validation, but suitable for general use in
+                other contexts.</xd:p>
         </xd:desc>
     </xd:doc>
 
@@ -102,6 +102,16 @@
             for $i in $tokenization-which-reserved-url
             return
                 doc($i)"/>
+    <!-- Error messages for failures to name or access tokenization patterns -->
+    <xsl:variable name="tokenization-errors"
+        select="
+        'no location points to an available document',
+        'no @which',
+        'no location in the recommended-tokenization element points to an available document',
+        '@which is neither in the source nor is it a reserved keyword',
+        'core TAN-R-tok invoked, but no document available',
+        'source uses language unsupported by the tokenizations chosen'
+        "/>
     <!-- Are officially supplied TAN-R-tok patterns available -->
     <xsl:variable name="tokenization-which-reserved-doc-available"
         select="
@@ -110,15 +120,7 @@
                 if (doc-available($i)) then
                     $i
                 else
-                    ''"/>
-    <!-- Error messages for failures to name or access tokenization patterns -->
-    <xsl:variable name="tokenization-errors"
-        select="
-            'no @which',
-            '@which is neither in the source nor is it a reserved keyword',
-            'core TAN-R-tok invoked, but no document available',
-            'source uses language unsupported by tokenization',
-            'no location points to an available document'"/>
+                    $tokenization-errors[5]"/>
 
     <!-- If one wishes to see if the an entire string matches the following patterns defined by these 
         variables, they must appear between the regular expression anchors ^ and $. -->
@@ -320,20 +322,23 @@
 
     <!-- CONTEXT DEPENDENT FUNCTIONS -->
     <xsl:function name="tan:resolve-url" as="xs:string?">
-        <!-- Input: any string purporting to be a location of a file 
-        Output: if input is a relative URL then that same string concatenated with the main 
-        document's parent directory; otherwise the input is returned.
-        E.g., '../TAN-T/example-a.xml' - > 'file:/Users/admin/Documents/project/TAN-T/example-a.xml' -->
+        <!-- Input: any string purporting to be a location of a file, and a base directory to be used
+            in case the first string is a relative URL.
+        Output: if input is a relative URL then that same string appended to the second parameter. If 
+        the second parameter is empty or a zero-length string, the main document's parent directory will 
+        be substituted. If input is not relative, only the the input is returned.
+        E.g., ('../example-a.xml',()) - > 'file:/Users/admin/Documents/project/example-a.xml' -->
         <xsl:param name="input-url" as="xs:string?"/>
+        <xsl:param name="input-base" as="xs:string?"/>
+        <xsl:variable name="base-check" select="if (exists($input-base) and $input-base != '') then $input-base else $doc-parent-directory"/>
         <xsl:value-of
             select="
                 if (resolve-uri($input-url) = $input-url) then
                     $input-url
                 else
-                    concat($doc-parent-directory, $input-url)"
+                    concat($base-check, $input-url)"
         />
     </xsl:function>
-
     <xsl:function name="tan:must-refer-to-external-tan-file" as="xs:boolean">
         <!-- Input: node in a TAN document. Output: boolean value indicating whether the node or its 
          parent names or refers to a TAN file. -->

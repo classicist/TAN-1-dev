@@ -50,6 +50,13 @@ would be valid, along with the number of times each word appears. Keep it in doc
          value="for $i in $this-src-list return count(preceding-sibling::tan:tokenization[$i = tan:src-ids-to-nos(@src)]) + 1"/>
       <let name="error-check"
          value="for $i in $this-src-list return $tokenizations-per-source[$i]/tan:tokenization[$pos-per-source[index-of($this-src-list,$i)]]/tan:location"/>
+      <!-- START TESTING BLOCK -->
+      <let name="test1" value="$src-1st-da-uri"/>
+      <let name="test2" value="$src-1st-da-parent-directory"/>
+      <let name="test3" value="true()"/>
+      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
+         select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
+      <!-- END TESTING BLOCK -->
       <report test="some $i in $error-check satisfies $i = $tokenization-errors">Error: <value-of
             select="for $i in (1 to count($error-check)) return if ($error-check[$i] = $tokenization-errors) then concat($src-ids[$this-src-list[$i]],' : ',$error-check[$i]) else ()"
          />
@@ -168,13 +175,6 @@ would be valid, along with the number of times each word appears. Keep it in doc
          if (deep-equal($i,$j)) then 
          if ($i/../@ref = $j/../@ref and $i/../../@id = $j/../../@id) then true() else () 
          else ()"/>
-      <!-- START TESTING BLOCK -->
-      <let name="test1" value="$src-data-for-this-tok"/>
-      <let name="test2" value="true()"/>
-      <let name="test3" value="true()"/>
-      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
-            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
-      <!-- END TESTING BLOCK -->
       <report test="exists($duplicate-tokens)">Sibling tok elements may not point to the same
          token.</report>
       <report test="$src-data-for-this-tok/tan:div/@error">Every ref cited must be found in every

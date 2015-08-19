@@ -8,7 +8,7 @@
    <let name="transcription-langs"
       value="/(tan:TAN-T/tan:body|tei:TEI/tei:text/tei:body)//@xml:lang"/>
    <rule context="tan:see-also">
-      <let name="first-loc" value="tan:location[doc-available(tan:resolve-url(.))][1]"/>
+      <let name="first-loc" value="tan:location[doc-available(tan:resolve-url(.,''))][1]"/>
       <let name="first-doc"
          value="if (doc-available($first-loc)) then doc($first-loc) 
          else if (doc-available(concat($doc-parent-directory,$first-loc))) 

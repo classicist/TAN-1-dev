@@ -39,9 +39,11 @@
             $sources/@xml:id"/>
    <xsl:variable name="src-1st-da-locations"
       select="
-         for $i in $sources/tan:location[doc-available(tan:resolve-url(.))][1]
+         for $i in $sources/tan:location[doc-available(tan:resolve-url(.,''))][1]
          return
-            tan:resolve-url($i)"/>
+            tan:resolve-url($i,'')"/>
+   <xsl:variable name="src-1st-da-uri" select="for $i in $src-1st-da-locations return base-uri(doc($i))"/>
+   <xsl:variable name="src-1st-da-parent-directory" select="for $i in $src-1st-da-uri return replace($i, '[^/]+$', '')"/>
    <xsl:variable name="src-1st-da-heads"
       select="
          for $i in $src-1st-da-locations
@@ -88,9 +90,9 @@
                         if ($this-tokz/tan:location)
                         then
                            (: ...if one of them can be resolved, use that, otherwise... :)
-                           if ($this-tokz/tan:location[doc-available(tan:resolve-url(.))])
+                           if ($this-tokz/tan:location[doc-available(tan:resolve-url(.,''))])
                            then
-                              $this-tokz/tan:location[doc-available(tan:resolve-url(.))][1]
+                              $this-tokz/tan:location[doc-available(tan:resolve-url(.,''))][1]
                               (: ...Oops, there's no document available; but... :)
                            else
                               $tokenization-errors[5]
@@ -102,7 +104,7 @@
                               if ($src-1st-da-heads[$this-src]/tan:declarations/tan:recommended-tokenization[@xml:id = $this-tokz/@which])
                               (: ...get the URL of the first doc available; if not found... :)
                               then
-                                 $src-1st-da-heads[$this-src]/tan:declarations/tan:recommended-tokenization[@xml:id = $this-tokz/@which][1]/tan:location[doc-available(tan:resolve-url(.))][1]
+                                 $src-1st-da-heads[$this-src]/tan:declarations/tan:recommended-tokenization[@xml:id = $this-tokz/@which][1]/tan:location[doc-available(tan:resolve-url(.,$src-1st-da-parent-directory[$this-src]))][1]
                                  (: ...look for @which in the reserved keywords; if found... :)
                               else
                                  if (index-of($tokenization-which-reserved, $this-tokz/@which) gt 0)

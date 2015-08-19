@@ -81,7 +81,7 @@
       <let name="is-master-location" value="if (name() = 'master-location') then true() else false()"/>
       <let name="resource-type"
          value="if ($is-master-location) then 'master document' else name(..)"/>
-      <let name="loc-uri" value="tan:resolve-url($loc)"/>
+      <let name="loc-uri" value="tan:resolve-url($loc,'')"/>
       <let name="loc-doc-is-available" value="doc-available($loc-uri)"/>
       <let name="loc-doc" value="if ($loc-doc-is-available) then doc($loc-uri) else ()"/>
       <let name="loc-ver-date-nodes" value="$loc-doc//*[(@when | @ed-when | @when-accessed)]"/>
@@ -95,7 +95,7 @@
       <let name="is-location-of-tan-file" value="tan:must-refer-to-external-tan-file(.)"/>
       <let name="is-first-da-location"
          value="if ($loc-doc-is-available and 
-         not((preceding-sibling::tan:location, preceding-sibling::tan:master-location)[doc-available(tan:resolve-url(.))])) 
+         not((preceding-sibling::tan:location, preceding-sibling::tan:master-location)[doc-available(tan:resolve-url(.,''))])) 
          then true() else false()"/>
       <let name="is-in-progress"
          value="if ($loc-doc/*/(tan:body, tei:text/tei:body)/@in-progress = 'false') then false() else true()"/>

@@ -39,10 +39,15 @@ would be valid, along with the number of times each word appears. Keep it in doc
    </rule>
    <rule context="tan:tokenization">
       <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
-      <let name="pos-per-source"
+      <let name="pos-per-src"
          value="for $i in $this-src-list return count(preceding-sibling::tan:tokenization[$i = tan:src-ids-to-nos(@src)]) + 1"/>
-      <let name="error-check"
-         value="for $i in $this-src-list return $tokenizations-per-source[$i]/tan:tokenization[$pos-per-source[index-of($this-src-list,$i)]]/tan:location"/>
+      <let name="this-tokz-per-src"
+         value="for $i in $this-src-list return $tokenizations-per-source[$i]/tan:tokenization[$pos-per-src[index-of($this-src-list,$i)]]"
+      />
+      <let name="these-tokz-errors"
+         value="for $i in (1 to count($this-tokz-per-src)), $j in $this-tokz-per-src[$i] return 
+         if ($j/tan:location[. = $tokenization-errors]) then concat($src-ids[$this-src-list[$i]],': ',$j/tan:location) else ()"
+      />
       <!-- START TESTING BLOCK -->
       <let name="test1" value="$src-1st-da-uri"/>
       <let name="test2" value="$src-1st-da-parent-directory"/>
@@ -50,9 +55,7 @@ would be valid, along with the number of times each word appears. Keep it in doc
       <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
          select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
       <!-- END TESTING BLOCK -->
-      <report test="some $i in $error-check satisfies $i = $tokenization-errors">Error: <value-of
-            select="for $i in (1 to count($error-check)) return if ($error-check[$i] = $tokenization-errors) then concat($src-ids[$this-src-list[$i]],' : ',$error-check[$i]) else ()"
-         />
+      <report test="$these-tokz-errors">Error: <value-of select="$these-tokz-errors"/>
       </report>
    </rule>
    <rule context="tan:suppress-div-types|tan:div-type-ref|tan:rename-div-ns">

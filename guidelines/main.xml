@@ -28,7 +28,7 @@
          </info>
          <revision>
             <revnumber>1/dev</revnumber>
-            <date>2015-08-18</date>
+            <date>2015-08-19</date>
             <revdescription>
                <para>Prepublication working draft, under construction and for private circulation
                   only. Corrections are actively solicited and should be sent to the author (see
@@ -9252,6 +9252,10 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
             into the document? For example, a manuscript may have correctors' marks. Or a critical
             edition can be seen as a modern instatiation, noting where corrections and deviations
             occur. In those cases...</para>
+         <para>If you are working with an XML editor that utilizes Schematron Quick Fixes, you will
+            find that quite a lot of work can be saved by taking advantage of these. For specifics,
+            see part II of these guidelines, where SQF tips are documented. &lt;to do: go through
+            all SQFs and make sure they are documented in the guidelines.></para>
       </chapter>
       <chapter>
          <title>Best Practices in Managing and Sharing TAN Files</title>

@@ -6,10 +6,10 @@
    xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" exclude-result-prefixes="xs math xd" version="3.0">
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Udpated</xd:b>July 31, 2015</xd:p>
-         <xd:p>Set of functions for class 1 TAN files (i.e., applicable to multiple class 1 TAN file
-            types). Used by Schematron validation, but suitable for general use in other contexts
-         </xd:p>
+         <xd:p><xd:b>Udpated</xd:b>Aug 19, 2015</xd:p>
+         <xd:p>Variables and functions for class 1 TAN files (i.e., applicable to multiple class 1
+            TAN file types). Written principally for Schematron validation, but suitable for general
+            use in other contexts.</xd:p>
       </xd:desc>
    </xd:doc>
 
@@ -37,7 +37,7 @@
          Input: string
          Output: element with the following structure:
          <tan:modifiers>
-            <tan:modifier cp="[HEX]" where="[ONE OR MORE DIGITS AS SPACE-SEPARATED STRING]"/>
+            <tan:modifier cp="[HEX]" where="[SPACE-SEPARATED DIGITS IDENTIFYING POSITION IN STRING]"/>
             ....
          </tan:modifiers>
       -->

@@ -28,7 +28,7 @@
          </info>
          <revision>
             <revnumber>1/dev</revnumber>
-            <date>2015-08-08</date>
+            <date>2015-08-19</date>
             <revdescription>
                <para>Prepublication working draft, for private circulation only. Corrections are
                   actively solicited and should be sent to the author (see above).</para>
@@ -279,11 +279,6 @@
                      <entry>line (physical)</entry>
                      <entry>A physical line of text on the page. In poetry, a single poetic line may
                         take multiple physical lines.</entry>
-                  </row>
-                  <row>
-                     <entry/>
-                     <entry/>
-                     <entry/>
                   </row>
                </tbody>
             </tgroup>
@@ -1011,7 +1006,7 @@
    </chapter>
    <chapter xml:id="bitext_relation_iris">
 
-      <title>Stemmatology (<code>bitext-relations</code>)</title>
+      <title>Stemmatology (<code>&lt;bitext-relations></code>)</title>
       <para>
          <table frame="all">
             <title>TAN-minted IRIs for stemmatology</title>
@@ -1125,7 +1120,7 @@
    </chapter>
    <chapter xml:id="text_reuse_iris">
 
-      <title>IRIs for text reuse (<code>reuse-type</code>)</title>
+      <title>IRIs for text reuse (<code>&lt;reuse-type></code>)</title>
       <para>
          <table frame="all">
             <title>TAN-minted IRIs for text reuse</title>

@@ -8,13 +8,13 @@
    <let name="transcription-langs"
       value="/(tan:TAN-T/tan:body|tei:TEI/tei:text/tei:body)//@xml:lang"/>
    <rule context="tan:see-also">
-      <let name="first-loc" value="tan:location[doc-available(tan:resolve-url(.))][1]"/>
+      <let name="first-loc" value="tan:location[doc-available(tan:resolve-url(.,''))][1]"/>
       <let name="first-doc"
          value="if (doc-available($first-loc)) then doc($first-loc) 
          else if (doc-available(concat($doc-parent-directory,$first-loc))) 
          then doc(concat($doc-parent-directory,$first-loc)) else ()"/>
       <let name="is-alternatively-divided-edition" value="tan:relationship = 'alternatively divided edition'"/>
-      <let name="is-alternatively-normalized-edition" value="tan:relationship = 'alternatively divided edition'"/>
+      <let name="is-alternatively-normalized-edition" value="tan:relationship = 'alternatively normalized edition'"/>
       <let name="is-strict-alternative" value="$is-alternatively-divided-edition or $is-alternatively-normalized-edition"/>
       <let name="shares-same-source" value="$head/tan:source/tan:IRI = $first-doc/*/tan:head/tan:source/tan:IRI"/>
       <let name="shares-same-work" value="$head/tan:declarations/tan:work/tan:IRI = $first-doc/*/tan:head/tan:declarations/tan:work/tan:IRI"/>
@@ -45,25 +45,18 @@
    </rule>
    <rule context="tan:recommended-tokenization">
       <let name="this-which" value="@which"/>
-      <let name="this-which-is-valid"
-         value="if ($this-which = $tokenization-which-reserved)
-         then true() else false()"/>
-      <let name="this-tokz-loc-urls"
-         value="for $i in tan:location/text() return
-         if (resolve-uri($i) = $i) then $i else concat($doc-parent-directory,$i)"/>
-      <let name="this-tokz-loc-da"
-         value="for $i in $this-tokz-loc-urls return if (doc-available($i)) then $i else ()"/>
-      <!--<let name="this-tokz-which"
-         value="$tokenization-which-reserved-url[index-of($tokenization-which-reserved,$this-which)]"/>-->
+      <let name="this-which-is-reserved"
+         value="if ($this-which = $tokenization-which-reserved) then true() else false()"/>
+      <let name="first-tokz-loc" value="tan:location[doc-available(tan:resolve-url(.,''))][1]"/>
+      <let name="first-tokz-loc-resolved" value="if (exists($first-tokz-loc)) 
+         then tan:resolve-url($first-tokz-loc,'') else ()"/> 
       <let name="this-tokz"
-         value="if ($this-which-is-valid) then $tokenizations-core[index-of($tokenization-which-reserved,$this-which)] else if (exists($this-tokz-loc-da)) then doc($this-tokz-loc-da[1]) else ()"/>
-      <!--<let name="this-tokz" value="doc(($this-tokz-loc-1st-da,'../sch/rules/TAN-R-tok/precise-1.xml')[1])"/>-->
-      <!--<let name="this-tokz" value="doc('precise-1.xml')"/>-->
-      <!--<let name="this-tokz" value="$tok-test"/>-->
+         value="if ($this-which-is-reserved) then $tokenizations-core[index-of($tokenization-which-reserved,$this-which)] else 
+         if (exists($first-tokz-loc-resolved)) then doc($first-tokz-loc-resolved) else ()"/>
       <let name="this-tokz-replaces" value="$this-tokz//tan:replace"/>
       <let name="this-tokz-tokenize" value="$this-tokz//tan:tokenize"/>
       <let name="this-tokz-fails-modifiers-at-what-div"
-         value="if (exists($this-tokz)) then for $i in $prep-body/tan:div return
+         value="if (exists($this-tokz)) then for $i in $prep-body/tan:div[matches(.,'\p{M}')] return
          if (count(tan:tokenize(tan:replace-sequence(replace($i,'\p{M}',''), $this-tokz-replaces), $this-tokz-tokenize)) =
          count(tan:tokenize(tan:replace-sequence(replace($i,'\p{M}','M'), $this-tokz-replaces), $this-tokz-tokenize))
          ) then () else $i else ()"/>
@@ -71,7 +64,16 @@
          value="for $i in $this-tokz-fails-modifiers-at-what-div return $i/@ref"/>
       <let name="tokz-error-vals"
          value="for $i in $this-tokz-fails-modifiers-at-what-div return tan:locate-modifiers($i)"/>
-      <report test="exists($this-which) and not($this-which-is-valid)">@which must be one of the
+      <let name="tokenization-langs"
+         value="$this-tokz/tan:TAN-R-tok/tan:head/tan:declarations/tan:for-lang"/>
+      <!-- START TESTING BLOCK -->
+      <let name="test1" value="doc-available(concat($doc-parent-directory,'TAN-R-tok/tok.test.xml'))"/>
+      <let name="test2" value="doc-available(tan:resolve-url('TAN-R-tok/tok.test.xml',''))"/>
+      <let name="test3" value="tan:resolve-url(tan:location[1],'')"/>
+      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
+         select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
+      <!-- END TESTING BLOCK -->
+      <report test="exists($this-which) and not($this-which-is-reserved)">@which must be one of the
          following: <value-of select="string-join($tokenization-which-reserved,', ')"/></report>
       <report test="exists($this-tokz-fails-modifiers-at-what-div)">This tokenization pattern fails
          to predictably handle the combining characters at <value-of
@@ -79,24 +81,17 @@
             return concat($tokz-error-refs[$i],' ',string-join(for $j in $tokz-error-vals[$i]/tan:modifier return
             concat('pos ',$j/@where,' (U+',$j/@cp,')'),' '))"
          />.</report>
-   </rule>
-   <rule context="tan:IRI[parent::tan:recommended-tokenization]">
-      <let name="this-tokz-loc-urls"
-         value="for $i in ../tan:location/text() return
-         if (resolve-uri($i) = $i) then $i else concat($doc-parent-directory,$i)"/>
-      <let name="this-tokz-loc-da"
-         value="for $i in $this-tokz-loc-urls return if (doc-available($i)) then $i else ()"/>
-      <!--<let name="tokenization-locations-1st-da" value="../tan:location[doc-available(.)][1]"/>-->
-      <let name="tokenization-file" value="doc($this-tokz-loc-da)"/>
-      <let name="tokenization-langs"
-         value="$tokenization-file/tan:TAN-R-tok/tan:head/tan:declarations/tan:for-lang"/>
-      <assert test="name($tokenization-file/*) = 'TAN-R-tok'">Recommended tokenization must point to
-         a TAN-R-tok file (currently <value-of select="name($tokenization-file/*)"/>).</assert>
+      <report test="@xml:id = $tokenization-which-reserved">@xml:id values may not use a reserved
+         keyword for tokenization.</report>
+      <assert
+         test="every $i in $this-tokz satisfies name($i/*) = 'TAN-R-tok'"
+         >Recommended tokenization must point to a TAN-R-tok file (currently <value-of
+            select="name($this-tokz/*)"/>)</assert>
       <report role="warning"
-         test="$tokenization-langs and not(every $i in $transcription-langs satisfies index-of($tokenization-langs,$i) > 0)"
+         test="exists($tokenization-langs) and not(every $i in $transcription-langs satisfies index-of($tokenization-langs,$i) > 0)"
          >TAN-R-tok file is language specific, and not every language in the body (<value-of
             select="$transcription-langs"/>) is explicitly provided for in the TAN-R-tok file
-            (<value-of select="$tokenization-langs"/>).</report>
+         (<value-of select="$tokenization-langs"/>).</report>
    </rule>
    <rule context="tan:recommended-div-type-refs">
       <let name="implicit-is-recommended" value="if (. = 'implicit') then true() else false()"/>
@@ -115,13 +110,6 @@
    </rule>
    <rule context="tan:body|tei:body">
       <let name="duplicate-leafdivs" value="$leafdiv-flatrefs[index-of($leafdiv-flatrefs,.)[2]]"/>
-      <!-- START TESTING BLOCK -->
-      <let name="test1" value="false()"/>
-      <let name="test2" value="false()"/>
-      <let name="test3" value="true()"/>
-      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
-            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
-      <!-- END TESTING BLOCK -->
       <report test="if (exists($duplicate-leafdivs)) then true() else false()">Leaf div references
          must be unique. Violations at <value-of select="distinct-values($duplicate-leafdivs)"
          />.</report>

@@ -15,21 +15,14 @@ would be valid, along with the number of times each word appears. Keep it in doc
 
    <rule context="tan:source">
       <let name="this-pos" value="count(preceding-sibling::tan:source) + 1"/>
-      <let name="all-flatrefs" value="$src-1st-da-data[$this-pos]/tan:div[@lang]/@ref"/>
-      <let name="ldur-violations"
-         value="if (count($all-flatrefs) ne count(distinct-values($all-flatrefs)) ) then true() else false()"/>
+      <let name="all-leafdiv-flatrefs" value="$src-1st-da-data[$this-pos]/tan:div[@lang]/@ref"/>
       <let name="exists-new-version"
          value="$src-1st-da-heads[$this-pos]/tan:see-also[tan:relationship = 'new version']"/>
-      <report test="$ldur-violations">After declarations are applied, source breaks the Leaf Div
-         Uniqueness Rule (to diagnose open source and validate)</report>
-      <!-- alternative variable and report, very time-consuming for long source documents (n ^ 2 operations) -->
-      <!--<let name="ldur-violations"
-         value="for $i in $src-1st-da-data[$this-pos]/tan:div[@lang]/@ref return
-         if(count($src-1st-da-data[$this-pos]/tan:div[@ref = $i]) gt 1)
-         then $i else ()"/>
-         <report test="exists($ldur-violations-verbose)">After declarations are applied, source breaks the
-         Leaf Div Uniqueness Rule at <value-of select="string-join($ldur-violations-verbose,', ')"/></report>
-      -->
+      <let name="duplicate-leafdiv-flatrefs"
+         value="$all-leafdiv-flatrefs[index-of($all-leafdiv-flatrefs,.)[2]]"/>
+      <report test="exists($duplicate-leafdiv-flatrefs)">After declarations are applied, source breaks
+         the Leaf Div Uniqueness Rule at <value-of
+            select="string-join($duplicate-leafdiv-flatrefs,', ')"/></report>
       <report test="$exists-new-version" role="warning" sqf:fix="use-new-edition">New version
          exists. IRI: <value-of select="$exists-new-version/tan:IRI"/> Name: <value-of
             select="$exists-new-version/tan:name"/>
@@ -46,13 +39,23 @@ would be valid, along with the number of times each word appears. Keep it in doc
    </rule>
    <rule context="tan:tokenization">
       <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
-      <let name="pos-per-source"
+      <let name="pos-per-src"
          value="for $i in $this-src-list return count(preceding-sibling::tan:tokenization[$i = tan:src-ids-to-nos(@src)]) + 1"/>
-      <let name="error-check"
-         value="for $i in $this-src-list return $tokenizations-per-source[$i]/tan:tokenization[$pos-per-source[index-of($this-src-list,$i)]]/tan:location"/>
-      <report test="some $i in $error-check satisfies $i = $tokenization-errors">Error: <value-of
-            select="for $i in (1 to count($error-check)) return if ($error-check[$i] = $tokenization-errors) then concat($src-ids[$this-src-list[$i]],' : ',$error-check[$i]) else ()"
-         />
+      <let name="this-tokz-per-src"
+         value="for $i in $this-src-list return $tokenizations-per-source[$i]/tan:tokenization[$pos-per-src[index-of($this-src-list,$i)]]"
+      />
+      <let name="these-tokz-errors"
+         value="for $i in (1 to count($this-tokz-per-src)), $j in $this-tokz-per-src[$i] return 
+         if ($j/tan:location[. = $tokenization-errors]) then concat($src-ids[$this-src-list[$i]],': ',$j/tan:location) else ()"
+      />
+      <!-- START TESTING BLOCK -->
+      <let name="test1" value="$src-1st-da-uri"/>
+      <let name="test2" value="$src-1st-da-parent-directory"/>
+      <let name="test3" value="true()"/>
+      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
+         select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
+      <!-- END TESTING BLOCK -->
+      <report test="$these-tokz-errors">Error: <value-of select="$these-tokz-errors"/>
       </report>
    </rule>
    <rule context="tan:suppress-div-types|tan:div-type-ref|tan:rename-div-ns">
@@ -168,13 +171,6 @@ would be valid, along with the number of times each word appears. Keep it in doc
          if (deep-equal($i,$j)) then 
          if ($i/../@ref = $j/../@ref and $i/../../@id = $j/../../@id) then true() else () 
          else ()"/>
-      <!-- START TESTING BLOCK -->
-      <let name="test1" value="$src-data-for-this-tok"/>
-      <let name="test2" value="true()"/>
-      <let name="test3" value="true()"/>
-      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
-            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
-      <!-- END TESTING BLOCK -->
       <report test="exists($duplicate-tokens)">Sibling tok elements may not point to the same
          token.</report>
       <report test="$src-data-for-this-tok/tan:div/@error">Every ref cited must be found in every

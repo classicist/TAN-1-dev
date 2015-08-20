@@ -117,6 +117,7 @@
       <rule context="tan:div-ref">
          <let name="this" value="."/>
          <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
+         <let name="tokenized-srcs" value="$this-src-list[. = tan:src-ids-to-nos($tokenizations/@src)]"/>
          <let name="this-refs-norm"
             value="for $i in $this-src-list
                return
@@ -150,13 +151,16 @@
          <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
             select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
          <!-- END TESTING BLOCK -->
-         <report test="$src-data-for-this-div-ref/tan:div/@error or $ref-has-errors">Every
-            ref cited must be found in every source (<value-of
+         <report test="$ref-has-errors">Every
+            ref cited must be found in every source (<value-of select="if ($ref-has-errors) 
+               then $this-refs-norm else ()"/>).</report>
+         <report test="some $i in $tokenized-srcs satisfies $src-data-for-this-div-ref[$i]/tan:div/@error">Tokenization
+            errors: <value-of
                select="for $i in $src-count,
-                     $j in $src-data-for-this-div-ref[$i]/tan:div[@error]
-                  return
-                     concat($src-ids[$i], ': ', $j/@ref)"
-            /><value-of select="if ($ref-has-errors) then $this-refs-norm else ()"/>).</report>
+               $j in $src-data-for-this-div-ref[$i]/tan:div[@error]
+               return
+               concat($src-ids[$i], ': ', $j/@ref)"
+            /></report>
          <report
             test="$qty-of-srcs-with-implicit-div-types gt 0 and $qty-of-srcs-with-implicit-div-types ne count($this-src-list)"
             >Either all sources or no sources must be declared in implicit-div-type-refs</report>

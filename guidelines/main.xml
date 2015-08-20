@@ -7475,10 +7475,19 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                      some other unique identifier for the authority used. If you or another editor
                      are a lexical authority, no separate <code>&lt;lexicon></code> entry need be
                      given. Credit will be made to the appropriate <code>&lt;agent></code>.</para>
-                  <para>There is, at present, no standard exchange format for lexica and
-                     dictionaries. So even if a digital form of a dictionary is identified through
-                     the <xref linkend="digital_entity_metadata"/>, no validation tests will be
-                     performed.</para>
+                  <para>There is, at present, no TAN format for lexica and dictionaries, although
+                     this may change in the future. So even if a digital form of a dictionary is
+                     identified through the <xref linkend="digital_entity_metadata"/>, no validation
+                     tests will be performed. </para>
+                  <para>You may find that one of the existing lexical models may be a suitable
+                     supplement to any TAN collections you develop. The <link
+                        xlink:href="http://www.tei-c.org/release/doc/tei-p5-doc/en/html/DI.html">TEI
+                        supports dictionary encoding</link>, and the <link
+                        xlink:href="http://www.lexicalmarkupframework.org/">Lexical Markup
+                        Framework</link>, an ISO standard (ISO-24613:2008), has defined a data model
+                     for lexicons and dictionaries. The former is geared toward philology and the
+                     latter toward linguistics. You may also devise your own format if neither of
+                     these support aspects of lexicology that you find important.</para>
                   <example>
                      <title><code>&lt;lexicon></code></title>
                      <programlisting>      ...........

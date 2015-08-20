@@ -48,11 +48,12 @@
       <let name="this-which-is-reserved"
          value="if ($this-which = $tokenization-which-reserved)
          then true() else false()"/>
-      <let name="first-tokz-loc" value="tan:location[doc-available(tan:resolve-url(.,'file:/Users'))][1]"/>
-      <!-- file:/Users/joelk/Dropbox/TAN/SERVER/release/1/testing/TAN-R-tok/tok.test.xml -->
+      <let name="first-tokz-loc" value="tan:location[doc-available(tan:resolve-url(.,''))][1]"/>
+      <let name="first-tokz-loc-resolved" value="if (exists($first-tokz-loc)) 
+         then tan:resolve-url($first-tokz-loc,'') else ()"/> 
       <let name="this-tokz"
          value="if ($this-which-is-reserved) then $tokenizations-core[index-of($tokenization-which-reserved,$this-which)] else 
-         if (exists($first-tokz-loc)) then doc($first-tokz-loc) else ()"/>
+         if (exists($first-tokz-loc-resolved)) then doc($first-tokz-loc-resolved) else ()"/>
       <let name="this-tokz-replaces" value="$this-tokz//tan:replace"/>
       <let name="this-tokz-tokenize" value="$this-tokz//tan:tokenize"/>
       <let name="this-tokz-fails-modifiers-at-what-div"
@@ -67,30 +68,34 @@
       <let name="tokenization-langs"
          value="$this-tokz/tan:TAN-R-tok/tan:head/tan:declarations/tan:for-lang"/>
       <!-- START TESTING BLOCK -->
-      <let name="test1" value="tan:resolve-url(tan:location[1],'')"/>
-      <let name="test2" value="$first-tokz-loc"/>
-      <let name="test3" value="true()"/>
-      <report test="true()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
+      <let name="test1" value="doc-available(concat($doc-parent-directory,'TAN-R-tok/tok.test.xml'))"/>
+      <let name="test2" value="doc-available(tan:resolve-url('TAN-R-tok/tok.test.xml',''))"/>
+      <let name="test3" value="tan:resolve-url(tan:location[1],'')"/>
+      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
          select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
       <!-- END TESTING BLOCK -->
-      <!--<report test="exists($this-which) and not($this-which-is-valid)">@which must be one of the
-         following: <value-of select="string-join($tokenization-which-reserved,', ')"/></report>-->
-      <!--<report test="exists($this-tokz-fails-modifiers-at-what-div)">This tokenization pattern fails
+      <report test="exists($this-which) and not($this-which-is-reserved)">@which must be one of the
+         following: <value-of select="string-join($tokenization-which-reserved,', ')"/></report>
+      <report test="exists($this-tokz-fails-modifiers-at-what-div)">This tokenization pattern fails
          to predictably handle the combining characters at <value-of
             select="for $i in (1 to count($tokz-error-refs)) 
             return concat($tokz-error-refs[$i],' ',string-join(for $j in $tokz-error-vals[$i]/tan:modifier return
             concat('pos ',$j/@where,' (U+',$j/@cp,')'),' '))"
-         />.</report>-->
-      <!--<report
-         test="(@which,@xml:id) = (preceding-sibling::tan:recommended-tokenization, following-sibling::tan:recommended-tokenization)/(@which, @xml:id)"
-         >@which and @xml:id values may duplicate each other.</report>-->
-      <!--<assert test="name($this-tokz/*) = 'TAN-R-tok'">Recommended tokenization must point to a
-         TAN-R-tok file (currently <value-of select="name($this-tokz)/*"/></assert>-->
-      <!--<report role="warning"
+         />.</report>
+      <report test="@xml:id = $tokenization-which-reserved">@xml:id values may not use a reserved
+         keyword for tokenization.</report>
+      <!--<assert
+         test="if (exists($this-tokz/*)) then
+               name($this-tokz/*) = 'TAN-R-tok'
+            else
+               true()"
+         >Recommended tokenization must point to a TAN-R-tok file (currently <value-of
+            select="name($this-tokz)/*"/></assert>-->
+      <report role="warning"
          test="$tokenization-langs and not(every $i in $transcription-langs satisfies index-of($tokenization-langs,$i) > 0)"
          >TAN-R-tok file is language specific, and not every language in the body (<value-of
             select="$transcription-langs"/>) is explicitly provided for in the TAN-R-tok file
-         (<value-of select="$tokenization-langs"/>).</report>-->
+         (<value-of select="$tokenization-langs"/>).</report>
    </rule>
    <rule context="tan:recommended-div-type-refs">
       <let name="implicit-is-recommended" value="if (. = 'implicit') then true() else false()"/>

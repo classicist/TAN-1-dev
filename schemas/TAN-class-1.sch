@@ -46,8 +46,7 @@
    <rule context="tan:recommended-tokenization">
       <let name="this-which" value="@which"/>
       <let name="this-which-is-reserved"
-         value="if ($this-which = $tokenization-which-reserved)
-         then true() else false()"/>
+         value="if ($this-which = $tokenization-which-reserved) then true() else false()"/>
       <let name="first-tokz-loc" value="tan:location[doc-available(tan:resolve-url(.,''))][1]"/>
       <let name="first-tokz-loc-resolved" value="if (exists($first-tokz-loc)) 
          then tan:resolve-url($first-tokz-loc,'') else ()"/> 
@@ -84,15 +83,12 @@
          />.</report>
       <report test="@xml:id = $tokenization-which-reserved">@xml:id values may not use a reserved
          keyword for tokenization.</report>
-      <!--<assert
-         test="if (exists($this-tokz/*)) then
-               name($this-tokz/*) = 'TAN-R-tok'
-            else
-               true()"
+      <assert
+         test="every $i in $this-tokz satisfies name($i/*) = 'TAN-R-tok'"
          >Recommended tokenization must point to a TAN-R-tok file (currently <value-of
-            select="name($this-tokz)/*"/></assert>-->
+            select="name($this-tokz/*)"/>)</assert>
       <report role="warning"
-         test="$tokenization-langs and not(every $i in $transcription-langs satisfies index-of($tokenization-langs,$i) > 0)"
+         test="exists($tokenization-langs) and not(every $i in $transcription-langs satisfies index-of($tokenization-langs,$i) > 0)"
          >TAN-R-tok file is language specific, and not every language in the body (<value-of
             select="$transcription-langs"/>) is explicitly provided for in the TAN-R-tok file
          (<value-of select="$tokenization-langs"/>).</report>

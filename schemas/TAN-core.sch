@@ -252,14 +252,13 @@
       <let name="count" value="count(index-of($iris,.))"/>
       <let name="is-iri-of-tan-file" value="tan:must-refer-to-external-tan-file(.)"/>
       <let name="first-loc"
-         value="../tan:location[doc-available(.) or doc-available(concat($doc-parent-directory,.))][1]"/>
+         value="../tan:location[doc-available(tan:resolve-url(.,''))][1]"/>
       <let name="first-doc"
-         value="if (doc-available($first-loc)) then doc($first-loc) 
-         else if (doc-available(concat($doc-parent-directory,$first-loc))) 
-         then doc(concat($doc-parent-directory,$first-loc)) else ()"/>
+         value="if (exists($first-loc)) then doc(tan:resolve-url($first-loc,'')) else ()"/>
       <let name="first-da-iri-name" value="$first-doc/*/@id"/>
       <assert test="$count = 1">An IRI should appear only once in a TAN document.</assert>
-      <report test="$is-iri-of-tan-file and not(text() = $first-da-iri-name)"
+      <report test="if (exists($first-loc)) then ($is-iri-of-tan-file and not(text() = $first-da-iri-name))
+         else false()"
          sqf:fix="replace-with-tan-id">TAN id mismatch (expected: <value-of
             select="$first-da-iri-name"/>)</report>
       <sqf:fix id="replace-with-tan-id">

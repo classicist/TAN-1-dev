@@ -12,6 +12,7 @@
       </xd:desc>
    </xd:doc>
    <xsl:include href="TAN-class-2-functions.xsl"/>
+   <xsl:variable name="tokenized-sources" select="tan:src-ids-to-nos($tokenizations/@src)"/>
    <xsl:variable name="src-1st-da-data-segmented"
       select="tan:segment-tokenized-prepped-class-1-data(tan:tokenize-prepped-class-1-data($src-1st-da-data))"/>
    <xsl:variable name="equate-works" as="xs:integer+">

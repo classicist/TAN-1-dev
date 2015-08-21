@@ -5853,9 +5853,9 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                      been invoked (see <xref linkend="metadata_head"/>). The delimiter to be used to
                      separate <code>@n</code> and <code>@type</code> values and pairs of
                         <code>@n</code> + <code>@type</code> values is completely arbitrary, but
-                     common punctuation is recommended. Hyphens and commas are allowed, but not
-                     recommended, since they are used specially to create ranges of
-                     references.</para>
+                     common punctuation is recommended. Question marks, hyphens, and commas are
+                     allowed, but not recommended, since the first is reserved for requesting
+                     assistance and the last two, for creating ranges of references.</para>
                   <para>Take, for example, book 3 chapter 4 section 2 in a source transcription that
                      uses the abbreviations <code>bk</code>, <code>c</code>, and <code>s</code> for
                      the division types. When flattened, the reference becomes something like
@@ -5864,7 +5864,7 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                         <para>The periods and colons in <code>bk.3:c.4:s.2</code> are entirely
                            arbitrary. Other forms, such as <code>bk 3/c 4/s 2</code>
                            <code>bk.3.c.4.s.2</code>
-                           <code>bk.3:c;4|s=2</code> are permissible and will be treated
+                           <code>bk.3:c;4@s=2</code> are permissible and will be treated
                            identically. But for the sake of those who must read your data, it is
                            best to be clear and consistent and not to use misleading separators.
                            Punctuation acts to delimit elements in a hierarchy, so the values being
@@ -5874,22 +5874,23 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                               <code>@n</code> and <code>@type</code> values, and a colon is used to
                            chain <code>@n</code>-<code>@type</code> pairs.</para>
                         <para>It is important to avoid the use of the space as a delimiter in cases
-                           where unlabeled <code>&lt;div></code>s are used. For example, for an
-                           unnumbered preface, the preferred flattened reference would be
-                              <code>"preface."</code> and not <code>"preface "</code>.</para>
+                           where a text has <code>&lt;div></code>s with empty <code>@n</code>. For
+                           example, for an unnumbered preface, the preferred flattened reference
+                           would be <code>"preface."</code> and not <code>"preface "</code>.</para>
                      </note></para>
                   <para>Many sources will be structured to allow you to declare the div types to be
-                     implicit (see <xref linkend="implicit-div-type-refs"/>). In those cases either
-                     the longer form or a shorter one may be used: <code>3:4:2</code>.</para>
-                  <para>In some cases, <code>@ref</code> may take a sequence of references,
-                     constructed by taking two or more flattened references and joining them with a
-                     hyphen <code>-</code> (for range) or a comma <code>,</code> (for union). In any
-                     range, the division referred to on the left should precede that on the right
-                     according to document order. Two flattened references joined by a hyphen
-                     signify an entire range of leaf <code>&lt;div></code>s. A comma indicates the
-                     union of references or ranges on either side. Flattened references must be
-                     spelled in full. For example, <code>bk.3:c.4:s.2 - bk.3:c.4:s.4 ,
-                        bk.3:c.4:s.8</code> and <code>3:4:2 - 3:4:4 , 3:4:8</code> are correct ways
+                     implicit. In those cases either the longer form or a shorter one may be used:
+                        <code>3:4:2</code>, but you must declare your use of the shorter syntax
+                     before you use it. See <xref linkend="implicit-div-type-refs"/>.</para>
+                  <para>In some cases, <code>@ref</code> may point to multiple
+                     <code>&lt;div></code>s, constructed by taking two or more flattened references
+                     and joining them with a hyphen <code>-</code> for range or a comma
+                        <code>,</code> for union. In any range, the division referred to on the left
+                     should come before the one on the right in document order. Two flattened
+                     references joined by a hyphen signify an entire range of leaf
+                        <code>&lt;div></code>s. A comma indicates the union of references or ranges
+                     on either side. For example, <code>bk.3:c.4:s.2 - bk.3:c.4:s.4,
+                        bk.3:c.4:s.8</code> and <code>3:4:2 - 3:4:4, 3:4:8</code> are correct ways
                      to refer to sections 2, 3, 4, and 8 of the fourth chapter of book three. </para>
                   <para>In some cases, a range of references must be siblings (i.e., <code>bk.3 -
                         bk.3:c.4:s.4</code> would be disallowed), as, for example, in elements for
@@ -5934,14 +5935,14 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                      times.</para>
                   <para>The numerical value to which the keyword <code>last</code> resolves depends
                      upon the context of each source and ref.</para>
-                  <para>There may be times when an editor needs a quick reminder as to how many
-                     words or characters are allowed. As a convenience, a question mark may be
-                     placed in <code>@ord</code> (the following is true also for
-                     <code>@chars</code>). Upon validation there will be both an error message for
-                     the malformed content (a question mark is not allowed) and a warning message
-                     indicating the maximal value allowed. The report does not take into account the
-                     presence of <code>@val</code>. That is, it returns the greatest value of
-                        <code>@ord</code> that is allowed.</para>
+                  <para><emphasis role="bold">SQF tip.</emphasis> There may be times when you need a
+                     quick reminder as to how many words or characters are allowed. As a
+                     convenience, a question mark may be placed in <code>@val</code>,
+                        <code>@ord</code>, and <code>@chars</code>. Upon validation, along with an
+                     error message for the malformed content (a question mark is not allowed), a
+                     warning message will indicate either the maximal value allowed or the possible
+                     values of <code>@val</code>, along with how many times that word token occurs
+                     in the chosen <code>&lt;div></code>s.</para>
                </section>
                <section xml:id="attr_cert">
                   <title><code>@cert</code></title>

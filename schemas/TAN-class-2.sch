@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- To do: 
-   add rule to <tokenization>: for any tokenization not already recommended by 
-a source, run the same test as run on recommended-tokenizations within class 1 validation. 
-That is, ensure that tokenization on the source text in both ways of handling modifying 
-characters is identical.-->
+   ADD rule to <tokenization>: for any tokenization not already recommended by 
+   a source, run the same test as run on recommended-tokenizations within class 1 validation. 
+   That is, ensure that tokenization on the source text in both ways of handling modifying 
+   characters is identical.
+   ADD rule to @ref: if a question mark is present, return the possible values for the next letter
+   or number in the flattened ref, taking into account any partially completed flattened ref 
+   just to the left of the question mark-->
 
 <pattern xmlns="http://purl.oclc.org/dsdl/schematron" xmlns:tan="tag:textalign.net,2015:ns"
    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-T.rnc" type="application/relax-ng-compact-syntax"?>
-<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-T.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
-<!--<?xml-model href="../schemas/TAN-T.rnc" type="application/relax-ng-compact-syntax"?>
-<?xml-model href="../schemas/TAN-T.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>-->
+<?xml-model href="../schemas/TAN-T.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="../schemas/TAN-T.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<!--<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-T.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-T.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>-->
 <TAN-T xmlns="tag:textalign.net,2015:ns"
     id="tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:semantic-refs" TAN-version="1">
     <head>
@@ -66,6 +66,7 @@
             <IRI>http://schema.org/editor</IRI>
             <name xml:lang="eng">Editor</name>
         </role>
+        <change when="2015-08-21-04:00" who="kalvesmaki">Removed empty divs.</change>
         <change when="2015-07-09-04:00" who="kalvesmaki">Started new file.</change>
     </head>
     <body xml:lang="grc" ed-who="kalvesmaki" ed-when="2015-08-02T15:31:07.816-04:00">
@@ -1137,7 +1138,7 @@
                     <div type="ic" n="4">αὗται δὲ οὐκ εἰσὶ τῶν πρός τι.</div></div><div type="s"
                     n="5"><div type="ic" n="1">— ἔτι εἰ τυγχάνει τὸ αὐτὸ ποιὸν καὶ πρός τι ὄν, οὐδὲν
                         ἄτοπον ἐν ἀμφοτέροις τοῖς γένεσιν αὐτὸ καταριθμεῖσθαι.</div></div>
-                <div type="s" n="6"/></div>
+                </div>
             <div type="par" n="4">&lt;. . . . . . . . . . . . . . . . . . .></div>
             <div type="par" n="5">
                 <div type="s" n="1"><div type="ic" n="1">Ἐπιδέχεται δὲ καὶ τὸ ποιεῖν καὶ πάσχειν
@@ -1151,7 +1152,7 @@
                         μᾶλλον καὶ ἧττον, καὶ λυπεῖσθαι μᾶλλον καὶ ἧττον·</div>
                     <div type="ic" n="3">ἐπιδέχεται οὖν τὸ μᾶλλον καὶ τὸ ἧττον τὸ ποιεῖν καὶ τὸ
                         πάσχειν.</div></div>
-                <div type="s" n="3"/></div>
+                </div>
             <div type="par" n="6">&lt;. . . . . . . . . . . . . . . . . . .></div>
             <div type="par" n="7">
                 <div type="s" n="1"><div type="ic" n="1">[Ὑπὲρ μὲν οὖν τούτων τοσαῦτα λέγεται·</div>

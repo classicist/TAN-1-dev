@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-model href="../../../SERVER/release/1/dev/schemas/TAN-LM.rnc" type="application/relax-ng-compact-syntax"?>
-<?xml-model href="../../../SERVER/release/1/dev/schemas/TAN-LM.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<?xml-model href="../../schemas/TAN-LM.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="../../schemas/TAN-LM.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
 <TAN-LM xmlns="tag:textalign.net,2015:ns" TAN-version="1"
     id="tag:parkj@textalign.net,2015:ring01-lm">
     <head>
@@ -15,14 +15,14 @@
         <source>
             <IRI>tag:parkj@textalign.net,2015:ring01</IRI>
             <name>TAN transcription of Ring a Ring o' Roses</name>
-            <location when-accessed="2015-06-08-04:00">../TAN-T/ring-o-roses.eng.1881.xml</location>
+            <location when-accessed="2015-06-08-04:00">../ring-o-roses.eng.1881.xml</location>
         </source>
         <declarations>
-            <morphology xml:id="penn">
-                <IRI>tag:kalvesmaki@gmail.com,2014:tan-r-mor:eng:penn</IRI>
+            <morphology xml:id="penn" ed-when="2015-08-20-04:00" ed-who="park">
+                <IRI>tag:kalvesmaki.com,2014:tan-r-mor:eng:penn</IRI>
                 <name>Penn Treebank tag set</name>
-                <location when-accessed="2015-03-10"
-                    >../TAN-R-mor/eng.kalvesmaki@gmail.com,2014.2.xml</location>
+                <location when-accessed="2015-08-20"
+                    >https://raw.githubusercontent.com/Arithmeticus/TAN-class-3/master/TAN-R-mor/eng.kalvesmaki.com%2C2014.2.xml</location>
             </morphology>
             <lexicon xml:id="test">
                 <IRI>tag:kalvesmaki@gmail.com,2014:lexicon:eng:test</IRI>

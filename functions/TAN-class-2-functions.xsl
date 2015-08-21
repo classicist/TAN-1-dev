@@ -39,11 +39,19 @@
             $sources/@xml:id"/>
    <xsl:variable name="src-1st-da-locations"
       select="
-         for $i in $sources/tan:location[doc-available(tan:resolve-url(.,''))][1]
+         for $i in $sources/tan:location[doc-available(tan:resolve-url(., ''))][1]
          return
-            tan:resolve-url($i,'')"/>
-   <xsl:variable name="src-1st-da-uri" select="for $i in $src-1st-da-locations return base-uri(doc($i))"/>
-   <xsl:variable name="src-1st-da-parent-directory" select="for $i in $src-1st-da-uri return replace($i, '[^/]+$', '')"/>
+            tan:resolve-url($i, '')"/>
+   <xsl:variable name="src-1st-da-uri"
+      select="
+         for $i in $src-1st-da-locations
+         return
+            base-uri(doc($i))"/>
+   <xsl:variable name="src-1st-da-parent-directory"
+      select="
+         for $i in $src-1st-da-uri
+         return
+            replace($i, '[^/]+$', '')"/>
    <xsl:variable name="src-1st-da-heads"
       select="
          for $i in $src-1st-da-locations
@@ -92,30 +100,30 @@
                         ($this-tokz/tan:location[doc-available(tan:resolve-url(., ''))],
                         $tokenization-errors[1])[1]
                      else
-                        ()"
-               />
-               <xsl:variable name="cl-2-no-which" select="if ($this-tokz/@which) then () else $tokenization-errors[2]"/>
+                        ()"/>
+               <xsl:variable name="cl-2-no-which"
+                  select="
+                     if ($this-tokz/@which) then
+                        ()
+                     else
+                        $tokenization-errors[2]"/>
                <xsl:variable name="src-rec-tokz-chosen"
-                  select="$src-1st-da-heads[$this-src]/tan:declarations/tan:recommended-tokenization[@xml:id = $this-tokz/@which]"
-               />
+                  select="$src-1st-da-heads[$this-src]/tan:declarations/tan:recommended-tokenization[@xml:id = $this-tokz/@which]"/>
                <xsl:variable name="cl-1-loc"
                   select="
                      if (exists($src-rec-tokz-chosen)) then
                         ($src-rec-tokz-chosen/tan:location[doc-available(tan:resolve-url(., $src-1st-da-parent-directory[$this-src]))],
                         $tokenization-errors[3])[1]
                      else
-                        ()"
-               />
+                        ()"/>
                <xsl:variable name="not-a-keyword"
                   select="
                      if (exists($src-rec-tokz-chosen) or $tokenization-which-reserved = $this-tokz/@which) then
                         ()
                      else
-                        $tokenization-errors[4]"
-               />
+                        $tokenization-errors[4]"/>
                <xsl:variable name="keyword-loc"
-                  select="$tokenization-which-reserved-doc-available[index-of($tokenization-which-reserved, $this-tokz/@which)]"
-               />
+                  select="$tokenization-which-reserved-doc-available[index-of($tokenization-which-reserved, $this-tokz/@which)]"/>
                <xsl:variable name="this-tokz-1st-da-location"
                   select="
                      if (exists($cl-2-loc)) then
@@ -130,16 +138,14 @@
                               if (exists($not-a-keyword)) then
                                  $not-a-keyword
                               else
-                                 $keyword-loc"
-               />
+                                 $keyword-loc"/>
                <xsl:element name="tan:tokenization">
                   <xsl:attribute name="via-src"
                      select="
                         if (exists($src-rec-tokz-chosen)) then
                            true()
                         else
-                           false()"
-                  />
+                           false()"/>
                   <xsl:element name="tan:location">
                      <xsl:value-of select="$this-tokz-1st-da-location"/>
                   </xsl:element>
@@ -602,6 +608,16 @@
          as="xs:integer+"/>
       <xsl:value-of select="$last - max($input-3)"/>
    </xsl:function>
+   <xsl:function name="tan:help-requested" as="xs:boolean">
+      <xsl:param name="element" as="element()"/>
+      <xsl:value-of
+         select="
+            if (matches($element/@val, ' \?|\? ') or matches($element/@ord, '\?')) then
+               true()
+            else
+               false()"
+      />
+   </xsl:function>
 
    <!-- CONTEXT DEPENDENT FUNCTIONS -->
    <xsl:function name="tan:src-ids-to-nos" as="xs:integer*">
@@ -798,6 +814,7 @@
          @n (digit specifying original token number in the leaf div) -->
       <xsl:param name="tok-element" as="element()"/>
       <xsl:variable name="this-src-list" select="tan:src-ids-to-nos($tok-element/@src)"/>
+      <xsl:variable name="help-requested" select="tan:help-requested($tok-element)"/>
       <xsl:variable name="this-refs-norm"
          select="
             for $i in $this-src-list
@@ -808,16 +825,26 @@
                   tan:normalize-refs($tok-element/@ref)"/>
       <xsl:variable name="this-ord"
          select="
-            if ($tok-element/@ord) then
-               normalize-space(replace($tok-element/@ord, '\?', ''))
+            if ($help-requested) then
+               '1 - last'
             else
-               ()"/>
+               if ($tok-element/@ord) then
+                  normalize-space(replace($tok-element/@ord, '\?', ''))
+               else
+                  ()"
+      />
       <xsl:variable name="this-val"
          select="
-            if ($tok-element/@val) then
-               normalize-space($tok-element/@val)
+            if ($help-requested) then
+               if (matches($tok-element/@val, '^\s+\?$|^\?\s+$')) then
+                  ()
+               else
+                  normalize-space(replace($tok-element/@val, '\s+\?|\?\s+', ''))
             else
-               ()"/>
+               if (exists($tok-element/@val)) then
+                  normalize-space($tok-element/@val)
+               else
+                  ()"/>
       <xsl:variable name="src-ref-subset"
          select="tan:pick-prepped-class-1-data($this-src-list, $this-refs-norm)"/>
       <xsl:variable name="src-ref-subset-tokenized"

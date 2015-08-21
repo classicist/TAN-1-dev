@@ -89,11 +89,12 @@
       </rule>
       <rule context="tan:tok">
          <let name="this-pos" value="count(preceding-sibling::tan:tok) + 1"/>
-         <let name="these-splits" value="tan:pick-tokenized-prepped-class-1-data(.)"/>
+         <let name="help-requested" value="tan:help-requested(.)"/>
+         <let name="these-splits" value="if ($help-requested) then () else tan:pick-tokenized-prepped-class-1-data(.)"/>
          <let name="duplicate-splits" value="for $i in $these-splits//tan:tok return
             if ($leaf-div-splits-raw[position() ne $this-pos]/tan:source[@id = $i/../../@id]/tan:div[@ref = $i/../@ref]/tan:tok[@n = $i/@n]) 
             then concat($i/../../@id,': ',$i/../@ref,' tok ',$i/@n) else ()"/>
-         <report test="exists($duplicate-splits)">Splitting a leaf div more than once in the 
+         <report test="exists($duplicate-splits) and not($help-requested)">Splitting a leaf div more than once in the 
             same place is not allowed (<value-of select="string-join($duplicate-splits,' ')"/>).</report>
          <assert test="tan:src-ids-to-nos(@src) = $tokenized-sources">Source lacks a tokenization
             declaration.</assert>

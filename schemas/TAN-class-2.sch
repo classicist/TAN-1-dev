@@ -3,10 +3,7 @@
    add rule to <tokenization>: for any tokenization not already recommended by 
 a source, run the same test as run on recommended-tokenizations within class 1 validation. 
 That is, ensure that tokenization on the source text in both ways of handling modifying 
-characters is identical.
-   add rule to <tok>: if the value is a question mark provide a list of distinct word tokens that
-would be valid, along with the number of times each word appears. Keep it in document order 
-(distinct values mean some alteration is necessary). -->
+characters is identical.-->
 
 <pattern xmlns="http://purl.oclc.org/dsdl/schematron" xmlns:tan="tag:textalign.net,2015:ns"
    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
@@ -150,8 +147,11 @@ would be valid, along with the number of times each word appears. Keep it in doc
    </rule>
    <rule context="tan:tok">
       <let name="src-data-for-this-tok" value="tan:pick-tokenized-prepped-class-1-data(.)"/>
+      <let name="help-requested" value="tan:help-requested(.)"/>
+      <let name="val-without-help" value="replace(@val,'\s+\?|\?\s+','')"/>
       <let name="token-ceiling"
-         value="min(for $i in $src-data-for-this-tok/tan:div return number($i/@max-toks))"/>
+         value="min(for $i in $src-data-for-this-tok/tan:div return if($val-without-help) 
+         then count($i/tan:tok[. = $val-without-help]) else number($i/@max-toks))"/>
       <let name="char-ceiling"
          value="min(for $i in $src-data-for-this-tok//tan:tok return string-length($i))"/>
       <let name="this-chars"
@@ -163,7 +163,7 @@ would be valid, along with the number of times each word appears. Keep it in doc
       <let name="this-src-qty-with-implicit-div-types"
          value="count($src-data-for-this-tok[position() = $src-impl-div-types][tan:div])"/>
       <let name="src-data-for-sibling-toks"
-         value="for $i in (preceding-sibling::tan:tok, following-sibling::tan:tok) 
+         value="for $i in (preceding-sibling::tan:tok, following-sibling::tan:tok)[not(tan:help-requested(.))] 
          return tan:pick-tokenized-prepped-class-1-data($i)"/>
       <let name="duplicate-tokens"
          value="for $i in $src-data-for-this-tok//tan:tok, 
@@ -171,7 +171,7 @@ would be valid, along with the number of times each word appears. Keep it in doc
          if (deep-equal($i,$j)) then 
          if ($i/../@ref = $j/../@ref and $i/../../@id = $j/../../@id) then true() else () 
          else ()"/>
-      <report test="exists($duplicate-tokens)">Sibling tok elements may not point to the same
+      <report test="exists($duplicate-tokens) and not($help-requested)">Sibling tok elements may not point to the same
          token.</report>
       <report test="$src-data-for-this-tok/tan:div/@error">Every ref cited must be found in every
          source (<value-of
@@ -200,9 +200,9 @@ would be valid, along with the number of times each word appears. Keep it in doc
             (<value-of
             select="string-join(for $i in $src-data-for-this-tok/tan:div[not(@lang)] return concat($i/../@id,':',$i/@ref),', ')"
          />)</report>
-      <report test="matches(@ord,'\?')" role="warning">Acceptable values 1 through <value-of
+      <report test="matches(@ord,'\?')" role="warning">Help: acceptable values 1 through <value-of
             select="$token-ceiling"/></report>
-      <report test="matches(@chars,'\?')" role="warning">Acceptable values 1 through <value-of
+      <report test="matches(@chars,'\?')" role="warning">Help: acceptable values 1 through <value-of
             select="$char-ceiling"/></report>
       <report
          test="$this-src-qty-with-implicit-div-types gt 0 and 
@@ -211,8 +211,18 @@ would be valid, along with the number of times each word appears. Keep it in doc
          implicit-div-type-refs (<value-of select="$this-src-qty-with-implicit-div-types"/>,
             <value-of select="count(tan:src-ids-to-nos(@src))"/>)</report>
       <report
-         test="$src-data-for-this-tok//tan:tok[@n='1'][not(@error)] and parent::tan:split-leaf-div-at"
+         test="$src-data-for-this-tok//tan:tok[@n = '1'][not(@error)] and parent::tan:split-leaf-div-at and
+            not($help-requested)"
          >No leaf div may be split at the first token.</report>
+      <report test="@val and $help-requested" role="warning">Help: 
+         <value-of
+            select="for $i in $src-data-for-this-tok,
+                  $j in $i/tan:div
+               return
+                  string-join(concat($j/@ref, ': ', string-join(for $k in distinct-values($j/tan:tok)
+                  return
+                     concat($k, '[', count($j/tan:tok[. = $k]), ']'), ', ')), '; ')"
+         /></report>
    </rule>
 
 </pattern>

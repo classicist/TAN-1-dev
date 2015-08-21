@@ -121,7 +121,7 @@
       duplicates and to prepare texts for leaf div segmentation. -->
       <xsl:for-each select="$body/tan:split-leaf-div-at/tan:tok">
          <xsl:copy>
-            <xsl:copy-of select="tan:pick-tokenized-prepped-class-1-data(.)"/>
+            <xsl:copy-of select="if (tan:help-requested(.)) then () else tan:pick-tokenized-prepped-class-1-data(.)"/>
          </xsl:copy>
       </xsl:for-each>
    </xsl:variable>

@@ -132,8 +132,9 @@
                      tan:normalize-refs(@ref)"/>
          <let name="qty-of-srcs-with-implicit-div-types"
             value="count($this-src-list[. = $src-impl-div-types])"/>
-         <let name="src-data-for-this-div-ref"
-            value="tan:segment-tokenized-prepped-class-1-data(tan:tokenize-prepped-class-1-data(tan:pick-prepped-class-1-data($this-src-list, $this-refs-norm)))"/>
+         <let name="src-data-for-this-div-ref" value="tan:pick-prepped-class-1-data($this-src-list, $this-refs-norm)"/>
+         <let name="src-segmented-data-for-this-div-ref"
+            value="tan:segment-tokenized-prepped-class-1-data(tan:tokenize-prepped-class-1-data($src-data-for-this-div-ref))"/>
          <let name="duplicate-sibling"
             value="for $i in (preceding-sibling::node(),
                following-sibling::node())
@@ -142,16 +143,17 @@
                      true()
                   else
                      ()"/>
-         <let name="ref-has-errors" value="matches($this-refs-norm,'!!error')"/>
+         <!--<let name="ref-has-errors" value="matches($this-refs-norm,'!!error')"/>-->
+         <let name="ref-has-errors" value="$src-data-for-this-div-ref/tan:div/@error"/>
          <let name="this-segs" value="if (@seg) then normalize-space(replace(@seg,'\?','')) else ()"/>
-         <let name="seg-count" value="for $i in $src-data-for-this-div-ref/tan:div return count($i/tan:seg)"/>
+         <let name="seg-count" value="for $i in $src-segmented-data-for-this-div-ref/tan:div return count($i/tan:seg)"/>
          <let name="seg-ceiling" value="min($seg-count)"/>
          <let name="this-seg-max" value="if (exists($this-segs)) then tan:max-integer($this-segs) else 1"/>
          <let name="this-seg-min-last" value="if (exists($this-segs) and exists($seg-ceiling)) 
             then tan:min-last($this-segs,$seg-ceiling) else 1"/>
          <!-- START TESTING BLOCK -->
-         <let name="test1" value="$this-seg-max"/>
-         <let name="test2" value="$this-seg-min-last"/>
+         <let name="test1" value="$src-impl-div-types"/>
+         <let name="test2" value="tan:normalize-refs('bk a ch 1 p 1')"/>
          <let name="test3" value="true()"/>
          <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
             select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>

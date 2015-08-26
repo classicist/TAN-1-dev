@@ -28,7 +28,7 @@
          </info>
          <revision>
             <revnumber>1/dev</revnumber>
-            <date>2015-08-19</date>
+            <date>2015-08-26</date>
             <revdescription>
                <para>Prepublication working draft, under construction and for private circulation
                   only. Corrections are actively solicited and should be sent to the author (see
@@ -56,8 +56,8 @@
             <title>Definition and audience </title>
             <para>The Text Alignment Network (TAN) is a suite of XML encoding formats and associated
                rules and recommended practices, intended to serve anyone who wishes to encode,
-               exchange, and study varieties of text reuse: translations, paraphrases, adaptations,
-               summaries, quotations, and so forth. </para>
+               exchange, and study translations, paraphrases, adaptations, quotations, and other
+               varieties of text reuse. </para>
             <para>The XML encoding formats behind TAN have been designed to be maximally readable
                and editable by both humans and machines, to be useful independent of any programs or
                tools, and to be both syntactically and semantically interoperable. TAN files are
@@ -6095,23 +6095,32 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
          </section>
          <section xml:id="tan-a-div">
             <title>Division-Based Alignments (<code>&lt;TAN-A-div></code>)</title>
-            <para>The TAN format for macroscopic, division-based alignment, TAN-A-div, is dedicated
-               to aligning any number of versions of any number of works on the basis of the
+            <para>The format for macroscopic, division-based alignment, TAN-A-div, is dedicated to
+               aligning any number of versions of any number of works on the basis of
                   <code>&lt;div></code>s in the sources. A TAN-A-div file is technically not an
                alignment per se. Rather, it is an alignment constructor. That is, a TAN-A-div file
                specifies parameters to be followed to generate a desired alignment. It is up to a
                processor to use that TAN-A-div file to create a byproduct (HTML, pdf, word
                processing document, etc.) that will be recognizable to most people as an
                alignment.</para>
-            <para>Transcribers, despite their best intentions, may fail to produce transcriptions of
-               the same work that align. Perhaps the works or div types are not defined identically,
-               or perhaps one version follows a reference system at odds with another. TAN-A-div has
-               been designed to allow you to reconcile inconsistencies, and to explicitly declare
-               alignments that a computer might not be able to detect automatically. </para>
-            <para>Every source invoked by a TAN-A-div will have alignments inferred wherever
-               possible, and when not overridden explicitly. If the sources do not align exactly, or
-               as one wishes, the format may be used to adjust and refine the alignment of the
-               sources, even down to the word level. </para>
+            <para>Some independently created transcriptions of the same work will, no matter the
+               good intentions of the transcribers, fail to correspond exactly to other versions the
+               same work. Perhaps the works or div types will not be defined identically, or perhaps
+               one version follows a reference system at odds with another. TAN-A-div is used to
+               reconcile such inconsistencies, to make special alignments that a computer might not
+               be able to detect automatically, and to refine the alignment of parallel sources,
+               even down to the word level. </para>
+            <para>The assumptions of an aligner are opaque in the TAN-A-div format. A TAN-A-div file
+               says, in essence, "Please align the following sources," but it does not say why the
+               alignment is requested, and it does not indicate what relationship holds between the
+               various sources. Indeed, a TAN-A-div file could be used to align passages that have
+               no apparent parallel or connection (to what end would be unclear). If it is important
+               to convey assumptions about how the text has been reused, the TAN-A-tok format should
+               be used.</para>
+            <para>The TAN-A-div format assumes greedy alignment. Every source invoked will have
+               alignments inferred wherever possible, and when not overridden explicitly. Alignments
+               are also transitive. If passage A aligns with B, then anything that aligns with A
+               will align with anything that aligns with B.</para>
             <section>
                <title>Rootmost Element and Header</title>
                <para>The rootmost element of a TAN division-based alignment file is
@@ -6119,31 +6128,28 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                <para>Under <code>&lt;head></code>, some special rules apply to TAN-A-div
                   types.</para>
                <para>One or more <code>&lt;source></code>s must be declared (<xref
-                     linkend="source_and_see-also"/>). It may seem strange to have an alignment file
-                  with only a single source, but this is allowed, to facilitate self-alignment
-                  (i.e., to indicate places where a source reuses itself). Every
-                     <code>&lt;source></code> must take an <code>@xml:id</code> for references to
-                  the source.</para>
-               <para><code>&lt;declarations></code> takes zero or more of the four declarations
-                  common to class 2 files: <code>&lt;tokenization></code>,
+                     linkend="source_and_see-also"/>). An alignment file with only a single source
+                  may seem at first strange, but it may be useful for self-alignment (i.e., to
+                  indicate places where a source reuses itself). </para>
+               <para>Every <code>&lt;source></code> must take an <code>@xml:id</code> for references
+                  to the source.</para>
+               <para><code>&lt;declarations></code> takes zero or more of the declarations common to
+                  class 2 files: <code>&lt;tokenization></code>,
                      <code>&lt;suppress-div-types></code>, <code>&lt;rename-div-types></code>,
                      <code>&lt;rename-div-ns></code>. See <xref linkend="class_2_common"/>.</para>
-               <para><code>&lt;rename-div-ns></code> can be used on occasion for simple points of
-                  reconciliation, and therefore alignment. For example, if two versions of the same
-                  work assign the same book two different <code>@n</code> values, e.g., "john" and
-                  "jn" for the New Testament gospel, then this element can be used to reconcile
-                  those differences. But it should not be used to reconcile more complex
-                  differences. And although it can be used to reconcile alternative numbering
-                  systems, that is a convenience, not a necessity of the alignment. Roman and
-                  alphabetic numbering systems are to be detected by preprocessors and to be treated
-                  identically to their Arabic numeral counterparts.</para>
-               <para>The assumptions of an aligner are opaque in the TAN-A-div format. A TAN-A-div
-                  file says, in essence, "Please align the following sources," but it does not say
-                  why the alignment is requested, and it does not make any statements about the
-                  relationship that holds between the various sources. Indeed, a TAN-A-div file
-                  could be used to align passages that have no apparent relationship (to what end
-                  might be unclear). If it is important to convey assumptions about how the text has
-                  been reused, the TAN-A-tok format should be used.</para>
+               <para><code>&lt;rename-div-ns></code> can be used on occasion to harmonize discordant
+                     <code>@n</code> values, e.g., turning "<code>john</code>" into
+                  "<code>jn</code>" so that it conforms to the majority of the other versions of the
+                  New Testament gospel. It can also be used to declare a change from Roman and
+                  alphabetic numbering systems into Arabic. But that is strictly speaking a
+                  convenience, not a necessity, since TAN-compliant preprocessors will automatically
+                  detect Roman and alphabetic numbering systems and treat them identically to their
+                  Arabic numeral counterparts. Although this element can be used to reconcile simple
+                  differences such as this, it should not be used for more complex inconsistencies,
+                  best handled in the <code>&lt;body></code>.</para>
+               <para><code>&lt;rename-div-types></code> is strictly a convenience, to allow you to
+                  choose division labels that are more familiar or less confusing. It does not
+                  reconcile division types. </para>
                <example>
                   <title>TAN-A-div <code>&lt;head></code></title>
                   <para>
@@ -6259,8 +6265,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                      <code>&lt;div></code>s according to flattened references." </para>
                <para>A processor will create groups of works by looking for matches in the sources'
                      <code>declarations/work/IRI</code> values. To those matches will be added any
-                  sources you claim should be treated as having equivalent works. Then within each
-                  work group, the processor will standardize the <code>@type</code> and
+                  sources you claim should be treated as being equivalently the same work. Then
+                  within each work group, the processor will standardize the <code>@type</code> and
                      <code>@n</code> values that make up each leaf <code>&lt;div></code>'s
                   reference, first by using the sources' <code>declarations/div-type/IRI</code>
                   values to create groups of division types and second by normalizing any
@@ -6388,15 +6394,14 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                      </tgroup>
                   </table>
                </para>
-               <para>A TAN-A-div alignment permits an aligner to reconcile otherwise discordant
-                  sources in a five-step process. Each step is optional and sequence-specific. That
-                  is, each statement assumes declarations made in previous siblings have already
-                  been taken into account. Each of these steps allow an optional <xref
-                     linkend="edit_stamp"/> (therefore not mentioned in the description
-                  below).</para>
+               <para>A TAN-A-div file permits you to realign and align sources sources in a
+                  five-step process. Each step is optional and sequence-specific. That is, each
+                  statement assumes declarations made in previous siblings have already been taken
+                  into account. Each of these steps allow an optional <xref linkend="edit_stamp"/>
+                  (therefore not mentioned in the description below).</para>
                <para>Because the description of the theory behind these actions is abstract and
-                  difficult to understand, each of the steps is first provided examples, to make the
-                  theory more intelligible.</para>
+                  difficult to understand when formulated as a bare principle, each of the steps is
+                  first illustrated with examples, to make the theory more intelligible.</para>
                <para><emphasis role="italic">Step 1: correlate works</emphasis></para>
                <para>
                   <example>
@@ -6414,19 +6419,17 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                            definitions of how that work should be defined. Take for example the
                            Greek Septuagint (<code>lxx</code>), the New Testament (<code>nt</code>),
                            and the King James Bible (<code>kjv</code>), each one justifiably defined
-                           as a distinct work. The <code>nt</code> is contained wholly by the
+                           as different works. The <code>nt</code> is contained wholly by the
                               <code>kjv</code>, and has no overlap with the <code>lxx</code>
                            (ignoring for now <code>nt</code> quotations of the <code>lxx</code>).
                            The <code>kjv</code> overlaps with only the majority of the
                               <code>lxx</code> (books or parts of books commonly transmitted in the
-                           Septuagint translation never made it into the King James Bible). Since
-                           these three sources can be thought of as separate works, the creators of
-                           the TAN-T(EI) filse have each assigned a distinct <code>&lt;IRI></code>
-                           value to <code>&lt;work></code>. But for the purposes of this alignment,
-                           all three can be productively treated as a common work. The line above,
-                              <code>&lt;equate-works></code>, illustrates establishes an ad hoc
-                           equivalence among all three works. Any processor will make alignments
-                           wherever it can.</para>
+                           Septuagint translation never made it into the King James Bible). This
+                           example assumes a case where the creators of the TAN-T(EI) files have
+                           justifiably assigned a different <code>&lt;IRI></code> value to each
+                           source's <code>&lt;work></code>. But for the purposes of this alignment,
+                           all three can be productively treated as a common work, declared through
+                              <code>&lt;equate-works></code>.</para>
                      </caption>
                   </example>
                </para>
@@ -6445,18 +6448,21 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                            >Hamlet</emphasis>, and <emphasis role="italic">King Lear</emphasis>. Any
                         processor of this file will attempt to align the parts of the three plays
                         that share the same reference number. This may be useful for an aligner who
-                        wishes to study the distribution of line length in the course of
-                        Shakespeare's plays by act, scene, and so forth. </para>
+                        wishes to read the three Shakespeare plays in parallel, or compare the
+                        distribution of line length. </para>
                   </caption>
                </example>
                <para>This first step allows you to declare an ad hoc equivalence between sources
-                  that do not already share a work <code>&lt;IRI></code> value. Each equivalence is
-                  made through an <code>&lt;equate-works></code>, which takes a mandatory
-                     <code>@src</code> that refers to one or more <code>&lt;source></code>s (by
-                  their ID). This element is otherwise empty.</para>
+                  that do not already share an <code>&lt;IRI></code> value for
+                     <code>&lt;work></code>. Each equivalence is made through an
+                     <code>&lt;equate-works></code>, which takes a mandatory <code>@src</code> that
+                  refers to one or more <code>&lt;source></code>s (by their ID). This element is
+                  otherwise empty.</para>
                <para>As mentioned above, all TAN-A-div files assume greedy, transitive alignment.
                   Therefore, to equate work X of source A with work Y of source B is to align all
-                  sources for works X and Y.</para>
+                  sources for works X and Y. Therefore, if you are reconciling one source with a
+                  group of others, you need only cite one of those source ids, not all of
+                  them.</para>
                <para>This declaration does not imply that the two works are, in reality, one and the
                   same. It merely states that, for the purposes of this alignment, they should be
                   treated as equivalent.</para>
@@ -6467,18 +6473,17 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   <para>
                      <programlisting>      ...........
    &lt;equate-div-types>
-      &lt;div-type-ref src="blue" div-type-ref="p"/>
-      &lt;div-type-ref src="red" div-type-ref="p"/>
+      &lt;div-type-ref src="blue" div-type-ref="bill"/>
+      &lt;div-type-ref src="red" div-type-ref="bill"/>
    &lt;/equate-div-types>
       ...........   </programlisting>
                   </para>
                   <caption>
-                     <para>This example assumes two sources (<code>&lt;blue></code> and
-                           <code>&lt;red></code>) that both use <code>p</code> as a division type,
-                        but have not used the same IRI to define what <code>p</code> means. Whether
-                        the discrepancy is based upon a principled disagreement, an accident, or a
-                        typographical error, the above says that the two types of divisions are to
-                        be treated as equivalent.</para>
+                     <para>This example assumes two sources (<code>blue</code> and <code>red</code>)
+                        that both use <code>bill</code> as a division type, but have not used the
+                        same IRI to define it. Whether the discrepancy is based upon a principled
+                        disagreement, an accident, or a typographical error, the above says that the
+                        two types of divisions are to be treated as equivalent.</para>
                   </caption>
                </example>
                <example>
@@ -6501,15 +6506,15 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
       ...........   </programlisting>
                   </para>
                   <caption>
-                     <para>Many texts are traditionally segmented into divisions that are given
-                        names distinct to a particular discipline or culture. For example, the
-                           <emphasis role="italic">Summa theologica</emphasis> by Thomas Aquinas
-                        contains articles that allow five kinds of subdivision: question, objection,
-                        "on the contrary" (<emphasis role="italic">sed contra</emphasis>), "I
-                        respond that" (<emphasis role="italic">respondeo</emphasis>), and reply to
-                        objection. This example assumes an alignment of two independently
-                        transcribed versions of the <emphasis>Summa theologica</emphasis>. Both
-                        transcribers found IRIs suitable for the first two subdivisions
+                     <para>Many texts are traditionally segmented into divisions that take
+                        specialized names. For example, the <emphasis role="italic">Summa
+                           theologica</emphasis> by Thomas Aquinas contains articles that allow five
+                        kinds of subdivision: question, objection, "on the contrary" (<emphasis
+                           role="italic">sed contra</emphasis>), "I respond that" (<emphasis
+                           role="italic">respondeo</emphasis>), and reply to objection. This example
+                        assumes an alignment of two independently transcribed versions of the
+                           <emphasis>Summa theologica</emphasis>. Both transcribers found IRIs
+                        suitable for the first two subdivisions
                            (<code>http://dbpedia.org/resource/Question</code> and
                            <code>http://dbpedia.org/resource/Objection_(argument)</code>) but they
                         each had to mint their own IRI for the last three, and they do not match.
@@ -6518,16 +6523,16 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                </example>
                <para>This second step does for div types what the first step did for works. Across
                   all sources, every <code>&lt;div-type></code> that shares an <code>&lt;IRI></code>
-                  value will be treated as equivalent. But if you wish to augment that automated
-                  alignment you may declare an ad hoc equivalence between
-                  <code>&lt;div-type></code>s that do not have any common <code>&lt;IRI></code>
-                  values. Each equivalence is made through an <code>&lt;equate-div-types></code>,
-                  which takes one or more <code>&lt;div-type-ref></code>s, each of which takes a
-                  mandatory <code>@src</code> and <code>@div-type-ref</code>, to point to one or
-                  more sources and division types. You must use either the <code>@xml:id</code>
-                  assigned by the source to that div type or its renamed value, if there is a
-                  corresponding <code>&lt;rename-div-types></code> under
-                     <code>&lt;declarations></code> (see <xref linkend="class_2_metadata"/>).</para>
+                  value will be treated as equivalent. But you may augment that automated alignment
+                  by declaring an ad hoc equivalence between <code>&lt;div-type></code>s that do not
+                  share <code>&lt;IRI></code> values. Each equivalence is made through an
+                     <code>&lt;equate-div-types></code>, which takes one or more
+                     <code>&lt;div-type-ref></code>s, each of which takes a mandatory
+                     <code>@src</code> and <code>@div-type-ref</code>, to point to one or more
+                  sources and division types. You must use either the <code>@xml:id</code> assigned
+                  by the source to that div type or its renamed value, if there is a corresponding
+                     <code>&lt;rename-div-types></code> under <code>&lt;declarations></code> (see
+                     <xref linkend="class_2_metadata"/>).</para>
                <para>As with <code>&lt;equate-works></code>, <code>&lt;equate-div-types></code>
                   assume a greedy, transitive alignment. If div type X of source A is stated to be
                   equivalent to type Y of source B, then all div types X and Y in all other sources

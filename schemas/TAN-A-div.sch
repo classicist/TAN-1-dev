@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- to do: 
-   Report on tan:align[@distribute = true] and tan:realign: children div-ref/(@ref,@seg), grouped by work, must 
-      point to the same number of atomic references, so that they can be distributed one to one.
    Clarify what tokenization error is at the heart of the report at tan:tok
 -->
 <schema xmlns="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2"
@@ -116,8 +114,15 @@
       <rule context="tan:align">
          <let name="this-src-list" value="for $i in tan:div-ref return tan:src-ids-to-nos($i/@src)"/>
          <let name="this-work-list" value="for $i in $this-src-list return $equate-works[$i]"/>
+         <let name="this-align-normalized" value="tan:normalize-align(.)"/>
          <report test="if (@distribute) then count(distinct-values($this-work-list)) eq 1 else false()">@distribute
             has no effect on an align that invokes only one work</report>
+         <report test="$this-align-normalized/@error">@distribute requires one-to-one correlation between
+         each atomic ref in each work/ source. Uncorrelated: 
+            <value-of
+               select="$this-align-normalized[@error]/tan:group/tan:div-ref/(@ref,
+                  @seg)"
+            /></report>
       </rule>
       <rule context="tan:div-ref">
          <let name="this" value="."/>

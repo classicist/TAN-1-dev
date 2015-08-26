@@ -184,6 +184,8 @@
       <tan:align [+ANY ATTRIBUTES]> [IF DISTRIBUTE, ONE PER ATOMIC REF]
          <tan:group> [ONE PER SOURCE OR WORK, DEPENDING ON IF @exclusive IS TRUE OR FALSE]
             <tan:div-ref [+ANY ATTRIBUTES]> [ONE PER SEG PER REF PER SOURCE]
+      NB, <tan:align error="true"> collects div-refs that cannot be allocated in one-to-one matches demanded by
+      @distribute = true
       -->
       <xsl:param name="align-element" as="element()?"/>
       <xsl:variable name="is-exclusive"

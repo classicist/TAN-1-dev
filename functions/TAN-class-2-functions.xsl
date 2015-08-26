@@ -57,6 +57,7 @@
          for $i in $src-1st-da-locations
          return
             document($i)"/>
+   <xsl:variable name="src-1st-da-version" select="for $i in $src-1st-da return tan:most-recent-dateTime($i//(@when | @ed-when | @when-accessed))"/>
    <xsl:variable name="src-1st-da-heads" select="$src-1st-da/*/tan:head"/>
    <xsl:variable name="src-1st-da-data" select="tan:prep-class-1-data($src-1st-da-locations)"/>
    <xsl:variable name="src-1st-da-all-div-types" as="element()">

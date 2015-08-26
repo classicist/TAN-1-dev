@@ -905,8 +905,8 @@
          </xsl:element>
       </xsl:for-each>
    </xsl:function>
-   <xsl:function name="tan:itemize-refs" as="xs:string*">
-      <!-- Turns a compound ref string into a sequence of atomized refs according to the source provided
+   <xsl:function name="tan:itemize-leaf-refs" as="xs:string*">
+      <!-- Turns a compound ref string into a sequence of atomized refs to leaf divs only in the source provided
          Input: normalized ref sequence (value of @ref), source number
          Output: sequence of values of @ref for leaf divs from $src-1st-da-data
       -->
@@ -928,6 +928,59 @@
                <xsl:copy-of
                   select="$src-1st-da-data[$src]/tan:div[matches(@ref, concat('^', $start))][text()]/@ref"
                />
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:for-each>
+   </xsl:function>
+   <xsl:function name="tan:itemize-bare-refs" as="xs:string*">
+      <!-- Turns a compound ref string into a sequence of atomized refs to divs in the source provided,
+         calculated conservatively in the case of ranges. Only peers on the hierarchy will be returned. 
+         Input: normalized ref sequence (value of @ref), source number
+         Output: sequence of values of @ref for leaf divs from $src-1st-da-data
+         E.g., 'book.1:ch.2 , book.2 - book.4' - > ('book.1:ch.2', 'book.2', 'book.3', 'book.4')
+         'book.1:ch.2 , book.2 - book.4:ch.2' - > ('book.1:ch.2', 'book.2', 'book.3', 'book.4:ch.1', 'book.4:ch.2')
+         'book.1:ch.2 , book.2:ch.7 - book.4' - > ('book.1:ch.2', 'book.2:ch.7', 'book.2:ch.8', 'book.3', 'book.4')
+      -->
+      <xsl:param name="ref-range-norm" as="xs:string"/>
+      <xsl:param name="src" as="xs:integer"/>
+      <xsl:variable name="ref-range-seq-1" select="tokenize($ref-range-norm, ' , ')"/>
+      <xsl:for-each select="$ref-range-seq-1">
+         <xsl:variable name="start" select="tokenize(., ' - ')[1]"/>
+         <xsl:variable name="end" select="tokenize(., ' - ')[2]"/>
+         <xsl:variable name="start-hier-pos" select="string-length(replace($start,'\w+',''))"/>
+         <xsl:variable name="end-hier-pos" select="string-length(replace($end, '\w+', ''))"/>
+         <xsl:variable name="top-hier-pos" select="min(($start-hier-pos,$end-hier-pos))"/>
+         <xsl:choose>
+            <xsl:when test="exists($end)">
+               <xsl:variable name="nodes"
+                  select="
+                  $src-1st-da-data[$src]/tan:div[matches(@ref, concat('^', $end))]/(self::tan:div,
+                  preceding-sibling::tan:div) except $src-1st-da-data[$src]/tan:div[@ref = $start]/preceding-sibling::tan:div"/>
+               <xsl:variable name="all-refs" select="$nodes/@ref"/>
+               <xsl:variable name="min-refs" select="$all-refs[string-length(replace(.,'\w+','')) = $top-hier-pos]"/>
+               <xsl:choose>
+                  <xsl:when test="$start-hier-pos gt $end-hier-pos">
+                     <!-- If the beginning of a range is deeper in the hierarchy than the end, you need to add extra refs that
+                     are peers of the beginning -->
+                     <xsl:copy-of
+                        select="
+                           $all-refs[matches(., concat('^', replace($start, concat($separator-hierarchy-regex, '\w+', $separator-type-and-n-regex, '\w+', '$'), '')))][string-length(replace(., '\w+', '')) = $start-hier-pos],
+                           $min-refs"
+                     />
+                  </xsl:when>
+                  <xsl:when test="$end-hier-pos gt $start-hier-pos">
+                     <!-- If the end of a range is deeper in the hierarchy than the beginning, you need to replace the
+                     last item with refs that are peers of the end -->
+                     <xsl:copy-of select="remove($min-refs,count($min-refs)),
+                        $all-refs[matches(.,concat('^',$min-refs[count($min-refs)]))][string-length(replace(., '\w+', '')) = $end-hier-pos]"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:copy-of select="$min-refs"/>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:copy-of select="."/>
             </xsl:otherwise>
          </xsl:choose>
       </xsl:for-each>

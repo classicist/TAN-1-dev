@@ -309,6 +309,14 @@
             select="number(concat('0.', replace(replace($dt-adjusted-as-string, '[-+]\d+:\d+$', ''), '\D+', '')))"
         />
     </xsl:function>
+    <xsl:function name="tan:most-recent-dateTime" as="item()?">
+        <!-- Input: a series of ISO-compliant date or dateTimes
+         Output: the most recent one -->
+        <xsl:param name="dateTimes" as="item()*"/>
+        <xsl:variable name="decimal-val" select="for $i in $dateTimes return tan:dateTime-to-decimal($i)"/>
+        <xsl:variable name="most-recent" select="index-of($decimal-val,max($decimal-val))[1]"/>
+        <xsl:copy-of select="$dateTimes[$most-recent]"/>
+    </xsl:function>
 
     <xsl:function name="tan:normalize-feature-test" as="xs:string">
         <!-- Used to check for validity of @feature-test expressions; used to validate both 

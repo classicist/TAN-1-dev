@@ -52,11 +52,12 @@
          for $i in $src-1st-da-uri
          return
             replace($i, '[^/]+$', '')"/>
-   <xsl:variable name="src-1st-da-heads"
+   <xsl:variable name="src-1st-da"
       select="
          for $i in $src-1st-da-locations
          return
-            document($i)/*/tan:head"/>
+            document($i)"/>
+   <xsl:variable name="src-1st-da-heads" select="$src-1st-da/*/tan:head"/>
    <xsl:variable name="src-1st-da-data" select="tan:prep-class-1-data($src-1st-da-locations)"/>
    <xsl:variable name="src-1st-da-all-div-types" as="element()">
       <tan:all-div-types>

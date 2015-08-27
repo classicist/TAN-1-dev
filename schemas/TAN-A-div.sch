@@ -120,7 +120,7 @@
          <report test="$this-align-normalized/@error">@distribute requires one-to-one correlation between
          each atomic ref in each work/ source. Uncorrelated: 
             <value-of
-               select="$this-align-normalized[@error]/tan:group/tan:div-ref/(@ref,
+               select="$this-align-normalized[@error]/tan:div-ref/(@ref,
                   @seg)"
             /></report>
       </rule>

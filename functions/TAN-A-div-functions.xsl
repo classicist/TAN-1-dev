@@ -182,8 +182,9 @@
       @exclusive claims (which are therefore dropped). It has no effect on empty tan:align elements that 
       merely point to other alignments. The result follows this pattern:
       <tan:align [+ANY ATTRIBUTES]> [IF DISTRIBUTE, ONE PER ATOMIC REF]
-         <tan:group> [ONE PER SOURCE OR WORK, DEPENDING ON IF @exclusive IS TRUE OR FALSE]
-            <tan:div-ref [+ANY ATTRIBUTES]> [ONE PER SEG PER REF PER SOURCE]
+         <tan:group [IF (@exclusive = true()) THEN] src="[SOURCE NUMBER]" [ELSE] work="[WORK NUMBER]">
+            <tan:div-ref src="[SOURCE NUMBER]" ref="[ATOMIC REF]" seg="[SEGMENT NUMBER; IF NO SEGMENTATION, 
+            THIS ATTRIBUTE IS MISSING]">
       NB, <tan:align error="true"> collects div-refs that cannot be allocated in one-to-one matches demanded by
       @distribute = true
       -->
@@ -299,14 +300,27 @@
                      <xsl:copy-of select="$expand-aligns/@*"/>
                      <xsl:for-each select="distinct-values($these-keys)">
                         <xsl:variable name="this-key" select="."/>
+                        <xsl:variable name="this-div-ref"
+                           select="
+                              $expand-aligns/tan:div-ref[(if ($is-exclusive) then
+                                 @src
+                              else
+                                 @work) = $this-key][$this-align-no]"
+                        />
                         <tan:group>
-                           <xsl:copy-of
-                              select="
-                                 $expand-aligns/tan:div-ref[(if ($is-exclusive) then
-                                    @src
-                                 else
-                                    @work) = $this-key][$this-align-no]"
-                           />
+                           <xsl:choose>
+                              <xsl:when test="$is-exclusive">
+                                 <xsl:attribute name="src" select="$this-div-ref/@src"/>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                 <xsl:attribute name="work" select="$this-div-ref/@work"/>
+                              </xsl:otherwise>
+                           </xsl:choose>
+                           <xsl:for-each select="$this-div-ref">
+                              <xsl:copy>
+                                 <xsl:copy-of select="@src|@ref|@seg"/>
+                              </xsl:copy>
+                           </xsl:for-each>
                         </tan:group>
                      </xsl:for-each>
                   </tan:align>
@@ -317,18 +331,16 @@
                         <xsl:variable name="n" select="."/>
                         <xsl:variable name="this-key" select="$these-keys[$n]"/>
                         <xsl:variable name="this-count" select="$align-count[$n]"/>
-                        <tan:group>
-                           <xsl:for-each select="(min($align-count) + 1) to max($align-count)">
-                              <xsl:variable name="this-align-no" select="."/>
-                              <xsl:copy-of
-                                 select="
-                                    $expand-aligns/tan:div-ref[(if ($is-exclusive) then
-                                       @src
-                                    else
-                                       @work) = $this-key][$this-align-no]"
-                              />
-                           </xsl:for-each>
-                        </tan:group>
+                        <xsl:for-each select="(min($align-count) + 1) to max($align-count)">
+                           <xsl:variable name="this-align-no" select="."/>
+                           <xsl:copy-of
+                              select="
+                                 $expand-aligns/tan:div-ref[(if ($is-exclusive) then
+                                    @src
+                                 else
+                                    @work) = $this-key][$this-align-no]"
+                           />
+                        </xsl:for-each>
                      </xsl:for-each>
                   </tan:align>
                </xsl:if>
@@ -343,7 +355,19 @@
                         else
                            @work">
                      <tan:group>
-                        <xsl:copy-of select="current-group()"/>
+                        <xsl:choose>
+                           <xsl:when test="$is-exclusive">
+                              <xsl:attribute name="src" select="current-group()[1]/@src"/>
+                           </xsl:when>
+                           <xsl:otherwise>
+                              <xsl:attribute name="work" select="current-group()[1]/@work"/>
+                           </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:for-each select="current-group()">
+                           <xsl:copy>
+                              <xsl:copy-of select="@src|@ref|@seg"/>
+                           </xsl:copy>
+                        </xsl:for-each>
                      </tan:group>
                   </xsl:for-each-group>
                </tan:align>

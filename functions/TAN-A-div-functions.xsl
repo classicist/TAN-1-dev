@@ -175,6 +175,8 @@
                            <xsl:variable name="start" select="$this-div-seg-starts[$pos]"/>
                            <xsl:variable name="end" select="$this-div-seg-ends[$pos]"/>
                            <xsl:element name="tan:seg">
+                              <xsl:attribute name="eq-ref"
+                                 select="tan:equate-ref($this-src, $this-div/@ref)"/>
                               <xsl:copy-of select="$this-div/tan:tok[position() = ($start to $end)]"
                               />
                            </xsl:element>
@@ -556,6 +558,18 @@
             <xsl:value-of select="$param-div-n"/>
          </xsl:otherwise>
       </xsl:choose>
+   </xsl:function>
+   <xsl:function name="tan:equate-ref" as="xs:string?">
+      <!-- Input: any source number, any normalized single ref, e.g., the value of $src-1st-da-data-segmented/tan:div/@ref
+      Output: reference that converts @ns to numerals when possible, @type to a div type number, and takes into account
+      any exemptions made in a <realign>
+      E.g., (1,'bk.1:ch.4') - > '1.1:2.4'
+      -->
+      <xsl:param name="src-no" as="xs:integer?"/>
+      <xsl:param name="norm-ref" as="xs:string?"/>
+      <xsl:sequence
+         select="tan:replace-sequence(tan:convert-ns-to-numerals($norm-ref, $src-no), $src-1st-da-div-types-equiv-replace[$src-no]/tan:replace)"
+      />
    </xsl:function>
 
 </xsl:stylesheet>

@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- to do:
    No reference in an <anchor-div-ref> may be realigned.
-   If the <div-ref>s in a single unanchored <realign> apply to more than one source, there must be a one-to-one
-   correspondence between the single references in each source. That is, they are distributed to each other.
-   If an anchored <realign> has multiple values for @ref or @seg in the <anchor-div-ref>, the total number
-   must match the total number of single references in each source in sibling <div-ref>s. That is, the references in the 
-   anchor aligment are distributed to the other sources.
    Clarify what tokenization error is at the heart of the report at tan:tok
 -->
 <schema xmlns="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2"
@@ -105,17 +100,20 @@
          <report test="$these-splits//@error">Tokenization error.</report>
       </rule>
       <rule context="tan:realign">
-         <let name="these-srcs"
-            value="for $i in .//@src
-               return
-                  tokenize($i, '\s+')"/>
+         <let name="these-srcs" value="tan:src-ids-to-nos(.//@src)"/>
          <let name="these-works"
             value="for $i in $these-srcs
                return
-                  $equate-works[index-of($src-ids, $i)]"/>
+                  $equate-works[$i]"
+         />
+         <let name="this-normalized" value="tan:normalize-realign(.)"/>
+         
          <report test="count(distinct-values($these-works)) ne 1">realign sources must all share the
             same work (<value-of select="count(distinct-values($these-works))"/> works currently
             referred to)</report>
+         <report test="$this-normalized/@error">Distribution error. Each source must have the same
+            number of single references (unmatched: <value-of select="$this-normalized[@error]/tan:div-ref/@*"/>)
+         </report>
       </rule>
       <rule context="tan:align">
          <let name="this-src-list" value="for $i in tan:div-ref return tan:src-ids-to-nos($i/@src)"/>
@@ -132,6 +130,7 @@
       </rule>
       <rule context="tan:div-ref|tan:anchor-div-ref">
          <let name="this" value="."/>
+         <let name="is-being-realigned" value="if (name(..) = 'realign') then true() else false()"/>
          <let name="is-anchor" value="if (name(.) = 'anchor-div-ref') then true() else false()"/>
          <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
          <let name="these-srcs-tokenized" value="$this-src-list[. = $tokenized-sources]"/>
@@ -155,6 +154,22 @@
                      true()
                   else
                      ()"/>
+         <let name="this-parent-normalized"
+            value="if ($is-being-realigned) then
+                  tan:normalize-realign(..)
+               else
+                  tan:normalize-align(..)"
+         />
+         <let name="anchor-is-realigned"
+            value="for $i in $this-parent-normalized/tan:anchor-div-ref
+               return
+                  if ($realigns-normalized/tan:div-ref[@src = $i/@src][@ref = $i/@ref][(@seg = $i/@seg) or not($i/@seg)]) then
+                     true()
+                  else
+                     false()"
+         />
+         <let name="div-ref-is-anchored" value="for $i in tan:expand-div-ref(.,true()) return
+            if ($realigns-normalized/tan:anchor-div-ref[@src = $i/@src][@ref = $i/@ref][(@seg = $i/@seg) or not(@seg)]) then true() else false()"/>
          <!--<let name="ref-has-errors" value="matches($this-refs-norm,'!!error')"/>-->
          <let name="ref-has-errors" value="$src-data-for-this-div-ref/tan:div/@error"/>
          <let name="this-segs" value="if (@seg) then normalize-space(replace(@seg,'\?','')) else ()"/>
@@ -186,6 +201,10 @@
             only with leaf divs</report>
          <report test="$is-anchor and count($this-src-list) gt 1">An anchor div ref must point to
             only one source.</report>
+         <report test="$is-anchor and (some $i in ($anchor-is-realigned) satisfies $i)">An anchor may not be
+            realigned by a div ref.</report>
+         <report test="not($is-anchor) and $is-being-realigned and (some $i in ($div-ref-is-anchored) satisfies $i)">An
+            anchor may not be realigned by a div ref.</report>
       </rule>
    </pattern>
 

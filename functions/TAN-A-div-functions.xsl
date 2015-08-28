@@ -6,7 +6,7 @@
    xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" exclude-result-prefixes="xs math xd" version="3.0">
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Revised</xd:b>Aug 17, 2015</xd:p>
+         <xd:p><xd:b>Revised</xd:b>Aug 28, 2015</xd:p>
          <xd:p>Core functions for TAN-A-div files. Written principally for Schematron validation,
             but suitable for general use in other contexts</xd:p>
       </xd:desc>
@@ -121,10 +121,22 @@
       duplicates and to prepare texts for leaf div segmentation. -->
       <xsl:for-each select="$body/tan:split-leaf-div-at/tan:tok">
          <xsl:copy>
-            <xsl:copy-of select="if (tan:help-requested(.)) then () else tan:pick-tokenized-prepped-class-1-data(.)"/>
+            <xsl:copy-of
+               select="
+                  if (tan:help-requested(.)) then
+                     ()
+                  else
+                     tan:pick-tokenized-prepped-class-1-data(.)"
+            />
          </xsl:copy>
       </xsl:for-each>
    </xsl:variable>
+   <xsl:variable name="realigns-normalized"
+      select="
+         for $i in $body/tan:realign
+         return
+            tan:normalize-realign($i)"
+   />
 
    <!-- CONTEXT DEPENDENT FUNCTIONS -->
 
@@ -163,7 +175,8 @@
                            <xsl:variable name="start" select="$this-div-seg-starts[$pos]"/>
                            <xsl:variable name="end" select="$this-div-seg-ends[$pos]"/>
                            <xsl:element name="tan:seg">
-                              <xsl:copy-of select="$this-div/tan:tok[position() = ($start to $end)]"/>
+                              <xsl:copy-of select="$this-div/tan:tok[position() = ($start to $end)]"
+                              />
                            </xsl:element>
                         </xsl:for-each>
                      </xsl:copy>
@@ -176,14 +189,154 @@
          </xsl:element>
       </xsl:for-each>
    </xsl:function>
-   
+   <xsl:function name="tan:expand-div-ref" as="element()*">
+      <!-- takes one <div-ref> or <anchor-div-ref> and returns one <div-ref> per source per
+      ref per segment, replacing @src with numerical value, @ref with normalized single reference, and 
+      @seg (if present) with a single number. If the second parameter is true() a @work attribute is
+      added with the integer value of the work.
+      E.g., (<div-ref src="A B" ref="1 - 2" seg="1, last"/>, true()) - > (<div-ref work="1" src="1" ref="line.1" seg="1"/>, 
+      <div-ref work="1" src="1" ref="line.1" seg="7"/>, <div-ref work="1" src="1" ref="line.2" seg="1"/>,
+      <div-ref work="1" src="1" ref="line.1" seg="3"/>, <div-ref work="1" src="2" ref="line.1" seg="1"/>, ...) -->
+      <xsl:param name="div-ref-element" as="element()?"/>
+      <xsl:param name="include-work" as="xs:boolean"/>
+      <xsl:variable name="these-srcs" select="tan:src-ids-to-nos($div-ref-element/@src)"/>
+      <xsl:for-each select="$these-srcs">
+         <xsl:variable name="this-src" select="."/>
+         <xsl:variable name="this-ref-norm"
+            select="
+               if ($this-src = $src-impl-div-types) then
+                  tan:normalize-impl-refs($div-ref-element/@ref, $this-src)
+               else
+                  tan:normalize-refs($div-ref-element/@ref)"/>
+         <xsl:variable name="this-ref-expand"
+            select="
+               if ($div-ref-element/@seg) then
+                  tan:itemize-leaf-refs($this-ref-norm, $this-src)
+               else
+                  tan:itemize-bare-refs($this-ref-norm, $this-src)"/>
+         <xsl:for-each select="$this-ref-expand">
+            <xsl:variable name="this-ref" select="."/>
+            <xsl:variable name="these-segs" as="xs:integer+">
+               <xsl:choose>
+                  <xsl:when test="$div-ref-element/@seg">
+                     <xsl:variable name="seg-count"
+                        select="count($src-1st-da-data-segmented[$this-src]/tan:div[@ref = $this-ref]/tan:seg)"/>
+                     <xsl:copy-of select="tan:sequence-expand($div-ref-element/@seg, $seg-count)"/>
+                  </xsl:when>
+                  <xsl:otherwise>-1</xsl:otherwise>
+               </xsl:choose>
+            </xsl:variable>
+            <xsl:for-each select="$these-segs">
+               <xsl:element name="tan:div-ref">
+                  <xsl:copy-of
+                     select="
+                        $div-ref-element/(@ed-when,
+                        @ed-who,
+                        @strength)"/>
+                  <xsl:if test="$include-work = true()">
+                     <xsl:attribute name="work" select="$equate-works[$this-src]"/>
+                  </xsl:if>
+                  <xsl:attribute name="src" select="$this-src"/>
+                  <xsl:attribute name="ref" select="$this-ref"/>
+                  <xsl:if test=". gt 0">
+                     <xsl:attribute name="seg" select="."/>
+                  </xsl:if>
+               </xsl:element>
+            </xsl:for-each>
+         </xsl:for-each>
+      </xsl:for-each>
+
+   </xsl:function>
+   <xsl:function name="tan:normalize-realign" as="item()*">
+      <!-- Takes one tan:realign element and returns a normalized version, taking into account rules for
+         distribution and <anchor-div-ref>. The result follows this pattern:
+      <tan:realign [+ANY ATTRIBUTES]> [ONE PER REALIGNMENT, IF DISTRIBUTED]
+         <tan:div-ref src="[SOURCE NUMBER]" ref="[SINGLE REF]" seg="[SINGLE SEGMENT NUMBER; IF NO SEGMENTATION, 
+         THIS ATTRIBUTE IS MISSING]"> [SORTED BY SOURCE NUMBER THEN @ref, @seg]
+      NB, <tan:realign error="true"> collects div-refs that cannot be allocated in required one-to-one matches.
+      -->
+      <xsl:param name="realign-element" as="element()?"/>
+      <xsl:variable name="anchor"
+         select="tan:expand-div-ref($realign-element/tan:anchor-div-ref, false())"/>
+      <xsl:variable name="expanded-div-refs" as="element()*"
+         select="
+            for $i in $realign-element/tan:div-ref
+            return
+               tan:expand-div-ref($i, false())"/>
+      <xsl:variable name="has-anchor"
+         select="
+            if ($realign-element/tan:anchor-div-ref) then
+               true()
+            else
+               false()"/>
+      <xsl:variable name="these-srcs" select="distinct-values($expanded-div-refs/@src)"/>
+      <xsl:variable name="count-per-src"
+         select="
+            for $i in $these-srcs
+            return
+               count($expanded-div-refs[@src = $i])"/>
+      <xsl:variable name="realign-count"
+         select="
+            if ($has-anchor) then
+               min(($count-per-src,
+               count($anchor)))
+            else
+               min($count-per-src)"/>
+      <xsl:variable name="distributions-max"
+         select="
+            if ($has-anchor) then
+               max(($count-per-src,
+               count($anchor)))
+            else
+               max($count-per-src)"/>
+      <xsl:variable name="distribution-required"
+         select="
+            if (((count($count-per-src) = 1) and (not($has-anchor)))
+            or (count($anchor) = 1)) then
+               false()
+            else
+               true()"/>
+      <xsl:for-each select="1 to $realign-count">
+         <xsl:variable name="this-key" select="."/>
+         <tan:realign>
+            <xsl:copy-of select="$realign-element/@*"/>
+            <xsl:if test="$has-anchor">
+               <tan:anchor-div-ref>
+                  <xsl:copy-of select="$anchor[$this-key]/@*"/>
+               </tan:anchor-div-ref>
+            </xsl:if>
+            <xsl:choose>
+               <xsl:when test="$distribution-required">
+                  <xsl:for-each select="$these-srcs">
+                     <xsl:variable name="this-src" select="."/>
+                     <xsl:copy-of select="$expanded-div-refs[@src = $this-src][$this-key]"/>
+                  </xsl:for-each>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:copy-of select="$expanded-div-refs"/>
+               </xsl:otherwise>
+            </xsl:choose>
+         </tan:realign>
+      </xsl:for-each>
+      <xsl:if test="$distribution-required and ($distributions-max gt $realign-count)">
+         <tan:realign error="{true()}">
+            <xsl:copy-of
+               select="
+                  for $i in (($realign-count + 1) to $distributions-max),
+                     $j in $these-srcs
+                  return
+                     $expanded-div-refs[@src = $j][$i]"
+            />
+         </tan:realign>
+      </xsl:if>
+   </xsl:function>
    <xsl:function name="tan:normalize-align" as="item()*">
       <!-- Takes one tan:align element and returns a normalized version, taking into account @distribute and
       @exclusive claims (which are therefore dropped). It has no effect on empty tan:align elements that 
       merely point to other alignments. The result follows this pattern:
       <tan:align [+ANY ATTRIBUTES]> [IF DISTRIBUTE, ONE PER ATOMIC REF]
          <tan:group [IF (@exclusive = true()) THEN] src="[SOURCE NUMBER]" [ELSE] work="[WORK NUMBER]">
-            <tan:div-ref src="[SOURCE NUMBER]" ref="[ATOMIC REF]" seg="[SEGMENT NUMBER; IF NO SEGMENTATION, 
+            <tan:div-ref src="[SOURCE NUMBER]" ref="[SINGLE REF]" seg="[SINGLE SEGMENT NUMBER; IF NO SEGMENTATION, 
             THIS ATTRIBUTE IS MISSING]">
       NB, <tan:align error="true"> collects div-refs that cannot be allocated in one-to-one matches demanded by
       @distribute = true
@@ -224,62 +377,7 @@
                   @xml:id,
                   @alignment)"/>
             <xsl:for-each select="$align-element/tan:div-ref">
-               <xsl:variable name="this-div-ref" select="."/>
-               <xsl:for-each select="tan:src-ids-to-nos(@src)">
-                  <xsl:variable name="this-src" select="."/>
-                  <xsl:variable name="this-refs-norm"
-                     select="
-                        if ($this-src = $src-impl-div-types) then
-                           tan:normalize-impl-refs($this-div-ref/@ref, $this-src)
-                        else
-                           tan:normalize-refs($this-div-ref/@ref)"/>
-                  <xsl:variable name="this-refs-expand"
-                     select="
-                        if ($this-div-ref/@seg) then
-                           tan:itemize-leaf-refs($this-refs-norm, $this-src)
-                        else
-                           tan:itemize-bare-refs($this-refs-norm, $this-src)"/>
-                  <xsl:for-each select="$this-refs-expand">
-                     <xsl:variable name="this-ref" select="."/>
-                     <xsl:choose>
-                        <xsl:when test="$this-div-ref/@seg">
-                           <xsl:variable name="seg-count"
-                              select="count($src-1st-da-data-segmented[$this-src]/tan:div[@ref = $this-ref]/tan:seg)"/>
-                           <xsl:variable name="this-segs-expand"
-                              select="tan:sequence-expand($this-div-ref/@seg, $seg-count)"/>
-                           <xsl:for-each select="$this-segs-expand">
-                              <xsl:element name="tan:div-ref">
-                                 <xsl:copy-of
-                                    select="
-                                       $this-div-ref/(@ed-when,
-                                       @ed-who,
-                                       @strength)"/>
-                                 <xsl:if test="not($is-exclusive)">
-                                    <xsl:attribute name="work" select="$equate-works[$this-src]"/>
-                                 </xsl:if>
-                                 <xsl:attribute name="src" select="$this-src"/>
-                                 <xsl:attribute name="ref" select="$this-ref"/>
-                                 <xsl:attribute name="seg" select="."/>
-                              </xsl:element>
-                           </xsl:for-each>
-                        </xsl:when>
-                        <xsl:otherwise>
-                           <xsl:element name="tan:div-ref">
-                              <xsl:copy-of
-                                 select="
-                                    $this-div-ref/(@ed-when,
-                                    @ed-who,
-                                    @strength)"/>
-                              <xsl:if test="not($is-exclusive)">
-                                 <xsl:attribute name="work" select="$equate-works[$this-src]"/>
-                              </xsl:if>
-                              <xsl:attribute name="src" select="$this-src"/>
-                              <xsl:attribute name="ref" select="$this-ref"/>
-                           </xsl:element>
-                        </xsl:otherwise>
-                     </xsl:choose>
-                  </xsl:for-each>
-               </xsl:for-each>
+               <xsl:copy-of select="tan:expand-div-ref(., not($is-exclusive))"/>
             </xsl:for-each>
          </tan:align>
       </xsl:variable>
@@ -305,8 +403,7 @@
                               $expand-aligns/tan:div-ref[(if ($is-exclusive) then
                                  @src
                               else
-                                 @work) = $this-key][$this-align-no]"
-                        />
+                                 @work) = $this-key][$this-align-no]"/>
                         <tan:group>
                            <xsl:choose>
                               <xsl:when test="$is-exclusive">
@@ -318,7 +415,7 @@
                            </xsl:choose>
                            <xsl:for-each select="$this-div-ref">
                               <xsl:copy>
-                                 <xsl:copy-of select="@src|@ref|@seg"/>
+                                 <xsl:copy-of select="@src | @ref | @seg"/>
                               </xsl:copy>
                            </xsl:for-each>
                         </tan:group>
@@ -365,7 +462,7 @@
                         </xsl:choose>
                         <xsl:for-each select="current-group()">
                            <xsl:copy>
-                              <xsl:copy-of select="@src|@ref|@seg"/>
+                              <xsl:copy-of select="@src | @ref | @seg"/>
                            </xsl:copy>
                         </xsl:for-each>
                      </tan:group>

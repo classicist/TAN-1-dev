@@ -6600,7 +6600,7 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   for the pattern.</para>
                <para>Any leaf <code>&lt;div></code> may be split as many times as one wishes.</para>
                <para><emphasis role="italic">Step 4: realign incorrectly aligned divisions and
-                     segments</emphasis></para>
+                     segments in versions of the same work</emphasis></para>
                <example>
                   <title><code>&lt;realign></code>: unanchored 1</title>
                   <para>
@@ -6613,10 +6613,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   <caption>
                      <para>This example states that the second segment in book 1 chapter 4 of the
                         Tamil version of a work should not be automatically aligned with any other
-                        version of that work that shares the same reference. </para>
-                     <para>This technique may be useful for version that have interpolations that
-                        should be exempt from automatic alignment with other version of the same
-                        work.</para>
+                        version of that work that shares the same reference. This may be useful for
+                        versions that has interpolations missing in other versions.  </para>
                   </caption>
                </example>
                <example>
@@ -6624,27 +6622,25 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   <para>
                      <programlisting>      ...........
    &lt;realign>
-      &lt;div-ref src="jones-1884" ref="topic.5:q.4 - topic.6:q.1 , topic.8"/>
-      &lt;div-ref src="denton-1822" ref="question.7 - question.9"/>
+      &lt;div-ref src="jones-1884" ref="topic.5:q.4 - topic.5:q.6 , topic.8"/>
+      &lt;div-ref src="denton-1822" ref="discussion.7 - discussion.9"/>
       &lt;div-ref src="denton-1822" ref="discussion.4"/>
    &lt;/realign>
       ...........   </programlisting>
                   </para>
                   <caption>
-                     <para>This example says that both the 1822 and 1884 versions of a work should
-                        be exempt from any automatic alignment with other versions of the same work,
-                        and that each of the questions from topic 5, question 4 through topic 6,
-                        question 1 in one source should be matched with three questions in the
-                        other. It also matches topic 8 in one source with discussion 4 in the other.
-                        In all these cases, not only will those divisions be realigned, but
-                        automatic alignment will be applied to their descendants. For example, if
-                        there is a <code>topic.8:para.1</code> in <code>jones-1884</code>, it will
-                        be automatically matched with <code>discussion.4:para.1</code> in
-                           <code>denton-1822</code> (provided that there is a common underlying IRI
-                        definition of <code>para</code> in both sources). Note that the last two
-                           <code>&lt;div-ref></code>s could have been combined: <code>&lt;div-ref
-                           src="denton-1822" ref="question.7 - question.9 ,
-                        discussion.4"/></code>.</para>
+                     <para>This example assumes two versions of the same work, one published in 1822
+                        and the other in 1884. This <code>&lt;realign></code> states that the
+                        references provided should be exempt from any automatic alignment with other
+                        versions of the same work, and that each of three questions from topic 5
+                        should be aligned exclusively with three discussions in the other. It also
+                        exclusively aligns topic 8 to discussion 4. This alignment applies also to
+                        all descendants. Note that the last two <code>&lt;div-ref></code>s could
+                        have been combined: <code>&lt;div-ref src="denton-1822" ref="question.7 -
+                           question.9 , discussion.4"/></code>. Note also that there are four
+                        references per source. In an unanchored <code>&lt;realign></code> with
+                        multiple sources, there must be a one-to-one correspondence between atomic
+                        references in each source.</para>
                   </caption>
                </example>
                <example>
@@ -6666,10 +6662,12 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
       ...........   </programlisting>
                   </para>
                   <caption>
-                     <para>This example realigns the parts of two versions of a poem, where one
-                        phrase that appears at the end of line 46 in one version begins line 47 of
-                        the other. The aligner (1) declares two splits, one for each version and (2)
-                        declares the alignment of the two segments. </para>
+                     <para>This example realigns two versions of a poem, where one phrase that
+                        appears at the end of line 46 in one version is found at line 47 of the
+                        other. The aligner declares two splits (one for each version) and then
+                        realigns the segments. There is a perhaps less confusing way to approach
+                        this task using an anchored <code>&lt;realign></code>, illustrated
+                        below.</para>
                   </caption>
                </example>
                <example>
@@ -6686,11 +6684,59 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   <caption>
                      <para>This example assumes three versions of a text, where paragraphs seven
                         through nine of one version correspond to eight, nine, and seven of the
-                        other and twelve through fourteen of the other.</para>
+                        other and twelve through fourteen of the other. Another version of this
+                        example, anchored, is provided below.</para>
                   </caption>
                </example>
                <example>
-                  <title><code>&lt;realign></code>: anchored</title>
+                  <title><code>&lt;realign></code>: anchored 1</title>
+                  <para>
+                     <programlisting>      ...........
+   &lt;split-leaf-div-at>
+      &lt;tok src="poem-A" ref="line 46" ord="6"/>
+   &lt;/split-leaf-div-at>
+   &lt;realign>
+      &lt;anchor-div-ref src="poem-B" ref="line 47"/>
+      &lt;div-ref src="poem-A" ref="line 46" seg="2"/>
+   &lt;/realign>
+      ...........   </programlisting>
+                  </para>
+                  <caption>
+                     <para>This presents an alternative approach to an unanchored example above,
+                        where where a phrase that appears at the end of line 46 in one version of a
+                        poem is found at line 47 of the other. The aligner declares one split and
+                        then realigns the second segment to the next line. This
+                           <code>&lt;realign></code> forces the <code>&lt;div-ref></code> to align
+                        with the reference in <code>&lt;anchor-div-ref></code>, which is not
+                        affected. No reference in an <code>&lt;anchor-div-ref></code> may be
+                        realigned. </para>
+                  </caption>
+               </example>
+               <example>
+                  <title><code>&lt;realign></code>: anchored 2</title>
+                  <para>
+                     <programlisting>      ...........
+   &lt;realign>
+      &lt;anchor-div-ref src="A-1794" ref="para 7 - para 9"/>
+      &lt;div-ref src="A-1885" ref="para 8 - para 9 , para 7"/>
+      &lt;div-ref src="A-1922" ref="para 12 - para 14"/>
+   &lt;/realign>
+      ...........   </programlisting>
+                  </para>
+                  <caption>
+                     <para>This is an anchored variation of a previous example. Three paragraphs of
+                        two versions are brought into alignment with three paragraphs of source
+                           <code>A-1794</code>. The previous, unanchored example ensured that all
+                        three passages were exempt from any other automatic alignments. In this
+                        case, anything that aligns with paragraphs 7 through 9 of
+                           <code>A-1794</code> will align with the corresponding passages from the
+                        other two sources. Note that the number of references in the anchor match
+                        precisely the number of references in the other two sources. This match in
+                        count is necessary in order for distribution to occur.</para>
+                  </caption>
+               </example>
+               <example>
+                  <title><code>&lt;realign></code>: anchored 3</title>
                   <para>
                      <programlisting>      ...........
    &lt;equate-works src="lxx kjv"/>
@@ -6717,12 +6763,9 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
       ...........   </programlisting>
                   </para>
                   <caption>
-                     <para>This example takes reconciles the numbering of the Psalms in the
-                        Septuagint with that which is in most common use today. The anchored
-                        technique has been used because this comes from an example where multiple
-                        versions are used, so only one, labeled <code>kjv</code>, has been picked as
-                        the anchor. The component parts of the Septuagint version will then align
-                        with any other version that aligns with the anchor.</para>
+                     <para>This example reconciles Psalm numbers in the Septuagint with those in the
+                        King James Version, <code>kjv</code>, and consequently to any other version
+                        of the Bible that follows the latter's Psalm numeration.</para>
                   </caption>
                </example>
                <para>After step 3, some of the divisions and segments of a work may not be properly
@@ -6730,22 +6773,20 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   to be realigned. Or perhaps one of the sources uses a reference system that is out
                   of step with the others. </para>
                <para>Step 4, <code>&lt;realign></code>, is used to reconcile alignments within a
-                  given work. N.B., to realign is to assume that there is an error in automatic
-                  alignments, and that for two sources to be aligned they must, at the very least,
-                  be the same work. Therefore, <code>&lt;realign></code> applies only to one or more
-                  versions of a single work. If it is used to realign sources that do not share the
-                  same work, an error will result. (For cross-work alignment, see step 5, below.)
-                  There are two types of realignment: anchored and unanchored. </para>
+                  given work. If <code>&lt;realign></code> is used to realign sources that do not
+                  share the same work, an error will result. (For cross-work alignment, see step 5,
+                  below.) </para>
+               <para>There are two types of realignment: anchored and unanchored. </para>
                <para>An <emphasis>unanchored realigment</emphasis> consists of one or more
                      <code>&lt;div-ref></code>s, each of which takes <code>@src</code> and
                      <code>@ref</code> to point to one or more sources and flattened references, and
                   perhaps <code>@seg</code>, to point to one or more specific segments created by a
                   preceding <code>&lt;split-leaf-div-at></code>. For any range of references
                   included by <code>@ref</code> (values separated by a hyphen), the left and right
-                  sides must be siblings (i.e., <code>&lt;div-ref src="a" ref="bk.1 -
-                     bk.2:ch.1"/></code> is invalid). A range in <code>@ref</code> individually
-                  picks out each sibling from the first to the last (i.e., <code>bk.1 - bk.3</code>
-                  picks three references individually). </para>
+                  sides must be siblings (i.e., <code>ref="bk.1 - bk.2:ch.1"</code> would be invalid
+                  in a <code>&lt;div-ref></code>). A range in <code>@ref</code> individually picks
+                  out each sibling from the first to the last (i.e., <code>bk.1 - bk.3</code> picks
+                  three single references). </para>
                <para xml:id="attribute_seg">If <code>@seg</code> is used, every <code>@ref</code>
                   must point to a leaf <code>&lt;div></code>. Under a given
                      <code>&lt;realign></code>, each source's total number of references (determined
@@ -6760,20 +6801,29 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   other source, if any, invoked in the <code>&lt;realign></code>. If only one source
                   is invoked in a <code>&lt;realign></code>, only the first effect takes place: the
                   references are effectively severed from any automatic alignment with any other
-                  version for that source. For every <code>&lt;div></code> in a new realignment,
-                  descendants will be automatically aligned.</para>
+                  version for that source. Every realignment affects not only the individual
+                     <code>&lt;div></code>s but their descendants too.</para>
                <para>An <emphasis>anchored realignment</emphasis> differs from the unanchored form
                   in that it begins with a single <code>&lt;anchor-div-ref></code> as the first
                   child of <code>&lt;realign></code>. It is exactly like <code>&lt;div-ref></code>,
                   except that the mandatory <code>@src</code> may point only to a single source.
                      <code>&lt;anchor-div-ref></code> is then followed by one or more
-                     <code>&lt;div-ref></code>s. Once again, each source's total number of
-                  references must be identical, since every source's nth reference will be realigned
-                  to the nth reference in the anchor.</para>
-               <para>The effect of an anchored <code>&lt;realign></code> is to move each referenced
-                     <code>&lt;div></code>'s automatic alignment to a different place. This method
-                  is helpful in alignments of large numbers of sources, where a few do not follow
-                  the majority pattern and need to be synchronized.</para>
+                     <code>&lt;div-ref></code>s. </para>
+               <para>If <code>&lt;anchor-div-ref></code> points to only one reference (i.e.,
+                     <code>@ref</code> and <code>@seg</code>, if present, have only one value) then
+                  however many references are made in subsequent <code>&lt;div-ref></code>s, they
+                  will all be realigned to that one anchor reference. But if
+                     <code>&lt;anchor-div-ref></code> has more than one reference, then distribution
+                  is in effect. Every source's nth reference in subsequent
+                  <code>&lt;div-ref></code>s will be realigned to the nth reference in the
+                  anchor.</para>
+               <para>The effect of an anchored <code>&lt;realign></code> is to reset the value of
+                  each referenced <code>&lt;div></code>. Unlike unanchored
+                  <code>&lt;realign></code>s, which effectively sever every
+                     <code>&lt;div-ref></code> from automatic alignment, the anchored
+                     <code>&lt;realign></code> retains automatic alignment, but anchors it at a
+                  different place. This method is helpful for synchronizing a few sources with the
+                  reference system followed by the majority.</para>
                <para>For both anchored and unanchored alignments alike, the order of
                      <code>&lt;div-ref></code>s is immaterial. Any processor of your data will
                   handle the references according to source document order.</para>

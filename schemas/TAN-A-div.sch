@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- to do: 
+<!-- to do:
+   No reference in an <anchor-div-ref> may be realigned.
+   If the <div-ref>s in a single unanchored <realign> apply to more than one source, there must be a one-to-one
+   correspondence between the single references in each source. That is, they are distributed to each other.
+   If an anchored <realign> has multiple values for @ref or @seg in the <anchor-div-ref>, the total number
+   must match the total number of single references in each source in sibling <div-ref>s. That is, the references in the 
+   anchor aligment are distributed to the other sources.
    Clarify what tokenization error is at the heart of the report at tan:tok
 -->
 <schema xmlns="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2"

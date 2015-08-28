@@ -130,8 +130,9 @@
                   @seg)"
             /></report>
       </rule>
-      <rule context="tan:div-ref">
+      <rule context="tan:div-ref|tan:anchor-div-ref">
          <let name="this" value="."/>
+         <let name="is-anchor" value="if (name(.) = 'anchor-div-ref') then true() else false()"/>
          <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
          <let name="these-srcs-tokenized" value="$this-src-list[. = $tokenized-sources]"/>
          <let name="this-refs-norm"
@@ -183,6 +184,8 @@
             used on a div that has not been split</report>
          <report test="if (exists($this-segs)) then $seg-count = 0 else false()">@seg may be used
             only with leaf divs</report>
+         <report test="$is-anchor and count($this-src-list) gt 1">An anchor div ref must point to
+            only one source.</report>
       </rule>
    </pattern>
 

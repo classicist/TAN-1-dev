@@ -3422,11 +3422,11 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                               <entry><xref linkend="edit_stamp"/>?</entry>
                               <entry>keyword: <code>old version</code>, <code>new version</code>,
                                     <code>parent edition</code>, <code>child edition</code>,
-                                    <code>ancestor edition</code>, <code>descendant edition</code>,
-                                    <code>cousin edition</code>, <code>alternatively divided
-                                    edition</code>, <code>alternatively normalized edition</code>,
-                                    <code>dependent</code>, <code>auxiliary</code> or <xref
-                                    linkend="iri_and_name"/>
+                                    <code>sibling edition</code>, <code>ancestor edition</code>,
+                                    <code>descendant edition</code>, <code>cousin edition</code>,
+                                    <code>alternatively divided edition</code>, <code>alternatively
+                                    normalized edition</code>, <code>dependent</code>,
+                                    <code>auxiliary</code> or <xref linkend="iri_and_name"/>
                               </entry>
                               <entry>indicate what relationship the referred file holds to the
                                  context file</entry>
@@ -3546,37 +3546,48 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                            <row>
                               <entry><code>parent edition</code></entry>
                               <entry><code>tag:textalign.net,2015:relationship:parent-edition</code></entry>
-                              <entry/>
+                              <entry>The edition from which the current one branches.</entry>
                            </row>
                            <row>
                               <entry><code>child edition</code></entry>
                               <entry><code>tag:textalign.net,2015:relationship:child-edition</code></entry>
-                              <entry/>
+                              <entry>An edition branched off from the current edition.</entry>
+                           </row>
+                           <row>
+                              <entry><code>sibling edition</code></entry>
+                              <entry><code>tag:textalign.net,2015:relationship:sibling-edition</code></entry>
+                              <entry>An edition that shares the same parent as the current
+                                 edition.</entry>
                            </row>
                            <row>
                               <entry><code>ancestor edition</code></entry>
                               <entry><code>tag:textalign.net,2015:relationship:ancestor-edition</code></entry>
-                              <entry/>
+                              <entry>An edition that is an anscestor to the current edition.</entry>
                            </row>
                            <row>
                               <entry><code>descendant edition</code></entry>
                               <entry><code>tag:textalign.net,2015:relationship:descendant-edition</code></entry>
-                              <entry/>
+                              <entry>An edition that descends from the current edition.</entry>
                            </row>
                            <row>
                               <entry><code>cousin edition</code></entry>
                               <entry><code>tag:textalign.net,2015:relationship:cousin-edition</code></entry>
-                              <entry/>
+                              <entry>An edition that shares the same ancestor as the current
+                                 edition</entry>
                            </row>
                            <row>
                               <entry><code>alternatively divided edition</code></entry>
                               <entry><code>tag:textalign.net,2015:relationship:alternatively-divided-edition</code></entry>
-                              <entry/>
+                              <entry>An edition that is identical in <code>&lt;body></code>text
+                                 content to the current edition. The only difference is that it is
+                                 segmented into a different <code>&lt;div></code> hierarchy.</entry>
                            </row>
                            <row>
                               <entry><code>alternatively normalized edition</code></entry>
                               <entry><code>tag:textalign.net,2015:relationship:alternatively-normalized-edition</code></entry>
-                              <entry/>
+                              <entry>An edition that is identical in <code>&lt;body></code>text
+                                 content to the current edition, but pursues a different approach to
+                                 normalization.</entry>
                            </row>
                            <row>
                               <entry><code>dependent</code></entry>

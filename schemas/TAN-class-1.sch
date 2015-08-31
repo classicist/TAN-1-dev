@@ -10,9 +10,7 @@
    <rule context="tan:see-also">
       <let name="first-loc" value="tan:location[doc-available(tan:resolve-url(.,''))][1]"/>
       <let name="first-doc"
-         value="if (doc-available($first-loc)) then doc($first-loc) 
-         else if (doc-available(concat($doc-parent-directory,$first-loc))) 
-         then doc(concat($doc-parent-directory,$first-loc)) else ()"/>
+         value="if (exists($first-loc)) then doc(tan:resolve-url($first-loc,'')) else ()"/>
       <let name="is-alternatively-divided-edition" value="tan:relationship = 'alternatively divided edition'"/>
       <let name="is-alternatively-normalized-edition" value="tan:relationship = 'alternatively normalized edition'"/>
       <let name="is-strict-alternative" value="$is-alternatively-divided-edition or $is-alternatively-normalized-edition"/>

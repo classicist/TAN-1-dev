@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- to do:
-   No reference in an <anchor-div-ref> may be realigned.
-   Clarify what tokenization error is at the heart of the report at tan:tok
 -->
 <schema xmlns="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2"
    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-   <title>Schematron ests for TAN-A-div files.</title>
+   <title>Schematron tests for TAN-A-div files.</title>
    <ns prefix="tan" uri="tag:textalign.net,2015:ns"/>
    <ns prefix="tei" uri="http://www.tei-c.org/ns/1.0"/>
    <ns prefix="xs" uri="http://www.w3.org/2001/XMLSchema"/>
@@ -84,7 +82,7 @@
       <rule context="tan:split-leaf-div-at">
          <let name="all-splits" value="for $i in tan:tok return tan:pick-tokenized-prepped-class-1-data($i)"/>
          <assert test="//tan:tokenization">If a leaf div is to be split, there must be at least one
-            tokenization under TAN-A-div/head/ declarations/filter.</assert>
+            tokenization declared.</assert>
       </rule>
       <rule context="tan:tok">
          <let name="this-pos" value="count(preceding-sibling::tan:tok) + 1"/>
@@ -97,7 +95,8 @@
             same place is not allowed (<value-of select="string-join($duplicate-splits,' ')"/>).</report>
          <assert test="tan:src-ids-to-nos(@src) = $tokenized-sources">Source lacks a tokenization
             declaration.</assert>
-         <report test="$these-splits//@error">Tokenization error.</report>
+         <report test="$these-splits//@error">Tokenization error: <value-of select="for $i in $these-splits//@error return
+            $tokenization-errors[$i]"/></report>
       </rule>
       <rule context="tan:realign">
          <let name="these-srcs" value="tan:src-ids-to-nos(.//@src)"/>
@@ -107,7 +106,6 @@
                   $equate-works[$i]"
          />
          <let name="this-normalized" value="tan:normalize-realign(.)"/>
-         
          <report test="count(distinct-values($these-works)) ne 1">realign sources must all share the
             same work (<value-of select="count(distinct-values($these-works))"/> works currently
             referred to)</report>
@@ -116,7 +114,7 @@
          </report>
       </rule>
       <rule context="tan:align">
-         <let name="this-src-list" value="for $i in tan:div-ref return tan:src-ids-to-nos($i/@src)"/>
+         <let name="this-src-list" value="tan:src-ids-to-nos(tan:div-ref/@src)"/>
          <let name="this-work-list" value="for $i in $this-src-list return $equate-works[$i]"/>
          <let name="this-align-normalized" value="tan:normalize-align(.)"/>
          <report test="if (@distribute) then count(distinct-values($this-work-list)) eq 1 else false()">@distribute

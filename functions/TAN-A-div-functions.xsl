@@ -493,7 +493,8 @@
    </xsl:function>
    <xsl:function name="tan:replace-ns" as="xs:string">
       <!-- Input: single value of @type and @n, source number
-      Output: single string replacing (or not) the value of @n as appropriate and as a string.
+      Output: single string replacing (or not) the value of @n with its Arabic numerical equivalent as appropriate 
+      and as a string.
       E.g., ('bk', 'xxiv', 1) - > '24' -->
       <xsl:param name="param-div-type" as="xs:string?"/>
       <xsl:param name="param-div-n" as="xs:string?"/>

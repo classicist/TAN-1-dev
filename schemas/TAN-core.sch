@@ -249,7 +249,7 @@
          details.</report>
    </rule>
    <rule context="tan:IRI">
-      <let name="count" value="count(index-of($iris,.))"/>
+      <let name="count" value="count(index-of($all-iris,.))"/>
       <let name="is-iri-of-tan-file" value="tan:must-refer-to-external-tan-file(.)"/>
       <let name="first-loc"
          value="../tan:location[doc-available(tan:resolve-url(.,''))][1]"/>

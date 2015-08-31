@@ -171,6 +171,10 @@
                         else
                            false()"/>
                   <xsl:element name="tan:location">
+                     <xsl:if test="$this-tokz-1st-da-location = $tokenization-errors">
+                        <xsl:attribute name="error"
+                           select="index-of($tokenization-errors, $this-tokz-1st-da-location)"/>
+                     </xsl:if>
                      <xsl:value-of select="$this-tokz-1st-da-location"/>
                   </xsl:element>
                   <xsl:if test="doc-available($this-tokz-1st-da-location)">
@@ -636,7 +640,7 @@
       <xsl:param name="element" as="element()"/>
       <xsl:value-of
          select="
-            if (matches($element/@val, ' \?|\? ') or matches($element/@ord, '\?')) then
+            if (matches($element/@val, ' \?|\? ') or matches($element/@ord, '\?') or matches($element/@ref,'\?')) then
                true()
             else
                false()"
@@ -845,8 +849,14 @@
                         </xsl:when>
                         <xsl:otherwise>
                            <xsl:attribute name="lang" select="$this-lang"/>
-                           <xsl:attribute name="error" select="true()"/>
-                           <xsl:value-of select="$tokenization-errors[4]"/>
+                           <xsl:attribute name="error"
+                              select="
+                                 if ($tokenizations-per-source[$this-src]/tan:tokenization/tan:location/@error)
+                                 then
+                                    $tokenizations-per-source[$this-src]/tan:tokenization/tan:location/@error
+                                 else
+                                    6"
+                           />
                         </xsl:otherwise>
                      </xsl:choose>
                   </xsl:if>

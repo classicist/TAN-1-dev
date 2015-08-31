@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- To do: 
    ADD rule to <tokenization>: for any tokenization not already recommended by 
-   a source, run the same test as run on recommended-tokenizations within class 1 validation. 
-   That is, ensure that tokenization on the source text in both ways of handling modifying 
-   characters is identical.
+   a source, ensure that tokenization on the source text is identical no matter how modifying letters are handled
    ADD rule to @ref: if a question mark is present, return the possible values for the next letter
    or number in the flattened ref, taking into account any partially completed flattened ref 
    just to the left of the question mark-->

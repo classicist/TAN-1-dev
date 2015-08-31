@@ -7,7 +7,7 @@
     version="3.0">
     <xd:doc scope="stylesheet">
         <xd:desc>
-            <xd:p><xd:b>Updated </xd:b>Aug 19, 2015</xd:p>
+            <xd:p><xd:b>Updated </xd:b>Aug 31, 2015</xd:p>
             <xd:p>Functions and variables for core TAN files (i.e., applicable to TAN file types of
                 more than one class). Used by Schematron validation, but suitable for general use in
                 other contexts.</xd:p>
@@ -31,7 +31,7 @@
             for $i in $doc-ver-dates
             return
                 tan:dateTime-to-decimal($i)"/>
-    <xsl:variable name="iris" select="//tan:IRI"/>
+    <xsl:variable name="all-iris" select="//tan:IRI"/>
     <xsl:variable name="tan-iri-namespace"
         select="substring-before(substring-after($doc-id, 'tag:'), ':')"/>
 
@@ -60,6 +60,7 @@
         select="
             ('parent edition',
             'child edition',
+            'sibling edition',
             'ancestor edition',
             'descendant edition',
             'cousin edition')"/>
@@ -161,7 +162,7 @@
         <xsl:variable name="len" select="string-length($str)"/>
         <xsl:value-of
             select="
-                if (string-length($str) lt 1)
+                if ($len lt 1)
                 then
                     0
                 else

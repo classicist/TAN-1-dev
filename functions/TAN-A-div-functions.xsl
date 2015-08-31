@@ -41,11 +41,18 @@
       <xsl:for-each select="$body/tan:equate-div-types">
          <xsl:variable name="this-edt" select="."/>
          <tan:equate-div-types>
-            <xsl:for-each select="$src-count">
-               <xsl:variable name="this-src" select="."/>
-               <xsl:for-each
-                  select="$this-edt/tan:div-type-ref[$this-src = tan:src-ids-to-nos(@src)]">
-                  <tan:div-type-ref src-no="{$this-src}" div-type-ref="{@div-type-ref}"/>
+            <xsl:for-each select="tan:div-type-ref">
+               <xsl:variable name="this-div-type" select="."/>
+               <xsl:for-each select="tan:src-ids-to-nos(@src)">
+                  <xsl:variable name="this-src" select="."/>
+                  <xsl:for-each select="tokenize($this-div-type/@div-type-ref, '\W+')">
+                     <xsl:variable name="this-id" select="."/>
+                     <xsl:variable name="this-id-orig"
+                        select="$rename-div-types/tan:source[$this-src]/tan:rename[@new = $this-id]/@old"/>
+                     <tan:div-type-ref src-no="{$this-src}" div-type-ref="{$this-id}"
+                        eq-id="{$src-1st-da-all-div-types/tan:source[$this-src]/tan:div-type[@xml:id = ($this-id,$this-id-orig)]/@eq-id}"
+                     />
+                  </xsl:for-each>
                </xsl:for-each>
             </xsl:for-each>
          </tan:equate-div-types>
@@ -59,52 +66,29 @@
          <xsl:variable name="this-src" select="."/>
          <xml:source>
             <xsl:for-each select="$src-1st-da-all-div-types/tan:source[$this-src]/tan:div-type">
+               <xsl:variable name="this-div-type" select="."/>
                <xsl:variable name="this-div-type-orig" select="@xml:id"/>
                <xsl:variable name="this-div-type-alias"
                   select="$rename-div-types/tan:source[$this-src]/tan:rename[@old = $this-div-type-orig]/@new"/>
-               <xsl:variable name="this-div-type"
+               <xsl:variable name="this-div-type-id"
                   select="
                      ($this-div-type-alias,
                      $this-div-type-orig)[1]"/>
-
-               <xsl:variable name="this-div-type-equiv"
+               <xsl:variable name="edts" select="$equate-div-types-sorted[tan:div-type-ref[@src-no = $this-src][@div-type-ref = $this-div-type-id]]/tan:div-type-ref/@eq-id" as="xs:integer*"/>
+               <xsl:variable name="this-div-eq-id"
                   select="
-                     if ($equate-div-types-sorted/tan:div-type-ref[@src-no = $this-src][@div-type-ref = $this-div-type])
-                     then
-                        $equate-div-types-sorted[tan:div-type-ref[@src-no = $this-src][@div-type-ref = $this-div-type]]/tan:div-type-ref[1]/@div-type-ref
+                     if (exists($edts)) then
+                        string(min(for $i in $edts return number($i)))
                      else
-                        $this-div-type"/>
-               <xsl:variable name="this-src-equiv"
-                  select="
-                     if ($equate-div-types-sorted/tan:div-type-ref[@src-no = $this-src][@div-type-ref = $this-div-type])
-                     then
-                        $equate-div-types-sorted[tan:div-type-ref[@src-no = $this-src][@div-type-ref = $this-div-type]]/tan:div-type-ref[1]/@src-no
-                     else
-                        $this-src"/>
+                        $this-div-type/@eq-id"
+               />
                <tan:replace>
                   <tan:pattern>
                      <xsl:value-of
-                        select="concat('^', $this-div-type, '\.|:', $this-div-type, '\.')"/>
+                        select="concat('^', $this-div-type-id, '\.|:', $this-div-type-id, '\.')"/>
                   </tan:pattern>
                   <tan:replacement>
-                     <xsl:choose>
-                        <xsl:when test="$this-src-equiv = 1">
-                           <xsl:value-of
-                              select="concat(':', string(count($src-1st-da-all-div-types/tan:source[1]/tan:div-type[@xml:id = $this-div-type-equiv]/preceding-sibling::tan:div-type) + 1), '.')"
-                           />
-                        </xsl:when>
-                        <xsl:otherwise>
-                           <xsl:variable name="this-div-type-iris"
-                              select="$src-1st-da-all-div-types/tan:source[$this-src-equiv]/tan:div-type[@xml:id = $this-div-type-equiv]/tan:IRI"/>
-                           <xsl:variable name="this-div-type-iris-first-match"
-                              select="$src-1st-da-all-div-types/tan:source[tan:div-types/tan:IRI = $this-div-type-iris][1]"/>
-                           <xsl:value-of
-                              select="
-                                 concat(':', string(count($this-div-type-iris-first-match/tan:div-type[tan:IRI = $this-div-type-iris]/(preceding-sibling::tan:div-type,
-                                 ../preceding-sibling::tan:source/tan:div-type)) + 1), '.')"
-                           />
-                        </xsl:otherwise>
-                     </xsl:choose>
+                     <xsl:value-of select="concat(':',$this-div-eq-id,'.')"/>
                   </tan:replacement>
                </tan:replace>
             </xsl:for-each>
@@ -131,6 +115,21 @@
          </xsl:copy>
       </xsl:for-each>
    </xsl:variable>
+   <xsl:variable name="leaf-div-splits-collated" as="element()*">
+      <xsl:for-each-group select="$leaf-div-splits-raw/tan:source/tan:div/tan:tok" group-by="../../@id">
+         <xsl:sort select="index-of($src-ids, current-grouping-key())"/>
+         <tan:source id="{current-grouping-key()}">
+            <xsl:for-each-group select="current-group()" group-by="../@ref">
+               <tan:div>
+                  <xsl:copy-of select="current-group()/../@*"/>
+                  <xsl:for-each select="current-group()">
+                     <xsl:sort select="number(@n)"/>
+                     <xsl:copy-of select="."/></xsl:for-each>
+               </tan:div>
+            </xsl:for-each-group> 
+         </tan:source>
+      </xsl:for-each-group> 
+   </xsl:variable>
    <xsl:variable name="realigns-normalized"
       select="
          for $i in $body/tan:realign
@@ -147,15 +146,16 @@
       <xsl:param name="this-tokd-prepped-c1-data" as="element()+"/>
       <xsl:for-each select="$src-count">
          <xsl:variable name="this-src" select="."/>
+         <xsl:variable name="this-src-id" select="$src-ids[$this-src]"/>
          <xsl:element name="tan:source">
-            <xsl:attribute name="id" select="$src-ids[$this-src]"/>
+            <xsl:attribute name="id" select="$this-src-id"/>
             <xsl:for-each select="$this-tokd-prepped-c1-data[$this-src]/tan:div">
                <xsl:choose>
                   <xsl:when test="@lang">
                      <xsl:variable name="this-div" select="."/>
                      <xsl:variable name="this-div-splits"
                         select="
-                           for $i in $leaf-div-splits-raw/tan:source[$this-src]/tan:div[@ref = $this-div/@ref]/tan:tok[not(@error)]/@n
+                           for $i in $leaf-div-splits-collated[@id = $this-src-id]/tan:div[@ref = $this-div/@ref]/tan:tok[not(@error)]/@n
                            return
                               xs:integer($i)"/>
                      <xsl:variable name="this-div-seg-starts"
@@ -175,8 +175,6 @@
                            <xsl:variable name="start" select="$this-div-seg-starts[$pos]"/>
                            <xsl:variable name="end" select="$this-div-seg-ends[$pos]"/>
                            <xsl:element name="tan:seg">
-                              <xsl:attribute name="eq-ref"
-                                 select="tan:equate-ref($this-src, $this-div/@ref)"/>
                               <xsl:copy-of select="$this-div/tan:tok[position() = ($start to $end)]"
                               />
                            </xsl:element>
@@ -559,17 +557,47 @@
          </xsl:otherwise>
       </xsl:choose>
    </xsl:function>
-   <xsl:function name="tan:equate-ref" as="xs:string?">
-      <!-- Input: any source number, any normalized single ref, e.g., the value of $src-1st-da-data-segmented/tan:div/@ref
+   <xsl:function name="tan:equate-ref" as="item()*">
+      <!-- Input: any source number, any single normalized ref, and any single segment number
       Output: reference that converts @ns to numerals when possible, @type to a div type number, and takes into account
-      any exemptions made in a <realign>
-      E.g., (1,'bk.1:ch.4') - > '1.1:2.4'
+      any exemptions made in a <realign>, segment number (altered if required by <realign>) 
+      E.g., (1,'bk.1:ch.4',1) - > ('1.1:2.4',1)
       -->
       <xsl:param name="src-no" as="xs:integer?"/>
       <xsl:param name="norm-ref" as="xs:string?"/>
-      <xsl:sequence
-         select="tan:replace-sequence(tan:convert-ns-to-numerals($norm-ref, $src-no), $src-1st-da-div-types-equiv-replace[$src-no]/tan:replace)"
+      <xsl:param name="seg-no" as="xs:integer?"/>
+      <xsl:variable name="first-realignment"
+         select="($realigns-normalized[not(@error)]/tan:div-ref[@src = $src-no][@ref = $norm-ref][not(@seg) or @seg = $seg-no])[1]"
       />
+      <xsl:variable name="realignment-anchor" select="$first-realignment/preceding-sibling::tan:anchor-div-ref"/>
+      <xsl:variable name="realigned-eq-ref-and-seg" as="item()*">
+         <xsl:choose>
+            <xsl:when test="exists($realignment-anchor)">
+               <!-- If there's an anchor in the realignment, get its @eq-ref and @seg values -->
+               <xsl:copy-of
+                  select="tan:equate-ref($realignment-anchor/@src, $realignment-anchor/@ref, $realignment-anchor/@seg)"
+               />
+            </xsl:when>
+            <xsl:when
+               test="not(exists($realignment-anchor)) and $first-realignment/preceding-sibling::tan:div-ref[@src ne $first-realignment/@src]">
+               <!-- If there's no anchor, but there's another source before it, get the @eq-ref and @seg values of the first div-ref -->
+               <xsl:copy-of
+                  select="tan:equate-ref($first-realignment/../tan:div-ref[1]/@src, $first-realignment/../tan:div-ref[1]/@ref, $first-realignment/../tan:div-ref[1]/@seg)"
+               />
+            </xsl:when>
+            <xsl:otherwise>
+               <!-- Otherwise assume that it just is exempt from any realignment, and prepend a value to norm-ref that exempts it from auto-alignment -->
+               <xsl:copy-of select="(concat('s',$src-no,'_',$norm-ref),$seg-no)"/>
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:variable>
+      <xsl:choose><xsl:when test="exists($first-realignment)">
+            <xsl:sequence select="$realigned-eq-ref-and-seg"/>
+      </xsl:when>
+         <xsl:otherwise><xsl:sequence
+            select="tan:replace-sequence(tan:convert-ns-to-numerals($norm-ref, $src-no), $src-1st-da-div-types-equiv-replace[$src-no]/tan:replace)"
+         />
+            <xsl:sequence select="$seg-no"/></xsl:otherwise></xsl:choose>
    </xsl:function>
 
 </xsl:stylesheet>

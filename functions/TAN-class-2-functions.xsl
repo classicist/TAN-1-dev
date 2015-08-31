@@ -57,17 +57,39 @@
          for $i in $src-1st-da-locations
          return
             document($i)"/>
-   <xsl:variable name="src-1st-da-version" select="for $i in $src-1st-da return tan:most-recent-dateTime($i//(@when | @ed-when | @when-accessed))"/>
-   <xsl:variable name="src-1st-da-heads" select="$src-1st-da/*/tan:head"/>
+   <xsl:variable name="src-1st-da-version"
+      select="
+         for $i in $src-1st-da
+         return
+            tan:most-recent-dateTime($i//(@when | @ed-when | @when-accessed))"/>
+   <!--<xsl:variable name="src-1st-da-heads" select="$src-1st-da/*/tan:head"></xsl:variable>-->
+   <xsl:variable name="src-1st-da-heads" as="element()*"><xsl:for-each select="$src-1st-da/*/tan:head">
+      <xsl:variable name="pos" select="position()"/>
+      <xsl:copy>
+         <xsl:attribute name="src" select="$src-ids[$pos]"/>
+         <xsl:copy-of select="*"/>
+      </xsl:copy>
+   </xsl:for-each></xsl:variable>
    <xsl:variable name="src-1st-da-data" select="tan:prep-class-1-data($src-1st-da-locations)"/>
    <xsl:variable name="src-1st-da-all-div-types" as="element()">
-      <tan:all-div-types>
-         <xsl:for-each select="$src-1st-da-heads">
-            <tan:source>
-               <xsl:copy-of select="tan:declarations/tan:div-type"/>
-            </tan:source>
+      <xsl:variable name="all" select="$src-1st-da-heads/tan:declarations/tan:div-type"/>
+      <xsl:variable name="div-seq" as="element()*">
+         <xsl:for-each select="$all">
+            <xsl:variable name="pos" select="position()"/>
+            <xsl:variable name="this-div-type" select="."/>
+            <xsl:variable name="these-IRIs" select="tan:IRI"/>
+            <xsl:copy>
+               <xsl:attribute name="src" select="index-of($src-1st-da-heads, $this-div-type/../..)"/>
+               <xsl:attribute name="eq-id" select="tan:div-type-eq($pos)"/>
+               <xsl:copy-of select="@* | *"/>
+            </xsl:copy>
          </xsl:for-each>
-      </tan:all-div-types>
+      </xsl:variable>
+      <tan:all-div-types><xsl:for-each-group select="$div-seq" group-by="@src">
+         <tan:source>
+               <xsl:sequence select="current-group()"/>
+         </tan:source>
+      </xsl:for-each-group></tan:all-div-types> 
    </xsl:variable>
 
    <!-- DECLARATIONS -->
@@ -647,6 +669,31 @@
          </xsl:otherwise>
       </xsl:choose>
    </xsl:function>
+   <xsl:function name="tan:div-type-eq" as="xs:integer*">
+      <!-- Input: digit representing the position of the div-type to be checked within the sequence of all div-types of all sources
+      Output: digit representing the smallest position of the div-type that is equivalent, within the same sequence
+      E.g., 22 - > 3 -->
+      <xsl:param name="div-type-nos" as="xs:integer+"/>
+      <xsl:variable name="all" select="$src-1st-da-heads/tan:declarations/tan:div-type"/>
+      <xsl:variable name="these-div-type-iris" select="for $i in $div-type-nos return $all[$i]/tan:IRI"/>
+      <xsl:variable name="matches" as="xs:integer+">
+         <xsl:for-each select="$all">
+            <xsl:variable name="pos" select="position()"/>
+            <xsl:variable name="this-div-type" select="."/>
+            <xsl:if test="$this-div-type[tan:IRI = $these-div-type-iris]">
+               <xsl:copy-of select="$pos"/>
+            </xsl:if>
+         </xsl:for-each>
+      </xsl:variable>
+      <xsl:copy-of
+         select="
+            if (count($matches) gt count($div-type-nos)) then
+               tan:div-type-eq($matches)
+            else
+               min($div-type-nos)"
+      />
+   </xsl:function>
+      
    <xsl:function name="tan:prep-class-1-data" as="element()*">
       <!-- Input: sequence of URLs for class 1 TAN sources
          Output: sequence of one node/tree per source flattening the data into this form:
@@ -833,8 +880,7 @@
                if ($tok-element/@ord) then
                   normalize-space(replace($tok-element/@ord, '\?', ''))
                else
-                  ()"
-      />
+                  ()"/>
       <xsl:variable name="this-val"
          select="
             if ($help-requested) then
@@ -949,17 +995,21 @@
       <xsl:for-each select="$ref-range-seq-1">
          <xsl:variable name="start" select="tokenize(., ' - ')[1]"/>
          <xsl:variable name="end" select="tokenize(., ' - ')[2]"/>
-         <xsl:variable name="start-hier-pos" select="string-length(replace($start,'\w+',''))"/>
+         <xsl:variable name="start-hier-pos" select="string-length(replace($start, '\w+', ''))"/>
          <xsl:variable name="end-hier-pos" select="string-length(replace($end, '\w+', ''))"/>
-         <xsl:variable name="top-hier-pos" select="min(($start-hier-pos,$end-hier-pos))"/>
+         <xsl:variable name="top-hier-pos"
+            select="
+               min(($start-hier-pos,
+               $end-hier-pos))"/>
          <xsl:choose>
             <xsl:when test="exists($end)">
                <xsl:variable name="nodes"
                   select="
-                  $src-1st-da-data[$src]/tan:div[matches(@ref, concat('^', $end))]/(self::tan:div,
-                  preceding-sibling::tan:div) except $src-1st-da-data[$src]/tan:div[@ref = $start]/preceding-sibling::tan:div"/>
+                     $src-1st-da-data[$src]/tan:div[matches(@ref, concat('^', $end))]/(self::tan:div,
+                     preceding-sibling::tan:div) except $src-1st-da-data[$src]/tan:div[@ref = $start]/preceding-sibling::tan:div"/>
                <xsl:variable name="all-refs" select="$nodes/@ref"/>
-               <xsl:variable name="min-refs" select="$all-refs[string-length(replace(.,'\w+','')) = $top-hier-pos]"/>
+               <xsl:variable name="min-refs"
+                  select="$all-refs[string-length(replace(., '\w+', '')) = $top-hier-pos]"/>
                <xsl:choose>
                   <xsl:when test="$start-hier-pos gt $end-hier-pos">
                      <!-- If the beginning of a range is deeper in the hierarchy than the end, you need to add extra refs that
@@ -973,8 +1023,11 @@
                   <xsl:when test="$end-hier-pos gt $start-hier-pos">
                      <!-- If the end of a range is deeper in the hierarchy than the beginning, you need to replace the
                      last item with refs that are peers of the end -->
-                     <xsl:copy-of select="remove($min-refs,count($min-refs)),
-                        $all-refs[matches(.,concat('^',$min-refs[count($min-refs)]))][string-length(replace(., '\w+', '')) = $end-hier-pos]"/>
+                     <xsl:copy-of
+                        select="
+                           remove($min-refs, count($min-refs)),
+                           $all-refs[matches(., concat('^', $min-refs[count($min-refs)]))][string-length(replace(., '\w+', '')) = $end-hier-pos]"
+                     />
                   </xsl:when>
                   <xsl:otherwise>
                      <xsl:copy-of select="$min-refs"/>

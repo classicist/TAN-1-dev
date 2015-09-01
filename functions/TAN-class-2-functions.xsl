@@ -63,13 +63,14 @@
          return
             tan:most-recent-dateTime($i//(@when | @ed-when | @when-accessed))"/>
    <!--<xsl:variable name="src-1st-da-heads" select="$src-1st-da/*/tan:head"></xsl:variable>-->
-   <xsl:variable name="src-1st-da-heads" as="element()*"><xsl:for-each select="$src-1st-da/*/tan:head">
-      <xsl:variable name="pos" select="position()"/>
-      <xsl:copy>
-         <xsl:attribute name="src" select="$src-ids[$pos]"/>
-         <xsl:copy-of select="*"/>
-      </xsl:copy>
-   </xsl:for-each></xsl:variable>
+   <xsl:variable name="src-1st-da-heads" as="element()*">
+      <xsl:for-each select="$src-1st-da/*/tan:head">
+         <xsl:variable name="pos" select="position()"/>
+         <xsl:copy>
+            <xsl:attribute name="src" select="$src-ids[$pos]"/>
+            <xsl:sequence select="*"/>
+         </xsl:copy>
+      </xsl:for-each></xsl:variable>
    <xsl:variable name="src-1st-da-data" select="tan:prep-class-1-data($src-1st-da-locations)"/>
    <xsl:variable name="src-1st-da-all-div-types" as="element()">
       <xsl:variable name="all" select="$src-1st-da-heads/tan:declarations/tan:div-type"/>

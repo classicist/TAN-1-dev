@@ -416,6 +416,8 @@
                            <xsl:for-each select="$this-div-ref">
                               <xsl:copy>
                                  <xsl:copy-of select="@src | @ref | @seg"/>
+                                 <xsl:attribute name="eq-ref"
+                                    select="tan:equate-ref(@src, @ref, @seg)"/>
                               </xsl:copy>
                            </xsl:for-each>
                         </tan:group>
@@ -463,6 +465,8 @@
                         <xsl:for-each select="current-group()">
                            <xsl:copy>
                               <xsl:copy-of select="@src | @ref | @seg"/>
+                              <xsl:attribute name="eq-ref"
+                                 select="tan:equate-ref(@src, @ref, @seg)"/>
                            </xsl:copy>
                         </xsl:for-each>
                      </tan:group>

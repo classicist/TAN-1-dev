@@ -111,8 +111,7 @@
       <report role="warning" sqf:fix="replace-file"
          test="if (($loc-doc-is-available = true()) and (parent::tan:head)) then (max($loc-ver-nos) != max($doc-ver-nos)) else false()"
          >Version found in master location (<value-of select="$loc-ver-date-latest"/>) does not
-         match this version (<value-of
-            select="$doc-ver-dates[index-of($doc-ver-nos,max($doc-ver-nos))[1]]"/>)</report>
+         match this version (<value-of select="$doc-ver"/>)</report>
       <assert test="$loc-doc-is-available = true()" role="warn">The <value-of
             select="$resource-type"/> is either unavailable or is available but is not valid
          XML.</assert>

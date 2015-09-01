@@ -31,6 +31,7 @@
             for $i in $doc-ver-dates
             return
                 tan:dateTime-to-decimal($i)"/>
+    <xsl:variable name="doc-ver" select="$doc-ver-dates[index-of($doc-ver-nos,max($doc-ver-nos))[1]]"/>
     <xsl:variable name="all-iris" select="//tan:IRI"/>
     <xsl:variable name="tan-iri-namespace"
         select="substring-before(substring-after($doc-id, 'tag:'), ':')"/>

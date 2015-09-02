@@ -1097,7 +1097,7 @@
                      $this-type-rename
                   else
                      $this-type, $separator-type-and-n, if (exists($this-n-rename)) then
-                     $this-n-rename
+                     $this-n-rename[1]
                   else
                      $this-n)"
             />

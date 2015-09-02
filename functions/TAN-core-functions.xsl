@@ -329,6 +329,13 @@
         <xsl:param name="string" as="xs:string"/>
         <xsl:value-of select="normalize-space(replace($string, '([\(\),\|])', ' $1 '))"/>
     </xsl:function>
+    
+    <xsl:function name="tan:escape" as="xs:string?">
+        <!-- Input: any string; Output: that string prepared for regular expression searches,
+        i.e., with reserved characters escaped out. -->
+        <xsl:param name="string" as="xs:string?"/>
+        <xsl:value-of select="replace($string,'([.^$*+?()\[{\\|])','\\$1')"/>
+    </xsl:function>
 
     <!-- CONTEXT DEPENDENT FUNCTIONS -->
     <xsl:function name="tan:resolve-url" as="xs:string?">

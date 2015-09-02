@@ -334,7 +334,7 @@
         <!-- Input: any string; Output: that string prepared for regular expression searches,
         i.e., with reserved characters escaped out. -->
         <xsl:param name="string" as="xs:string?"/>
-        <xsl:value-of select="replace($string,'([.^$*+?()\[{\\|])','\\$1')"/>
+        <xsl:value-of select="replace($string,'(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')"/>
     </xsl:function>
 
     <!-- CONTEXT DEPENDENT FUNCTIONS -->

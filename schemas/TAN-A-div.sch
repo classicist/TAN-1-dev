@@ -13,19 +13,27 @@
    <include href="TAN-core.sch"/>
    <include href="TAN-class-2.sch"/>
    <pattern>
+      <rule context="tan:rename">
+         <let name="this-old" value="@old"/>
+         <let name="this-new" value="@new"/>
+         <let name="sibling-olds" value="(preceding-sibling::tan:rename, following-sibling::tan:rename)/@old"/>
+         <let name="sibling-news" value="(preceding-sibling::tan:rename, following-sibling::tan:rename)/@new"/>
+         <report test="$this-old = $sibling-olds">Old values may not be duplicated</report>
+         <report test="$this-new = $sibling-news">New values may not be duplicated</report>
+      </rule>
       <rule context="tan:equate-works">
          <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
-         <let name="this-src-work-equivs"
-            value="for $i in (2 to count($this-src-list)),
-                  $j in (1 to ($i - 1))
-               return
-                  if ($src-1st-da-heads[$this-src-list[$i]]/tan:declarations/tan:work/tan:IRI/text() = $src-1st-da-heads[$this-src-list[$j]]/tan:declarations/tan:work/tan:IRI/text())
-                  then
-                     concat($src-ids[$this-src-list[$i]], ' = ', $src-ids[$this-src-list[$j]])
-                  else
-                     ()"/>
-         <report test="exists($this-src-work-equivs)">Sources already share work IRIs. <value-of
-               select="string-join($this-src-work-equivs, ', ')"/>. No equate-works is
+         <let name="this-work-iris" value="for $i in $this-src-list return $src-1st-da-heads[$i]/tan:declarations/tan:work/tan:IRI"/>
+         <let name="repeated-works" value="$this-work-iris[index-of($this-work-iris,.)[2]]"/>
+         <!-- START TESTING BLOCK -->
+         <let name="test1" value="$this-work-iris/tan:IRI"/>
+         <let name="test2" value="$this-src-list"/>
+         <let name="test3" value="$repeated-works"/>
+         <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
+            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
+         <!-- END TESTING BLOCK -->
+         <report test="exists($repeated-works)">Sources already share work IRIs: 
+            <value-of select="$repeated-works"/>. No equate-works is
             needed.</report>
       </rule>
       <rule context="tan:equate-div-types">
@@ -168,7 +176,6 @@
          />
          <let name="div-ref-is-anchored" value="for $i in tan:expand-div-ref(.,true()) return
             if ($realigns-normalized/tan:anchor-div-ref[@src = $i/@src][@ref = $i/@ref][(@seg = $i/@seg) or not(@seg)]) then true() else false()"/>
-         <!--<let name="ref-has-errors" value="matches($this-refs-norm,'!!error')"/>-->
          <let name="ref-has-errors" value="$src-data-for-this-div-ref/tan:div/@error"/>
          <let name="this-segs" value="if (@seg) then normalize-space(replace(@seg,'\?','')) else ()"/>
          <let name="seg-count" value="for $i in $src-segmented-data-for-this-div-ref/tan:div return count($i/tan:seg)"/>
@@ -176,13 +183,6 @@
          <let name="this-seg-max" value="if (exists($this-segs)) then tan:max-integer($this-segs) else 1"/>
          <let name="this-seg-min-last" value="if (exists($this-segs) and exists($seg-ceiling)) 
             then tan:min-last($this-segs,$seg-ceiling) else 1"/>
-         <!-- START TESTING BLOCK -->
-         <let name="test1" value="$src-impl-div-types"/>
-         <let name="test2" value="tan:normalize-refs('bk a ch 1 p 1')"/>
-         <let name="test3" value="true()"/>
-         <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
-            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
-         <!-- END TESTING BLOCK -->
          <report test="$ref-has-errors">Every
             ref cited must be found in every source (<value-of select="if ($ref-has-errors) 
                then $this-refs-norm else ()"/>).</report>

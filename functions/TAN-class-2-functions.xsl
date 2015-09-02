@@ -747,10 +747,10 @@
                         else
                            ()"/>
                   <!-- second copy with TEI markup, if any -->
-                  <xsl:copy-of
+                  <xsl:sequence
                      select="
                         if ($is-leaf-div and $this-div/descendant-or-self::tei:*) then
-                           $this-div//*
+                           $this-div/*
                         else
                            ()"
                   />
@@ -824,29 +824,27 @@
             <xsl:attribute name="id" select="$src-ids[$this-src]"/>
             <xsl:for-each select="$this-prepped-c1-data[$this-src]/tan:div">
                <xsl:variable name="this-div" select="."/>
-               <xsl:element name="tan:div">
+               <xsl:variable name="this-lang" select="@lang"/>
+               <xsl:variable name="this-tokz"
+                  select="
+                     $tokenizations-per-source[$this-src]/tan:tokenization[tan:for-lang = ('*',
+                     $this-lang)][1]/tan:location"/>
+               <xsl:variable name="this-replaces"
+                  select="$distinct-tokenizations[tan:location = $this-tokz]/tan:replace"/>
+               <xsl:variable name="this-tokenize"
+                  select="$distinct-tokenizations[tan:location = $this-tokz]/tan:tokenize"/>
+               <xsl:copy>
                   <xsl:copy-of select="@*"/>
-                  <xsl:if test="@lang">
-                     <xsl:variable name="this-lang" select="@lang"/>
+                  <xsl:if test="exists($this-lang)">
                      <xsl:choose>
-                        <xsl:when
-                           test="
-                              $tokenizations-per-source[$this-src]/tan:tokenization[tan:for-lang = ('*',
-                              $this-lang)]">
-                           <xsl:variable name="this-tokz"
-                              select="
-                                 $tokenizations-per-source[$this-src]/tan:tokenization[tan:for-lang = ('*',
-                                 $this-lang)][1]/tan:location"/>
-                           <xsl:variable name="this-replaces"
-                              select="$distinct-tokenizations[tan:location = $this-tokz]/tan:replace"/>
-                           <xsl:variable name="this-tokenize"
-                              select="$distinct-tokenizations[tan:location = $this-tokz]/tan:tokenize"/>
+                        <xsl:when test="exists($this-replaces)">
                            <xsl:for-each
                               select="tan:tokenize(tan:replace-sequence($this-div/text(), $this-replaces), $this-tokenize)">
                               <xsl:element name="tan:tok">
                                  <xsl:value-of select="."/>
                               </xsl:element>
                            </xsl:for-each>
+                           <xsl:sequence select="$this-tokenize/tan:pattern"/>
                         </xsl:when>
                         <xsl:otherwise>
                            <xsl:attribute name="lang" select="$this-lang"/>
@@ -861,8 +859,16 @@
                         </xsl:otherwise>
                      </xsl:choose>
                   </xsl:if>
-                  <xsl:copy-of select="descendant-or-self::tei:*"/>
-               </xsl:element>
+                  <xsl:choose>
+                     <!-- Preserves a pre-tokenized copy of the string -->
+                     <xsl:when test="tei:*">
+                        <xsl:sequence select="tei:*"/>
+                     </xsl:when>
+                     <xsl:otherwise>
+                        <xsl:sequence select="$this-div"/>
+                     </xsl:otherwise>
+                  </xsl:choose>
+               </xsl:copy>
             </xsl:for-each>
          </xsl:element>
       </xsl:for-each>

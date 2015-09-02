@@ -179,6 +179,7 @@
                               />
                            </xsl:element>
                         </xsl:for-each>
+                        <xsl:sequence select="tan:pattern | tei:* | tan:div"/>
                      </xsl:copy>
                   </xsl:when>
                   <xsl:otherwise>

@@ -858,16 +858,18 @@
                            />
                         </xsl:otherwise>
                      </xsl:choose>
+                     <xsl:choose>
+                        <!-- Preserves a pre-tokenized copy of the string -->
+                        <xsl:when test="tei:*">
+                           <xsl:sequence select="tei:*"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                           <xsl:copy>
+                              <xsl:value-of select="$this-div"/>
+                           </xsl:copy>
+                        </xsl:otherwise>
+                     </xsl:choose>
                   </xsl:if>
-                  <xsl:choose>
-                     <!-- Preserves a pre-tokenized copy of the string -->
-                     <xsl:when test="tei:*">
-                        <xsl:sequence select="tei:*"/>
-                     </xsl:when>
-                     <xsl:otherwise>
-                        <xsl:sequence select="$this-div"/>
-                     </xsl:otherwise>
-                  </xsl:choose>
                </xsl:copy>
             </xsl:for-each>
          </xsl:element>

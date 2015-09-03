@@ -151,7 +151,7 @@
             <xsl:attribute name="id" select="$this-src-id"/>
             <xsl:for-each select="$this-tokd-prepped-c1-data[$this-src]/tan:div">
                <xsl:choose>
-                  <xsl:when test="@lang">
+                  <xsl:when test="@lang and tan:tok">
                      <xsl:variable name="this-div" select="."/>
                      <xsl:variable name="this-div-splits"
                         select="
@@ -180,6 +180,16 @@
                            </xsl:element>
                         </xsl:for-each>
                         <xsl:sequence select="tan:pattern | tei:* | tan:div"/>
+                     </xsl:copy>
+                  </xsl:when>
+                  <xsl:when test="@lang and not(tan:tok)">
+                     <!-- Even when not tokenized, allow the tan:seg to wrap the text -->
+                     <xsl:copy>
+                        <xsl:copy-of select="@*"/>
+                        <tan:seg>
+                           <xsl:value-of select="tei:* | tan:div"/>
+                        </tan:seg>
+                        <xsl:sequence select="tei:*"/>
                      </xsl:copy>
                   </xsl:when>
                   <xsl:otherwise>

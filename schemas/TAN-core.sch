@@ -77,11 +77,10 @@
       </sqf:fix>
    </rule>
    <rule context="tan:master-location|tan:location">
-      <let name="loc" value="text()"/>
       <let name="is-master-location" value="if (name() = 'master-location') then true() else false()"/>
       <let name="resource-type"
          value="if ($is-master-location) then 'master document' else name(..)"/>
-      <let name="loc-uri" value="tan:resolve-url($loc,'')"/>
+      <let name="loc-uri" value="tan:resolve-url(.)"/>
       <let name="loc-doc-is-available" value="doc-available($loc-uri)"/>
       <let name="loc-doc" value="if ($loc-doc-is-available) then doc($loc-uri) else ()"/>
       <let name="loc-ver-date-nodes" value="$loc-doc//*[(@when | @ed-when | @when-accessed)]"/>
@@ -95,21 +94,21 @@
       <let name="is-location-of-tan-file" value="tan:must-refer-to-external-tan-file(.)"/>
       <let name="is-first-da-location"
          value="if ($loc-doc-is-available and 
-         not((preceding-sibling::tan:location, preceding-sibling::tan:master-location)[doc-available(tan:resolve-url(.,''))])) 
+         not((preceding-sibling::tan:location, preceding-sibling::tan:master-location)[doc-available(tan:resolve-url(.))])) 
          then true() else false()"/>
       <let name="is-in-progress"
          value="if ($loc-doc/*/(tan:body, tei:text/tei:body)/@in-progress = 'false') then false() else true()"/>
       <let name="updates-should-be-checked"
          value="if (../tan:relationship = ('old version') or matches(../tan:relationship,'edition$')) then true() else false()"/>
       <!-- START TESTING BLOCK -->
-      <let name="test1" value="$is-location-of-tan-file"/>
+      <let name="test1" value="$loc-uri"/>
       <let name="test2" value="$is-first-da-location"/>
       <let name="test3" value="$is-in-progress"/>
       <report test="false()">Testing. var1: <value-of select="$test1"/> var2: <value-of
             select="$test2"/> var3: <value-of select="$test3"/></report>
       <!-- END TESTING BLOCK -->
       <report role="warning" sqf:fix="replace-file"
-         test="if (($loc-doc-is-available = true()) and (parent::tan:head)) then (max($loc-ver-nos) != max($doc-ver-nos)) else false()"
+         test="if (exists($loc-doc) and $is-master-location) then (max($loc-ver-nos) != max($doc-ver-nos)) else false()"
          >Version found in master location (<value-of select="$loc-ver-date-latest"/>) does not
          match this version (<value-of select="$doc-ver"/>)</report>
       <assert test="$loc-doc-is-available = true()" role="warn">The <value-of
@@ -251,7 +250,7 @@
       <let name="count" value="count(index-of($all-iris,.))"/>
       <let name="is-iri-of-tan-file" value="tan:must-refer-to-external-tan-file(.)"/>
       <let name="first-loc"
-         value="../tan:location[doc-available(tan:resolve-url(.,''))][1]"/>
+         value="../tan:location[doc-available(tan:resolve-url(.))][1]"/>
       <let name="first-doc"
          value="if (exists($first-loc)) then doc(tan:resolve-url($first-loc,'')) else ()"/>
       <let name="first-da-iri-name" value="$first-doc/*/@id"/>

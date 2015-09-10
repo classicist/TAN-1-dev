@@ -132,6 +132,10 @@
             if (name($i) = ('comment','change')) then concat(name($i),': ',$i) else
             concat('edited: ',string-join(for $j in $i/ancestor-or-self::node()[name()] return concat(name($j),'[',string(count($j/preceding-sibling::node()[name(.) = name($j)]) + 1),']'),'/'))"
          /></report>
+      <report
+         test="tan:must-refer-to-external-tan-file(.) and not(preceding-sibling::tan:IRI/text() and preceding-sibling::tan:name/text())
+         and exists($loc-doc)"
+         role="warning" sqf:fix="replace-IRI-and-name">IRI or name missing from TAN file.</report>
       <sqf:fix id="replace-with-current-date">
          <sqf:description>
             <sqf:title>Change date to today's date</sqf:title>
@@ -147,6 +151,14 @@
          </sqf:description>
          <sqf:replace match="/*/tan:head" select="$loc-doc/*/tan:head"/>
          <sqf:replace match="/*/tan:body" select="$loc-doc/*/tan:body"/>
+      </sqf:fix>
+      <sqf:fix id="replace-IRI-and-name">
+         <sqf:description>
+            <sqf:title>Replace IRI and name with target values</sqf:title>
+         </sqf:description>
+         <sqf:replace match="preceding-sibling::tan:IRI"><xsl:element name="IRI"><xsl:value-of
+                  select="$loc-doc/*/@id"/></xsl:element></sqf:replace>
+         <sqf:replace match="preceding-sibling::tan:name" select="$loc-doc/*/tan:head/tan:name[1]"/>
       </sqf:fix>
    </rule>
    <rule context="tan:see-also">

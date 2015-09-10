@@ -166,11 +166,9 @@
       <let name="must-point-to-external-tan"
          value="if ($this-relationship = $relationship-keywords-for-tan-files) then true() else false()"/>
       <let name="first-loc"
-         value="tan:location[doc-available(.) or doc-available(concat($doc-parent-directory,.))][1]"/>
+         value="tan:location[doc-available(tan:resolve-url(.))][1]"/>
       <let name="first-doc"
-         value="if (doc-available($first-loc)) then doc($first-loc) 
-         else if (doc-available(concat($doc-parent-directory,$first-loc))) 
-         then doc(concat($doc-parent-directory,$first-loc)) else ()"/>
+         value="if (exists($first-loc)) then doc(tan:resolve-url($first-loc)) else ()"/>
       <let name="points-to-which-tan" value="name($first-doc/*)"/>
       <report test="$must-point-to-external-tan and not($points-to-which-tan = $all-root-names)"
          >Must point to TAN file (checked only against first location available). <value-of
@@ -262,9 +260,9 @@
       <let name="count" value="count(index-of($all-iris,.))"/>
       <let name="is-iri-of-tan-file" value="tan:must-refer-to-external-tan-file(.)"/>
       <let name="first-loc"
-         value="../tan:location[doc-available(tan:resolve-url(.))][1]"/>
+         value="following-sibling::tan:location[doc-available(tan:resolve-url(.))][1]"/>
       <let name="first-doc"
-         value="if (exists($first-loc)) then doc(tan:resolve-url($first-loc,'')) else ()"/>
+         value="if (exists($first-loc)) then doc(tan:resolve-url($first-loc)) else ()"/>
       <let name="first-da-iri-name" value="$first-doc/*/@id"/>
       <assert test="$count = 1">An IRI should appear only once in a TAN document.</assert>
       <report test="if (exists($first-loc)) then ($is-iri-of-tan-file and not(text() = $first-da-iri-name))

@@ -356,6 +356,12 @@
                     concat($base-check, $input-url)"
         />
     </xsl:function>
+    <xsl:function name="tan:resolve-url" as="xs:string?">
+        <!-- one-parameter version of above, to handle cases where the default should be
+        simply the parent directory of the current document. -->
+        <xsl:param name="input-url" as="xs:string?"/>
+        <xsl:value-of select="tan:resolve-url($input-url, '')"/>
+    </xsl:function>
     <xsl:function name="tan:must-refer-to-external-tan-file" as="xs:boolean">
         <!-- Input: node in a TAN document. Output: boolean value indicating whether the node or its 
          parent names or refers to a TAN file. -->

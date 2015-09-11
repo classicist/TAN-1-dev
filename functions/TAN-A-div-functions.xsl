@@ -204,10 +204,11 @@
       <!-- takes one <div-ref> or <anchor-div-ref> and returns one <div-ref> per source per
       ref per segment, replacing @src with numerical value, @ref with normalized single reference, and 
       @seg (if present) with a single number. If the second parameter is true() a @work attribute is
-      added with the integer value of the work.
-      E.g., (<div-ref src="A B" ref="1 - 2" seg="1, last"/>, true()) - > (<div-ref work="1" src="1" ref="line.1" seg="1"/>, 
-      <div-ref work="1" src="1" ref="line.1" seg="7"/>, <div-ref work="1" src="1" ref="line.2" seg="1"/>,
-      <div-ref work="1" src="1" ref="line.1" seg="3"/>, <div-ref work="1" src="2" ref="line.1" seg="1"/>, ...) -->
+      added with the integer value of the work. A copy of the original reference is retained, in case
+      the original formula is needed.
+      E.g., (<div-ref src="A B" ref="1 - 2" seg="1, last"/>, true()) - > (<div-ref work="1" src="1" ref="line.1" seg="1" orig-ref="1 - 2"/>, 
+      <div-ref work="1" src="1" ref="line.1" seg="7" orig-ref="1 - 2"/>, <div-ref work="1" src="1" ref="line.2" seg="1" orig-ref="1 - 2"/>,
+      <div-ref work="1" src="1" ref="line.1" seg="3" orig-ref="1 - 2"/>, <div-ref work="1" src="2" ref="line.1" seg="1" orig-ref="1 - 2"/>, ...) -->
       <xsl:param name="div-ref-element" as="element()?"/>
       <xsl:param name="include-work" as="xs:boolean"/>
       <xsl:variable name="these-srcs" select="tan:src-ids-to-nos($div-ref-element/@src)"/>
@@ -252,6 +253,7 @@
                   <xsl:if test=". gt 0">
                      <xsl:attribute name="seg" select="."/>
                   </xsl:if>
+                  <xsl:attribute name="orig-ref" select="$div-ref-element/@ref"/>
                </xsl:element>
             </xsl:for-each>
          </xsl:for-each>
@@ -346,7 +348,8 @@
       @exclusive claims (which are therefore dropped). It has no effect on empty tan:align elements that 
       merely point to other alignments. The result follows this pattern:
       <tan:align [+ANY ATTRIBUTES]> [IF DISTRIBUTE, ONE PER ATOMIC REF]
-         <tan:group [IF (@exclusive = true()) THEN] src="[SOURCE NUMBER]" [ELSE] work="[WORK NUMBER]">
+         <tan:group [IF (@exclusive = true()) THEN] src="[SOURCE NUMBER]" [ELSE] work="[WORK NUMBER]"
+         orig-ref="[THE ORIGINAL REFERENCES FOR THIS WORK OR SOURCE, STRING-JOINED BY COMMAS]">
             <tan:div-ref src="[SOURCE NUMBER]" ref="[SINGLE REF]" seg="[SINGLE SEGMENT NUMBER; IF NO SEGMENTATION, 
             THIS ATTRIBUTE IS MISSING]">
       NB, <tan:align error="true"> collects div-refs that cannot be allocated in one-to-one matches demanded by
@@ -415,7 +418,7 @@
                                  @src
                               else
                                  @work) = $this-key][$this-align-no]"/>
-                        <tan:group>
+                        <tan:group orig-ref="{string-join(distinct-values($this-div-ref/@orig-ref),', ')}">
                            <xsl:choose>
                               <xsl:when test="$is-exclusive">
                                  <xsl:attribute name="src" select="$this-div-ref/@src"/>
@@ -424,11 +427,12 @@
                                  <xsl:attribute name="work" select="$this-div-ref/@work"/>
                               </xsl:otherwise>
                            </xsl:choose>
+                           
                            <xsl:for-each select="$this-div-ref">
                               <xsl:copy>
                                  <xsl:copy-of select="@src | @ref | @seg"/>
                                  <xsl:attribute name="eq-ref"
-                                    select="tan:equate-ref(@src, @ref, @seg)"/>
+                                    select="tan:equate-ref(@src, @ref, @seg)[1]"/>
                               </xsl:copy>
                            </xsl:for-each>
                         </tan:group>
@@ -464,7 +468,7 @@
                            @src
                         else
                            @work">
-                     <tan:group>
+                     <tan:group orig-ref="{string-join(distinct-values(current-group()/@orig-ref),', ')}">
                         <xsl:choose>
                            <xsl:when test="$is-exclusive">
                               <xsl:attribute name="src" select="current-group()[1]/@src"/>
@@ -477,7 +481,7 @@
                            <xsl:copy>
                               <xsl:copy-of select="@src | @ref | @seg"/>
                               <xsl:attribute name="eq-ref"
-                                 select="tan:equate-ref(@src, @ref, @seg)"/>
+                                 select="tan:equate-ref(@src, @ref, @seg)[1]"/>
                            </xsl:copy>
                         </xsl:for-each>
                      </tan:group>

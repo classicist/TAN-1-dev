@@ -23,7 +23,7 @@
             <relationship>alternatively divided edition</relationship>
             <IRI>tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:semantic-refs</IRI>
             <name>Categories, Aristotle, Greek text by Minio-Paluello, semantic-based references</name>
-            <location when-accessed="2015-07-10">ar.cat.grc.1949.minio-paluello-sem.xml</location>
+            <location when-accessed="2015-09-11-04:00">ar.cat.grc.1949.minio-paluello-sem.xml</location>
         </see-also>
         <declarations>
             <work>
@@ -42,6 +42,7 @@
                 <IRI>tag:textalign.net,2015:div-type:line:physical</IRI>
                 <name>physical line</name>
             </div-type>
+            <recommended-div-type-refs>implicit</recommended-div-type-refs>
             <recommended-tokenization which="general-words-only-1"/>
             <filter>
                 <normalization>

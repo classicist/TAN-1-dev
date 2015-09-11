@@ -150,6 +150,7 @@
          <xsl:element name="tan:source">
             <xsl:attribute name="id" select="$this-src-id"/>
             <xsl:for-each select="$this-tokd-prepped-c1-data[$this-src]/tan:div">
+               <xsl:variable name="div-pos" select="position()"/>
                <xsl:choose>
                   <xsl:when test="@lang and tan:tok">
                      <xsl:variable name="this-div" select="."/>
@@ -170,6 +171,7 @@
                            count($this-div/tan:tok))"/>
                      <xsl:copy>
                         <xsl:copy-of select="@*"/>
+                        <xsl:attribute name="pos" select="$div-pos"/>
                         <xsl:for-each select="(1 to count($this-div-splits) + 1)">
                            <xsl:variable name="pos" select="."/>
                            <xsl:variable name="start" select="$this-div-seg-starts[$pos]"/>
@@ -186,6 +188,7 @@
                      <!-- Even when not tokenized, allow the tan:seg to wrap the text -->
                      <xsl:copy>
                         <xsl:copy-of select="@*"/>
+                        <xsl:attribute name="pos" select="$div-pos"/>
                         <tan:seg>
                            <xsl:value-of select="tei:* | tan:div"/>
                         </tan:seg>
@@ -419,6 +422,7 @@
                               else
                                  @work) = $this-key][$this-align-no]"/>
                         <tan:group orig-ref="{string-join(distinct-values($this-div-ref/@orig-ref),', ')}">
+                           <xsl:copy-of select="$this-div-ref/../@strength"/>
                            <xsl:choose>
                               <xsl:when test="$is-exclusive">
                                  <xsl:attribute name="src" select="$this-div-ref/@src"/>
@@ -427,10 +431,9 @@
                                  <xsl:attribute name="work" select="$this-div-ref/@work"/>
                               </xsl:otherwise>
                            </xsl:choose>
-                           
                            <xsl:for-each select="$this-div-ref">
                               <xsl:copy>
-                                 <xsl:copy-of select="@src | @ref | @seg"/>
+                                 <xsl:copy-of select="@src | @ref | @seg | @strength"/>
                                  <xsl:attribute name="eq-ref"
                                     select="tan:equate-ref(@src, @ref, @seg)[1]"/>
                               </xsl:copy>
@@ -469,6 +472,7 @@
                         else
                            @work">
                      <tan:group orig-ref="{string-join(distinct-values(current-group()/@orig-ref),', ')}">
+                        <xsl:copy-of select="current-group()/../@strength"/>
                         <xsl:choose>
                            <xsl:when test="$is-exclusive">
                               <xsl:attribute name="src" select="current-group()[1]/@src"/>
@@ -479,7 +483,7 @@
                         </xsl:choose>
                         <xsl:for-each select="current-group()">
                            <xsl:copy>
-                              <xsl:copy-of select="@src | @ref | @seg"/>
+                              <xsl:copy-of select="@src | @ref | @seg | @strength"/>
                               <xsl:attribute name="eq-ref"
                                  select="tan:equate-ref(@src, @ref, @seg)[1]"/>
                            </xsl:copy>

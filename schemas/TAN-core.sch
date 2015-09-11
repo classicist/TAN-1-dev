@@ -8,8 +8,23 @@
    <let name="schema-version-minor" value="'dev'"/>
    <let name="now" value="tan:dateTime-to-decimal(current-dateTime())"/>
    <rule context="/*">
-      <report test="true()" role="warning">This version of TAN is unstable and unpublished. Use it
+      <report test="true()" role="warning" sqf:fix="copy-iri-name-pattern">This version of TAN is unstable and unpublished. Use it
          at your own risk.</report>
+      <sqf:fix id="copy-iri-name-pattern">
+         <sqf:description>
+            <sqf:title>Create document IRI + name pattern</sqf:title>
+         </sqf:description>
+         <sqf:add match="tan:head" position="before">
+            <source xmlns="tag:textalign.net,2015:ns">
+               <IRI>
+                  <xsl:value-of select="../@id"/></IRI>
+               <name><xsl:value-of select="tan:name"/></name>
+               <location when-accessed="{current-date()}">
+                  <xsl:value-of select="$doc-uri"/>
+               </location>
+            </source>
+         </sqf:add>
+      </sqf:fix>
    </rule>
    <rule context="text()">
       <let name="this-raw-char-seq" value="tokenize(replace(.,'(.)','$1 '),' ')"/>

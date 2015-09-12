@@ -196,7 +196,9 @@
                      </xsl:copy>
                   </xsl:when>
                   <xsl:otherwise>
-                     <xsl:copy-of select="."/>
+                     <xsl:copy><xsl:copy-of select="@*"/>
+                        <xsl:attribute name="pos" select="$div-pos"/>
+                     </xsl:copy>
                   </xsl:otherwise>
                </xsl:choose>
             </xsl:for-each>
@@ -355,6 +357,7 @@
          orig-ref="[THE ORIGINAL REFERENCES FOR THIS WORK OR SOURCE, STRING-JOINED BY COMMAS]">
             <tan:div-ref src="[SOURCE NUMBER]" ref="[SINGLE REF]" seg="[SINGLE SEGMENT NUMBER; IF NO SEGMENTATION, 
             THIS ATTRIBUTE IS MISSING]">
+      tan:div-refs will be sorted by document order 
       NB, <tan:align error="true"> collects div-refs that cannot be allocated in one-to-one matches demanded by
       @distribute = true
       -->
@@ -471,7 +474,7 @@
                            @src
                         else
                            @work">
-                     <tan:group orig-ref="{string-join(distinct-values(current-group()/@orig-ref),', ')}">
+                     <tan:group>
                         <xsl:copy-of select="current-group()/../@strength"/>
                         <xsl:choose>
                            <xsl:when test="$is-exclusive">
@@ -481,7 +484,22 @@
                               <xsl:attribute name="work" select="current-group()[1]/@work"/>
                            </xsl:otherwise>
                         </xsl:choose>
+                        <xsl:attribute name="orig-ref">
+                           <xsl:variable name="orig-refs" as="xs:string*">
+                              <xsl:for-each select="current-group()">
+                                 <xsl:sort
+                                    select="number($src-1st-da-data-segmented[number(current()/@src)]/tan:div[@ref = current()/@ref]/@pos)"
+                                 />
+                                 <xsl:value-of select="@orig-ref"/>
+                              </xsl:for-each>
+                           </xsl:variable>
+                           <xsl:value-of select="string-join(distinct-values($orig-refs),', ')"/>
+                        </xsl:attribute>
+                           <!--select="string-join(distinct-values(current-group()/@orig-ref), ', ')"-->
                         <xsl:for-each select="current-group()">
+                           <xsl:sort
+                              select="number($src-1st-da-data-segmented[number(current()/@src)]/tan:div[@ref = current()/@ref]/@pos)"
+                           />
                            <xsl:copy>
                               <xsl:copy-of select="@src | @ref | @seg | @strength"/>
                               <xsl:attribute name="eq-ref"

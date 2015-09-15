@@ -96,9 +96,9 @@
     <!-- Reserved URLs for officially supplied TAN-R-tok patterns -->
     <xsl:variable name="tokenization-which-reserved-url"
         select="
-            ('../TAN-R-tok/general-1.xml',
+            for $i in ('../TAN-R-tok/general-1.xml',
             '../TAN-R-tok/general-words-only-1.xml',
-            '../TAN-R-tok/precise-1.xml')"/>
+            '../TAN-R-tok/precise-1.xml') return resolve-uri($i)"/>
     <xsl:variable name="tokenizations-core"
         select="
             for $i in $tokenization-which-reserved-url

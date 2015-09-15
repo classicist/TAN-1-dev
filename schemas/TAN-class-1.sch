@@ -67,9 +67,9 @@
       <let name="tokenization-langs"
          value="$this-tokz/tan:TAN-R-tok/tan:head/tan:declarations/tan:for-lang"/>
       <!-- START TESTING BLOCK -->
-      <let name="test1" value="doc-available(concat($doc-parent-directory,'TAN-R-tok/tok.test.xml'))"/>
-      <let name="test2" value="doc-available(resolve-uri('TAN-R-tok/tok.test.xml',$doc-uri))"/>
-      <let name="test3" value="resolve-uri(tan:location[1],$doc-uri)"/>
+      <let name="test1" value="$transcription-langs"/>
+      <let name="test2" value="$tokenization-langs"/>
+      <let name="test3" value="$recommended-tokenizations/tan:for-lang"/>
       <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
          select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
       <!-- END TESTING BLOCK -->
@@ -88,10 +88,16 @@
          >Recommended tokenization must point to a TAN-R-tok file (currently <value-of
             select="name($this-tokz/*)"/>)</assert>
       <report role="warning"
-         test="exists($tokenization-langs) and not(every $i in $transcription-langs satisfies index-of($tokenization-langs,$i) > 0)"
-         >TAN-R-tok file is language specific, and not every language in the body (<value-of
-            select="$transcription-langs"/>) is explicitly provided for in the TAN-R-tok file
-         (<value-of select="$tokenization-langs"/>).</report>
+         test="exists($tokenization-langs) and not($tokenization-langs = $transcription-langs)"
+         >TAN-R-tok file is meant for specific languages (<value-of select="$tokenization-langs"/>),
+         none of which are used in the body (<value-of select="$transcription-langs"/>).</report>
+      <report
+         test="not('*' = $recommended-tokenizations/tan:for-lang) and $transcription-langs[not(. = $recommended-tokenizations/tan:for-lang)]"
+         >Some languages used in the transcription (<value-of
+            select="$transcription-langs[not(. = $recommended-tokenizations/tan:for-lang)]"
+         />) have not been supplied recommended tokenization
+         patterns (currently supported: 
+         <value-of select="$recommended-tokenizations/tan:for-lang"/>).</report>
    </rule>
    <rule context="tan:recommended-div-type-refs">
       <let name="implicit-is-recommended" value="if (. = 'implicit') then true() else false()"/>

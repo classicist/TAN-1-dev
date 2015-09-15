@@ -31,6 +31,34 @@
          </xsl:for-each>
       </xsl:element>
    </xsl:variable>
+   <xsl:variable name="recommended-tokenizations" as="element()*">
+      <!-- Sequence of one element per recommended tokenizations, their first
+         document-available location, and the languages covered:
+         <recommended-tokenization>
+            <location>[URL or ERROR MESSAGE]</location>
+            <for-lang>[LANG1 or *]<lang>
+            <for-lang>[LANG2]<lang>
+            ...
+         </tokenization>-->
+      <xsl:for-each select="$head/tan:declarations/tan:recommended-tokenization">
+         <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:variable name="this-tok-1st-la" select="tan:location[doc-available(resolve-uri(.,$doc-uri))][1]"/>
+            <xsl:copy-of select="$this-tok-1st-la"/>
+            <xsl:for-each select="doc(resolve-uri($this-tok-1st-la,$doc-uri))">
+               <xsl:variable name="these-langs" select="tan:TAN-R-tok/tan:head/tan:declarations/tan:for-lang"/>
+               <xsl:choose>
+                  <xsl:when test="exists($these-langs)">
+                     <xsl:sequence select="$these-langs"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:element name="for-lang" namespace="tag:textalign.net,2015:ns">*</xsl:element>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:for-each>
+         </xsl:copy>
+      </xsl:for-each>
+   </xsl:variable>
 
    <xsl:function name="tan:locate-modifiers" as="element()?">
       <!-- Locates all modifying letters in a string

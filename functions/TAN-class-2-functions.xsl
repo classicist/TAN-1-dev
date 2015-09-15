@@ -39,9 +39,9 @@
             $sources/@xml:id"/>
    <xsl:variable name="src-1st-da-locations"
       select="
-         for $i in $sources/tan:location[doc-available(tan:resolve-url(., ''))][1]
+         for $i in $sources/tan:location[doc-available(resolve-uri(., $doc-uri))][1]
          return
-            tan:resolve-url($i, '')"/>
+            resolve-uri($i, $doc-uri)"/>
    <xsl:variable name="src-1st-da-uri"
       select="
          for $i in $src-1st-da-locations
@@ -122,7 +122,7 @@
                <xsl:variable name="cl-2-loc"
                   select="
                      if ($this-tokz/tan:location) then
-                        ($this-tokz/tan:location[doc-available(tan:resolve-url(., ''))],
+                        ($this-tokz/tan:location[doc-available(resolve-uri(., $doc-uri))],
                         $tokenization-errors[1])[1]
                      else
                         ()"/>
@@ -137,7 +137,7 @@
                <xsl:variable name="cl-1-loc"
                   select="
                      if (exists($src-rec-tokz-chosen)) then
-                        ($src-rec-tokz-chosen/tan:location[doc-available(tan:resolve-url(., $src-1st-da-parent-directory[$this-src]))],
+                        ($src-rec-tokz-chosen/tan:location[doc-available(resolve-uri(., $src-1st-da-uri))],
                         $tokenization-errors[3])[1]
                      else
                         ()"/>

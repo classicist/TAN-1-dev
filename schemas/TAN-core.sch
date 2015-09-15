@@ -95,7 +95,7 @@
       <let name="is-master-location" value="if (name() = 'master-location') then true() else false()"/>
       <let name="resource-type"
          value="if ($is-master-location) then 'master document' else name(..)"/>
-      <let name="loc-uri" value="tan:resolve-url(.)"/>
+      <let name="loc-uri" value="resolve-uri(.,$doc-uri)"/>
       <let name="loc-doc-is-available" value="doc-available($loc-uri)"/>
       <let name="loc-doc" value="if ($loc-doc-is-available) then doc($loc-uri) else ()"/>
       <let name="loc-ver-date-nodes" value="$loc-doc//*[(@when | @ed-when | @when-accessed)]"/>
@@ -109,16 +109,16 @@
       <let name="is-location-of-tan-file" value="tan:must-refer-to-external-tan-file(.)"/>
       <let name="is-first-da-location"
          value="if ($loc-doc-is-available and 
-         not((preceding-sibling::tan:location, preceding-sibling::tan:master-location)[doc-available(tan:resolve-url(.))])) 
+         not((preceding-sibling::tan:location, preceding-sibling::tan:master-location)[doc-available(resolve-uri(.,$doc-uri))])) 
          then true() else false()"/>
       <let name="is-in-progress"
          value="if ($loc-doc/*/(tan:body, tei:text/tei:body)/@in-progress = 'false') then false() else true()"/>
       <let name="updates-should-be-checked"
          value="if (../tan:relationship = ('old version') or matches(../tan:relationship,'edition$')) then true() else false()"/>
       <!-- START TESTING BLOCK -->
-      <let name="test1" value="$loc-uri"/>
-      <let name="test2" value="$is-first-da-location"/>
-      <let name="test3" value="$is-in-progress"/>
+      <let name="test1" value="resolve-uri(.,$doc-uri) = $loc-uri"/>
+      <let name="test2" value="resolve-uri(.,$doc-uri)"/>
+      <let name="test3" value="$loc-uri"/>
       <report test="false()">Testing. var1: <value-of select="$test1"/> var2: <value-of
             select="$test2"/> var3: <value-of select="$test3"/></report>
       <!-- END TESTING BLOCK -->
@@ -181,9 +181,9 @@
       <let name="must-point-to-external-tan"
          value="if ($this-relationship = $relationship-keywords-for-tan-files) then true() else false()"/>
       <let name="first-loc"
-         value="tan:location[doc-available(tan:resolve-url(.))][1]"/>
+         value="tan:location[doc-available(resolve-uri(.,$doc-uri))][1]"/>
       <let name="first-doc"
-         value="if (exists($first-loc)) then doc(tan:resolve-url($first-loc)) else ()"/>
+         value="if (exists($first-loc)) then doc(resolve-uri($first-loc,$doc-uri)) else ()"/>
       <let name="points-to-which-tan" value="name($first-doc/*)"/>
       <report test="$must-point-to-external-tan and not($points-to-which-tan = $all-root-names)"
          >Must point to TAN file (checked only against first location available). <value-of
@@ -275,9 +275,9 @@
       <let name="count" value="count(index-of($all-iris,.))"/>
       <let name="is-iri-of-tan-file" value="tan:must-refer-to-external-tan-file(.)"/>
       <let name="first-loc"
-         value="following-sibling::tan:location[doc-available(tan:resolve-url(.))][1]"/>
+         value="following-sibling::tan:location[doc-available(resolve-uri(.,$doc-uri))][1]"/>
       <let name="first-doc"
-         value="if (exists($first-loc)) then doc(tan:resolve-url($first-loc)) else ()"/>
+         value="if (exists($first-loc)) then doc(resolve-uri($first-loc,$doc-uri)) else ()"/>
       <let name="first-da-iri-name" value="$first-doc/*/@id"/>
       <assert test="$count = 1">An IRI should appear only once in a TAN document.</assert>
       <report test="if (exists($first-loc)) then ($is-iri-of-tan-file and not(text() = $first-da-iri-name))

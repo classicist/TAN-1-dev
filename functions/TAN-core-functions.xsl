@@ -338,30 +338,6 @@
     </xsl:function>
 
     <!-- CONTEXT DEPENDENT FUNCTIONS -->
-    <xsl:function name="tan:resolve-url" as="xs:string?">
-        <!-- Input: any string purporting to be a location of a file, and a base directory to be used
-            in case the first string is a relative URL.
-        Output: if input is a relative URL then that same string appended to the second parameter. If 
-        the second parameter is empty or a zero-length string, the main document's parent directory will 
-        be substituted. If input is not relative, only the the input is returned.
-        E.g., ('../example-a.xml',()) - > 'file:/Users/admin/Documents/project/example-a.xml' -->
-        <xsl:param name="input-url" as="xs:string?"/>
-        <xsl:param name="input-base" as="xs:string?"/>
-        <xsl:variable name="base-check" select="if (exists($input-base) and $input-base != '') then $input-base else $doc-parent-directory"/>
-        <xsl:value-of
-            select="
-                if (resolve-uri($input-url) = $input-url) then
-                    $input-url
-                else
-                    concat($base-check, $input-url)"
-        />
-    </xsl:function>
-    <xsl:function name="tan:resolve-url" as="xs:string?">
-        <!-- one-parameter version of above, to handle cases where the default should be
-        simply the parent directory of the current document. -->
-        <xsl:param name="input-url" as="xs:string?"/>
-        <xsl:value-of select="tan:resolve-url($input-url, '')"/>
-    </xsl:function>
     <xsl:function name="tan:must-refer-to-external-tan-file" as="xs:boolean">
         <!-- Input: node in a TAN document. Output: boolean value indicating whether the node or its 
          parent names or refers to a TAN file. -->

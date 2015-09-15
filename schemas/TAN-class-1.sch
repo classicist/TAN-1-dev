@@ -8,9 +8,9 @@
    <let name="transcription-langs"
       value="/(tan:TAN-T/tan:body|tei:TEI/tei:text/tei:body)//@xml:lang"/>
    <rule context="tan:see-also">
-      <let name="first-loc" value="tan:location[doc-available(tan:resolve-url(.,''))][1]"/>
+      <let name="first-loc" value="tan:location[doc-available(resolve-uri(.,$doc-uri))][1]"/>
       <let name="first-doc"
-         value="if (exists($first-loc)) then doc(tan:resolve-url($first-loc,'')) else ()"/>
+         value="if (exists($first-loc)) then doc(resolve-uri($first-loc,$doc-uri)) else ()"/>
       <let name="is-alternatively-divided-edition" value="tan:relationship = 'alternatively divided edition'"/>
       <let name="is-alternatively-normalized-edition" value="tan:relationship = 'alternatively normalized edition'"/>
       <let name="is-strict-alternative" value="$is-alternatively-divided-edition or $is-alternatively-normalized-edition"/>
@@ -45,9 +45,11 @@
       <let name="this-which" value="@which"/>
       <let name="this-which-is-reserved"
          value="if ($this-which = $tokenization-which-reserved) then true() else false()"/>
-      <let name="first-tokz-loc" value="tan:location[doc-available(tan:resolve-url(.,''))][1]"/>
-      <let name="first-tokz-loc-resolved" value="if (exists($first-tokz-loc)) 
-         then tan:resolve-url($first-tokz-loc,'') else ()"/> 
+      <let name="first-tokz-loc" value="tan:location[doc-available(resolve-uri(.,$doc-uri))][1]"/>
+      <let name="first-tokz-loc-resolved"
+         value="if (exists($first-tokz-loc)) 
+         then resolve-uri($first-tokz-loc,$doc-uri) else ()"
+      /> 
       <let name="this-tokz"
          value="if ($this-which-is-reserved) then $tokenizations-core[index-of($tokenization-which-reserved,$this-which)] else 
          if (exists($first-tokz-loc-resolved)) then doc($first-tokz-loc-resolved) else ()"/>
@@ -66,8 +68,8 @@
          value="$this-tokz/tan:TAN-R-tok/tan:head/tan:declarations/tan:for-lang"/>
       <!-- START TESTING BLOCK -->
       <let name="test1" value="doc-available(concat($doc-parent-directory,'TAN-R-tok/tok.test.xml'))"/>
-      <let name="test2" value="doc-available(tan:resolve-url('TAN-R-tok/tok.test.xml',''))"/>
-      <let name="test3" value="tan:resolve-url(tan:location[1],'')"/>
+      <let name="test2" value="doc-available(resolve-uri('TAN-R-tok/tok.test.xml',$doc-uri))"/>
+      <let name="test3" value="resolve-uri(tan:location[1],$doc-uri)"/>
       <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
          select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
       <!-- END TESTING BLOCK -->

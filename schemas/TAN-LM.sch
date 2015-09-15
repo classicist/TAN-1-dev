@@ -17,11 +17,11 @@
    <include href="TAN-class-2.sch"/>
    <let name="morphology-ids" value="/tan:TAN-LM/tan:head/tan:declarations/tan:morphology/@xml:id"/>
    <let name="morphologies-1st-loc-avail"
-      value="/tan:TAN-LM/tan:head/tan:declarations/tan:morphology/tan:location[doc-available(tan:resolve-url(.,''))][1]"/>
+      value="/tan:TAN-LM/tan:head/tan:declarations/tan:morphology/tan:location[doc-available(resolve-uri(.,$doc-uri))][1]"/>
    <let name="morphologies"
       value="for $i in $morphologies-1st-loc-avail
          return
-            doc(tan:resolve-url($i,''))"/>
+            doc(resolve-uri($i,$doc-uri))"/>
    <pattern>
       <rule context="tan:lm">
          <report test="not(tan:l|tan:m)">lm must take at least one l or m.</report>

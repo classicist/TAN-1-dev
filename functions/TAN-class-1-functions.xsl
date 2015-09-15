@@ -43,9 +43,23 @@
       <xsl:for-each select="$head/tan:declarations/tan:recommended-tokenization">
          <xsl:copy>
             <xsl:copy-of select="@*"/>
-            <xsl:variable name="this-tok-1st-la" select="tan:location[doc-available(resolve-uri(.,$doc-uri))][1]"/>
+            <xsl:variable name="this-tok-reserved-loc" select="if (@which = $tokenization-which-reserved) then 
+               $tokenization-which-reserved-url[index-of($tokenization-which-reserved,current()/@which)] else ()"/>
+            <xsl:variable name="this-tok-1st-la"
+               select="
+                  (for $i in tan:location,
+                     $j in resolve-uri($i, $doc-uri)
+                  return
+                     if (doc-available($j)) then
+                        $j
+                     else
+                        ())[1]"
+            />
+            <xsl:variable name="this-tok-loc" select="if (exists($this-tok-reserved-loc)) then $this-tok-reserved-loc else
+               $this-tok-1st-la"/>
+            <xsl:variable name="this-tok-1st-da" select="doc($this-tok-loc)"/>
             <xsl:copy-of select="$this-tok-1st-la"/>
-            <xsl:for-each select="doc(resolve-uri($this-tok-1st-la,$doc-uri))">
+            <xsl:for-each select="$this-tok-1st-da">
                <xsl:variable name="these-langs" select="tan:TAN-R-tok/tan:head/tan:declarations/tan:for-lang"/>
                <xsl:choose>
                   <xsl:when test="exists($these-langs)">

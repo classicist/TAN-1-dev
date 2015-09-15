@@ -198,7 +198,7 @@
          </xsl:element>
       </xsl:for-each>
    </xsl:variable>
-   <xsl:variable name="distinct-tokenizations" as="element()+">
+   <xsl:variable name="distinct-tokenizations" as="element()*">
       <!-- Sequence of one node/tree per tokenization used:
          <location>[URL]</location>
          <replace>[REPLACE NODE 1]</replace>

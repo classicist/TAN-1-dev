@@ -219,7 +219,7 @@
       <report test="$this-time > $now">Future dates are not allowed (today's date and time is
             <value-of select="current-dateTime()"/>).</report>
       <assert test="(. castable as xs:dateTime) or (. castable as xs:date)"
-         sqf:default-fix="current-date" sqf:fix="current-date">@<value-of select="name(.)"/> must be
+         sqf:default-fix="current-date" sqf:fix="current-date current-date-time">@<value-of select="name(.)"/> must be
          date or dateTime</assert>
       <sqf:fix id="current-date">
          <sqf:description>
@@ -235,6 +235,22 @@
          <sqf:replace match="." target="when-accessed" node-type="attribute"
             use-when="name(.) = 'when-accessed'">
             <value-of select="current-date()"/>
+         </sqf:replace>
+      </sqf:fix>
+      <sqf:fix id="current-date-time">
+         <sqf:description>
+            <sqf:title>Change date to today's date-time</sqf:title>
+         </sqf:description>
+         <sqf:replace match="." target="when" node-type="attribute" use-when="name(.) = 'when'">
+            <value-of select="current-dateTime()"/>
+         </sqf:replace>
+         <sqf:replace match="." target="ed-when" node-type="attribute"
+            use-when="name(.) = 'ed-when'">
+            <value-of select="current-dateTime()"/>
+         </sqf:replace>
+         <sqf:replace match="." target="when-accessed" node-type="attribute"
+            use-when="name(.) = 'when-accessed'">
+            <value-of select="current-dateTime()"/>
          </sqf:replace>
       </sqf:fix>
    </rule>

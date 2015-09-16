@@ -8,8 +8,8 @@
    <let name="schema-version-minor" value="'dev'"/>
    <let name="now" value="tan:dateTime-to-decimal(current-dateTime())"/>
    <rule context="/*">
-      <report test="true()" role="warning" sqf:fix="copy-iri-name-pattern">This version of TAN is unstable and unpublished. Use it
-         at your own risk.</report>
+      <report test="true()" role="warning" sqf:fix="copy-iri-name-pattern">This version of TAN is
+         unstable and unpublished. Use it at your own risk.</report>
       <sqf:fix id="copy-iri-name-pattern">
          <sqf:description>
             <sqf:title>Create document IRI + name pattern</sqf:title>
@@ -72,10 +72,17 @@
    </rule>
    <rule context="tan:head">
       <let name="is-in-progress" value="if (/*/*//@in-progress = 'false') then false() else true()"/>
+      <let name="duplicate-ids" value="$all-ids[index-of($all-ids,.)[2]]"/>
       <report test="($is-in-progress = false()) and (not(tan:master-location))"
          sqf:fix="add-master-location-fixed add-master-location-relative">Any TAN file marked as
          being no longer in progress must have at least one master-location (after name and before
          rights-excluding-sources).</report>
+      <report test="exists($duplicate-ids)">Duplicate ids: 
+         <value-of
+            select="for $i in 
+         $duplicate-ids return concat($i,' (',count(index-of($all-ids,$i)),' times: element ',
+         string-join(distinct-values(for $j in $head//*[@xml:id = $i] return name($j)),', '),')')"
+         /></report>
       <sqf:fix id="add-master-location-fixed">
          <sqf:description>
             <sqf:title>Add master-location element after &lt;name&gt; with fixed URL</sqf:title>
@@ -91,8 +98,14 @@
                ><value-of select="replace($doc-uri,$doc-parent-directory,'')"/></sqf:add>
       </sqf:fix>
    </rule>
+   <rule context="tan:inclusion">
+      <let name="first-loc-avail" value="tan:first-loc-available(.)"/>
+      <assert test="exists($first-loc-avail)" role="fatal">Every inclusion must have at least one
+         location that accesses the included document.</assert>
+   </rule>
    <rule context="tan:master-location|tan:location">
-      <let name="is-master-location" value="if (name() = 'master-location') then true() else false()"/>
+      <let name="is-master-location"
+         value="if (name() = 'master-location') then true() else false()"/>
       <let name="resource-type"
          value="if ($is-master-location) then 'master document' else name(..)"/>
       <let name="loc-uri" value="resolve-uri(.,$doc-uri)"/>
@@ -126,11 +139,12 @@
          test="if (exists($loc-doc) and $is-master-location) then (max($loc-ver-nos) != max($doc-ver-nos)) else false()"
          >Version found in master location (<value-of select="$loc-ver-date-latest"/>) does not
          match this version (<value-of select="$doc-ver"/>)</report>
-      <assert test="$loc-doc-is-available = true()" role="warn">The <value-of
-            select="$resource-type"/> is either unavailable or is available but is not valid
-         XML.</assert>
-      <assert test="if (exists($loc-doc) and $is-master-location) then deep-equal(root(.),$loc-doc) else true()" role="warning">The
-      current document does not match the master document</assert>
+      <report test="$loc-doc-is-available = false() and not($resource-type = 'inclusion')"
+         role="warn">The <value-of select="$resource-type"/> is either unavailable or is available
+         but is not valid XML.</report>
+      <assert
+         test="if (exists($loc-doc) and $is-master-location) then deep-equal(root(.),$loc-doc) else true()"
+         role="warning">The current document does not match the master document</assert>
       <report role="warn"
          test="if ($is-location-of-tan-file and $is-first-da-location) 
          then $is-in-progress else false()"
@@ -180,8 +194,7 @@
       <let name="this-relationship" value="normalize-space(tan:relationship)"/>
       <let name="must-point-to-external-tan"
          value="if ($this-relationship = $relationship-keywords-for-tan-files) then true() else false()"/>
-      <let name="first-loc"
-         value="tan:location[doc-available(resolve-uri(.,$doc-uri))][1]"/>
+      <let name="first-loc" value="tan:location[doc-available(resolve-uri(.,$doc-uri))][1]"/>
       <let name="first-doc"
          value="if (exists($first-loc)) then doc(resolve-uri($first-loc,$doc-uri)) else ()"/>
       <let name="points-to-which-tan" value="name($first-doc/*)"/>
@@ -219,8 +232,8 @@
       <report test="$this-time > $now">Future dates are not allowed (today's date and time is
             <value-of select="current-dateTime()"/>).</report>
       <assert test="(. castable as xs:dateTime) or (. castable as xs:date)"
-         sqf:default-fix="current-date" sqf:fix="current-date current-date-time">@<value-of select="name(.)"/> must be
-         date or dateTime</assert>
+         sqf:default-fix="current-date" sqf:fix="current-date current-date-time">@<value-of
+            select="name(.)"/> must be date or dateTime</assert>
       <sqf:fix id="current-date">
          <sqf:description>
             <sqf:title>Change date to today's date</sqf:title>
@@ -271,14 +284,15 @@
       <let name="should-refer-to-which-element"
          value="$referred-element[index-of($referring-attribute,$this-attribute-name)]"/>
       <let name="idrefs" value="tokenize(.,'\s+')"/>
-      <let name="idrefs-currently-target-what-element" value="for $n in $idrefs return name(id($n))"/>
+      <let name="idrefs-currently-target-what-element" value="for $n in $idrefs return name($head//*[@xml:id = $n][1])"/>
       <assert
          test="every $k in $idrefs-currently-target-what-element satisfies $k = $should-refer-to-which-element"
             >@<value-of select="$this-attribute-name"/> must refer to <value-of
             select="$should-refer-to-which-element"/>s (<value-of
-            select="/*/tan:head//*[name(.)=$should-refer-to-which-element]/@xml:id"/><value-of
-            select="if (exists($idrefs-currently-target-what-element)) then concat('); currently points to ',string-join($idrefs-currently-target-what-element,' ')) else ''"
-         />).</assert>
+            select="string-join($head//*[name(.)=$should-refer-to-which-element]/@xml:id,', ')"/>) 
+         <value-of
+            select="if (string-length($idrefs-currently-target-what-element) gt 0) then concat('(currently points to ',string-join($idrefs-currently-target-what-element,' '),')') else ()"
+         /></assert>
       <assert test="count($idrefs)=count(distinct-values($idrefs))">@<value-of
             select="$should-refer-to-which-element"/> must not contain duplicates</assert>
    </rule>
@@ -296,7 +310,8 @@
          value="if (exists($first-loc)) then doc(resolve-uri($first-loc,$doc-uri)) else ()"/>
       <let name="first-da-iri-name" value="$first-doc/*/@id"/>
       <assert test="$count = 1">An IRI should appear only once in a TAN document.</assert>
-      <report test="if (exists($first-loc)) then ($is-iri-of-tan-file and not(text() = $first-da-iri-name))
+      <report
+         test="if (exists($first-loc)) then ($is-iri-of-tan-file and not(text() = $first-da-iri-name))
          else false()"
          sqf:fix="replace-with-tan-id">TAN id mismatch (expected: <value-of
             select="$first-da-iri-name"/>)</report>
@@ -308,6 +323,10 @@
             <value-of select="$first-da-iri-name"/>
          </sqf:stringReplace>
       </sqf:fix>
+   </rule>
+   <rule context="@include">
+      <let name="parent" value=".."/>
+
    </rule>
    <!-- xsl:include provided below, commented out, in case validity needs to be checked; these
       fuctions are otherwise invoked through the master schematron files -->

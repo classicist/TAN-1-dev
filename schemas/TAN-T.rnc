@@ -1,8 +1,6 @@
 default namespace = "tag:textalign.net,2015:ns"
 namespace local = "tag:textalign.net,2015:ns"
 
-datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
-
 start = element TAN-T { TAN-root }
 include "TAN-class-1.rnc" {
     TAN-body-core = lang-of-content, text-div+
@@ -10,8 +8,10 @@ include "TAN-class-1.rnc" {
 text-div =
     element div {
         ed-stamp?,
-        attribute type { d:IDREF },
+        attribute type {
+            xsd:string { pattern = "\w*" }
+        },
         attribute n { n-val },
         lang-of-content?,
-        (text-div+ | text )
+        (text-div+ | text)
     }

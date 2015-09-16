@@ -31,6 +31,7 @@ div-type-ref = attribute div-type-ref { text }
 ed-agent = attribute ed-who { d:IDREFS }
 #     Reference to a date or time when an element or its content was edited (added or modified)
 ed-time = attribute ed-when { xsd:dateTime | xsd:date }
+inclusion = attribute include { d:IDREF }
 #     Identifier of an entity described within an element. Must be unique within a given file. Must consist only of word characters.
 internal-id =
     attribute xml:id {
@@ -122,17 +123,19 @@ func-param-flags =
 func-replace =
     element replace {
         ed-stamp?,
-        attribute xpath { text }?,
-        (comment*
-         & (func-param-pattern,
-            element replacement { ed-stamp?, text },
-            func-param-flags?))
+        (inclusion
+         | (attribute xpath { text }?,
+            (comment*
+             & (func-param-pattern,
+                element replacement { ed-stamp?, text },
+                func-param-flags?))))
     }
 #    The fn:tokenize function plus parameters. Used in class 1 and class 3 (TAN-R-tok) files.
 func-tokenize =
     element tokenize {
         ed-stamp?,
-        (comment* & (func-param-pattern, func-param-flags?))
+        (inclusion
+         | (comment* & (func-param-pattern, func-param-flags?)))
     }
 #    Element that takes a general URI 
 IRI-gen-ref = element IRI { ed-stamp?, IRI-gen }
@@ -182,6 +185,7 @@ TAN-head =
         (comment*
          & (entity-digital-tan-self-ref,
             nonsource-rights,
+            inclusion-list,
             source-list,
             see-also-list,
             element declarations { ed-stamp?, (comment* & decl-list) },
@@ -200,23 +204,31 @@ TAN-body-core = empty
 #    Element stating the rights under which the data is distributed
 nonsource-rights =
     element rights-excluding-sources {
-        ed-stamp?, rights-holder, (comment* & entity-nondigital-ref)
+        ed-stamp?,
+        (inclusion
+         | (rights-holder, (comment* & entity-nondigital-ref)))
     }
+#    Lists of TAN files that can be called upon for inclusion.
+inclusion-list = inclusion-item*
+inclusion-item =
+    element inclusion { ed-stamp?, internal-id, (comment* & entity-digital-tan-other-ref) }
 #    The name of the source upon which the TAN file rests. TAN-T and TAN-LM allow only one. TAN-A-tok allows exactly two. All other TAN formats require one or more. 
 source-list = source-item
 source-item =
     element source {
         ed-stamp?,
-        source-id-opt,
-        (comment*
-         & ((entity-nondigital-ref | entity-digital-generic-ref | entity-digital-tan-other-ref),
-            source-rights?))
+        (inclusion
+         | (source-id-opt,
+            (comment*
+             & ((entity-nondigital-ref | entity-digital-generic-ref | entity-digital-tan-other-ref),
+                source-rights?))))
     }
 #    Element stating the rights attached to the source of data
 source-rights =
     element rights-source-only {
         ed-stamp?,
-        (comment* & (rights-holder*, entity-nondigital-ref))
+        (inclusion
+         | (comment* & (rights-holder*, entity-nondigital-ref)))
     }
 #     Parameter to indicate whether <source> should be allowed to take xml:id (forbidden for TAN files with only one source; mandated otherwise)
 source-id-opt = empty
@@ -225,29 +237,47 @@ see-also-list = see-also-item*
 see-also-item =
     element see-also {
         ed-stamp?,
-        (comment*
-         & (relationship,
-            (entity-nondigital-ref | entity-digital-generic-ref | entity-digital-tan-other-ref)))
+        (inclusion
+         | (comment*
+            & (relationship,
+               (entity-nondigital-ref
+                | entity-digital-generic-ref
+                | entity-digital-tan-other-ref))))
     }
 #        The role that the see-also played, either a reserved keyword or a customized name (e.g., uncorrected transcription) defined by an IRI + name pattern   
 relationship =
     element relationship {
         ed-stamp?,
-        (entity-nondigital-ref
-         | xsd:string { pattern = "(new|old) version|(parent|child|ancestor|descendant|cousin) edition|alternatively (divided|normalized) edition|dependent|auxiliary" })
+        (inclusion
+         | (entity-nondigital-ref
+            | xsd:string {
+                  pattern =
+                      "(new|old) version|(parent|child|ancestor|descendant|cousin) edition|alternatively (divided|normalized) edition|dependent|auxiliary"
+              }))
     }
 #        The agents (persons, organizations) that played a role in creating or editing the data   
-agent-list = element agent { ed-stamp?, role-ref?, internal-id, (comment* & entity-nondigital-ref) }
+agent-list =
+    element agent {
+        ed-stamp?,
+        (inclusion
+         | (role-ref?, internal-id, (comment* & entity-nondigital-ref)))
+    }
 #        The roles (responsibilities, tasks) that agents did in creating or editing the data   
-role-list = element role { ed-stamp?, internal-id, (comment* & entity-nondigital-ref) }
+role-list =
+    element role {
+        ed-stamp?,
+        (inclusion
+         | (internal-id, (comment* & entity-nondigital-ref)))
+    }
 #        Specific roles performed by specific agents in creating or editing the data
 agent-role-list =
     element agentrole {
-        attribute when-from { xsd:dateTime | xsd:date },
-        attribute when-to { xsd:dateTime | xsd:date },
-        ed-stamp?,
-        agent-ref,
-        role-ref
+        inclusion
+        | (attribute when-from { xsd:dateTime | xsd:date },
+           attribute when-to { xsd:dateTime | xsd:date },
+           ed-stamp?,
+           agent-ref,
+           role-ref)
     }
 #        Changes made to the file.
 change-list = element change { ed-stamp?, when-claim, agent-ref, text }

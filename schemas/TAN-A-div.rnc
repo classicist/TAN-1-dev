@@ -15,6 +15,8 @@ include "TAN-class-2.rnc" {
     # TAN-A-div files do not require a tokenization choice within a filter (choice enforced by Schematron)
     decl-token-opt = decl-token*
     TAN-body-core = work-equiv*, div-type-equiv*, split?, realignment*, alignment*
+    # TAN-A-div files may include the aligns of other TAN-A-div files 
+    alignment-inclusion-opt = inclusion
     # alignments may take either an id with no supplementary variables or else no id and optional variables indicating strength, exclusivity, distribution, and auto-alignment
     alignment-attributes-non-class-2 =
         internal-id | (strength-claim?, exclusive-claim?, distribute-claim?)
@@ -22,19 +24,20 @@ include "TAN-class-2.rnc" {
     alignment-content-non-class-2 = alignment-ref | align-div-list+
 }
 # reconciles any differences of IRIs for the type of work
-work-equiv = element equate-works { source-ref, ed-stamp? }
+work-equiv = element equate-works { ed-stamp?, (inclusion | source-ref) }
 # reconciles any differences of div-type IRIs for the type of canonical division 
-div-type-equiv = element equate-div-types { ed-stamp?, div-type-ref-cluster, div-type-ref-cluster+ }
-div-type-ref-cluster = element div-type-ref { ed-stamp?, source-ref, div-type-ref }
-div-n-ref-cluster =
-    element div-n-ref {
+div-type-equiv =
+    element equate-div-types {
         ed-stamp?,
-        source-ref,
-        div-type-ref,
-        attribute div-n-ref { text }
+        (inclusion | (div-type-ref-cluster, div-type-ref-cluster+))
     }
+div-type-ref-cluster = element div-type-ref { ed-stamp?, source-ref, div-type-ref }
 # creates new splits in leaf divs, to create alignments more refined than what a TAN-T file might offer
-split = element split-leaf-div-at { ed-stamp?, (comment* & token-list+) }
+split =
+    element split-leaf-div-at {
+        ed-stamp?,
+        (inclusion | (comment* & token-list+))
+    }
 # used to temper the strength of an alignment, suitable for alignments we qualify through "cf." and the
 # like. Cannot used in type and doubt because this model disallows both.
 strength-claim =
@@ -44,7 +47,8 @@ strength-claim =
 realignment =
     element realign {
         ed-stamp?,
-        (comment* & (anchor?, realign-div-list+))
+        (inclusion
+         | (comment* & (anchor?, realign-div-list+)))
     }
 anchor = element anchor-div-ref { source-ref, pointer-to-div-range, ed-stamp?, seg-ref? }
 realign-div-list = element div-ref { source-ref, pointer-to-div-range, ed-stamp?, seg-ref? }

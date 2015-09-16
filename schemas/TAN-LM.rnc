@@ -17,11 +17,16 @@ include "TAN-class-2.rnc" {
 }
 # Declaration element: identifies grammatical authorities used.
 decl-morph =
-    element morphology { internal-id, ed-stamp?, lang-outside*, entity-digital-tan-other-ref }
+    element morphology {
+        ed-stamp?,
+        (inclusion | (internal-id, lang-outside*, entity-digital-tan-other-ref))
+    }
 # Declaration element: identifies lexicographical authorities used
 decl-lexi =
     element lexicon {
-        internal-id, ed-stamp?, lang-outside*, (entity-digital-generic-ref | entity-nondigital-ref)
+        ed-stamp?,
+        (inclusion
+         | (internal-id, lang-outside*, (entity-digital-generic-ref | entity-nondigital-ref)))
     }
 lexicon-attr = attribute lexicon { d:IDREFS }
 grammar-attr = attribute morphology { d:IDREF }

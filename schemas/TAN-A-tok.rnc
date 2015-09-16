@@ -16,8 +16,18 @@ include "TAN-class-2.rnc" {
     alignment-content-non-class-2 = token-list+
 }
 # Declaration element: identifies how one text-bearing object relates to another by specifying the chain of derivation (as in stemmatics) that connects one to the other.
-decl-brel = element bitext-relation { ed-stamp?, internal-id, (comment* & entity-nondigital-ref) }
+decl-brel =
+    element bitext-relation {
+        ed-stamp?,
+        (inclusion
+         | (internal-id, (comment* & entity-nondigital-ref)))
+    }
 # Declaration element: identifies a category of text reuse (e.g., translation, mistranslation, paraphrase, ridicule).
-decl-reus = element reuse-type { ed-stamp?, internal-id, (comment* & entity-nondigital-ref) }+
+decl-reus =
+    element reuse-type {
+        ed-stamp?,
+        (inclusion
+         | (internal-id, (comment* & entity-nondigital-ref)))
+    }+
 bitext-relation-attr = attribute bitext-relation { d:IDREFS }
 reuse-type-attr = attribute reuse-type { d:IDREFS }

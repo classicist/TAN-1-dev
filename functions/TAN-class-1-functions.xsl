@@ -57,7 +57,7 @@
             />
             <xsl:variable name="this-tok-loc" select="if (exists($this-tok-reserved-loc)) then $this-tok-reserved-loc else
                $this-tok-1st-la"/>
-            <xsl:variable name="this-tok-1st-da" select="doc($this-tok-loc)"/>
+            <xsl:variable name="this-tok-1st-da" select="doc(string($this-tok-loc))"/>
             <xsl:copy-of select="$this-tok-1st-la"/>
             <xsl:for-each select="$this-tok-1st-da">
                <xsl:variable name="these-langs" select="tan:TAN-R-tok/tan:head/tan:declarations/tan:for-lang"/>

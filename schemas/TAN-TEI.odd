@@ -152,7 +152,9 @@
               <desc>Reference to agent or agents who have edited (added or modified) an element or
                 its content</desc>
               <datatype>
-                <rng:data type="IDREFS"/>
+                <rng:data type="string">
+                  <rng:param name="pattern">\w*</rng:param>
+                </rng:data>
               </datatype>
             </attDef>
             <attDef mode="add" ident="ed-when" usage="opt">

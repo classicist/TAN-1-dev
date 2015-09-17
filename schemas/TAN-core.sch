@@ -71,7 +71,7 @@
       </sqf:fix>
    </rule>
    <rule context="tan:head">
-      <let name="is-in-progress" value="if (/*/*//@in-progress = 'false') then false() else true()"/>
+      <let name="is-in-progress" value="if ($body/@in-progress = false()) then false() else true()"/>
       <let name="duplicate-ids" value="$all-ids[index-of($all-ids,.)[2]]"/>
       <report test="($is-in-progress = false()) and (not(tan:master-location))"
          sqf:fix="add-master-location-fixed add-master-location-relative">Any TAN file marked as
@@ -125,11 +125,11 @@
          not((preceding-sibling::tan:location, preceding-sibling::tan:master-location)[doc-available(resolve-uri(.,$doc-uri))])) 
          then true() else false()"/>
       <let name="is-in-progress"
-         value="if ($loc-doc/*/(tan:body, tei:text/tei:body)/@in-progress = 'false') then false() else true()"/>
+         value="if ($loc-doc/*/(tan:body, tei:text/tei:body)/@in-progress = false()) then false() else true()"/>
       <let name="updates-should-be-checked"
          value="if (../tan:relationship = ('old version') or matches(../tan:relationship,'edition$')) then true() else false()"/>
       <!-- START TESTING BLOCK -->
-      <let name="test1" value="resolve-uri(.,$doc-uri) = $loc-uri"/>
+      <let name="test1" value="$doc-parent-directory"/>
       <let name="test2" value="resolve-uri(.,$doc-uri)"/>
       <let name="test3" value="$loc-uri"/>
       <report test="false()">Testing. var1: <value-of select="$test1"/> var2: <value-of
@@ -194,7 +194,8 @@
       <let name="this-relationship" value="normalize-space(tan:relationship)"/>
       <let name="must-point-to-external-tan"
          value="if ($this-relationship = $relationship-keywords-for-tan-files) then true() else false()"/>
-      <let name="first-loc" value="tan:location[doc-available(resolve-uri(.,$doc-uri))][1]"/>
+      <!--<let name="first-loc" value="tan:location[doc-available(resolve-uri(.,$doc-uri))][1]"/>-->
+      <let name="first-loc" value="tan:first-loc-available(.)"/>
       <let name="first-doc"
          value="if (exists($first-loc)) then doc(resolve-uri($first-loc,$doc-uri)) else ()"/>
       <let name="points-to-which-tan" value="name($first-doc/*)"/>
@@ -222,7 +223,7 @@
       </report>
    </rule>
    <rule context="tan:agent">
-      <let name="all-agent-uris" value="concat(' ',string-join(../tan:agent/tan:IRI,' '))"/>
+      <let name="all-agent-uris" value="concat(' ',string-join($head/tan:agent/tan:IRI,' '))"/>
       <let name="match" value="matches($all-agent-uris,concat(' tag:',$tan-iri-namespace))"/>
       <assert test="$match">At least one agent must have an IRI with a tag URI whose namespace
          matches that of the URI name, <value-of select="$tan-iri-namespace"/></assert>
@@ -305,7 +306,7 @@
       <let name="count" value="count(index-of($all-iris,.))"/>
       <let name="is-iri-of-tan-file" value="tan:must-refer-to-external-tan-file(.)"/>
       <let name="first-loc"
-         value="following-sibling::tan:location[doc-available(resolve-uri(.,$doc-uri))][1]"/>
+         value="tan:first-loc-available(..)"/>
       <let name="first-doc"
          value="if (exists($first-loc)) then doc(resolve-uri($first-loc,$doc-uri)) else ()"/>
       <let name="first-da-iri-name" value="$first-doc/*/@id"/>
@@ -326,7 +327,16 @@
    </rule>
    <rule context="@include">
       <let name="parent" value=".."/>
-
+      <report test="$parent/text()" sqf:fix="explicate">Text is not allowed in an element with @include.</report>
+      <sqf:fix id="explicate">
+         <sqf:description>
+            <sqf:title>Replace with inclusions</sqf:title>
+         </sqf:description>
+         <sqf:add match="$parent" position="before">
+            <xsl:comment>&lt;<xsl:value-of select="name($parent)"/> include="<xsl:value-of select="$parent/@include"/>"/></xsl:comment>
+         </sqf:add>
+         <sqf:replace match="$parent" select="tan:resolve-include($parent)"/>
+      </sqf:fix>
    </rule>
    <!-- xsl:include provided below, commented out, in case validity needs to be checked; these
       fuctions are otherwise invoked through the master schematron files -->

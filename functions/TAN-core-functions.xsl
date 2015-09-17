@@ -24,9 +24,13 @@
             <xsl:apply-templates mode="include"/>
         </xsl:for-each>
     </xsl:variable>
-    <xsl:variable name="body" select="/*/tan:body | /*/*/tei:body"/>
+    <xsl:variable name="body">
+        <xsl:for-each select="/*/tan:body | /*/*/tei:body">
+            <xsl:apply-templates mode="include"/>
+        </xsl:for-each>
+    </xsl:variable>
     <xsl:variable name="doc-id" select="/*/@id"/>
-    <xsl:variable name="doc-uri" select="base-uri(.)"/>
+    <xsl:variable name="doc-uri" select="base-uri(/*)"/>
     <xsl:variable name="doc-parent-directory" select="replace($doc-uri, '[^/]+$', '')"/>
     <xsl:variable name="doc-ver-dates"
         select="distinct-values(//(@when | @ed-when | @when-accessed))"/>
@@ -424,6 +428,13 @@
                     concat($j/@type, $separator-type-and-n, $j/@n), $separator-hierarchy)"
         />
     </xsl:function>
+    
+    <xsl:function name="tan:element-to-comment" as="comment()">
+        <xsl:param name="element" as="element()*"/>
+        <xsl:comment>
+            <xsl:sequence select="$element"/>
+        </xsl:comment>
+    </xsl:function>
 
     <xsl:function name="tan:resolve-include" as="element()*">
         <!-- One-parameter version of the main two-parameter function, below -->
@@ -456,7 +467,7 @@
             select="
                 for $i in $inclusion-1st-la
                 return
-                    doc($i)//*[name(.) = $element-name]"/>
+                    doc(resolve-uri($i,base-uri($i)))//*[name(.) = $element-name]"/>
         <xsl:variable name="errors" as="xs:integer?">
             <xsl:choose>
                 <xsl:when test="not(exists($replacement-elements))">

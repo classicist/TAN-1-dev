@@ -19,6 +19,7 @@
     <xsl:param name="separator-hierarchy" select="':'" as="xs:string"/>
     <xsl:param name="separator-hierarchy-regex" select="':'" as="xs:string"/>
 
+    <xsl:variable name="root" select="/"/>
     <xsl:variable name="head">
         <xsl:for-each select="/*/tan:head">
             <xsl:apply-templates mode="include"/>
@@ -338,7 +339,13 @@
                 for $i in $dateTimes
                 return
                     tan:dateTime-to-decimal($i)"/>
-        <xsl:variable name="most-recent" select="index-of($decimal-val, max($decimal-val))[1]"/>
+        <xsl:variable name="most-recent"
+            select="
+                if (exists($decimal-val)) then
+                    index-of($decimal-val, max($decimal-val))[1]
+                else
+                    ()"
+        />
         <xsl:copy-of select="$dateTimes[$most-recent]"/>
     </xsl:function>
 

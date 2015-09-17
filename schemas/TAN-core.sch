@@ -113,11 +113,6 @@
                ><value-of select="replace($doc-uri,$doc-parent-directory,'')"/></sqf:add>
       </sqf:fix>
    </rule>
-   <rule context="tan:inclusion">
-      <let name="first-loc-avail" value="tan:first-loc-available(.)"/>
-      <assert test="exists($first-loc-avail)" role="fatal">Every inclusion must have at least one
-         location that accesses the included document.</assert>
-   </rule>
    <rule context="tan:master-location|tan:location">
       <let name="is-master-location"
          value="if (name() = 'master-location') then true() else false()"/>
@@ -130,7 +125,7 @@
       <let name="loc-ver-dates" value="$loc-ver-date-nodes/(@when | @ed-when | @when-accessed)"/>
       <let name="loc-ver-nos" value="for $i in $loc-ver-dates return tan:dateTime-to-decimal($i)"/>
       <let name="loc-ver-date-latest"
-         value="if ($loc-doc-is-available) then $loc-ver-dates[index-of($loc-ver-nos,max($loc-ver-nos))[1]] else ()"/>
+         value="if ($loc-doc-is-available and exists($loc-ver-nos)) then $loc-ver-dates[index-of($loc-ver-nos,max($loc-ver-nos))[1]] else ()"/>
       <let name="loc-ver-date-nodes-latest"
          value="$loc-ver-date-nodes[(@when | @ed-when | @when-accessed) = $loc-ver-date-latest]"/>
       <let name="when-accessed" value="tan:dateTime-to-decimal(@when-accessed)"/>
@@ -206,30 +201,33 @@
       </sqf:fix>
    </rule>
    <rule context="tan:see-also">
-      <let name="this-relationship" value="normalize-space(tan:relationship)"/>
+      <let name="this-resolved" value="tan:resolve-include(.)"/>
+      <let name="these-relationships"
+         value="for $i in $this-resolved return normalize-space($i/tan:relationship)"/>
       <let name="must-point-to-external-tan"
-         value="if ($this-relationship = $relationship-keywords-for-tan-files) then true() else false()"/>
-      <!--<let name="first-loc" value="tan:location[doc-available(resolve-uri(.,$doc-uri))][1]"/>-->
-      <let name="first-loc" value="tan:first-loc-available(.)"/>
-      <let name="first-doc"
-         value="if (exists($first-loc)) then doc(resolve-uri($first-loc,$doc-uri)) else ()"/>
-      <let name="points-to-which-tan" value="name($first-doc/*)"/>
-      <report test="$must-point-to-external-tan and not($points-to-which-tan = $all-root-names)"
+         value="for $i in $these-relationships return if ($i = $relationship-keywords-for-tan-files) then true() else false()"/>
+      <let name="first-locs" value="for $i in $this-resolved return tan:first-loc-available($i)"/>
+      <let name="first-docs" value="for $i in $first-locs return doc(resolve-uri($i,$doc-uri))"/>
+      <let name="point-to-which-tan" value="for $i in $first-docs return name($i/*)"/>
+      <report
+         test="for $i in count($this-resolved) return $must-point-to-external-tan[$i] and not($point-to-which-tan[$i] = $all-root-names)"
          >Must point to TAN file (checked only against first location available). <value-of
-            select="if (exists($points-to-which-tan)) 
-               then concat('root element: ',$points-to-which-tan) else ()"
+            select="if (exists($point-to-which-tan)) 
+               then concat('root element: ',string-join($point-to-which-tan,', ')) else ()"
          /></report>
       <report
-         test="$this-relationship = $relationship-keywords-for-tan-editions and $points-to-which-tan ne name(/*)"
-         >The <value-of select="$this-relationship"/> must be the same TAN format (root element of
-         target = <value-of select="$points-to-which-tan"/>).</report>
+         test="for $i in count($this-resolved) return $these-relationships[$i] = $relationship-keywords-for-tan-editions and 
+         $point-to-which-tan[$i] ne name(/*)"
+         >The <value-of select="$these-relationships"/> must be the same TAN format (root element of
+         target = <value-of select="$point-to-which-tan"/>).</report>
       <report
-         test="$this-relationship = 'dependent' and not(document($first-loc)/*/tan:head/tan:source[tan:IRI = $doc-id])"
+         test="for $i in count($this-resolved) return $these-relationships[$i] = 'dependent' and not($first-docs[$i]/*/tan:head/tan:source[tan:IRI = $doc-id])"
          >Dependent file has no source whose IRI matches this document's id.</report>
       <report
-         test="$this-relationship = $relationship-keywords-for-tan-editions and $doc-id = $first-doc/*/@id"
-         >The <value-of select="$this-relationship"/> cannot have the same @id value as this
+         test="for $i in count($this-resolved) return $these-relationships[$i] = $relationship-keywords-for-tan-editions and $doc-id = $first-docs[$i]/*/@id"
+         >The <value-of select="$these-relationships"/> cannot have the same @id value as this
          file.</report>
+
    </rule>
    <rule context="tan:relationship">
       <report test="not(tan:*) and not(text() = $relationship-keywords-all)">Unless you define a
@@ -340,8 +338,33 @@
          </sqf:stringReplace>
       </sqf:fix>
    </rule>
+   <!-- Rules above relevant to inclusions dealt with here -->
+   <rule context="tan:inclusion">
+      <let name="first-loc-avail" value="tan:first-loc-available(.)"/>
+      <let name="first-doc" value="doc(resolve-uri($first-loc-avail,$doc-uri))"/>
+      <let name="these-ids" value="$first-doc//@xml:id"/>
+      <let name="duplicate-ids" value="$these-ids[. = $root//@xml:id]"/>
+      <report test="exists($duplicate-ids)">Inclusion introduces duplicate ids: <value-of
+            select="$duplicate-ids"/></report>
+      <assert test="exists($first-loc-avail)" role="fatal">Every inclusion must have at least one
+         location that accesses the included document.</assert>
+      <report
+         test="if ($first-doc/tan:body/@in-progress = false() or $first-doc/tei:text/tei:body/@in-progress = false()) 
+         then false() else true()"
+         role="warning">Inclusion is marked as being in progress.</report>
+      <report test="$first-doc/*/@id = $doc-id">Inclusion has the same tag id as this
+         document.</report>
+   </rule>
    <rule context="@include">
       <let name="parent" value=".."/>
+      <let name="parent-resolved" value="tan:resolve-include($parent)"/>
+      <let name="parent-resolved-text" value="string-join($parent-resolved//text(),'')"/>
+      <assert test="$parent-resolved-text = normalize-unicode($parent-resolved-text)">All included
+         text needs to be normalized (NFC). Open inclusion, validate, and resolve. </assert>
+      <report test="$parent-resolved//@error" role="fatal">Inclusion error: <value-of
+            select="for $i
+         in $parent-resolved//@error return $inclusion-errors[number($i)]"
+         /></report>
       <report test="$parent/text()" sqf:fix="explicate">Text is not allowed in an element with
          @include.</report>
       <sqf:fix id="explicate">
@@ -351,7 +374,7 @@
          <sqf:add match="$parent" position="before">
             <xsl:comment>&lt;<xsl:value-of select="name($parent)"/> include="<xsl:value-of select="$parent/@include"/>"/></xsl:comment>
          </sqf:add>
-         <sqf:replace match="$parent" select="tan:resolve-include($parent)"/>
+         <sqf:replace match="$parent" select="$parent-resolved"/>
       </sqf:fix>
    </rule>
    <!-- xsl:include provided below, commented out, in case validity needs to be checked; these

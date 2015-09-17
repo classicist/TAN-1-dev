@@ -72,7 +72,7 @@ alignment =
     }
 alignment-attributes-non-class-2 = empty
 alignment-content-non-class-2 = empty
-alignment-inclusion-opt = empty
+alignment-inclusion-opt = inclusion
 #    Reference to a token or token fragment. Used in the body of class 2 TAN files to make claims about tokens or token fragments 
 token-list =
     element tok {

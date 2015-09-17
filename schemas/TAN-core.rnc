@@ -9,7 +9,7 @@ datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 #   1A. ATOMIC PATTERNS (alphabetical)
 
 #    Reference to an agent, used generically (and not in edit stamps)
-agent-ref = attribute who { d:IDREFS }
+agent-ref = attribute who { text }
 #    Expression of certainty an agent has in the data it governs. High = "is probably"; low = "is probably not"; all other values expressed as a real number from 0 (no certainty) to 1 (completely certainty).
 cert-claim =
     attribute cert {
@@ -28,9 +28,10 @@ div-range-ref =
 #    Space-delimited sequence of division type id references; value would be d:IDREFS except that these point to IDs in other files.
 div-type-ref = attribute div-type-ref { text }
 #     Reference to agent or agents who have edited (added or modified) an element or its content
-ed-agent = attribute ed-who { d:IDREFS }
+ed-agent = attribute ed-who { text }
 #     Reference to a date or time when an element or its content was edited (added or modified)
 ed-time = attribute ed-when { xsd:dateTime | xsd:date }
+#     An inclusion is the only identifier that is allowed to take d:IDREF, since all others must have coinage in external files 
 inclusion = attribute include { d:IDREF }
 #     Identifier of an entity described within an element. Must be unique within a given file. Must consist only of word characters.
 internal-id =
@@ -59,11 +60,11 @@ ns-are-numerals = attribute ns-are-numerals { xsd:boolean }
 #    Is the creation and editing of the data still in progress?
 progress = attribute in-progress { xsd:boolean }
 #    Agent who holds the rights over the data, absent sources
-rights-holder = attribute rights-holder { d:IDREFS }
+rights-holder = attribute rights-holder { text }
 #     Reference to an xml:id that identifies a role (i.e., duty or responsibility) associated with the creation of editing of the data
-role-ref = attribute roles { d:IDREFS }
+role-ref = attribute roles { text }
 #    Attribute containing an IDREF to the ID of the source for the given token. This is suppressed in TAN-LM files (which have only one source) and required in TAN-A files. 
-source-ref = attribute src { d:IDREFS }
+source-ref = attribute src { text }
 #    String that specifies a range of tokens: digits or "last(-digit)?" joined by space-delimited hyphens or vertical lines (pipe character)
 seq-picker =
     xsd:string {

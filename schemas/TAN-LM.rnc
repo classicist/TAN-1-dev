@@ -32,14 +32,15 @@ lexicon-attr = attribute lexicon { d:IDREFS }
 grammar-attr = attribute morphology { d:IDREF }
 TAN-LM-body-core =
     element ana {
-        certainty-stamp,
-        internal-id?,
-        (comment*
-         & ((joined-token | token-list)+,
-            element lm {
-                certainty-stamp,
-                (comment* & (lexeme*, morph*))
-            }+))
+        (ed-stamp?, inclusion)
+        | (certainty-stamp,
+           internal-id?,
+           (comment*
+            & ((joined-token | token-list)+,
+               element lm {
+                   certainty-stamp,
+                   (comment* & (lexeme*, morph*))
+               }+)))
     }+
 joined-token = element joined { internal-id?, token-list, token-list+ }
 lexeme =

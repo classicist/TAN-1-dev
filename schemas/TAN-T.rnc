@@ -8,10 +8,11 @@ include "TAN-class-1.rnc" {
 text-div =
     element div {
         ed-stamp?,
-        attribute type {
-            xsd:string { pattern = "\w*" }
-        },
-        attribute n { n-val },
-        lang-of-content?,
-        (text-div+ | text)
+        (inclusion
+         | (attribute type {
+                xsd:string { pattern = "\w*" }
+            },
+            attribute n { n-val },
+            lang-of-content?,
+            (text-div+ | text)))
     }

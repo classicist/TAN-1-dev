@@ -8,11 +8,12 @@
    <let name="schema-version-minor" value="'dev'"/>
    <let name="now" value="tan:dateTime-to-decimal(current-dateTime())"/>
    <rule context="/*">
-      <report test="true()" role="warning" sqf:fix="copy-iri-name-pattern">This version of TAN is
-         unstable and unpublished. Use it at your own risk.</report>
-      <sqf:fix id="copy-iri-name-pattern">
+      <report test="true()" role="warning"
+         sqf:fix="copy-source-iri-name-pattern copy-inclusion-iri-name-pattern">This version of TAN
+         is unstable and unpublished. Use it at your own risk.</report>
+      <sqf:fix id="copy-source-iri-name-pattern">
          <sqf:description>
-            <sqf:title>Create document IRI + name pattern</sqf:title>
+            <sqf:title>Get source element with this document's IRI + name pattern</sqf:title>
          </sqf:description>
          <sqf:add match="tan:head" position="before">
             <source xmlns="tag:textalign.net,2015:ns">
@@ -23,6 +24,21 @@
                   <xsl:value-of select="$doc-uri"/>
                </location>
             </source>
+         </sqf:add>
+      </sqf:fix>
+      <sqf:fix id="copy-inclusion-iri-name-pattern">
+         <sqf:description>
+            <sqf:title>Get inclusion element with this document's IRI + name pattern</sqf:title>
+         </sqf:description>
+         <sqf:add match="tan:head" position="before">
+            <inclusion xml:id="master" xmlns="tag:textalign.net,2015:ns">
+               <IRI>
+                  <xsl:value-of select="../@id"/></IRI>
+               <name><xsl:value-of select="tan:name"/></name>
+               <location when-accessed="{current-date()}">
+                  <xsl:value-of select="$doc-uri"/>
+               </location>
+            </inclusion>
          </sqf:add>
       </sqf:fix>
    </rule>
@@ -77,8 +93,7 @@
          sqf:fix="add-master-location-fixed add-master-location-relative">Any TAN file marked as
          being no longer in progress must have at least one master-location (after name and before
          rights-excluding-sources).</report>
-      <report test="exists($duplicate-ids)">Duplicate ids: 
-         <value-of
+      <report test="exists($duplicate-ids)">Duplicate ids: <value-of
             select="for $i in 
          $duplicate-ids return concat($i,' (',count(index-of($all-ids,$i)),' times: element ',
          string-join(distinct-values(for $j in $head//*[@xml:id = $i] return name($j)),', '),')')"
@@ -285,13 +300,14 @@
       <let name="should-refer-to-which-element"
          value="$referred-element[index-of($referring-attribute,$this-attribute-name)]"/>
       <let name="idrefs" value="tokenize(.,'\s+')"/>
-      <let name="idrefs-currently-target-what-element" value="for $n in $idrefs return name($head//*[@xml:id = $n][1])"/>
+      <let name="idrefs-currently-target-what-element"
+         value="for $n in $idrefs return name($head//*[@xml:id = $n][1])"/>
       <assert
          test="every $k in $idrefs-currently-target-what-element satisfies $k = $should-refer-to-which-element"
             >@<value-of select="$this-attribute-name"/> must refer to <value-of
             select="$should-refer-to-which-element"/>s (<value-of
-            select="string-join($head//*[name(.)=$should-refer-to-which-element]/@xml:id,', ')"/>) 
-         <value-of
+            select="string-join($head//*[name(.)=$should-refer-to-which-element]/@xml:id,', ')"/>)
+            <value-of
             select="if (string-length($idrefs-currently-target-what-element) gt 0) then concat('(currently points to ',string-join($idrefs-currently-target-what-element,' '),')') else ()"
          /></assert>
       <assert test="count($idrefs)=count(distinct-values($idrefs))">@<value-of
@@ -305,8 +321,7 @@
    <rule context="tan:IRI">
       <let name="count" value="count(index-of($all-iris,.))"/>
       <let name="is-iri-of-tan-file" value="tan:must-refer-to-external-tan-file(.)"/>
-      <let name="first-loc"
-         value="tan:first-loc-available(..)"/>
+      <let name="first-loc" value="tan:first-loc-available(..)"/>
       <let name="first-doc"
          value="if (exists($first-loc)) then doc(resolve-uri($first-loc,$doc-uri)) else ()"/>
       <let name="first-da-iri-name" value="$first-doc/*/@id"/>
@@ -327,7 +342,8 @@
    </rule>
    <rule context="@include">
       <let name="parent" value=".."/>
-      <report test="$parent/text()" sqf:fix="explicate">Text is not allowed in an element with @include.</report>
+      <report test="$parent/text()" sqf:fix="explicate">Text is not allowed in an element with
+         @include.</report>
       <sqf:fix id="explicate">
          <sqf:description>
             <sqf:title>Replace with inclusions</sqf:title>

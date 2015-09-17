@@ -51,8 +51,10 @@
    <rule context="tan:work">
       <report test="$head/tan:declarations/tan:work[2]">There may be no more than two work
          elements.</report>
-      <report test="$head/tan:declarations/tan:work/@error">Error: <value-of select="string-join(for $i in $head/tan:declarations/tan:work/@error
-         return $inclusion-errors[number($i)],', ')"/></report>
+      <report test="$head/tan:declarations/tan:work/@error">Error: <value-of
+            select="string-join(for $i in $head/tan:declarations/tan:work/@error
+         return $inclusion-errors[number($i)],', ')"
+         /></report>
    </rule>
    <rule context="tan:recommended-tokenization">
       <let name="this-which" value="@which"/>
@@ -137,7 +139,7 @@
       <report
          test="if ($is-leaf-div) then (preceding-sibling::*, following-sibling::*)[@n=$this-n][@type=$this-type] else false()"
          >Leaf div references must be unique. </report>
-      <report test="$is-leaf-div and not(matches(.,'\S'))">Every leaf div must have at least some
-         non-space text.</report>
+      <report test="$is-leaf-div and not(@include) and not(matches(.,'\S'))">Every leaf div must
+         have at least some non-space text.</report>
    </rule>
 </pattern>

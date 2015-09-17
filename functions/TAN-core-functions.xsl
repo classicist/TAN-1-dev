@@ -428,7 +428,7 @@
                     concat($j/@type, $separator-type-and-n, $j/@n), $separator-hierarchy)"
         />
     </xsl:function>
-    
+
     <xsl:function name="tan:element-to-comment" as="comment()">
         <xsl:param name="element" as="element()*"/>
         <xsl:comment>
@@ -441,61 +441,68 @@
         <xsl:param name="element-with-include-attr" as="element()*"/>
         <xsl:sequence select="tan:resolve-include($element-with-include-attr, $doc-uri)"/>
     </xsl:function>
-    <xsl:function name="tan:resolve-include" as="element()*">
+    <xsl:function name="tan:resolve-include" as="node()*">
         <!-- Input: any TAN element with @include
         Output: a set of replacement TAN elements, found by looking at the chain of inclusions -->
-        <xsl:param name="elements-to-be-checked-for-inclusion" as="element()*"/>
+        <xsl:param name="elements-to-be-checked-for-inclusion" as="node()*"/>
         <xsl:param name="urls-so-far" as="xs:anyURI*"/>
-        <xsl:variable name="elements-with-include-attr"
-            select="$elements-to-be-checked-for-inclusion[@include]"/>
-        <xsl:variable name="inclusion"
-            select="
-                for $i in $elements-with-include-attr
-                return
-                    root($i)/*/tan:head/tan:inclusion[@xml:id = $elements-with-include-attr/@include]"/>
-        <xsl:variable name="inclusion-1st-la"
-            select="
-                for $i in $inclusion
-                return
-                    tan:first-loc-available($i, base-uri($i))"/>
-        <xsl:variable name="element-name"
-            select="
-                for $i in $elements-with-include-attr
-                return
-                    name($i)"/>
-        <xsl:variable name="replacement-elements"
-            select="
-                for $i in $inclusion-1st-la
-                return
-                    doc(resolve-uri($i,base-uri($i)))//*[name(.) = $element-name]"/>
-        <xsl:variable name="errors" as="xs:integer?">
-            <xsl:choose>
-                <xsl:when test="not(exists($replacement-elements))">
-                    <xsl:copy-of select="2"/>
-                </xsl:when>
-                <xsl:when test="$inclusion/tan:location = $urls-so-far">
-                    <xsl:copy-of select="3"/>
-                </xsl:when>
-                <xsl:when test="count(distinct-values($element-name)) gt 1">
-                    <xsl:copy-of select="4"/>
-                </xsl:when>
-            </xsl:choose>
+        <xsl:variable name="new-urls">
+            <xsl:for-each select="$elements-to-be-checked-for-inclusion">
+                <xsl:if test="@include">
+                    <xsl:sequence select="root()/*/tan:head/tan:inclusion[@xml:id = current()/@include]/tan:location"></xsl:sequence>
+                </xsl:if>
+            </xsl:for-each>
+        </xsl:variable>
+        <xsl:variable name="new-sequence" as="node()*">
+            <xsl:for-each select="$elements-to-be-checked-for-inclusion">
+                <xsl:choose>
+                    <xsl:when test="@include">
+                        <xsl:variable name="this-inclusion"
+                            select="root(current())/*/tan:head/tan:inclusion[@xml:id = current()/@include]"/>
+                        <xsl:variable name="this-inclusion-1st-la"
+                            select="tan:first-loc-available($this-inclusion, base-uri($this-inclusion))"/>
+                        <xsl:variable name="this-name" select="name()"/>
+                        <xsl:variable name="these-replacement-elements"
+                            select="doc(resolve-uri($this-inclusion-1st-la, base-uri($this-inclusion-1st-la)))//*[name(.) = $this-name][not(parent::tan:div)]"/>
+                        <xsl:variable name="these-errors" as="xs:integer?">
+                            <xsl:choose>
+                                <xsl:when test="not(exists($these-replacement-elements))">
+                                    <xsl:copy-of select="2"/>
+                                </xsl:when>
+                                <xsl:when test="$this-inclusion/tan:location = $urls-so-far">
+                                    <xsl:copy-of select="3"/>
+                                </xsl:when>
+                                <xsl:when test="count(distinct-values($this-name)) gt 1">
+                                    <xsl:copy-of select="4"/>
+                                </xsl:when>
+                            </xsl:choose>
+                        </xsl:variable>
+                        <xsl:choose>
+                            <xsl:when test="exists($these-errors)">
+                                <xsl:copy>
+                                    <xsl:attribute name="error" select="$these-errors"/>
+                                </xsl:copy>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:sequence select="$these-replacement-elements"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:sequence select="."/>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:for-each>
         </xsl:variable>
         <xsl:choose>
-            <xsl:when test="exists($errors)">
-                <xsl:for-each select="$elements-with-include-attr">
-                    <xsl:copy>
-                        <xsl:attribute name="error" select="$errors"/>
-                    </xsl:copy>
-                </xsl:for-each>
+            <xsl:when test="$new-sequence[@error] or not($new-sequence//@include)">
+                <xsl:sequence select="$new-sequence"/>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:sequence select="$elements-to-be-checked-for-inclusion[not(@include)]"/>
-                <xsl:sequence select="$replacement-elements[not(@include)]"/>
                 <xsl:sequence
                     select="
-                        tan:resolve-include($replacement-elements[@include], ($inclusion/tan:location,
-                        $urls-so-far))"
+                        tan:resolve-include($new-sequence, ($urls-so-far,
+                        $new-urls))"
                 />
             </xsl:otherwise>
         </xsl:choose>

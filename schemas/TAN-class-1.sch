@@ -5,44 +5,44 @@
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
    <title>Core tests for class 1 TAN files.</title>
    <let name="leafdiv-flatrefs" value="$prep-body/tan:div/@ref"/>
-   <let name="transcription-langs"
-      value="/(tan:TAN-T/tan:body|tei:TEI/tei:text/tei:body)//@xml:lang"/>
+   <let name="transcription-langs" value="$prep-body//@xml:lang"/>
    <rule context="tan:see-also">
-      <let name="first-loc" value="tan:location[doc-available(resolve-uri(.,$doc-uri))][1]"/>
-      <let name="first-doc"
-         value="if (exists($first-loc)) then doc(resolve-uri($first-loc,$doc-uri)) else ()"/>
+      <let name="this-resolved" value="tan:resolve-include(.)"/>
+      <let name="first-locs" value="for $i in $this-resolved return tan:first-loc-available($i)"/>
+      <let name="first-docs" value="for $i in $first-locs return doc(resolve-uri($i,$doc-uri))"/>
       <let name="is-alternatively-divided-edition"
-         value="tan:relationship = 'alternatively divided edition'"/>
+         value="for $i in $this-resolved return $i/tan:relationship = 'alternatively divided edition'"/>
       <let name="is-alternatively-normalized-edition"
-         value="tan:relationship = 'alternatively normalized edition'"/>
+         value="for $i in $this-resolved return $i/tan:relationship = 'alternatively normalized edition'"/>
       <let name="is-strict-alternative"
-         value="$is-alternatively-divided-edition or $is-alternatively-normalized-edition"/>
+         value="for $i in count($this-resolved) return ($is-alternatively-divided-edition[$i] or $is-alternatively-normalized-edition[$i])"/>
       <let name="shares-same-source"
-         value="$head/tan:source/tan:IRI = $first-doc/*/tan:head/tan:source/tan:IRI"/>
+         value="for $i in count($this-resolved) return $head/tan:source/tan:IRI = $first-docs[$i]/*/tan:head/tan:source/tan:IRI"/>
       <let name="shares-same-work"
-         value="$head/tan:declarations/tan:work/tan:IRI = $first-doc/*/tan:head/tan:declarations/tan:work/tan:IRI"/>
+         value="for $i in count($this-resolved) return $head/tan:declarations/tan:work/tan:IRI = $first-docs[$i]/*/tan:head/tan:declarations/tan:work/tan:IRI"/>
       <let name="shares-same-work-version"
-         value="if ($head/tan:declarations/tan:version/tan:IRI and $first-doc/*/tan:head/tan:declarations/tan:version/tan:IRI) then $head/tan:declarations/tan:version/tan:IRI = $first-doc/*/tan:head/tan:declarations/tan:version/tan:IRI else true()"/>
+         value="for $i in count($this-resolved) return if ($head/tan:declarations/tan:version/tan:IRI and $first-docs[$i]/*/tan:head/tan:declarations/tan:version/tan:IRI) then $head/tan:declarations/tan:version/tan:IRI = $first-docs[$i]/*/tan:head/tan:declarations/tan:version/tan:IRI else true()"/>
       <let name="shares-same-language"
-         value="$body/@xml:lang = $first-doc//(tan:body, tei:body)/@xml:lang"/>
-      <let name="this-text" value="normalize-space(string-join(//(tan:body, tei:body)//text(),''))"/>
+         value="for $i in count($this-resolved) return $body/@xml:lang = $first-docs[$i]//(tan:body, tei:body)/@xml:lang"/>
+      <let name="this-text" value="normalize-space(string-join($body//text(),''))"/>
+      <let name="resolved-bodies" value="for $i in $first-docs/(tan:TAN-T/tan:body) return tan:resolve-element($i)"/>
       <let name="alternative-text"
-         value="normalize-space(string-join($first-doc//(tan:body, tei:body)//text(),''))"/>
-      <let name="is-same-text" value="if ($this-text = $alternative-text) then true() else false()"/>
+         value="for $i in $resolved-bodies return normalize-space(string-join($i//text(),''))"/>
+      <let name="is-same-text" value="for $i in count($this-resolved) return if ($this-text = $alternative-text[$i]) then true() else false()"/>
       <let name="discrepancies-here"
-         value="for $i in //(tan:div, tei:div)[not((tan:div, tei:div))] return 
-         if (contains($alternative-text,normalize-space(string-join($i//text(),'')))) then () else tan:flatref($i)"/>
+         value="for $i in count($this-resolved) return string-join(for $j in //(tan:div, tei:div)[not((tan:div, tei:div))] return 
+         if (contains($alternative-text[$i],normalize-space(string-join($j//text(),'')))) then () else tan:flatref($j),', ')"/>
       <let name="discrepancies-there"
-         value="for $i in $first-doc//(tan:div, tei:div)[not((tan:div, tei:div))] return 
-         if (contains($this-text,normalize-space(string-join($i//text(),'')))) then () else tan:flatref($i)"/>
-      <report test="$is-strict-alternative and not($shares-same-source)">Alternative editions must
+         value="for $i in count($this-resolved) return string-join(for $j in $first-docs[$i]//(tan:div, tei:div)[not((tan:div, tei:div))] return 
+         if (contains($this-text,normalize-space(string-join($j//text(),'')))) then () else tan:flatref($j),', ')"/>
+      <report test="for $i in count($this-resolved) return $is-strict-alternative[$i] and not($shares-same-source[$i])">Alternative editions must
          share the same source.</report>
-      <report test="$is-strict-alternative and not($shares-same-work)">Alternative editions must
+      <report test="for $i in count($this-resolved) return $is-strict-alternative[$i] and not($shares-same-work[$i])">Alternative editions must
          share the same work.</report>
-      <report test="$is-strict-alternative and not($shares-same-work-version)">Alternative editions
+      <report test="for $i in count($this-resolved) return $is-strict-alternative[$i] and not($shares-same-work-version[$i])">Alternative editions
          must share the same work-version.</report>
-      <report test="$is-alternatively-divided-edition and not($is-same-text)">Alternatively divided
-         editions must treat the identical transcription. <value-of
+      <report test="for $i in count($this-resolved) return $is-alternatively-divided-edition[$i] and not($is-same-text[$i])">Alternatively divided
+         editions must treat the identical transcription. <value-of select="true()"/> <value-of
             select="if (exists($discrepancies-here)) then concat('Discrepancies here: ',string-join(($discrepancies-here),', '),'. ') else ()"
             /><value-of
             select="if (exists($discrepancies-there)) then concat('Discrepancies in alternative edition: ',string-join(($discrepancies-there),', '),'. ') else ()"

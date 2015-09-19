@@ -24,7 +24,9 @@
             <IRI>tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:object-refs</IRI>
             <name>Categories, Aristotle, Greek text by Minio-Paluello, object-based
                 references</name>
-            <location when-accessed="2015-09-11-04:00">ar.cat.grc.1949.minio-paluello-obj.xml</location>
+            
+            <location ed-when="" when-accessed="2015-09-11-04:00">ar.cat.grc.1949.minio-paluello-obj.xml</location>
+            
         </see-also>
         <declarations>
             <work>

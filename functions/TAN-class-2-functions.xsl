@@ -39,24 +39,25 @@
             $sources/@xml:id"/>
    <xsl:variable name="src-1st-da-locations"
       select="
-         for $i in $sources/tan:location[doc-available(resolve-uri(., $doc-uri))][1]
+         for $i in $sources
          return
-            resolve-uri($i, $doc-uri)"/>
-   <xsl:variable name="src-1st-da-uri"
-      select="
-         for $i in $src-1st-da-locations
-         return
-            base-uri(doc($i))"/>
-   <xsl:variable name="src-1st-da-parent-directory"
+            resolve-uri(tan:first-loc-available($i), $doc-uri)"
+   />
+   <!--<xsl:variable name="src-1st-da-parent-directory"
       select="
          for $i in $src-1st-da-uri
          return
-            replace($i, '[^/]+$', '')"/>
+            replace($i, '[^/]+$', '')"/>-->
    <xsl:variable name="src-1st-da"
       select="
          for $i in $src-1st-da-locations
          return
             document($i)"/>
+   <xsl:variable name="src-1st-da-base-uri"
+      select="
+         for $i in $src-1st-da
+         return
+            base-uri($i)"/>
    <xsl:variable name="src-1st-da-version"
       select="
          for $i in $src-1st-da
@@ -68,10 +69,12 @@
          <xsl:variable name="pos" select="position()"/>
          <xsl:copy>
             <xsl:attribute name="src" select="$src-ids[$pos]"/>
-            <xsl:sequence select="*"/>
+            <xsl:copy-of select="@*"/>
+            <xsl:apply-templates mode="include"/>
+            <!--<xsl:sequence select="*"/>-->
          </xsl:copy>
       </xsl:for-each></xsl:variable>
-   <xsl:variable name="src-1st-da-data" select="tan:prep-class-1-data($src-1st-da-locations)"/>
+   <xsl:variable name="src-1st-da-data" select="tan:prep-class-1-data($src-1st-da)"/>
    <xsl:variable name="src-1st-da-all-div-types" as="element()">
       <xsl:variable name="all" select="$src-1st-da-heads/tan:declarations/tan:div-type"/>
       <xsl:variable name="div-seq" as="element()*">
@@ -137,7 +140,7 @@
                <xsl:variable name="cl-1-loc"
                   select="
                      if (exists($src-rec-tokz-chosen)) then
-                        ($src-rec-tokz-chosen/tan:location[doc-available(resolve-uri(., $src-1st-da-uri))],
+                        ($src-rec-tokz-chosen/tan:location[doc-available(resolve-uri(., $src-1st-da-base-uri))],
                         $tokenization-errors[3])[1]
                      else
                         ()"/>
@@ -364,7 +367,7 @@
                   <xsl:variable name="this-div-type" select="@xml:id"/>
                   <xsl:variable name="this-ns"
                      select="
-                        doc($src-1st-da-locations[$this-src])//(tan:div,
+                        $src-1st-da[$this-src]//(tan:div,
                         tei:div)[@type = $this-div-type]/@n"/>
                   <xsl:variable name="this-ns-types"
                      select="
@@ -678,10 +681,10 @@
       <!-- Input: digit representing the position of the div-type to be checked within the sequence of all div-types of all sources
       Output: digit representing the smallest position of the div-type that is equivalent, within the same sequence
       E.g., 22 - > 3 -->
-      <xsl:param name="div-type-nos" as="xs:integer+"/>
+      <xsl:param name="div-type-nos" as="xs:integer*"/>
       <xsl:variable name="all" select="$src-1st-da-heads/tan:declarations/tan:div-type"/>
       <xsl:variable name="these-div-type-iris" select="for $i in $div-type-nos return $all[$i]/tan:IRI"/>
-      <xsl:variable name="matches" as="xs:integer+">
+      <xsl:variable name="matches" as="xs:integer*">
          <xsl:for-each select="$all">
             <xsl:variable name="pos" select="position()"/>
             <xsl:variable name="this-div-type" select="."/>
@@ -698,7 +701,7 @@
                min($div-type-nos)"
       />
    </xsl:function>
-      
+   
    <xsl:function name="tan:prep-class-1-data" as="element()*">
       <!-- Input: sequence of URLs for class 1 TAN sources
          Output: sequence of one node/tree per source flattening the data into this form:
@@ -708,12 +711,21 @@
          TEI MARKUP, IF ANY]</div>
          No @lang if not a leaf div
       -->
-      <xsl:param name="urls" as="xs:string*"/>
-      <xsl:for-each select="$src-count">
+      <xsl:param name="class-1-documents" as="document-node()*"/>
+      <xsl:for-each select="1 to count($class-1-documents)">
          <xsl:variable name="this-src" select="."/>
+         <xsl:variable name="this-class-1-body-resolved" as="node()">
+            <xsl:for-each
+               select="$class-1-documents[$this-src]/(tan:TAN-T/tan:body | tei:TEI/tei:text/tei:body)">
+               <xsl:copy>
+                  <xsl:copy-of select="@*"/>
+                  <xsl:apply-templates mode="include"/>
+               </xsl:copy>
+            </xsl:for-each>
+         </xsl:variable>
          <xsl:element name="tan:source">
             <xsl:attribute name="id" select="$src-ids[$this-src]"/>
-            <xsl:for-each select="document($urls[$this-src])//(tei:div | tan:div)">
+            <xsl:for-each select="$this-class-1-body-resolved//(tei:div | tan:div)">
                <xsl:variable name="this-div" select="."/>
                <xsl:variable name="is-leaf-div"
                   select="

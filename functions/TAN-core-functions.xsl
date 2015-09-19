@@ -30,6 +30,15 @@
             <xsl:apply-templates mode="include"/>
         </xsl:for-each>
     </xsl:variable>
+    <xsl:function name="tan:resolve-element" as="node()*">
+        <xsl:param name="tan-element" as="node()*"/>
+        <xsl:for-each select="$tan-element">
+            <xsl:copy>
+                <xsl:copy-of select="@*"/>
+                <xsl:apply-templates mode="include"/>
+            </xsl:copy>
+        </xsl:for-each>
+    </xsl:function>
     <xsl:variable name="doc-id" select="/*/@id"/>
     <xsl:variable name="doc-uri" select="base-uri(/*)"/>
     <xsl:variable name="doc-parent-directory" select="replace($doc-uri, '[^/]+$', '')"/>

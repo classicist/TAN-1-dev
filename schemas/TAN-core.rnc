@@ -217,7 +217,7 @@ inclusion-item =
 source-list = source-item
 source-item =
     element source {
-        ed-stamp?,
+        ed-stamp?, attribute test {xsd:anyURI}?,
         (inclusion
          | (source-id-opt,
             (comment*

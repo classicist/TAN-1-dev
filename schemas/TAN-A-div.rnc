@@ -65,7 +65,7 @@ exclusive-claim = attribute exclusive { xsd:boolean }
 # refs in a single @ref must be siblings.  
 distribute-claim = attribute distribute { xsd:boolean }
 # IDREFS of aligns
-alignment-ref = attribute alignments { d:IDREFS }
+alignment-ref = attribute alignments { text }
 align-div-list =
     element div-ref { source-ref, pointer-to-div-range, strength-claim?, ed-stamp?, seg-ref? }
 # Optional segment picker. If provided, every @ref for every @src must point to a leaf div, and there must

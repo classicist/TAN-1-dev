@@ -31,7 +31,7 @@
             <sqf:title>Get inclusion element with this document's IRI + name pattern</sqf:title>
          </sqf:description>
          <sqf:add match="tan:head" position="before">
-            <inclusion xml:id="master" xmlns="tag:textalign.net,2015:ns">
+            <inclusion xml:id="{replace(base-uri(),'.*/([^/]+$)','$1')}" xmlns="tag:textalign.net,2015:ns">
                <IRI>
                   <xsl:value-of select="../@id"/></IRI>
                <name><xsl:value-of select="tan:name"/></name>
@@ -299,14 +299,14 @@
          value="$referred-element[index-of($referring-attribute,$this-attribute-name)]"/>
       <let name="idrefs" value="tokenize(.,'\s+')"/>
       <let name="idrefs-currently-target-what-element"
-         value="for $n in $idrefs return name($head//*[@xml:id = $n][1])"/>
+         value="for $n in $idrefs return name(($head, $body)//*[@xml:id = $n][1])"/>
       <assert
          test="every $k in $idrefs-currently-target-what-element satisfies $k = $should-refer-to-which-element"
             >@<value-of select="$this-attribute-name"/> must refer to <value-of
             select="$should-refer-to-which-element"/>s (<value-of
             select="string-join($head//*[name(.)=$should-refer-to-which-element]/@xml:id,', ')"/>)
             <value-of
-            select="if (string-length($idrefs-currently-target-what-element) gt 0) then concat('(currently points to ',string-join($idrefs-currently-target-what-element,' '),')') else ()"
+            select="if (count($idrefs-currently-target-what-element) gt 0) then concat('(currently points to ',string-join($idrefs-currently-target-what-element,', '),')') else ()"
          /></assert>
       <assert test="count($idrefs)=count(distinct-values($idrefs))">@<value-of
             select="$should-refer-to-which-element"/> must not contain duplicates</assert>
@@ -342,7 +342,8 @@
    <rule context="tan:inclusion">
       <let name="first-loc-avail" value="tan:first-loc-available(.)"/>
       <let name="first-doc" value="doc(resolve-uri($first-loc-avail,$doc-uri))"/>
-      <let name="these-ids" value="$first-doc//@xml:id"/>
+      <!-- If TAN ever permits inclusions to themselves be included, the filter below will need to change -->
+      <let name="these-ids" value="$first-doc//@xml:id[not(parent::tan:inclusion)]"/>
       <let name="duplicate-ids" value="$these-ids[. = $root//@xml:id]"/>
       <report test="exists($duplicate-ids)">Inclusion introduces duplicate ids: <value-of
             select="$duplicate-ids"/></report>

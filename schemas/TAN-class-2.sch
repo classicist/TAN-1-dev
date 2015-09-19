@@ -47,8 +47,8 @@
          if ($j/tan:location[. = $tokenization-errors]) then concat($src-ids[$this-src-list[$i]],': ',$j/tan:location) else ()"
       />
       <!-- START TESTING BLOCK -->
-      <let name="test1" value="$src-1st-da-uri"/>
-      <let name="test2" value="$src-1st-da-parent-directory"/>
+      <let name="test1" value="true()"/>
+      <let name="test2" value="true()"/>
       <let name="test3" value="true()"/>
       <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
          select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>

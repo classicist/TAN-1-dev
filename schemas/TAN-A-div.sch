@@ -19,13 +19,6 @@
          <let name="this-new" value="@new"/>
          <let name="sibling-olds" value="(preceding-sibling::tan:rename, following-sibling::tan:rename)/@old"/>
          <let name="sibling-news" value="(preceding-sibling::tan:rename, following-sibling::tan:rename)/@new"/>
-         <!-- START TESTING BLOCK -->
-         <let name="test1" value="$this-src-list"/>
-         <let name="test2" value="$src-1st-da-all-div-types/tan:source[$this-src-list]//@xml:id"/>
-         <let name="test3" value="$this-new"/>
-         <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
-            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
-         <!-- END TESTING BLOCK -->
          <report test="$this-old = $sibling-olds">Old values may not be duplicated</report>
          <report test="$this-new = $sibling-news">New values may not be duplicated</report>
          <report test="for $i in $this-src-list return $src-1st-da-all-div-types/tan:source[$i]/tan:div-type[@xml:id=$this-new]">
@@ -151,6 +144,17 @@
                      tan:normalize-impl-refs(@ref, $i)
                   else
                      tan:normalize-refs(@ref)"/>
+         <let name="these-div-types"
+            value="distinct-values(for $i in tokenize($this-refs-norm, ' [-,] '),
+                  $j in tokenize($i, $separator-hierarchy-regex)
+               return
+                  tokenize($j, $separator-type-and-n-regex)[1])"
+         />
+         <let name="valid-div-types"
+            value="distinct-values(for $i in $this-src-list
+               return
+                  $src-1st-da-all-div-types/tan:source[$i]//@xml:id)"
+         />
          <let name="qty-of-srcs-with-implicit-div-types"
             value="count($this-src-list[. = $src-impl-div-types])"/>
          <let name="src-data-for-this-div-ref" value="tan:pick-prepped-class-1-data($this-src-list, $this-refs-norm)"/>
@@ -181,15 +185,25 @@
          <let name="div-ref-is-anchored" value="for $i in tan:expand-div-ref(.,true()) return
             if ($realigns-normalized/tan:anchor-div-ref[@src = $i/@src][@ref = $i/@ref][(@seg = $i/@seg) or not(@seg)]) then true() else false()"/>
          <let name="ref-has-errors" value="$src-data-for-this-div-ref/tan:div/@error"/>
+         <let name="div-type-mismatches" value="$these-div-types[not(. = $valid-div-types)]"/>
          <let name="this-segs" value="if (@seg) then normalize-space(replace(@seg,'\?','')) else ()"/>
          <let name="seg-count" value="for $i in $src-segmented-data-for-this-div-ref/tan:div return count($i/tan:seg)"/>
          <let name="seg-ceiling" value="min($seg-count)"/>
          <let name="this-seg-max" value="if (exists($this-segs)) then tan:max-integer($this-segs) else 1"/>
          <let name="this-seg-min-last" value="if (exists($this-segs) and exists($seg-ceiling)) 
             then tan:min-last($this-segs,$seg-ceiling) else 1"/>
-         <report test="$ref-has-errors">Every
-            ref cited must be found in every source (<value-of select="if ($ref-has-errors) 
-               then $this-refs-norm else ()"/>).</report>
+         <!-- START TESTING BLOCK -->
+         <let name="test1" value="$this-src-list"/>
+         <let name="test2" value="$src-1st-da-data[1]//@ref"/>
+         <let name="test3" value="$this-refs-norm"/>
+         <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
+            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
+         <!-- END TESTING BLOCK -->
+         <report test="$ref-has-errors">Every ref cited must be found in every source (<value-of
+               select="if (exists($div-type-mismatches)) then
+                     concat('faulty div types:', $div-type-mismatches,'; acceptable values: ',string-join($valid-div-types,' '))
+                  else
+                     ()"/>).</report>
          <report
             test="$qty-of-srcs-with-implicit-div-types gt 0 and $qty-of-srcs-with-implicit-div-types ne count($this-src-list)"
             >Either all sources or no sources must be declared in implicit-div-type-refs</report>
@@ -207,6 +221,9 @@
             realigned by a div ref.</report>
          <report test="not($is-anchor) and $is-being-realigned and (some $i in ($div-ref-is-anchored) satisfies $i)">An
             anchor may not be realigned by a div ref.</report>
+      </rule>
+      <rule context="@ref">
+         
       </rule>
    </pattern>
 

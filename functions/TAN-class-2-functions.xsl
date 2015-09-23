@@ -454,10 +454,11 @@
          Output: punctuation- and space-normalized reference string
          E.g., "bk/Gen ch.1 epigraph.   , bk^Gen ch,5   - bk,Gen ch?7" -> "bk.Gen:ch.1:epigraph. , bk.Gen:ch.5 - bk.Gen:ch.7" 
       -->
-      <xsl:param name="arg" as="xs:string?"/>
+      <xsl:param name="raw-ref" as="xs:string?"/>
+      <xsl:variable name="norm-ref" select="normalize-space(replace($raw-ref,'\?',''))"/>
       <xsl:value-of
          select="
-            string-join(for $i in tokenize($arg, '\s*,\s+')
+            string-join(for $i in tokenize($norm-ref, '\s*,\s+')
             return
                string-join(for $j in tokenize($i, '\s+-\s+')
                return
@@ -482,17 +483,18 @@
    <xsl:function name="tan:normalize-impl-refs" as="xs:string?">
       <!-- Input: (1) string value of @ref where div types are implicit; (2) source number
          Output: type-, punctuation-, and space-normalized reference string
-         E.g., "Gen 4 1   , Gen:2:5   - Gen 2?7" -> "bk.Gen:ch.1:v.1 , bk.Gen:ch.2:v.5 - bk.Gen:ch.2:v.7" 
+         E.g., "Gen 4 1   , Gen:2:5   - Gen 2$7" -> "bk.Gen:ch.1:v.1 , bk.Gen:ch.2:v.5 - bk.Gen:ch.2:v.7" 
       -->
-      <xsl:param name="arg1" as="xs:string?"/>
-      <xsl:param name="arg2" as="xs:integer?"/>
+      <xsl:param name="raw-ref" as="xs:string?"/>
+      <xsl:param name="src-no" as="xs:integer?"/>
+      <xsl:variable name="norm-ref" select="normalize-space(replace($raw-ref,'\?',''))"/>
       <xsl:value-of
          select="
-            string-join(for $i in tokenize($arg1, '\s*,\s+')
+            string-join(for $i in tokenize($norm-ref, '\s*,\s+')
             return
                string-join(for $j in tokenize($i, '\s+-\s+')
                return
-                  ($src-1st-da-data[$arg2]//tan:div[@impl-ref = replace($j, '\W', $separator-hierarchy)]/@ref,
+                  ($src-1st-da-data[$src-no]//tan:div[@impl-ref = replace($j, '\W', $separator-hierarchy)]/@ref,
                   replace($j, '\W', $separator-hierarchy),
                   $j)[1], ' - '), ' , ')"
       />
@@ -817,7 +819,7 @@
                      <xsl:otherwise>
                         <xsl:element name="tan:div">
                            <xsl:attribute name="ref" select="$this-ref"/>
-                           <xsl:attribute name="error" select="true()"/>
+                           <xsl:attribute name="error" select="2"/>
                            <xsl:value-of select="$reference-errors[2]"/>
                         </xsl:element>
                      </xsl:otherwise>

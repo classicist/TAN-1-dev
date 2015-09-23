@@ -222,9 +222,7 @@
          <report test="not($is-anchor) and $is-being-realigned and (some $i in ($div-ref-is-anchored) satisfies $i)">An
             anchor may not be realigned by a div ref.</report>
       </rule>
-      <rule context="@ref">
-         
-      </rule>
+
    </pattern>
 
    <!-- FUNCTIONS -->

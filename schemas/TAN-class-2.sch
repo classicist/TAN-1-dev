@@ -2,9 +2,7 @@
 <!-- To do: 
    ADD rule to <tokenization>: for any tokenization not already recommended by 
    a source, ensure that tokenization on the source text is identical no matter how modifying letters are handled
-   ADD rule to @ref: if a question mark is present, return the possible values for the next letter
-   or number in the flattened ref, taking into account any partially completed flattened ref 
-   just to the left of the question mark-->
+-->
 
 <pattern xmlns="http://purl.oclc.org/dsdl/schematron" xmlns:tan="tag:textalign.net,2015:ns"
    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
@@ -46,13 +44,6 @@
          value="for $i in (1 to count($this-tokz-per-src)), $j in $this-tokz-per-src[$i] return 
          if ($j/tan:location[. = $tokenization-errors]) then concat($src-ids[$this-src-list[$i]],': ',$j/tan:location) else ()"
       />
-      <!-- START TESTING BLOCK -->
-      <let name="test1" value="true()"/>
-      <let name="test2" value="true()"/>
-      <let name="test3" value="true()"/>
-      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
-         select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
-      <!-- END TESTING BLOCK -->
       <report test="$these-tokz-errors">Error: <value-of select="$these-tokz-errors"/>
       </report>
    </rule>
@@ -139,12 +130,33 @@
    </rule>
    <rule context="@ref">
       <let name="these-refs" value="normalize-space(.)"/>
+      <let name="this-src-list" value="if (../@src) then tan:src-ids-to-nos(../@src) else 1"/>
+      <let name="this-refs-norm"
+         value="for $i in $this-src-list
+         return
+         if ($i = $src-impl-div-types) then
+         tan:normalize-impl-refs(., $i)
+         else
+         tan:normalize-refs(.)"
+      />
+      <let name="possible-divs" value="for $i in $this-src-list, $j in $this-refs-norm, $k in tokenize($j,' [-,] ')
+          return $src-1st-da-data[$i]/tan:div[starts-with(@ref,$j)]"/>
+      <let name="possible-refs" value="if ($this-src-list = $src-impl-div-types) then $possible-divs/@impl-ref
+         else $possible-divs/@ref"/>
       <let name="ref-range-must-join-siblings"
          value="if (../parent::tan:realign or ../..[@distribute = true()] or ../..[@xml:id]) then true() else false()"/>
+      <!-- START TESTING BLOCK -->
+      <let name="test1" value="$this-src-list"/>
+      <let name="test2" value="for $i in $this-refs-norm return count(tokenize($i,' [-,] '))"/>
+      <let name="test3" value="for $i in $this-refs-norm return tokenize($i,' [-,] ')"/>
+      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
+         select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
+      <!-- END TESTING BLOCK -->
       <report
          test="$ref-range-must-join-siblings and (some $i in tan:ref-range-check(.) satisfies $i = false())"
          >In any @ref whose values might be distributed, every range (references joined by a hyphen)
          must begin and end with siblings.</report>
+      <report test="matches(.,'\?')">Help: <value-of select="$possible-refs"/></report>
    </rule>
    <rule context="tan:tok">
       <let name="src-data-for-this-tok" value="tan:pick-tokenized-prepped-class-1-data(.)"/>

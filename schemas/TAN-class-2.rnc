@@ -33,7 +33,7 @@ decl-supp-div-type =
     }
 # Option to drop references to div types and use only @n values. Must not be applied to sources with empty @n values or if the LDUR would be broken.
 decl-implicit-div-type-refs-opt =
-    element implicit-div-type-refs { ed-stamp?, (inclusion | source-ref) }?
+    element implicit-div-type-refs { ed-stamp?, (inclusion | source-ref) }*
 # Declaration to change the name of the div-type in one or more sources
 decl-rename-type-opt = decl-rename-div-type*
 decl-rename-div-type =

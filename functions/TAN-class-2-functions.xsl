@@ -41,8 +41,7 @@
       select="
          for $i in $sources
          return
-            resolve-uri(tan:first-loc-available($i), $doc-uri)"
-   />
+            resolve-uri(tan:first-loc-available($i), $doc-uri)"/>
    <!--<xsl:variable name="src-1st-da-parent-directory"
       select="
          for $i in $src-1st-da-uri
@@ -73,7 +72,8 @@
             <xsl:apply-templates mode="include"/>
             <!--<xsl:sequence select="*"/>-->
          </xsl:copy>
-      </xsl:for-each></xsl:variable>
+      </xsl:for-each>
+   </xsl:variable>
    <xsl:variable name="src-1st-da-data" select="tan:prep-class-1-data($src-1st-da)"/>
    <xsl:variable name="src-1st-da-all-div-types" as="element()">
       <xsl:variable name="all" select="$src-1st-da-heads/tan:declarations/tan:div-type"/>
@@ -89,11 +89,13 @@
             </xsl:copy>
          </xsl:for-each>
       </xsl:variable>
-      <tan:all-div-types><xsl:for-each-group select="$div-seq" group-by="@src">
-         <tan:source>
+      <tan:all-div-types>
+         <xsl:for-each-group select="$div-seq" group-by="@src">
+            <tan:source>
                <xsl:sequence select="current-group()"/>
-         </tan:source>
-      </xsl:for-each-group></tan:all-div-types> 
+            </tan:source>
+         </xsl:for-each-group>
+      </tan:all-div-types>
    </xsl:variable>
 
    <!-- DECLARATIONS -->
@@ -644,7 +646,7 @@
       <xsl:param name="element" as="element()"/>
       <xsl:value-of
          select="
-            if (matches($element/@val, ' \?|\? ') or matches($element/@ord, '\?') or matches($element/@ref,'\?')) then
+            if (matches($element/@val, ' \?|\? ') or matches($element/@ord, '\?') or matches($element/@ref, '\?')) then
                true()
             else
                false()"
@@ -683,7 +685,11 @@
       E.g., 22 - > 3 -->
       <xsl:param name="div-type-nos" as="xs:integer*"/>
       <xsl:variable name="all" select="$src-1st-da-heads/tan:declarations/tan:div-type"/>
-      <xsl:variable name="these-div-type-iris" select="for $i in $div-type-nos return $all[$i]/tan:IRI"/>
+      <xsl:variable name="these-div-type-iris"
+         select="
+            for $i in $div-type-nos
+            return
+               $all[$i]/tan:IRI"/>
       <xsl:variable name="matches" as="xs:integer*">
          <xsl:for-each select="$all">
             <xsl:variable name="pos" select="position()"/>
@@ -701,7 +707,7 @@
                min($div-type-nos)"
       />
    </xsl:function>
-   
+
    <xsl:function name="tan:prep-class-1-data" as="element()*">
       <!-- Input: sequence of URLs for class 1 TAN sources
          Output: sequence of one node/tree per source flattening the data into this form:
@@ -821,7 +827,7 @@
          </xsl:element>
       </xsl:for-each>
    </xsl:function>
-   <xsl:function name="tan:tokenize-prepped-class-1-data" as="element()+">
+   <xsl:function name="tan:tokenize-prepped-class-1-data" as="element()*">
       <!-- Input: element()+ resulting from tan:pick-prepped-class-1-data() 
          or tan:prep-class-1-data()
          Output: elements, 1 per source, deep copy of input, but dropping 
@@ -829,7 +835,7 @@
          by tan:div/tan:tok. If no tokenization pattern exists for a language, 
          the node is copied with the @error="true" and an error message replacing 
          the text of the leaf div.-->
-      <xsl:param name="this-prepped-c1-data" as="element()+"/>
+      <xsl:param name="this-prepped-c1-data" as="element()*"/>
       <xsl:for-each select="$src-count">
          <xsl:variable name="this-src" select="."/>
          <xsl:element name="tan:source">

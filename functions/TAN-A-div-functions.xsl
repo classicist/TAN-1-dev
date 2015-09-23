@@ -50,7 +50,7 @@
                      <xsl:variable name="this-id-orig"
                         select="$rename-div-types/tan:source[$this-src]/tan:rename[@new = $this-id]/@old"/>
                      <tan:div-type-ref src-no="{$this-src}" div-type-ref="{$this-id}"
-                        eq-id="{$src-1st-da-all-div-types/tan:source[$this-src]/tan:div-type[@xml:id = ($this-id,$this-id-orig)]/@eq-id}"
+                        eq-id="{($src-1st-da-all-div-types/tan:source[$this-src]/tan:div-type[@xml:id = ($this-id,$this-id-orig)]/@eq-id)[1]}"
                      />
                   </xsl:for-each>
                </xsl:for-each>

@@ -9,14 +9,29 @@
    <let name="now" value="tan:dateTime-to-decimal(current-dateTime())"/>
    <rule context="/*">
       <report test="true()" role="warning"
-         sqf:fix="copy-source-iri-name-pattern copy-inclusion-iri-name-pattern">This version of TAN
-         is unstable and unpublished. Use it at your own risk.</report>
-      <sqf:fix id="copy-source-iri-name-pattern">
+         sqf:fix="get-incl-local get-incl-abs get-source-local get-source-abs"
+         >This version of TAN is unstable and unpublished. Use it at your own risk.</report>
+      <sqf:fix id="get-source-local">
          <sqf:description>
-            <sqf:title>Get source element with this document's IRI + name pattern</sqf:title>
+            <sqf:title>Get local source element with this document's IRI + name pattern</sqf:title>
          </sqf:description>
          <sqf:add match="tan:head" position="before">
-            <source xmlns="tag:textalign.net,2015:ns">
+            <source xmlns="tag:textalign.net,2015:ns" xml:id="{replace($doc-uri,'.*/([^/]+$)','$1')}">
+               <IRI>
+                  <xsl:value-of select="../@id"/></IRI>
+               <name><xsl:value-of select="tan:name"/></name>
+               <location when-accessed="{current-date()}">
+                  <xsl:value-of select="replace($doc-uri,'.*/([^/]+$)','$1')"/>
+               </location>
+            </source>
+         </sqf:add>
+      </sqf:fix>
+      <sqf:fix id="get-source-abs">
+         <sqf:description>
+            <sqf:title>Get absolute source element with this document's IRI + name pattern</sqf:title>
+         </sqf:description>
+         <sqf:add match="tan:head" position="before">
+            <source xmlns="tag:textalign.net,2015:ns" xml:id="{replace($doc-uri,'.*/([^/]+$)','$1')}">
                <IRI>
                   <xsl:value-of select="../@id"/></IRI>
                <name><xsl:value-of select="tan:name"/></name>
@@ -26,9 +41,24 @@
             </source>
          </sqf:add>
       </sqf:fix>
-      <sqf:fix id="copy-inclusion-iri-name-pattern">
+      <sqf:fix id="get-incl-local">
          <sqf:description>
-            <sqf:title>Get inclusion element with this document's IRI + name pattern</sqf:title>
+            <sqf:title>Get local inclusion element with this document's IRI + name pattern</sqf:title>
+         </sqf:description>
+         <sqf:add match="tan:head" position="before">
+            <inclusion xml:id="{replace(base-uri(),'.*/([^/]+$)','$1')}" xmlns="tag:textalign.net,2015:ns">
+               <IRI>
+                  <xsl:value-of select="../@id"/></IRI>
+               <name><xsl:value-of select="tan:name"/></name>
+               <location when-accessed="{current-date()}">
+                  <xsl:value-of select="replace($doc-uri,'.*/([^/]+$)','$1')"/>
+               </location>
+            </inclusion>
+         </sqf:add>
+      </sqf:fix>
+      <sqf:fix id="get-incl-abs">
+         <sqf:description>
+            <sqf:title>Get absolute inclusion element with this document's IRI + name pattern</sqf:title>
          </sqf:description>
          <sqf:add match="tan:head" position="before">
             <inclusion xml:id="{replace(base-uri(),'.*/([^/]+$)','$1')}" xmlns="tag:textalign.net,2015:ns">
@@ -138,20 +168,14 @@
          value="if ($loc-doc/*/(tan:body, tei:text/tei:body)/@in-progress = false()) then false() else true()"/>
       <let name="updates-should-be-checked"
          value="if (../tan:relationship = ('old version') or matches(../tan:relationship,'edition$')) then true() else false()"/>
-      <!-- START TESTING BLOCK -->
-      <let name="test1" value="$doc-parent-directory"/>
-      <let name="test2" value="resolve-uri(.,$doc-uri)"/>
-      <let name="test3" value="$loc-uri"/>
-      <report test="false()">Testing. var1: <value-of select="$test1"/> var2: <value-of
-            select="$test2"/> var3: <value-of select="$test3"/></report>
-      <!-- END TESTING BLOCK -->
       <report role="warning" sqf:fix="replace-file"
          test="if (exists($loc-doc) and $is-master-location) then (max($loc-ver-nos) != max($doc-ver-nos)) else false()"
          >Version found in master location (<value-of select="$loc-ver-date-latest"/>) does not
          match this version (<value-of select="$doc-ver"/>)</report>
       <report test="$loc-doc-is-available = false() and not($resource-type = 'inclusion')"
-         role="warn">The <value-of select="$resource-type"/> is either unavailable or is available
-         but is not valid XML.</report>
+         role="warn" sqf:fix="change-to-current-file-rel-uri change-to-current-file-base-uri">The
+            <value-of select="$resource-type"/> is either unavailable or is available but is not
+         valid XML.</report>
       <assert
          test="if (exists($loc-doc) and $is-master-location) then deep-equal(root(.),$loc-doc) else true()"
          role="warning">The current document does not match the master document</assert>
@@ -175,6 +199,18 @@
          test="tan:must-refer-to-external-tan-file(.) and not(preceding-sibling::tan:IRI/text() and preceding-sibling::tan:name/text())
          and exists($loc-doc)"
          role="warning" sqf:fix="replace-IRI-and-name">IRI or name missing from TAN file.</report>
+      <sqf:fix id="change-to-current-file-rel-uri" use-when="self::tan:master-location">
+         <sqf:description>
+            <sqf:title>Replace with local uri</sqf:title>
+         </sqf:description>
+         <sqf:replace match="text()" select="replace(base-uri(),'.*/([^/]+$)','$1')"/>
+      </sqf:fix>
+      <sqf:fix id="change-to-current-file-base-uri" use-when="self::tan:master-location">
+         <sqf:description>
+            <sqf:title>Replace with base uri</sqf:title>
+         </sqf:description>
+         <sqf:replace match="." select="base-uri()"/>
+      </sqf:fix>
       <sqf:fix id="replace-with-current-date">
          <sqf:description>
             <sqf:title>Change date to today's date</sqf:title>
@@ -297,19 +333,26 @@
       <let name="this-attribute-name" value="name(.)"/>
       <let name="should-refer-to-which-element"
          value="$referred-element[index-of($referring-attribute,$this-attribute-name)]"/>
+      <let name="valid-values" value="$head//*[name(.)=$should-refer-to-which-element]/@xml:id"/>
       <let name="idrefs" value="tokenize(.,'\s+')"/>
       <let name="idrefs-currently-target-what-element"
          value="for $n in $idrefs return name(($head, $body)//*[@xml:id = $n][1])"/>
-      <assert
+      <assert sqf:fix="get-ids"
          test="every $k in $idrefs-currently-target-what-element satisfies $k = $should-refer-to-which-element"
             >@<value-of select="$this-attribute-name"/> must refer to <value-of
             select="$should-refer-to-which-element"/>s (<value-of
-            select="string-join($head//*[name(.)=$should-refer-to-which-element]/@xml:id,', ')"/>)
+            select="string-join($valid-values,', ')"/>)
             <value-of
             select="if (count($idrefs-currently-target-what-element) gt 0) then concat('(currently points to ',string-join($idrefs-currently-target-what-element,', '),')') else ()"
          /></assert>
       <assert test="count($idrefs)=count(distinct-values($idrefs))">@<value-of
             select="$should-refer-to-which-element"/> must not contain duplicates</assert>
+      <sqf:fix id="get-ids">
+         <sqf:description>
+            <sqf:title>Replace content of attribute with all valid values</sqf:title>
+         </sqf:description>
+         <sqf:add match="." target="{name(.)}" select="string-join($valid-values,' ')" node-type="attribute"/>
+      </sqf:fix>
    </rule>
    <rule context="@regex-test|tan:pattern">
       <report test="matches(.,'\\[^nrtpPsSiIcCdDwW\\|.?*+(){}#x2D#x5B#x5D#x5E\]\[\^\-]')">Escape
@@ -342,9 +385,18 @@
    <rule context="tan:inclusion">
       <let name="first-loc-avail" value="tan:first-loc-available(.)"/>
       <let name="first-doc" value="doc(resolve-uri($first-loc-avail,$doc-uri))"/>
+      <let name="first-doc-resolved" value="tan:resolve-doc($first-doc)"/>
       <!-- If TAN ever permits inclusions to themselves be included, the filter below will need to change -->
-      <let name="these-ids" value="$first-doc//@xml:id[not(parent::tan:inclusion)]"/>
-      <let name="duplicate-ids" value="$these-ids[. = $root//@xml:id]"/>
+      <let name="included-elements-with-ids" value="$first-doc-resolved//*[@xml:id][not(self::tan:inclusion)]"/>
+      <let name="duplicate-ids" value="for $i in $included-elements-with-ids return
+         if ($root//*[@xml:id = $i/@xml:id and not(deep-equal(.,$i))]) then $i/@xml:id else ()"/>
+      <!-- START TESTING BLOCK -->
+      <let name="test1" value="$duplicate-ids"/>
+      <let name="test2" value="true()"/>
+      <let name="test3" value="true()"/>
+      <report test="false()">Testing. var1: <value-of select="$test1"/> var2: <value-of
+         select="$test2"/> var3: <value-of select="$test3"/></report>
+      <!-- END TESTING BLOCK -->
       <report test="exists($duplicate-ids)">Inclusion introduces duplicate ids: <value-of
             select="$duplicate-ids"/></report>
       <assert test="exists($first-loc-avail)" role="fatal">Every inclusion must have at least one

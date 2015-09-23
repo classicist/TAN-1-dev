@@ -46,22 +46,61 @@
   <define name="decl-non-class-1">
     <empty/>
   </define>
+  <!-- The work that has been transcribed -->
+  <define name="decl-work">
+    <element name="work">
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <interleave>
+          <zeroOrMore>
+            <ref name="comment"/>
+          </zeroOrMore>
+          <ref name="entity-nondigital-ref"/>
+        </interleave>
+      </choice>
+    </element>
+  </define>
+  <!-- Version of the work has been transcribed (for text-bearing objects that have multiple versions of the work) -->
+  <define name="decl-vers">
+    <element name="version">
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <interleave>
+          <zeroOrMore>
+            <ref name="comment"/>
+          </zeroOrMore>
+          <ref name="entity-nondigital-ref"/>
+        </interleave>
+      </choice>
+    </element>
+  </define>
   <!-- Types of textual divisions into which a transcription has been segmented (e.g., title, paragraph, stanza) -->
   <define name="decl-div">
     <element name="div-type">
       <optional>
         <ref name="ed-stamp"/>
       </optional>
-      <optional>
-        <ref name="ns-are-numerals"/>
-      </optional>
-      <ref name="internal-id"/>
-      <interleave>
-        <zeroOrMore>
-          <ref name="comment"/>
-        </zeroOrMore>
-        <ref name="entity-nondigital-ref"/>
-      </interleave>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <optional>
+            <ref name="ns-are-numerals"/>
+          </optional>
+          <ref name="internal-id"/>
+          <interleave>
+            <zeroOrMore>
+              <ref name="comment"/>
+            </zeroOrMore>
+            <ref name="entity-nondigital-ref"/>
+          </interleave>
+        </group>
+      </choice>
     </element>
   </define>
   <!-- Recommended pattern to be used to segment a text into word tokens. -->
@@ -70,6 +109,7 @@
       <choice>
         <empty/>
         <ref name="tokenization-ref"/>
+        <ref name="inclusion"/>
         <group>
           <ref name="internal-id"/>
           <optional>
@@ -88,37 +128,12 @@
   <!-- Recommendation on whether references to the transcription should make div types explicit or implicit. -->
   <define name="decl-ref-rec">
     <element name="recommended-div-type-refs">
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
       <data type="string">
         <param name="pattern">implicit|explicit</param>
       </data>
-    </element>
-  </define>
-  <!-- Version of the work has been transcribed (for text-bearing objects that have multiple versions of the work) -->
-  <define name="decl-vers">
-    <element name="version">
-      <optional>
-        <ref name="ed-stamp"/>
-      </optional>
-      <interleave>
-        <zeroOrMore>
-          <ref name="comment"/>
-        </zeroOrMore>
-        <ref name="entity-nondigital-ref"/>
-      </interleave>
-    </element>
-  </define>
-  <!-- The work that has been transcribed -->
-  <define name="decl-work">
-    <element name="work">
-      <optional>
-        <ref name="ed-stamp"/>
-      </optional>
-      <interleave>
-        <zeroOrMore>
-          <ref name="comment"/>
-        </zeroOrMore>
-        <ref name="entity-nondigital-ref"/>
-      </interleave>
     </element>
   </define>
   <!--
@@ -157,20 +172,23 @@
       <optional>
         <ref name="ed-stamp"/>
       </optional>
-      <interleave>
-        <zeroOrMore>
-          <ref name="comment"/>
-        </zeroOrMore>
-        <group>
+      <choice>
+        <ref name="inclusion"/>
+        <interleave>
           <zeroOrMore>
-            <ref name="lang-outside"/>
+            <ref name="comment"/>
           </zeroOrMore>
-          <ref name="entity-nondigital-ref"/>
-        </group>
-      </interleave>
+          <group>
+            <zeroOrMore>
+              <ref name="lang-outside"/>
+            </zeroOrMore>
+            <ref name="entity-nondigital-ref"/>
+          </group>
+        </interleave>
+      </choice>
     </element>
   </define>
-  <!-- Replacements that have be made to an XML source file. -->
+  <!-- Replacements that have been made to an XML source file. -->
   <define name="decl-filt-repl">
     <ref name="func-replace"/>
   </define>
@@ -180,17 +198,20 @@
       <optional>
         <ref name="ed-stamp"/>
       </optional>
-      <interleave>
-        <zeroOrMore>
-          <ref name="comment"/>
-        </zeroOrMore>
-        <group>
+      <choice>
+        <ref name="inclusion"/>
+        <interleave>
           <zeroOrMore>
-            <ref name="lang-outside"/>
+            <ref name="comment"/>
           </zeroOrMore>
-          <ref name="entity-nondigital-ref"/>
-        </group>
-      </interleave>
+          <group>
+            <zeroOrMore>
+              <ref name="lang-outside"/>
+            </zeroOrMore>
+            <ref name="entity-nondigital-ref"/>
+          </group>
+        </interleave>
+      </choice>
     </element>
   </define>
 </grammar>

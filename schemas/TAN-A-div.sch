@@ -14,24 +14,28 @@
    <include href="TAN-class-2.sch"/>
    <pattern>
       <rule context="tan:rename">
+         <let name="this-src-list" value="tan:src-ids-to-nos(../@src)"/>
          <let name="this-old" value="@old"/>
          <let name="this-new" value="@new"/>
          <let name="sibling-olds" value="(preceding-sibling::tan:rename, following-sibling::tan:rename)/@old"/>
          <let name="sibling-news" value="(preceding-sibling::tan:rename, following-sibling::tan:rename)/@new"/>
+         <!-- START TESTING BLOCK -->
+         <let name="test1" value="$this-src-list"/>
+         <let name="test2" value="$src-1st-da-all-div-types/tan:source[$this-src-list]//@xml:id"/>
+         <let name="test3" value="$this-new"/>
+         <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
+            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
+         <!-- END TESTING BLOCK -->
          <report test="$this-old = $sibling-olds">Old values may not be duplicated</report>
          <report test="$this-new = $sibling-news">New values may not be duplicated</report>
+         <report test="for $i in $this-src-list return $src-1st-da-all-div-types/tan:source[$i]/tan:div-type[@xml:id=$this-new]">
+            You may not rename to a div type id that is already in use by the source.
+         </report>
       </rule>
       <rule context="tan:equate-works">
          <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
          <let name="this-work-iris" value="for $i in $this-src-list return $src-1st-da-heads[$i]/tan:declarations/tan:work/tan:IRI"/>
          <let name="repeated-works" value="$this-work-iris[index-of($this-work-iris,.)[2]]"/>
-         <!-- START TESTING BLOCK -->
-         <let name="test1" value="$this-work-iris/tan:IRI"/>
-         <let name="test2" value="$this-src-list"/>
-         <let name="test3" value="$repeated-works"/>
-         <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
-            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
-         <!-- END TESTING BLOCK -->
          <report test="exists($repeated-works)">Sources already share work IRIs: 
             <value-of select="$repeated-works"/>. No equate-works is
             needed.</report>

@@ -18,6 +18,8 @@ cert-claim =
 #    String that refers to a div either by using single nonword characters to join pairs of @type and optional @n values (themselves joined) 
 #    by a nonword character) or by using single nonword characters to join only @n values. The first pattern
 #    is \w+\W\w*(\W\w+\W\w*)* and the second is \w+(\W\w+)*
+## Test double-hash rendered on two
+## lines
 div-ref = xsd:string { pattern = "\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*" }
 #    String that specifies a range of divs using the div-ref pattern joined by a hyphen or a comma
 div-range-ref =

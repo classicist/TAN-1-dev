@@ -451,6 +451,16 @@
             <xsl:sequence select="$element"/>
         </xsl:comment>
     </xsl:function>
+    
+    <xsl:function name="tan:resolve-doc" as="document-node()*">
+        <xsl:param name="TAN-documents" as="document-node()*"/>
+        <xsl:for-each select="$TAN-documents">
+            <xsl:copy>
+                <xsl:copy-of select="processing-instruction()"/>
+                <xsl:apply-templates mode="include"/>
+            </xsl:copy>
+        </xsl:for-each>
+    </xsl:function>
 
     <xsl:function name="tan:resolve-include" as="element()*">
         <!-- One-parameter version of the main two-parameter function, below -->

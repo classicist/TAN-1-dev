@@ -10,7 +10,7 @@ namespace xlink = "http://www.w3.org/1999/xlink"
 
 datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
-# Schema generated from ODD source 2015-08-08T23:26:13Z. .
+# Schema generated from ODD source 2015-09-18T21:29:14Z. .
 # TEI Edition: Version 2.8.0. Last updated on
 #	6th April 2015, revision 13197
 # TEI Edition Location: http://www.tei-c.org/Vault/P5/Version 2.8.0/
@@ -19,9 +19,10 @@ datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 # Insofar as this ODD file constitutes an original work (see below) all material is released under a Creative Commons Attribution 4.0 International License: http://creativecommons.org/licenses/by/4.0/  The notice in the next paragraph is preserved whole from the template upon which this ODD file is based. TEI material can be licensed differently depending on the use you intend to make of it. Hence it is made available under both the CC+BY and BSD-2 licences. The CC+BY licence is generally appropriate for usages which treat TEI content as data or documentation. The BSD-2 licence is generally appropriate for usage of TEI content in a software environment. For further information or clarification, please contact the TEI Consortium (info@tei-c.org).
 div {
   div {
-    agent-ref = attribute who { d:IDREFS }
-    ed-agent = attribute ed-who { d:IDREFS }
+    agent-ref = attribute who { text }
+    ed-agent = attribute ed-who { text }
     ed-time = attribute ed-when { xsd:dateTime | xsd:date }
+    inclusion = attribute include { d:IDREF }
     internal-id =
       attribute xml:id {
         d:ID { pattern = "\w\S*" }
@@ -32,8 +33,8 @@ div {
     lang-outside = element for-lang { xsd:language }
     ns-are-numerals = attribute ns-are-numerals { xsd:boolean }
     progress = attribute in-progress { xsd:boolean }
-    rights-holder = attribute rights-holder { d:IDREFS }
-    role-ref = attribute roles { d:IDREFS }
+    rights-holder = attribute rights-holder { text }
+    role-ref = attribute roles { text }
     URI-tag =
       xsd:anyURI {
         pattern =
@@ -62,11 +63,12 @@ div {
     func-replace =
       element replace {
         ed-stamp?,
-        attribute xpath { text }?,
-        (comment*
-         & (func-param-pattern,
-            element replacement { ed-stamp?, text },
-            func-param-flags?))
+        (inclusion
+         | (attribute xpath { text }?,
+            (comment*
+             & (func-param-pattern,
+                element replacement { ed-stamp?, text },
+                func-param-flags?))))
       }
     IRI-gen-ref = element IRI { ed-stamp?, IRI-gen }
     loc-self = element master-location { ed-stamp?, xsd:anyURI }
@@ -90,6 +92,7 @@ div {
         (comment*
          & (entity-digital-tan-self-ref,
             nonsource-rights,
+            inclusion-list,
             source-list,
             see-also-list,
             element declarations { ed-stamp?, (comment* & decl-list) },
@@ -103,62 +106,78 @@ div {
     TAN-body-core = empty
     nonsource-rights =
       element rights-excluding-sources {
-        ed-stamp?, rights-holder, (comment* & entity-nondigital-ref)
+        ed-stamp?,
+        (inclusion
+         | (rights-holder, (comment* & entity-nondigital-ref)))
+      }
+    inclusion-list = inclusion-item*
+    inclusion-item =
+      element inclusion {
+        ed-stamp?,
+        internal-id,
+        (comment* & entity-digital-tan-other-ref)
       }
     source-list = source-item
     source-item =
       element source {
         ed-stamp?,
-        source-id-opt,
-        (comment*
-         & ((entity-nondigital-ref
-             | entity-digital-generic-ref
-             | entity-digital-tan-other-ref),
-            source-rights?))
+        attribute test { xsd:anyURI }?,
+        (inclusion
+         | (source-id-opt,
+            (comment*
+             & ((entity-nondigital-ref
+                 | entity-digital-generic-ref
+                 | entity-digital-tan-other-ref),
+                source-rights?))))
       }
     source-rights =
       element rights-source-only {
         ed-stamp?,
-        (comment* & (rights-holder*, entity-nondigital-ref))
+        (inclusion
+         | (comment* & (rights-holder*, entity-nondigital-ref)))
       }
     source-id-opt = empty
     see-also-list = see-also-item*
     see-also-item =
       element see-also {
         ed-stamp?,
-        (comment*
-         & (relationship,
-            (entity-nondigital-ref
-             | entity-digital-generic-ref
-             | entity-digital-tan-other-ref)))
+        (inclusion
+         | (comment*
+            & (relationship,
+               (entity-nondigital-ref
+                | entity-digital-generic-ref
+                | entity-digital-tan-other-ref))))
       }
     relationship =
       element relationship {
         ed-stamp?,
-        (entity-nondigital-ref
-         | xsd:string {
-             pattern =
-               "(new|old|alternative) edition|auxiliary|dependent"
-           })
+        (inclusion
+         | (entity-nondigital-ref
+            | xsd:string {
+                pattern =
+                  "(new|old) version|(parent|child|ancestor|descendant|cousin) edition|alternatively (divided|normalized) edition|dependent|auxiliary"
+              }))
       }
     agent-list =
       element agent {
         ed-stamp?,
-        role-ref?,
-        internal-id,
-        (comment* & entity-nondigital-ref)
+        (inclusion
+         | (role-ref?, internal-id, (comment* & entity-nondigital-ref)))
       }
     role-list =
       element role {
-        ed-stamp?, internal-id, (comment* & entity-nondigital-ref)
+        ed-stamp?,
+        (inclusion
+         | (internal-id, (comment* & entity-nondigital-ref)))
       }
     agent-role-list =
       element agentrole {
-        attribute when-from { xsd:dateTime | xsd:date },
-        attribute when-to { xsd:dateTime | xsd:date },
-        ed-stamp?,
-        agent-ref,
-        role-ref
+        inclusion
+        | (attribute when-from { xsd:dateTime | xsd:date },
+           attribute when-to { xsd:dateTime | xsd:date },
+           ed-stamp?,
+           agent-ref,
+           role-ref)
       }
     change-list =
       element change { ed-stamp?, when-claim, agent-ref, text }
@@ -176,29 +195,38 @@ div {
     & decl-ref-rec?
     & decl-filt?
   decl-non-class-1 = empty
+  decl-work =
+    element work {
+      ed-stamp?,
+      (inclusion | (comment* & entity-nondigital-ref))
+    }
+  decl-vers =
+    element version {
+      ed-stamp?,
+      (inclusion | (comment* & entity-nondigital-ref))
+    }
   decl-div =
     element div-type {
       ed-stamp?,
-      ns-are-numerals?,
-      internal-id,
-      (comment* & entity-nondigital-ref)
+      (inclusion
+       | (ns-are-numerals?,
+          internal-id,
+          (comment* & entity-nondigital-ref)))
     }
   decl-tok-rec =
     element recommended-tokenization {
       empty
       | tokenization-ref
+      | inclusion
       | (internal-id,
          ed-stamp?,
          (comment* & entity-digital-tan-other-ref))
     }
   decl-ref-rec =
     element recommended-div-type-refs {
+      ed-stamp?,
       xsd:string { pattern = "implicit|explicit" }
     }
-  decl-vers =
-    element version { ed-stamp?, (comment* & entity-nondigital-ref) }
-  decl-work =
-    element work { ed-stamp?, (comment* & entity-nondigital-ref) }
   decl-filt =
     element filter { ed-stamp?, (comment* & decl-filter-content) }
   decl-filter-content =
@@ -206,13 +234,15 @@ div {
   decl-filt-norm =
     element normalization {
       ed-stamp?,
-      (comment* & (lang-outside*, entity-nondigital-ref))
+      (inclusion
+       | (comment* & (lang-outside*, entity-nondigital-ref)))
     }
   decl-filt-repl = func-replace
   decl-filt-tlit =
     element transliteration {
       ed-stamp?,
-      (comment* & (lang-outside*, entity-nondigital-ref))
+      (inclusion
+       | (comment* & (lang-outside*, entity-nondigital-ref)))
     }
 }
 macro.paraContent =
@@ -669,7 +699,9 @@ att.global.attributes =
 att.global.attribute.ed-who =
   
   ## Reference to agent or agents who have edited (added or modified) an element or its content
-  attribute ed-who { xsd:IDREFS }?
+  attribute ed-who {
+    xsd:string { pattern = "\w*" }
+  }?
 att.global.attribute.ed-when =
   
   ## Reference to a date or time when an element or its content was edited (added or modified)

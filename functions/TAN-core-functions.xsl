@@ -110,7 +110,8 @@
         select="
             ('recommended-tokenization',
             'tokenization',
-            'morphology')"/>
+            'morphology',
+            'inclusion')"/>
 
     <!-- variables related to tokenization -->
     <!-- Keywords reserved for officially supplied TAN-R-tok patterns -->
@@ -353,8 +354,7 @@
                 if (exists($decimal-val)) then
                     index-of($decimal-val, max($decimal-val))[1]
                 else
-                    ()"
-        />
+                    ()"/>
         <xsl:copy-of select="$dateTimes[$most-recent]"/>
     </xsl:function>
 
@@ -451,7 +451,7 @@
             <xsl:sequence select="$element"/>
         </xsl:comment>
     </xsl:function>
-    
+
     <xsl:function name="tan:resolve-doc" as="document-node()*">
         <xsl:param name="TAN-documents" as="document-node()*"/>
         <xsl:for-each select="$TAN-documents">
@@ -474,8 +474,11 @@
         <xsl:param name="urls-so-far" as="xs:anyURI*"/>
         <xsl:variable name="new-urls">
             <xsl:for-each select="$elements-to-be-checked-for-inclusion">
+                <xsl:variable name="incl-refs" select="tokenize(current()/@include, '\s+')"/>
                 <xsl:if test="@include">
-                    <xsl:sequence select="root()/*/tan:head/tan:inclusion[@xml:id = current()/@include]/tan:location"></xsl:sequence>
+                    <xsl:sequence
+                        select="root()/*/tan:head/tan:inclusion[@xml:id = $incl-refs]/tan:location"
+                    />
                 </xsl:if>
             </xsl:for-each>
         </xsl:variable>
@@ -483,19 +486,26 @@
             <xsl:for-each select="$elements-to-be-checked-for-inclusion">
                 <xsl:choose>
                     <xsl:when test="@include">
-                        <xsl:variable name="this-inclusion"
-                            select="root(current())/*/tan:head/tan:inclusion[@xml:id = current()/@include]"/>
-                        <xsl:variable name="this-inclusion-1st-la"
-                            select="tan:first-loc-available($this-inclusion, base-uri($this-inclusion))"/>
+                        <xsl:variable name="incl-refs" select="tokenize(current()/@include, '\s+')"/>
+                        <xsl:variable name="these-inclusions"
+                            select="root(current())/*/tan:head/tan:inclusion[@xml:id = $incl-refs]"/>
+                        <xsl:variable name="these-inclusion-1st-las"
+                            select="
+                                for $i in $these-inclusions
+                                return
+                                    tan:first-loc-available($i, base-uri($i))"/>
                         <xsl:variable name="this-name" select="name()"/>
                         <xsl:variable name="these-replacement-elements"
-                            select="doc(resolve-uri($this-inclusion-1st-la, base-uri($this-inclusion-1st-la)))//*[name(.) = $this-name][not(parent::tan:div)]"/>
+                            select="
+                                for $i in $these-inclusion-1st-las
+                                return
+                                    doc(resolve-uri($i, base-uri($i)))//*[name(.) = $this-name][not(parent::tan:div)]"/>
                         <xsl:variable name="these-errors" as="xs:integer?">
                             <xsl:choose>
                                 <xsl:when test="not(exists($these-replacement-elements))">
                                     <xsl:copy-of select="2"/>
                                 </xsl:when>
-                                <xsl:when test="$this-inclusion/tan:location = $urls-so-far">
+                                <xsl:when test="$these-inclusions/tan:location = $urls-so-far">
                                     <xsl:copy-of select="3"/>
                                 </xsl:when>
                                 <xsl:when test="count(distinct-values($this-name)) gt 1">

@@ -401,10 +401,10 @@
             select="$duplicate-ids"/></report>
       <assert test="exists($first-loc-avail)" role="fatal">Every inclusion must have at least one
          location that accesses the included document.</assert>
-      <report
+      <!--<report
          test="if ($first-doc/tan:body/@in-progress = false() or $first-doc/tei:text/tei:body/@in-progress = false()) 
          then false() else true()"
-         role="warning">Inclusion is marked as being in progress.</report>
+         role="warning">Inclusion is marked as being in progress.</report>-->
       <report test="$first-doc/*/@id = $doc-id">Inclusion has the same tag id as this
          document.</report>
    </rule>

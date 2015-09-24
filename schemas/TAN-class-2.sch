@@ -59,8 +59,12 @@
       <let name="src-div-type-uses-old"
          value="for $i in $this-src-list, $j in $this-div-types, $k in $rename-div-types/tan:source[$i]/tan:rename[@old = $j]
          return concat($src-ids[$i],':',$j)"/>
-      <report test="count($src-div-type-mismatch) gt 0">Every div type must refer to a div type id
-         in every source (<value-of select="$src-div-type-mismatch"/>).</report>
+      <report test="count($src-div-type-mismatch) gt 0">Invalid value (<value-of select="$src-div-type-mismatch"/>). Must refer to a valid div type 
+         in every source: 
+         <value-of
+            select="for $i in $this-src-list,
+            $j in $src-1st-da-all-div-types/tan:source[$i]//@xml:id return ($rename-div-types/tan:source[$i]/tan:rename[@old = $j]/@new,$j)[1]"
+         />.</report>
       <report test="exists($src-div-type-uses-old)">Uses old value, changed by rename element
             (<value-of select="$src-div-type-uses-old"/>).</report>
    </rule>

@@ -32,6 +32,8 @@
          <report test="exists($repeated-works)">Sources already share work IRIs: 
             <value-of select="$repeated-works"/>. No equate-works is
             needed.</report>
+         <report test="matches(@src,'\?')">Help: current work groups: <value-of select="for $i in
+            distinct-values($equate-works) return concat('(',string-join(for $j in index-of($equate-works,$i) return $src-ids[$j],' '),')')"/></report>
       </rule>
       <rule context="tan:equate-div-types">
          <let name="this-src-list"
@@ -145,10 +147,10 @@
                   else
                      tan:normalize-refs(@ref)"/>
          <let name="these-div-types"
-            value="distinct-values(for $i in tokenize($this-refs-norm, ' [-,] '),
-                  $j in tokenize($i, $separator-hierarchy-regex)
+            value="distinct-values(for $i in $this-refs-norm, $j in tokenize($i, ' [-,] '),
+                  $k in tokenize($j, $separator-hierarchy-regex)
                return
-                  tokenize($j, $separator-type-and-n-regex)[1])"
+                  tokenize($k, $separator-type-and-n-regex)[1])"
          />
          <let name="valid-div-types"
             value="distinct-values(for $i in $this-src-list
@@ -194,14 +196,14 @@
             then tan:min-last($this-segs,$seg-ceiling) else 1"/>
          <!-- START TESTING BLOCK -->
          <let name="test1" value="$this-src-list"/>
-         <let name="test2" value="$src-1st-da-data[1]//@ref"/>
-         <let name="test3" value="$this-refs-norm"/>
+         <let name="test2" value="$src-impl-div-types"/>
+         <let name="test3" value="tan:normalize-impl-refs(@ref, 3)"/>
          <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
             select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
          <!-- END TESTING BLOCK -->
          <report test="$ref-has-errors">Every ref cited must be found in every source (<value-of
                select="if (exists($div-type-mismatches)) then
-                     concat('faulty div types:', $div-type-mismatches,'; acceptable values: ',string-join($valid-div-types,' '))
+                     concat('faulty div types:', string-join($div-type-mismatches,' '),'; acceptable values: ',string-join($valid-div-types,' '))
                   else
                      ()"/>).</report>
          <report

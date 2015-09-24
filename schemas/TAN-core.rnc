@@ -34,7 +34,7 @@ ed-agent = attribute ed-who { text }
 #     Reference to a date or time when an element or its content was edited (added or modified)
 ed-time = attribute ed-when { xsd:dateTime | xsd:date }
 #     An inclusion is the only identifier that is allowed to take d:IDREF, since all others must have coinage in external files 
-inclusion = attribute include { d:IDREF }
+inclusion = attribute include { d:IDREFS }
 #     Identifier of an entity described within an element. Must be unique within a given file. Must consist only of word characters.
 internal-id =
     attribute xml:id {

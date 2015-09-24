@@ -18,6 +18,7 @@ cert-claim =
 #    String that refers to a div either by using single nonword characters to join pairs of @type and optional @n values (themselves joined) 
 #    by a nonword character) or by using single nonword characters to join only @n values. The first pattern
 #    is \w+\W\w*(\W\w+\W\w*)* and the second is \w+(\W\w+)*
+
 ## Test double-hash rendered on two
 ## lines
 div-ref = xsd:string { pattern = "\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*" }
@@ -191,7 +192,7 @@ TAN-head =
             inclusion-list,
             source-list,
             see-also-list,
-            element declarations { ed-stamp?, (comment* & decl-list) },
+            decl-opt,
             agent-list+,
             role-list+,
             agent-role-list*,
@@ -219,7 +220,8 @@ inclusion-item =
 source-list = source-item
 source-item =
     element source {
-        ed-stamp?, attribute test {xsd:anyURI}?,
+        ed-stamp?,
+        attribute test { xsd:anyURI }?,
         (inclusion
          | (source-id-opt,
             (comment*
@@ -258,6 +260,8 @@ relationship =
                       "(new|old) version|(parent|child|ancestor|descendant|cousin) edition|alternatively (divided|normalized) edition|dependent|auxiliary"
               }))
     }
+#    Declarations option; in some TAN files, this is changed to modify how inclusions are handled.
+decl-opt = element declarations { ed-stamp?, (comment* & decl-list) }
 #        The agents (persons, organizations) that played a role in creating or editing the data   
 agent-list =
     element agent {

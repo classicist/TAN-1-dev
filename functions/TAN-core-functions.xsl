@@ -21,9 +21,22 @@
 
     <xsl:variable name="root" select="/"/>
     <xsl:variable name="head">
-        <xsl:for-each select="/*/tan:head">
+        <!--<xsl:apply-templates mode="include" select="/*/tan:head"/>-->
+        <!--<xsl:for-each select="/*/tan:head">
             <xsl:apply-templates mode="include"/>
-        </xsl:for-each>
+        </xsl:for-each>-->
+        <xsl:variable name="head-pass-1">
+            <xsl:for-each select="/*/tan:head">
+                <xsl:apply-templates mode="include"/>
+            </xsl:for-each>
+        </xsl:variable>
+        <xsl:variable name="head-pass-2">
+            <xsl:for-each select="$head-pass-1">
+                <xsl:apply-templates mode="strip-duplicates"/>
+            </xsl:for-each>
+        </xsl:variable>
+        <!--<xsl:for-each select="$head-pass-1"><xsl:apply-templates mode="strip-duplicates"/></xsl:for-each>-->
+        <xsl:sequence select="$head-pass-2"/>
     </xsl:variable>
     <xsl:variable name="body">
         <xsl:for-each select="/*/tan:body | /*/*/tei:body">
@@ -552,6 +565,17 @@
     </xsl:template>
     <xsl:template match="*[@include]" mode="include">
         <xsl:sequence select="tan:resolve-include(.)"/>
+    </xsl:template>
+
+    <xsl:template match="node()" mode="strip-duplicates">
+        <xsl:if
+            test="every $i in current()/preceding-sibling::*
+                satisfies not(deep-equal(current(), $i))">
+            <xsl:copy>
+                <xsl:copy-of select="@*"/>
+                <xsl:apply-templates mode="#current"/>
+            </xsl:copy>
+        </xsl:if>
     </xsl:template>
 
 </xsl:stylesheet>

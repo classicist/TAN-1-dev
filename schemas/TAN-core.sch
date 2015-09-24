@@ -323,13 +323,13 @@
       <assert test="$when-to gt $when-from">Start date must precede end date.</assert>
    </rule>
    <rule
-      context="@who|@ed-who|@roles|@src|@type[parent::tan:div|parent::tei:div]|@lexicon|@morphology|@reuse-type|@bitext-relation|@feature|@alignments">
+      context="@who|@ed-who|@roles|@src|@type[parent::tan:div|parent::tei:div]|@lexicon|@morphology|@reuse-type|@bitext-relation|@feature|@alignments|@include">
       <!-- This rule is intended primarily to make sure that idrefs correspond
       to the correct elements -->
       <let name="referring-attribute"
-         value="('who','ed-who','roles','src','type','lexicon','morphology','reuse-type','bitext-relation','feature','alignments')"/>
+         value="('who','ed-who','roles','src','type','lexicon','morphology','reuse-type','bitext-relation','feature','alignments','include')"/>
       <let name="referred-element"
-         value="('agent','agent','role','source','div-type','lexicon','morphology','reuse-type','bitext-relation','feature','align')"/>
+         value="('agent','agent','role','source','div-type','lexicon','morphology','reuse-type','bitext-relation','feature','align','inclusion')"/>
       <let name="this-attribute-name" value="name(.)"/>
       <let name="should-refer-to-which-element"
          value="$referred-element[index-of($referring-attribute,$this-attribute-name)]"/>

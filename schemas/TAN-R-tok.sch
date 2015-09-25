@@ -10,8 +10,8 @@
    <include href="TAN-core.sch"/>
    <include href="TAN-class-3.sch"/>
    <pattern>
-      <let name="replace" value="/tan:TAN-R-tok/tan:body/tan:replace"/>
-      <let name="tokenize" value="/tan:TAN-R-tok/tan:body/tan:tokenize"/>
+      <let name="replace" value="$body/tan:replace"/>
+      <let name="tokenize" value="$body/tan:tokenize"/>
       <rule context="tan:example">
          <let name="input" value="tan:input"/>
          <let name="output" value="tan:output-token"/>

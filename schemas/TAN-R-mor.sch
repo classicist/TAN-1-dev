@@ -10,11 +10,23 @@
    <include href="TAN-core.sch"/>
    <include href="TAN-class-3.sch"/>
    <pattern>
+      <let name="feature-incl-refs" value="for $i in /tan:TAN-R-mor/tan:head/tan:declarations/tan:feature/@include return tokenize($i,'\s+')"/>
+      <let name="feature-inclusion" value="/tan:TAN-R-mor/tan:head/tan:inclusion[@xml:id = $feature-incl-refs]"/>
+      <let name="incl-1st-loc-avail" value="for $i in $feature-inclusion return tan:first-loc-available($i)"/>
+      <let name="incl-1st-da" value="for $i in $incl-1st-loc-avail return doc(resolve-uri($i, $doc-uri))"/>
+      <let name="incl-1st-da-resolved" value="for $i in $incl-1st-da return tan:resolve-doc($i)"/>
+      <rule context="tan:feature">
+         <let name="these-inclusions" value="tokenize(@include,'\s+')"/>
+         <let name="these-langs" value="$head/tan:declarations/tan:for-lang"/>
+         <let name="langs-not-supported-by-inclusion" value="for $i in $these-inclusions, $j in index-of($feature-incl-refs,$i), $k in $these-langs return
+            if ($incl-1st-da-resolved[$j]//tan:for-lang[. = $k]) then () else $k"/>
+         <report test="exists($langs-not-supported-by-inclusion)">Included features have not been written for every language declared by
+         this file (<value-of select="$langs-not-supported-by-inclusion"/>).</report>
+      </rule>
       <rule context="@code">
          <let name="code" value="."/>
          <let name="other-codes"
-            value="
-               for $i in ../(preceding-sibling::tan:option,
+            value="for $i in ../(preceding-sibling::tan:option,
                following-sibling::tan:option)/@code
                return
                   lower-case($i)"/>
@@ -29,8 +41,7 @@
          <let name="this" value="tan:normalize-feature-test(.)"/>
          <let name="this-seq" value="tan:feature-test-seq($this, 0)"/>
          <let name="this-features"
-            value="
-               for $i in $this-seq
+            value="for $i in $this-seq
                return
                   if ($i instance of xs:integer) then
                      ()
@@ -40,10 +51,9 @@
                      else
                         $i"/>
          <let name="invalid-features"
-            value="
-               for $i in $this-features
+            value="for $i in $this-features
                return
-                  if (//@code[lower-case(.) = lower-case($i)] or //tan:feature[lower-case(@xml:id) = lower-case($i)]) then
+                  if (//@code[lower-case(.) = lower-case($i)] or $head//tan:feature[lower-case(@xml:id) = lower-case($i)]) then
                      ()
                   else
                      $i"/>
@@ -75,10 +85,9 @@
       <rule context="@feature-filter">
          <let name="this-seq" value="tokenize(lower-case(.), '\s+')"/>
          <let name="invalid-features"
-            value="
-               for $i in $this-seq
+            value="for $i in $this-seq
                return
-                  if (//@code[lower-case(.) = $i] or //tan:feature[lower-case(@xml:id) = $i]) then
+                  if (//@code[lower-case(.) = $i] or $head//tan:feature[lower-case(@xml:id) = $i]) then
                      ()
                   else
                      $i"/>

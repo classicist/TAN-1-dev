@@ -6,6 +6,23 @@
    <title>Core tests for class 1 TAN files.</title>
    <let name="leafdiv-flatrefs" value="$prep-body/tan:div/@ref"/>
    <let name="transcription-langs" value="$prep-body//@xml:lang"/>
+   <let name="divs-with-modifiers" value="$prep-body/tan:div[matches(.,'\p{M}')]"></let>
+   <let name="relevant-tokz" value="$rec-tokz-1st-da-resolved[.//tan:tokenize]"/>
+   <let name="modifier-check-1"
+      value="for $i in $divs-with-modifiers, $j in $relevant-tokz return
+      count(tan:tokenize(tan:replace-sequence(replace($i,'\p{M}',''), $j//tan:replace), $j//tan:tokenize))
+      "/>
+   <let name="modifier-check-2"
+      value="for $i in $divs-with-modifiers, $j in $relevant-tokz return
+      count(tan:tokenize(tan:replace-sequence(replace($i,'\p{M}','M'), $j//tan:replace), $j//tan:tokenize))
+      "/>
+   <let name="this-tokz-fails-modifiers-at-what-div" value="for $i in (1 to count($modifier-check-1))
+      return
+      if ($modifier-check-1[$i] = $modifier-check-2[$i]) then () else $divs-with-modifiers[$i mod count($relevant-tokz)]"/>
+   <let name="tokz-error-refs"
+      value="for $i in $this-tokz-fails-modifiers-at-what-div return $i/@ref"/>
+   <let name="tokz-error-vals"
+      value="for $i in $this-tokz-fails-modifiers-at-what-div return tan:locate-modifiers($i)"/>
    <rule context="tan:see-also">
       <let name="this-resolved" value="tan:resolve-include(.)"/>
       <let name="first-locs" value="for $i in $this-resolved return tan:first-loc-available($i)"/>
@@ -57,59 +74,40 @@
          /></report>
    </rule>
    <rule context="tan:recommended-tokenization">
-      <let name="this-which" value="@which"/>
+      <let name="this-resolved" value="tan:resolve-include(.)"/>
+      <let name="this-count" value="(1 to count($this-resolved))"/>
       <let name="this-which-is-reserved"
-         value="if ($this-which = $tokenization-which-reserved) then true() else false()"/>
-      <let name="first-tokz-loc" value="tan:location[doc-available(resolve-uri(.,$doc-uri))][1]"/>
-      <let name="first-tokz-loc-resolved"
-         value="if (exists($first-tokz-loc)) 
-         then resolve-uri($first-tokz-loc,$doc-uri) else ()"/>
-      <let name="this-tokz"
-         value="if ($this-which-is-reserved) then $tokenizations-core[index-of($tokenization-which-reserved,$this-which)] else 
-         if (exists($first-tokz-loc-resolved)) then doc($first-tokz-loc-resolved) else ()"/>
-      <let name="this-tokz-replaces" value="$this-tokz//tan:replace"/>
-      <let name="this-tokz-tokenize" value="$this-tokz//tan:tokenize"/>
-      <let name="this-tokz-fails-modifiers-at-what-div"
-         value="if (exists($this-tokz)) then for $i in $prep-body/tan:div[matches(.,'\p{M}')] return
-         if (count(tan:tokenize(tan:replace-sequence(replace($i,'\p{M}',''), $this-tokz-replaces), $this-tokz-tokenize)) =
-         count(tan:tokenize(tan:replace-sequence(replace($i,'\p{M}','M'), $this-tokz-replaces), $this-tokz-tokenize))
-         ) then () else $i else ()"/>
-      <let name="tokz-error-refs"
-         value="for $i in $this-tokz-fails-modifiers-at-what-div return $i/@ref"/>
-      <let name="tokz-error-vals"
-         value="for $i in $this-tokz-fails-modifiers-at-what-div return tan:locate-modifiers($i)"/>
-      <let name="tokenization-langs"
-         value="$this-tokz/tan:TAN-R-tok/tan:head/tan:declarations/tan:for-lang"/>
+         value="for $i in $this-resolved return if ($i/@which = $tokenization-which-reserved) then true() else false()"/>
+      <let name="tokz-mismatch-1" value="for $i in $recommended-tokenizations[tan:for-lang] return 
+         if ($i/tan:for-lang = '*' or $i/tan:for-lang = $languages-used) then () else $i"/>
       <!-- START TESTING BLOCK -->
-      <let name="test1" value="$transcription-langs"/>
-      <let name="test2" value="$tokenization-langs"/>
-      <let name="test3" value="$recommended-tokenizations/tan:for-lang"/>
+      <let name="test1" value="count($divs-with-modifiers)"/>
+      <let name="test2" value="$modifier-check-1"/>
+      <let name="test3" value="$modifier-check-2"/>
       <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
             select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
       <!-- END TESTING BLOCK -->
-      <report test="exists($this-which) and not($this-which-is-reserved)">@which must be one of the
+      <report test="some $i in $this-count satisfies $this-resolved[$i]/@which and $this-which-is-reserved[$i] = false()">@which must be one of the
          following: <value-of select="string-join($tokenization-which-reserved,', ')"/></report>
-      <report test="exists($this-tokz-fails-modifiers-at-what-div)">This tokenization pattern fails
+      <report test="some $i in $this-count satisfies $this-resolved[$i]/@xml:id = $tokenization-which-reserved">@xml:id values may not use a reserved
+         keyword for tokenization.</report>
+      <assert test="every $i in $rec-tokz-1st-da satisfies name($i/*) = 'TAN-R-tok'">Recommended
+         tokenization must point to a TAN-R-tok file.</assert>
+      <report role="warning" test="exists($tokz-mismatch-1)">TAN-R-tok file is meant for specific
+         languages (<value-of select="$tokz-mismatch-1/tan:for-lang"/>), none of which are used in the body
+            (<value-of select="$languages-used"/>).</report>
+      <report
+         test="not('*' = $recommended-tokenizations/tan:for-lang) and $languages-used[not(. = $recommended-tokenizations/tan:for-lang)]"
+         >Some languages used in the transcription (<value-of
+            select="$transcription-langs[not(. = $recommended-tokenizations/tan:for-lang)]"/>) have
+         not been supplied recommended tokenization patterns (currently supported: <value-of
+            select="$recommended-tokenizations/tan:for-lang"/>).</report>
+      <report test="exists($this-tokz-fails-modifiers-at-what-div)">Tokenization patterns fail
          to predictably handle the combining characters at <value-of
             select="for $i in (1 to count($tokz-error-refs)) 
             return concat($tokz-error-refs[$i],' ',string-join(for $j in $tokz-error-vals[$i]/tan:modifier return
             concat('pos ',$j/@where,' (U+',$j/@cp,')'),' '))"
          />.</report>
-      <report test="@xml:id = $tokenization-which-reserved">@xml:id values may not use a reserved
-         keyword for tokenization.</report>
-      <assert test="every $i in $this-tokz satisfies name($i/*) = 'TAN-R-tok'">Recommended
-         tokenization must point to a TAN-R-tok file (currently <value-of
-            select="name($this-tokz/*)"/>)</assert>
-      <report role="warning"
-         test="exists($tokenization-langs) and not($tokenization-langs = $transcription-langs)"
-         >TAN-R-tok file is meant for specific languages (<value-of select="$tokenization-langs"/>),
-         none of which are used in the body (<value-of select="$transcription-langs"/>).</report>
-      <report
-         test="not('*' = $recommended-tokenizations/tan:for-lang) and $transcription-langs[not(. = $recommended-tokenizations/tan:for-lang)]"
-         >Some languages used in the transcription (<value-of
-            select="$transcription-langs[not(. = $recommended-tokenizations/tan:for-lang)]"/>) have
-         not been supplied recommended tokenization patterns (currently supported: <value-of
-            select="$recommended-tokenizations/tan:for-lang"/>).</report>
    </rule>
    <rule context="tan:recommended-div-type-refs">
       <let name="implicit-is-recommended" value="if (. = 'implicit') then true() else false()"/>

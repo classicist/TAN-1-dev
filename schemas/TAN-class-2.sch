@@ -16,6 +16,8 @@
          value="$src-1st-da-heads[$this-pos]/tan:see-also[tan:relationship = 'new version']"/>
       <let name="duplicate-leafdiv-flatrefs"
          value="$all-leafdiv-flatrefs[index-of($all-leafdiv-flatrefs,.)[2]]"/>
+      <assert test="exists(tan:first-loc-available(.))" role="fatal">At least one copy of
+      each source must be available to validate file.</assert>
       <report test="exists($duplicate-leafdiv-flatrefs)">After declarations are applied, source breaks
          the Leaf Div Uniqueness Rule at <value-of
             select="string-join($duplicate-leafdiv-flatrefs,', ')"/></report>

@@ -371,14 +371,14 @@
         <xsl:copy-of select="$dateTimes[$most-recent]"/>
     </xsl:function>
 
-    <xsl:function name="tan:normalize-feature-test" as="xs:string">
+    <xsl:function name="tan:normalize-feature-test" as="xs:string*">
         <!-- Used to check for validity of @feature-test expressions; used to validate both 
             TAN-LM (class 2) and TAN-R-mor (class 3) files.
          Input: @feature-test string
          Output: @feature-test, normalized
       -->
-        <xsl:param name="string" as="xs:string"/>
-        <xsl:value-of select="normalize-space(replace($string, '([\(\),\|])', ' $1 '))"/>
+        <xsl:param name="strings" as="xs:string*"/>
+        <xsl:copy-of select="for $i in $strings return normalize-space(replace($i, '([\(\),\|])', ' $1 '))"/>
     </xsl:function>
 
     <xsl:function name="tan:escape" as="xs:string*">

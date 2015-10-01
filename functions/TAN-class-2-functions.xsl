@@ -711,7 +711,7 @@
    </xsl:function>
 
    <xsl:function name="tan:prep-class-1-data" as="element()*">
-      <!-- Input: sequence of URLs for class 1 TAN sources
+      <!-- Input: sequence of URLs for class 1 TAN sources, one per source
          Output: sequence of one node/tree per source flattening the data into this form:
          <div @old-ref="[NORMALIZED, FLATTENED REF]" @ref="[NORMALIZED, FLATTENED 
          REF WITH TYPE AND N SUBSTITUTIONS AND SUPPRESSIONS]" @impl-ref="[AS @ref BUT 

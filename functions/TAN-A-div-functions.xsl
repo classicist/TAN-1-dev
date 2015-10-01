@@ -115,7 +115,7 @@
          </xsl:copy>
       </xsl:for-each>
    </xsl:variable>
-   <xsl:variable name="leaf-div-splits-collated" as="element()*">
+   <xsl:variable name="leaf-div-splits-grouped" as="element()*">
       <xsl:for-each-group select="$leaf-div-splits-raw/tan:source/tan:div/tan:tok" group-by="../../@id">
          <xsl:sort select="index-of($src-ids, current-grouping-key())"/>
          <tan:source id="{current-grouping-key()}">
@@ -156,7 +156,7 @@
                      <xsl:variable name="this-div" select="."/>
                      <xsl:variable name="this-div-splits"
                         select="
-                           for $i in $leaf-div-splits-collated[@id = $this-src-id]/tan:div[@ref = $this-div/@ref]/tan:tok[not(@error)]/@n
+                           for $i in $leaf-div-splits-grouped[@id = $this-src-id]/tan:div[@ref = $this-div/@ref]/tan:tok[not(@error)]/@n
                            return
                               xs:integer($i)"/>
                      <xsl:variable name="this-div-seg-starts"

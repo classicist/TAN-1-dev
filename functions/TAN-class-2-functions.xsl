@@ -41,17 +41,25 @@
       select="
          for $i in $sources
          return
-            resolve-uri(tan:first-loc-available($i), $doc-uri)"/>
-   <!--<xsl:variable name="src-1st-da-parent-directory"
-      select="
-         for $i in $src-1st-da-uri
-         return
-            replace($i, '[^/]+$', '')"/>-->
+            if (exists(tan:first-loc-available($i))) then
+               resolve-uri(tan:first-loc-available($i), $doc-uri)
+            else
+               ''"
+   />
+   <xsl:variable name="empty-doc" as="document-node()">
+      <xsl:for-each select="/">
+         <xsl:copy/>
+      </xsl:for-each>
+   </xsl:variable>
    <xsl:variable name="src-1st-da"
       select="
          for $i in $src-1st-da-locations
          return
-            document($i)"/>
+            if ($i = '') then
+               $empty-doc
+            else
+               document($i)"
+   />
    <xsl:variable name="src-1st-da-base-uri"
       select="
          for $i in $src-1st-da
@@ -720,9 +728,9 @@
          No @lang if not a leaf div
       -->
       <xsl:param name="class-1-documents" as="document-node()*"/>
-      <xsl:for-each select="1 to count($class-1-documents)">
+      <xsl:for-each select="$src-count">
          <xsl:variable name="this-src" select="."/>
-         <xsl:variable name="this-class-1-body-resolved" as="node()">
+         <xsl:variable name="this-class-1-body-resolved" as="node()?">
             <xsl:for-each
                select="$class-1-documents[$this-src]/(tan:TAN-T/tan:body | tei:TEI/tei:text/tei:body)">
                <xsl:copy>
@@ -731,7 +739,7 @@
                </xsl:copy>
             </xsl:for-each>
          </xsl:variable>
-         <xsl:element name="tan:source">
+         <xsl:element name="source" namespace="tag:textalign.net,2015:ns">
             <xsl:attribute name="id" select="$src-ids[$this-src]"/>
             <xsl:for-each select="$this-class-1-body-resolved//(tei:div | tan:div)">
                <xsl:variable name="this-div" select="."/>

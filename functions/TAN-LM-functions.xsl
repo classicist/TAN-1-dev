@@ -7,14 +7,32 @@
     version="3.0">
     <xd:doc scope="stylesheet">
         <xd:desc>
-            <xd:p><xd:b>Created on:</xd:b> June 10, 2015</xd:p>
-            <xd:p><xd:b>Author:</xd:b> Joel</xd:p>
-            <xd:p>Set of for TAN-LM files. Used by Schematron validation, suitable for other
-                contexts only if parameters are honored</xd:p>
+            <xd:p><xd:b>Updated </xd:b>Oct. 1, 2015</xd:p>
+            <xd:p>Set of functions for TAN-LM files. Used by Schematron validation, but suitable for
+                other contexts.</xd:p>
         </xd:desc>
     </xd:doc>
     <xsl:include href="TAN-class-2-functions.xsl"/>
-
+    
+    <xsl:variable name="morphologies"
+        select="$head/tan:declarations/tan:morphology"/>
+    <xsl:variable name="morphologies-1st-la"
+        select="for $i in $morphologies return tan:first-loc-available($i)"/>
+    <xsl:variable name="mory-1st-da" select="for $i in $morphologies-1st-la return doc(resolve-uri($i,$doc-uri))"/>
+    <xsl:variable name="mory-1st-da-resolved" select="for $i in $mory-1st-da return tan:resolve-doc($i)"/>
+    <xsl:variable name="mory-1st-da-features" as="element()*">
+        <xsl:for-each select="$mory-1st-da-resolved">
+            <xsl:element name="morphology" namespace="tag:textalign.net,2015:ns">
+                <xsl:for-each select="/tan:TAN-R-mor/tan:head/tan:declarations/tan:feature">
+                    <xsl:copy>
+                        <xsl:copy-of select="@*"/>
+                        <xsl:copy-of select="/tan:TAN-R-mor/tan:body/tan:option[@feature = current()/@xml:id]"/>
+                    </xsl:copy>
+                </xsl:for-each>
+            </xsl:element>
+        </xsl:for-each>
+    </xsl:variable>
+    
     <xsl:function name="tan:all-morph-codes" as="xs:string*">
         <!-- Change any sequence of morphological codes into a sequence of synonymous morphological codes
             Input: node() picking a TAN-R-mor file, a sequence of strings, each item being the value of
@@ -77,7 +95,7 @@
                         then
                             '.+'
                         else
-                            concat(' ', string-join(tan:regex-prep(tan:all-morph-codes($morph, $i)), ' | '), ' ')"/>
+                            concat(' ', string-join(tan:escape(tan:all-morph-codes($morph, $i)), ' | '), ' ')"/>
         <xsl:variable name="commas" select="count($this-expr-seq[. = ','])"/>
         <xsl:variable name="this-code-norm"
             select="
@@ -87,12 +105,12 @@
         <xsl:value-of select="matches($this-code-norm, string-join($this-expr-seq-norm, ''), 'i')"/>
     </xsl:function>
 
-    <xsl:function name="tan:regex-prep" as="xs:string+">
-        <!-- Converts a non-regex search string into a regex one.
+    <!--<xsl:function name="tan:regex-prep" as="xs:string+">
+        <!-\- Converts a non-regex search string into a regex one.
             Input: a string to be searched
          Output: that string with reserved regex characters escaped
          E.g., '[.w]' - > '\[\.w\]' 
-         Based on http://www.w3.org/TR/xpath-functions/#regex-syntax without #x00 escapes-->
+         Based on http://www.w3.org/TR/xpath-functions/#regex-syntax without #x00 escapes-\->
         <xsl:param name="str" as="xs:string+"/>
         <xsl:copy-of
             select="
@@ -100,5 +118,5 @@
                 return
                     replace($i, '([-\|.?*+(){}\[\]\^])', '\\$1')"
         />
-    </xsl:function>
+    </xsl:function>-->
 </xsl:stylesheet>

@@ -9,7 +9,7 @@
    <let name="now" value="tan:dateTime-to-decimal(current-dateTime())"/>
    <rule context="/*">
       <report test="true()" role="warning"
-         sqf:fix="get-incl-local get-incl-abs get-source-local get-source-abs"
+         sqf:fix="get-morph-local get-morph-abs get-tok-local get-tok-abs get-incl-local get-incl-abs get-source-local get-source-abs"
          >This version of TAN is unstable and unpublished. Use it at your own risk.</report>
       <sqf:fix id="get-source-local">
          <sqf:description>
@@ -69,6 +69,66 @@
                   <xsl:value-of select="$doc-uri"/>
                </location>
             </inclusion>
+         </sqf:add>
+      </sqf:fix>
+      <sqf:fix id="get-tok-local" use-when="name() = 'TAN-R-tok'">
+         <sqf:description>
+            <sqf:title>Get local recommended tokenization element with this document's IRI + name pattern</sqf:title>
+         </sqf:description>
+         <sqf:add match="tan:head" position="before">
+            <recommended-tokenization xmlns="tag:textalign.net,2015:ns" xml:id="{replace($doc-uri,'.*/([^/]+$)','$1')}">
+               <IRI>
+                  <xsl:value-of select="../@id"/></IRI>
+               <name><xsl:value-of select="tan:name"/></name>
+               <location when-accessed="{current-date()}">
+                  <xsl:value-of select="replace($doc-uri,'.*/([^/]+$)','$1')"/>
+               </location>
+            </recommended-tokenization>
+         </sqf:add>
+      </sqf:fix>
+      <sqf:fix id="get-tok-abs" use-when="name() = 'TAN-R-tok'">
+         <sqf:description>
+            <sqf:title>Get absolute recommended tokenization element with this document's IRI + name pattern</sqf:title>
+         </sqf:description>
+         <sqf:add match="tan:head" position="before">
+            <recommended-tokenization xmlns="tag:textalign.net,2015:ns" xml:id="{replace($doc-uri,'.*/([^/]+$)','$1')}">
+               <IRI>
+                  <xsl:value-of select="../@id"/></IRI>
+               <name><xsl:value-of select="tan:name"/></name>
+               <location when-accessed="{current-date()}">
+                  <xsl:value-of select="$doc-uri"/>
+               </location>
+            </recommended-tokenization>
+         </sqf:add>
+      </sqf:fix>
+      <sqf:fix id="get-morph-local" use-when="name() = 'TAN-R-mor'">
+         <sqf:description>
+            <sqf:title>Get local morphology element with this document's IRI + name pattern</sqf:title>
+         </sqf:description>
+         <sqf:add match="tan:head" position="before">
+            <morphology xmlns="tag:textalign.net,2015:ns" xml:id="{replace($doc-uri,'.*/([^/]+$)','$1')}">
+               <IRI>
+                  <xsl:value-of select="../@id"/></IRI>
+               <name><xsl:value-of select="tan:name"/></name>
+               <location when-accessed="{current-date()}">
+                  <xsl:value-of select="replace($doc-uri,'.*/([^/]+$)','$1')"/>
+               </location>
+            </morphology>
+         </sqf:add>
+      </sqf:fix>
+      <sqf:fix id="get-morph-abs" use-when="name() = 'TAN-R-mor'">
+         <sqf:description>
+            <sqf:title>Get absolute morphology element with this document's IRI + name pattern</sqf:title>
+         </sqf:description>
+         <sqf:add match="tan:head" position="before">
+            <morphology xmlns="tag:textalign.net,2015:ns" xml:id="{replace($doc-uri,'.*/([^/]+$)','$1')}">
+               <IRI>
+                  <xsl:value-of select="../@id"/></IRI>
+               <name><xsl:value-of select="tan:name"/></name>
+               <location when-accessed="{current-date()}">
+                  <xsl:value-of select="$doc-uri"/>
+               </location>
+            </morphology>
          </sqf:add>
       </sqf:fix>
    </rule>
@@ -408,26 +468,26 @@
       <report test="$first-doc/*/@id = $doc-id">Inclusion has the same tag id as this
          document.</report>
    </rule>
-   <rule context="@include">
-      <let name="parent" value=".."/>
-      <let name="parent-resolved" value="tan:resolve-include($parent)"/>
-      <let name="parent-resolved-text" value="string-join($parent-resolved//text(),'')"/>
-      <assert test="$parent-resolved-text = normalize-unicode($parent-resolved-text)">All included
+   <rule context="*[@include]">
+      <let name="self-resolved" value="tan:resolve-include(.)"/>
+      <let name="self-resolved-text" value="string-join($self-resolved//text(),'')"/>
+      <assert test="$self-resolved-text = normalize-unicode($self-resolved-text)">All included
          text needs to be normalized (NFC). Open inclusion, validate, and resolve. </assert>
-      <report test="$parent-resolved//@error" role="fatal">Inclusion error: <value-of
+      <report test="$self-resolved//@error" role="fatal">Inclusion error: <value-of
             select="for $i
-         in $parent-resolved//@error return $inclusion-errors[number($i)]"
+         in $self-resolved//@error return $inclusion-errors[number($i)]"
          /></report>
-      <report test="$parent/text()" sqf:fix="explicate">Text is not allowed in an element with
+      <report test="text()" sqf:fix="explicate">Text is not allowed in an element with
          @include.</report>
+      <!--<report test="true()">test</report>-->
       <sqf:fix id="explicate">
          <sqf:description>
             <sqf:title>Replace with inclusions</sqf:title>
          </sqf:description>
-         <sqf:add match="$parent" position="before">
-            <xsl:comment>&lt;<xsl:value-of select="name($parent)"/> include="<xsl:value-of select="$parent/@include"/>"/></xsl:comment>
+         <sqf:add match="." position="before">
+            <xsl:comment>&lt;<xsl:value-of select="name(.)"/> include="<xsl:value-of select="@include"/>"/></xsl:comment>
          </sqf:add>
-         <sqf:replace match="$parent" select="$parent-resolved"/>
+         <sqf:replace match="." select="$self-resolved"/>
       </sqf:fix>
    </rule>
    <!-- xsl:include provided below, commented out, in case validity needs to be checked; these

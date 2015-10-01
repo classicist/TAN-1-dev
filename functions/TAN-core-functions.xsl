@@ -381,12 +381,12 @@
         <xsl:value-of select="normalize-space(replace($string, '([\(\),\|])', ' $1 '))"/>
     </xsl:function>
 
-    <xsl:function name="tan:escape" as="xs:string?">
+    <xsl:function name="tan:escape" as="xs:string*">
         <!-- Input: any string; Output: that string prepared for regular expression searches,
         i.e., with reserved characters escaped out. -->
-        <xsl:param name="string" as="xs:string?"/>
-        <xsl:value-of
-            select="replace($string, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))', '\\$1')"/>
+        <xsl:param name="strings" as="xs:string*"/>
+        <xsl:copy-of
+            select="for $i in $strings return replace($i, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))', '\\$1')"/>
     </xsl:function>
 
     <!-- CONTEXT DEPENDENT FUNCTIONS -->

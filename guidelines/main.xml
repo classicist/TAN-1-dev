@@ -28,7 +28,7 @@
          </info>
          <revision>
             <revnumber>1/dev</revnumber>
-            <date>2015-08-26</date>
+            <date>2015-10-01</date>
             <revdescription>
                <para>Prepublication working draft, under construction and for private circulation
                   only. Corrections are actively solicited and should be sent to the author (see
@@ -41,6 +41,11 @@
                      contradictions, apparent or not, between the schemas and these guidelines, the
                      greatest weight is to be given to the RELAX-NG schemas, then to these
                      guidelines, and then to the Schematron schemas.</para>
+                  <para>This version of the guidelines introduces inclusions (see <xref
+                        linkend="inclusions"/>), but does not yet provide extensive documentation of
+                     this very powerful feature. Until that description can be provided, the
+                     aforementioned section must suffice, as well as example suites that use
+                     inclusions.</para>
                   <para>Chapters 1-2, 4-7 are relatively accurate. Revision last suspended at 8.2.2
                      (TAN-R-mor).</para>
                </warning>
@@ -3354,6 +3359,135 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
    &lt;/rights-excluding-sources>
       ...........</programlisting>
                </example>
+            </section>
+            <section xml:id="inclusions">
+               <title>Inclusions</title>
+               <para>
+                  <warning>
+                     <para>This feature was introduced to the TAN format late, in October 2015, and
+                        has not been fully introduced and explained throughout the rest of the
+                        manual. Of central imporance is a discussion of the elements that are
+                        allowed to be included and those that may not be. There probably needs to be
+                        a more thorough discussion explaining how TAN inclusion differs from other
+                        kinds of inclusion that may be familiar to the audience.</para>
+                  </warning>
+                  <table>
+                     <title>Synopsis of <code>&lt;inclusion></code></title>
+                     <tgroup cols="7">
+                        <colspec colname="c1" colnum="1" colwidth="2.31*"/>
+                        <colspec colname="c3" colnum="2" colwidth="1*"/>
+                        <colspec colname="c4" colnum="3" colwidth="1.45*"/>
+                        <colspec colname="c5" colnum="4" colwidth="2.35*"/>
+                        <colspec colname="newCol7" colnum="5" colwidth="2.11*"/>
+                        <colspec colname="newCol6" colnum="6" colwidth="2.65*"/>
+                        <colspec colname="c6" colnum="7" colwidth="4.13*"/>
+                        <thead>
+                           <row>
+                              <entry>name</entry>
+                              <entry>req?</entry>
+                              <entry>qty</entry>
+                              <entry>parent</entry>
+                              <entry>attributes</entry>
+                              <entry>children</entry>
+                              <entry>purpose</entry>
+                           </row>
+                        </thead>
+                        <tbody>
+                           <row>
+                              <entry><code>&lt;inclusion></code></entry>
+                              <entry>no</entry>
+                              <entry>one or more</entry>
+                              <entry><code>&lt;head></code></entry>
+                              <entry><xref linkend="edit_stamp"/>?, <code>@xml:id</code></entry>
+                              <entry><xref linkend="digital_entity_metadata"/></entry>
+                              <entry>identify TAN file to be used for pattern inclusion</entry>
+                           </row>
+                        </tbody>
+                     </tgroup>
+                  </table>
+               </para>
+               <para>Many if not most TAN files are created alongside or in close connection with
+                  other files that are shared by a single project or provider. Many of these related
+                  files will repeat information found in the others. Such repetition opens up the
+                  possibility of discrepancies in the course of editing. To avoid duplication and to
+                  minimize the problems inherent in incomplete editing, the
+                     <code>&lt;inclusion></code> element is provided. This element points to any TAN
+                  file that is a candidate for including in the parent file.</para>
+               <para>The <code>&lt;inclusion></code> itself does nothing. It merely indicates a file
+                  that may be used for patterned inclusions. It is made effective through other
+                  parts of the file, where <code>@include</code> is used in an empty element to
+                  point to the <code>@xml:id</code> of an <code>&lt;inclusion></code>. This has the
+                  effect of instructing a processor to retrieve every element of that type from the
+                  file indicated by the <code>&lt;inclusion></code> and insert it in that place in
+                  the host file, eliminating duplications.</para>
+               <para>Inclusions are recursive. If file A includes file B, and file B includes file
+                  C, then a processor handling file A will resolve all inclusions in light of both B
+                  and C. Inclusions may not be circular upon the same element. If file A includes
+                  the <code>&lt;agent></code>s of file B, then B may not include the
+                     <code>&lt;agent></code>s of file A. It is perfectly legal, however, for B to
+                  include elements from A that do not depend upon B.</para>
+               <para><code>&lt;inclusion></code>s are very important, as important as
+                     <code>&lt;source></code>s (see below). If an <code>&lt;inclusion></code> cannot
+                  be located, it will be treated as a fatal error during validation. Because of the
+                  importance of access to included files, it is strongly recommended that inclusions
+                  be limited to a specific collection, and that only local URLs be used.</para>
+               <para>In a collection that relies upon inclusions, it is a good strategy to
+                  distinguish between inclusions in the <code>&lt;head></code> and those for the
+                     <code>&lt;body></code>. One file might be used as the principal place for
+                  metadata related to the project, and given a special filename to easily
+                  distinguish it (perhaps by putting the file in all caps). All other files might
+                  point to it for their metadata. In turn, that key metadata file might draw from
+                  other dependent files for its body.</para>
+               <para>
+                  <note>
+                     <para>SQF: Any element with an <code>@inclusion</code> can be resolved into its
+                        complete, full version by opening it and inserting any text (including white
+                        space) then exercising the relevant quick fix option.</para>
+                  </note>
+                  <example>
+                     <title><code>&lt;inclusion></code>, <code>@include</code>: metadata</title>
+                     <programlisting>      ...........
+   &lt;inclusion xml:id="HEAD">
+      &lt;IRI>tag:parkj@textalign.net,2014:major-work-1-TAN-A-div&lt;/IRI>
+      &lt;name>Div-based alignment of everything in the collection&lt;/name>
+      &lt;location when-accessed="2015-09-21-04:00"
+         >TAN-A-div/COLLECTION.HEAD.major.work.TAN-A-div.xml&lt;/location>
+   &lt;/inclusion>
+      ...........
+   &lt;agent include="HEAD"/>
+   &lt;role include="HEAD"/>
+      ...........</programlisting>
+                     <caption>
+                        <para>This example shows how metadata can be included from a key file in the
+                           collection.</para>
+                     </caption>
+                  </example>
+                  <example>
+                     <title><code>&lt;inclusion></code>, <code>@include</code>: body</title>
+                     <programlisting>      ...........
+   &lt;inclusion xml:id="ot">
+      &lt;IRI>tag:parkj@textalign.net,2014:ot-kjv&lt;/IRI>
+      &lt;name>Old Testament, King James Version&lt;/name>
+      &lt;location when-accessed="2015-09-18-04:00">bible.ot.kjv.eng.xml&lt;/location>
+   &lt;/inclusion>
+   &lt;inclusion xml:id="nt">
+      &lt;IRI>tag:parkj@textalign.net,2014:nt-kjv&lt;/IRI>
+      &lt;name>New Testament, King James Version&lt;/name>
+      &lt;location when-accessed="2015-09-24-04:00">bible.nt.kjv.eng.xml&lt;/location>
+   &lt;/inclusion>
+      ...........
+   &lt;body xml:lang="eng">
+      &lt;div include="ot"/>
+      &lt;div include="nt"/>
+   &lt;/body>
+      ...........</programlisting>
+                     <caption>
+                        <para>This example shows how the <code>&lt;body></code> data of files can be
+                           included. This is particularly useful for constructing composite works or
+                           data files without repeating the data found reliably elsewhere.</para>
+                     </caption>
+                  </example>
+               </para>
             </section>
             <section xml:id="source_and_see-also">
                <title>Sources and related files</title>

@@ -10,14 +10,17 @@
    <title>Schematron tests for class 2 TAN files.</title>
 
    <rule context="tan:source">
+      <let name="self-resolved" value="tan:resolve-include(.)"/>
       <let name="this-pos" value="count(preceding-sibling::tan:source) + 1"/>
       <let name="all-leafdiv-flatrefs" value="$src-1st-da-data[$this-pos]/tan:div[@lang]/@ref"/>
       <let name="exists-new-version"
          value="$src-1st-da-heads[$this-pos]/tan:see-also[tan:relationship = 'new version']"/>
       <let name="duplicate-leafdiv-flatrefs"
          value="$all-leafdiv-flatrefs[index-of($all-leafdiv-flatrefs,.)[2]]"/>
-      <assert test="exists(tan:first-loc-available(.))" role="fatal">At least one copy of
-      each source must be available to validate file.</assert>
+      <assert
+         test="every $i in $self-resolved
+               satisfies exists(tan:first-loc-available($i))"
+         role="fatal">At least one copy of each source must be available to validate file.</assert>
       <report test="exists($duplicate-leafdiv-flatrefs)">After declarations are applied, source breaks
          the Leaf Div Uniqueness Rule at <value-of
             select="string-join($duplicate-leafdiv-flatrefs,', ')"/></report>

@@ -52,6 +52,30 @@
             </xsl:copy>
         </xsl:for-each>
     </xsl:function>
+    <xsl:variable name="self-expanded" as="document-node()">
+        <xsl:for-each select="/">
+            <xsl:copy>
+                <xsl:apply-templates mode="expand"/>
+            </xsl:copy>
+        </xsl:for-each>
+    </xsl:variable>
+    <xsl:template mode="expand" match="*[not(self::tan:body or self::tan:head)]">
+        <xsl:copy>
+            <xsl:apply-templates mode="#current"/>
+        </xsl:copy>
+    </xsl:template>
+    <xsl:template mode="expand" match="tan:head">
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:sequence select="$head"/>
+        </xsl:copy>
+    </xsl:template>
+    <xsl:template mode="expand" match="tan:body">
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:sequence select="$body"/>
+        </xsl:copy>
+    </xsl:template>
     <xsl:variable name="doc-id" select="/*/@id"/>
     <xsl:variable name="doc-uri" select="base-uri(/*)"/>
     <xsl:variable name="doc-parent-directory" select="replace($doc-uri, '[^/]+$', '')"/>

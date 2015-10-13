@@ -280,6 +280,12 @@
                      <entry>A physical line of text on the page. In poetry, a single poetic line may
                         take multiple physical lines.</entry>
                   </row>
+                  <row>
+                     <entry><code>tag:textalign.net,2015:div-type:variant</code></entry>
+                     <entry>variant</entry>
+                     <entry>An alternative rendition of a passage. It is assumed that every variant
+                        will have at least one sibling.</entry>
+                  </row>
                </tbody>
             </tgroup>
          </table>

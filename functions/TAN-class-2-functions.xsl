@@ -719,6 +719,12 @@
    </xsl:function>
 
    <xsl:function name="tan:prep-class-1-data" as="element()*">
+      <!-- one-parameter function for the next, two-parameter function; the one-parameter
+      function assumes that there is a one-to-one correspondence between documents and source numbers -->
+      <xsl:param name="class-1-documents" as="document-node()*"/>
+      <xsl:sequence select="tan:prep-class-1-data($class-1-documents, $src-count)"/>
+   </xsl:function>
+   <xsl:function name="tan:prep-class-1-data" as="element()*">
       <!-- Input: sequence of URLs for class 1 TAN sources, one per source
          Output: sequence of one node/tree per source flattening the data into this form:
          <div @old-ref="[NORMALIZED, FLATTENED REF]" @ref="[NORMALIZED, FLATTENED 
@@ -728,7 +734,8 @@
          No @lang if not a leaf div
       -->
       <xsl:param name="class-1-documents" as="document-node()*"/>
-      <xsl:for-each select="$src-count">
+      <xsl:param name="srcs-chosen" as="xs:integer*"/>
+      <xsl:for-each select="$srcs-chosen">
          <xsl:variable name="this-src" select="."/>
          <xsl:variable name="this-class-1-body-resolved" as="node()?">
             <xsl:for-each
@@ -793,15 +800,15 @@
          hyphens or commas], one per source)
          Output: nodes, 1 per source, proper subset of tan:prep-class-1-data()
       -->
-      <xsl:param name="this-src-list" as="xs:integer*"/>
-      <xsl:param name="this-refs-norm" as="xs:string*"/>
+      <xsl:param name="src-list" as="xs:integer*"/>
+      <xsl:param name="refs-norm" as="xs:string*"/>
       <xsl:for-each select="$src-count">
          <xsl:variable name="this-src" select="."/>
          <xsl:element name="tan:source">
             <xsl:attribute name="id" select="$src-ids[$this-src]"/>
-            <xsl:if test="$this-src = $this-src-list">
+            <xsl:if test="$this-src = $src-list">
                <xsl:for-each
-                  select="tokenize($this-refs-norm[index-of($this-src-list, $this-src)], ' , ')">
+                  select="tokenize($refs-norm[index-of($src-list, $this-src)], ' , ')">
                   <xsl:variable name="this-ref" select="."/>
                   <xsl:choose>
                      <xsl:when
@@ -813,14 +820,14 @@
                            <xsl:when test="matches($this-ref, ' - ')">
                               <xsl:copy-of
                                  select="
-                                    $src-1st-da-data[$this-src]/((tan:div[@ref = tokenize($this-ref, ' - ')[1]]/(self::node(),
+                                    $src-1st-da-data[$this-src]/((tan:div[starts-with(@ref,tokenize($this-ref, ' - ')[1])]/(self::node(),
                                     following-sibling::tan:div))
-                                    except (tan:div[@ref = tokenize($this-ref, ' - ')[2]]/following-sibling::tan:div))"
+                                    except (tan:div[starts-with(@ref,tokenize($this-ref, ' - ')[2])]/following-sibling::tan:div))"
                               />
                            </xsl:when>
                            <xsl:otherwise>
                               <xsl:copy-of
-                                 select="$src-1st-da-data[$this-src]/tan:div[@ref = $this-ref]"/>
+                                 select="$src-1st-da-data[$this-src]/tan:div[starts-with(@ref,$this-ref)]"/>
                            </xsl:otherwise>
                         </xsl:choose>
                      </xsl:when>

@@ -286,6 +286,11 @@
                      <entry>An alternative rendition of a passage. It is assumed that every variant
                         will have at least one sibling.</entry>
                   </row>
+                  <row>
+                     <entry><code>tag:textalign.net,2015:div-type:part</code></entry>
+                     <entry>part</entry>
+                     <entry>A division of a larger textual unit</entry>
+                  </row>
                </tbody>
             </tgroup>
          </table>

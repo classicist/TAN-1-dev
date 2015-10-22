@@ -3,46 +3,42 @@
 <grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <!-- PART ONE OF TWO: PATTERNS REPEATEDLY USED ACROSS DIFFERENT TAN FILES -->
   <!--   1A. ATOMIC PATTERNS (alphabetical) -->
-  <!--    Reference to an agent, used generically (and not in edit stamps) -->
   <define name="agent-ref">
+    <a:documentation>   Reference to an agent, used generically (and not in edit stamps)</a:documentation>
     <attribute name="who"/>
   </define>
-  <!--    Expression of certainty an agent has in the data it governs. High = "is probably"; low = "is probably not"; all other values expressed as a real number from 0 (no certainty) to 1 (completely certainty). -->
   <define name="cert-claim">
+    <a:documentation>   Expression of certainty an agent has in the data it governs. High = "is probably"; low = "is probably not"; all other values expressed as a real number from 0 (no certainty) to 1 (completely certainty).</a:documentation>
     <attribute name="cert">
       <data type="string">
         <param name="pattern">(high)|(low)|(0\.\d+)</param>
       </data>
     </attribute>
   </define>
-  <!--
-       String that refers to a div either by using single nonword characters to join pairs of @type and optional @n values (themselves joined) 
-       by a nonword character) or by using single nonword characters to join only @n values. The first pattern
-       is \w+\W\w*(\W\w+\W\w*)* and the second is \w+(\W\w+)*
-  -->
   <define name="div-ref">
-    <a:documentation>Test double-hash rendered on two
-lines</a:documentation>
+    <a:documentation>   String that refers to a div either by using single nonword characters to join pairs of @type and optional @n values (themselves joined) 
+   by a nonword character) or by using single nonword characters to join only @n values. The first pattern
+   is \w+\W\w*(\W\w+\W\w*)* and the second is \w+(\W\w+)*</a:documentation>
     <data type="string">
       <param name="pattern">\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*</param>
     </data>
   </define>
-  <!--    String that specifies a range of divs using the div-ref pattern joined by a hyphen or a comma -->
   <define name="div-range-ref">
+    <a:documentation>   String that specifies a range of divs using the div-ref pattern joined by a hyphen or a comma</a:documentation>
     <data type="string">
       <param name="pattern">(\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*)((\s*,|\s+-)\s+(\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*))*</param>
     </data>
   </define>
-  <!--    Space-delimited sequence of division type id references; value would be d:IDREFS except that these point to IDs in other files. -->
   <define name="div-type-ref">
+    <a:documentation>   Space-delimited sequence of division type id references; value would be d:IDREFS except that these point to IDs in other files.</a:documentation>
     <attribute name="div-type-ref"/>
   </define>
-  <!--     Reference to agent or agents who have edited (added or modified) an element or its content -->
   <define name="ed-agent">
+    <a:documentation>    Reference to agent or agents who have edited (added or modified) an element or its content</a:documentation>
     <attribute name="ed-who"/>
   </define>
-  <!--     Reference to a date or time when an element or its content was edited (added or modified) -->
   <define name="ed-time">
+    <a:documentation>    Reference to a date or time when an element or its content was edited (added or modified)</a:documentation>
     <attribute name="ed-when">
       <choice>
         <data type="dateTime"/>
@@ -50,114 +46,114 @@ lines</a:documentation>
       </choice>
     </attribute>
   </define>
-  <!--     An inclusion is the only identifier that is allowed to take d:IDREF, since all others must have coinage in external files -->
   <define name="inclusion">
+    <a:documentation>    An inclusion is the only identifier that is allowed to take d:IDREF, since all others must have coinage in external files </a:documentation>
     <attribute name="include">
       <data type="IDREFS" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
     </attribute>
   </define>
-  <!--     Identifier of an entity described within an element. Must be unique within a given file. Must consist only of word characters. -->
   <define name="internal-id">
+    <a:documentation>    Identifier of an entity described within an element. Must be unique within a given file. Must consist only of word characters.</a:documentation>
     <attribute name="xml:id">
       <data type="ID" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0">
         <param name="pattern">\w\S*</param>
       </data>
     </attribute>
   </define>
-  <!--     Any generic IRI identifier. -->
   <define name="IRI-gen">
+    <a:documentation>    Any generic IRI identifier.</a:documentation>
     <data type="anyURI">
       <param name="pattern">[a-zA-Z][\-.+a-zA-Z0-9]+:\S+</param>
     </data>
   </define>
-  <!--     Acceptable values of @n, used by class 1 and class 2 files -->
   <define name="n-val">
+    <a:documentation>    Acceptable values of @n, used by class 1 and class 2 files</a:documentation>
     <data type="string">
       <param name="pattern">\w*</param>
     </data>
   </define>
-  <!--     Version of TAN schemas used, here version 1/1 -->
   <define name="TAN-ver">
+    <a:documentation>    Version of TAN schemas used, here version 1/1</a:documentation>
     <attribute name="TAN-version">
       <data type="string">
         <param name="pattern">1(\W+dev)?</param>
       </data>
     </attribute>
   </define>
-  <!--    tokenization id reference; value would be d:IDREF except that this attribute points to IDs in other files. -->
   <define name="tokenization-ref">
+    <a:documentation>   tokenization id reference; value would be d:IDREF except that this attribute points to IDs in other files.</a:documentation>
     <attribute name="which">
       <ref name="tokenization-ref-text"/>
     </attribute>
   </define>
-  <!--    tokenization id text; default (for Class 2 files) is text; narrowed by Class 1 files. -->
   <define name="tokenization-ref-text">
+    <a:documentation>   tokenization id text; default (for Class 2 files) is text; narrowed by Class 1 files.</a:documentation>
     <text/>
   </define>
-  <!--     Attribute with ISO (BCP 47) language code intended to identify the language of the CDATA content (the text) -->
   <define name="lang-of-content">
+    <a:documentation>    Attribute with ISO (BCP 47) language code intended to identify the language of the CDATA content (the text) </a:documentation>
     <attribute name="xml:lang">
       <data type="language"/>
     </attribute>
   </define>
-  <!--     Element with ISO (BCP 47) language code. NOT to be used to identify the language of any CDATA content. Used primarily under declarations element, to name the languages to which an operation or declaration applies. -->
   <define name="lang-outside">
+    <a:documentation>    Element with ISO (BCP 47) language code. NOT to be used to identify the language of any CDATA content. Used primarily under declarations element, to name the languages to which an operation or declaration applies.</a:documentation>
     <element name="for-lang">
       <data type="language"/>
     </element>
   </define>
-  <!--    Indicates whether @n in a particular div-type is a numeral; default = true unless values fail to match standard patterns for numeral systems (Arabic, Roman, etc.) -->
   <define name="ns-are-numerals">
+    <a:documentation>   Indicates whether @n in a particular div-type is a numeral; default = true unless values fail to match standard patterns for numeral systems (Arabic, Roman, etc.)</a:documentation>
     <attribute name="ns-are-numerals">
       <data type="boolean"/>
     </attribute>
   </define>
-  <!--    Is the creation and editing of the data still in progress? -->
   <define name="progress">
+    <a:documentation>   Is the creation and editing of the data still in progress?</a:documentation>
     <attribute name="in-progress">
       <data type="boolean"/>
     </attribute>
   </define>
-  <!--    Agent who holds the rights over the data, absent sources -->
   <define name="rights-holder">
+    <a:documentation>   Agent who holds the rights over the data, absent sources</a:documentation>
     <attribute name="rights-holder"/>
   </define>
-  <!--     Reference to an xml:id that identifies a role (i.e., duty or responsibility) associated with the creation of editing of the data -->
   <define name="role-ref">
+    <a:documentation>    Reference to an xml:id that identifies a role (i.e., duty or responsibility) associated with the creation of editing of the data</a:documentation>
     <attribute name="roles"/>
   </define>
-  <!--    Attribute containing an IDREF to the ID of the source for the given token. This is suppressed in TAN-LM files (which have only one source) and required in TAN-A files. -->
   <define name="source-ref">
+    <a:documentation>   Attribute containing an IDREF to the ID of the source for the given token. This is suppressed in TAN-LM files (which have only one source) and required in TAN-A files. </a:documentation>
     <attribute name="src"/>
   </define>
-  <!--    String that specifies a range of tokens: digits or "last(-digit)?" joined by space-delimited hyphens or vertical lines (pipe character) -->
   <define name="seq-picker">
+    <a:documentation>   String that specifies a range of tokens: digits or "last(-digit)?" joined by space-delimited hyphens or vertical lines (pipe character)</a:documentation>
     <data type="string">
       <param name="pattern">((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?(\s*,\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*</param>
     </data>
   </define>
-  <!--    String reference to a particular word token within a sequence of word tokens -->
   <define name="token-value-ref">
+    <a:documentation>   String reference to a particular word token within a sequence of word tokens </a:documentation>
     <attribute name="val">
       <data type="string">
         <param name="pattern">.+</param>
       </data>
     </attribute>
   </define>
-  <!--     Unused pattern, restricted to URIs. Kept in case the regular expression is helpful in the future. -->
   <define name="URI-gen">
+    <a:documentation>    Unused pattern, restricted to URIs. Kept in case the regular expression is helpful in the future.</a:documentation>
     <data type="anyURI">
       <param name="pattern">[a-zA-Z][\-.+a-zA-Z0-9]+:[\-._~+:/?#\[\]%@!$&amp;'\(\)*+,;=a-zA-Z0-9]+</param>
     </data>
   </define>
-  <!--     Tag URN, mandatory pattern for the IRI name of every TAN file -->
   <define name="URI-tag">
+    <a:documentation>    Tag URN, mandatory pattern for the IRI name of every TAN file </a:documentation>
     <data type="anyURI">
       <param name="pattern">tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-(0\d|1[0-2]))?(-([0-2]\d|3[01]))?:\S+</param>
     </data>
   </define>
-  <!--    Date or date + time, used generically and not for edit stamps -->
   <define name="when-claim">
+    <a:documentation>   Date or date + time, used generically and not for edit stamps</a:documentation>
     <attribute name="when">
       <choice>
         <data type="dateTime"/>
@@ -169,34 +165,34 @@ lines</a:documentation>
     
       1B. NON-ATOMIC PATTERNS (alphabetical)
   -->
-  <!--          Element to declare the checksum of an electronic source/auxiliary. Metadata core is required to identify the type of checksum being used (e.g., SHA-1). -->
   <define name="checksum">
     <element name="checksum">
+      <a:documentation>Element to declare the checksum of an electronic source/auxiliary. Metadata core is required to identify the type of checksum being used (e.g., SHA-1). </a:documentation>
       <ref name="entity-nondigital-ref"/>
       <element name="value">
         <data type="string" datatypeLibrary=""/>
       </element>
     </element>
   </define>
-  <!--    Comments, which are required to have @who and @when values indicating who made the comment when. -->
   <define name="comment">
+    <a:documentation>Comments, made by agent specified by @who, at the time specified by @when.</a:documentation>
     <element name="comment">
       <ref name="when-claim"/>
       <ref name="agent-ref"/>
       <text/>
     </element>
   </define>
-  <!--    Editorial stamp: who created or edited the enclosed data and when. -->
   <define name="ed-stamp">
+    <a:documentation>   Editorial stamp: who created or edited the enclosed data and when. </a:documentation>
     <ref name="ed-agent"/>
     <ref name="ed-time"/>
   </define>
   <!--
     
        FOUR TYPES OF ENTITIES THAT CAN BE REFERENCED USING THE IRI+NAME PATTERN
-       Reference to an external digital entity that is a TAN file
   -->
   <define name="entity-digital-tan-other-ref">
+    <a:documentation>   Reference to an external digital entity that is a TAN file</a:documentation>
     <ref name="URI-tag-ref"/>
     <ref name="metadata-human"/>
     <zeroOrMore>
@@ -206,8 +202,8 @@ lines</a:documentation>
       <ref name="loc-src"/>
     </oneOrMore>
   </define>
-  <!--    Reference to an external digital entity that is not a TAN file -->
   <define name="entity-digital-generic-ref">
+    <a:documentation>   Reference to an external digital entity that is not a TAN file</a:documentation>
     <oneOrMore>
       <ref name="IRI-gen-ref"/>
     </oneOrMore>
@@ -219,21 +215,20 @@ lines</a:documentation>
       <ref name="loc-src"/>
     </oneOrMore>
   </define>
-  <!--    Reference to self as digital entity (i.e., TAN file) -->
   <define name="entity-digital-tan-self-ref">
+    <a:documentation>   Reference to self as digital entity (i.e., TAN file)</a:documentation>
     <ref name="metadata-human"/>
     <zeroOrMore>
       <ref name="loc-self"/>
     </zeroOrMore>
   </define>
-  <!--    Reference to an external non-digital entity (e.g., agents, roles, concepts) -->
   <define name="entity-nondigital-ref">
+    <a:documentation>   Reference to an external non-digital entity (e.g., agents, roles, concepts)</a:documentation>
     <oneOrMore>
       <ref name="IRI-gen-ref"/>
     </oneOrMore>
     <ref name="metadata-human"/>
   </define>
-  <!---->
   <define name="func-param-pattern">
     <element name="pattern">
       <optional>
@@ -242,7 +237,6 @@ lines</a:documentation>
       <text/>
     </element>
   </define>
-  <!---->
   <define name="func-param-flags">
     <element name="flags">
       <optional>
@@ -256,10 +250,10 @@ lines</a:documentation>
   <!--
        NB, @xpath may be untenable, and is slated for deletion from ver 1, if it cannot be applied 
        consistently or reliably.
-       The fn:replace function plus parameters. Used in class 1 and class 3 (TAN-R-tok) files.
   -->
   <define name="func-replace">
     <element name="replace">
+      <a:documentation>   The fn:replace function plus parameters. Used in class 1 and class 3 (TAN-R-tok) files.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -290,9 +284,9 @@ lines</a:documentation>
       </choice>
     </element>
   </define>
-  <!--    The fn:tokenize function plus parameters. Used in class 1 and class 3 (TAN-R-tok) files. -->
   <define name="func-tokenize">
     <element name="tokenize">
+      <a:documentation>   The fn:tokenize function plus parameters. Used in class 1 and class 3 (TAN-R-tok) files.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -312,8 +306,8 @@ lines</a:documentation>
       </choice>
     </element>
   </define>
-  <!--    Element that takes a general URI -->
   <define name="IRI-gen-ref">
+    <a:documentation>   Element that takes a general URI </a:documentation>
     <element name="IRI">
       <optional>
         <ref name="ed-stamp"/>
@@ -321,8 +315,8 @@ lines</a:documentation>
       <ref name="IRI-gen"/>
     </element>
   </define>
-  <!--          Element to declare where a master copy of the file itself is to be found. -->
   <define name="loc-self">
+    <a:documentation>         Element to declare where a master copy of the file itself is to be found. </a:documentation>
     <element name="master-location">
       <optional>
         <ref name="ed-stamp"/>
@@ -330,8 +324,8 @@ lines</a:documentation>
       <data type="anyURI"/>
     </element>
   </define>
-  <!--          Element to declare where an electronic source/auxiliary was found, when. -->
   <define name="loc-src">
+    <a:documentation>         Element to declare where an electronic source/auxiliary was found, when. </a:documentation>
     <element name="location">
       <optional>
         <ref name="ed-stamp"/>
@@ -365,26 +359,26 @@ lines</a:documentation>
       </element>
     </zeroOrMore>
   </define>
-  <!--    Pointer (link) to a div in a TAP-T(EI) file -->
   <define name="pointer-to-div">
+    <a:documentation>   Pointer (link) to a div in a TAP-T(EI) file </a:documentation>
     <attribute name="ref">
       <ref name="div-ref"/>
     </attribute>
   </define>
-  <!--    Pointer (link) to a range of divs in a TAP-T(EI) file -->
   <define name="pointer-to-div-range">
+    <a:documentation>   Pointer (link) to a range of divs in a TAN-T(EI) file </a:documentation>
     <attribute name="ref">
       <ref name="div-range-ref"/>
     </attribute>
   </define>
-  <!--    Numerical reference to a particular word token or a range of them within a sequence of word tokens -->
   <define name="token-value-order-ref">
+    <a:documentation>   Numerical reference to a particular word token or a range of them within a sequence of word tokens </a:documentation>
     <attribute name="ord">
       <ref name="seq-picker"/>
     </attribute>
   </define>
-  <!--    Element that takes a general URI -->
   <define name="URI-gen-ref">
+    <a:documentation>   Element that takes a general URI </a:documentation>
     <element name="IRI">
       <optional>
         <ref name="ed-stamp"/>
@@ -392,8 +386,8 @@ lines</a:documentation>
       <ref name="URI-gen"/>
     </element>
   </define>
-  <!--    Element that takes a tag URN -->
   <define name="URI-tag-ref">
+    <a:documentation>   Element that takes a tag URN</a:documentation>
     <element name="IRI">
       <optional>
         <ref name="ed-stamp"/>
@@ -417,13 +411,10 @@ lines</a:documentation>
     <ref name="TAN-head"/>
     <ref name="TAN-body"/>
   </define>
-  <!--
-    
-    2nd level of any TAN file.
-  -->
-  <!--    Common metadata header -->
+  <!-- 2nd level of any TAN file. -->
   <define name="TAN-head">
     <element name="head">
+      <a:documentation>   Common metadata header</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -455,8 +446,8 @@ lines</a:documentation>
       </interleave>
     </element>
   </define>
-  <!--     Common data container -->
   <define name="TAN-body">
+    <a:documentation>    Common data container</a:documentation>
     <element name="body">
       <optional>
         <ref name="progress"/>
@@ -479,8 +470,8 @@ lines</a:documentation>
     
     3rd level of any TAN file, head metadata only (the body, which differs widely across TAN file types, are defined in other schema files)
   -->
-  <!--    Element stating the rights under which the data is distributed -->
   <define name="nonsource-rights">
+    <a:documentation>   Element stating the rights under which the data is distributed</a:documentation>
     <element name="rights-excluding-sources">
       <optional>
         <ref name="ed-stamp"/>
@@ -499,8 +490,8 @@ lines</a:documentation>
       </choice>
     </element>
   </define>
-  <!--    Lists of TAN files that can be called upon for inclusion. -->
   <define name="inclusion-list">
+    <a:documentation>   Lists of TAN files that can be called upon for inclusion.</a:documentation>
     <zeroOrMore>
       <ref name="inclusion-item"/>
     </zeroOrMore>
@@ -519,8 +510,8 @@ lines</a:documentation>
       </interleave>
     </element>
   </define>
-  <!--    The name of the source upon which the TAN file rests. TAN-T and TAN-LM allow only one. TAN-A-tok allows exactly two. All other TAN formats require one or more. -->
   <define name="source-list">
+    <a:documentation>   The name of the source upon which the TAN file rests. TAN-T and TAN-LM allow only one. TAN-A-tok allows exactly two. All other TAN formats require one or more. </a:documentation>
     <ref name="source-item"/>
   </define>
   <define name="source-item">
@@ -556,8 +547,8 @@ lines</a:documentation>
       </choice>
     </element>
   </define>
-  <!--    Element stating the rights attached to the source of data -->
   <define name="source-rights">
+    <a:documentation>   Element stating the rights attached to the source of data</a:documentation>
     <element name="rights-source-only">
       <optional>
         <ref name="ed-stamp"/>
@@ -578,12 +569,12 @@ lines</a:documentation>
       </choice>
     </element>
   </define>
-  <!--     Parameter to indicate whether <source> should be allowed to take xml:id (forbidden for TAN files with only one source; mandated otherwise) -->
   <define name="source-id-opt">
+    <a:documentation>    Parameter to indicate whether &lt;source&gt; should be allowed to take xml:id (forbidden for TAN files with only one source; mandated otherwise)</a:documentation>
     <empty/>
   </define>
-  <!--    Auxiliary entities (usually derivative versions of sources) that were materially helpful in creating or editing the data -->
   <define name="see-also-list">
+    <a:documentation>   Auxiliary entities (usually derivative versions of sources) that were materially helpful in creating or editing the data </a:documentation>
     <zeroOrMore>
       <ref name="see-also-item"/>
     </zeroOrMore>
@@ -611,9 +602,9 @@ lines</a:documentation>
       </choice>
     </element>
   </define>
-  <!--        The role that the see-also played, either a reserved keyword or a customized name (e.g., uncorrected transcription) defined by an IRI + name pattern   -->
   <define name="relationship">
     <element name="relationship">
+      <a:documentation>       The role that the see-also played, either a reserved keyword or a customized name (e.g., uncorrected transcription) defined by an IRI + name pattern   </a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -628,8 +619,8 @@ lines</a:documentation>
       </choice>
     </element>
   </define>
-  <!--    Declarations option; in some TAN files, this is changed to modify how inclusions are handled. -->
   <define name="decl-opt">
+    <a:documentation>   Declarations option; in some TAN files, this is changed to modify how inclusions are handled.</a:documentation>
     <element name="declarations">
       <optional>
         <ref name="ed-stamp"/>
@@ -642,8 +633,8 @@ lines</a:documentation>
       </interleave>
     </element>
   </define>
-  <!--        The agents (persons, organizations) that played a role in creating or editing the data   -->
   <define name="agent-list">
+    <a:documentation>       The agents (persons, organizations) that played a role in creating or editing the data   </a:documentation>
     <element name="agent">
       <optional>
         <ref name="ed-stamp"/>
@@ -665,8 +656,8 @@ lines</a:documentation>
       </choice>
     </element>
   </define>
-  <!--        The roles (responsibilities, tasks) that agents did in creating or editing the data   -->
   <define name="role-list">
+    <a:documentation>       The roles (responsibilities, tasks) that agents did in creating or editing the data   </a:documentation>
     <element name="role">
       <optional>
         <ref name="ed-stamp"/>
@@ -685,8 +676,8 @@ lines</a:documentation>
       </choice>
     </element>
   </define>
-  <!--        Specific roles performed by specific agents in creating or editing the data -->
   <define name="agent-role-list">
+    <a:documentation>       Specific roles performed by specific agents in creating or editing the data</a:documentation>
     <element name="agentrole">
       <choice>
         <ref name="inclusion"/>
@@ -712,8 +703,8 @@ lines</a:documentation>
       </choice>
     </element>
   </define>
-  <!--        Changes made to the file. -->
   <define name="change-list">
+    <a:documentation>       Changes made to the file.</a:documentation>
     <element name="change">
       <optional>
         <ref name="ed-stamp"/>
@@ -723,20 +714,20 @@ lines</a:documentation>
       <text/>
     </element>
   </define>
-  <!-- 4th level of any TAN file, specifically the /*/head/declarations element -->
-  <!--    Empty declaration element. See other TAN schemas for redefinitions appropriate to a particular type of TAN file. -->
   <define name="decl-list">
+    <a:documentation>4th level of any TAN file, specifically the /*/head/declarations element</a:documentation>
+    <a:documentation>   Empty declaration element. See other TAN schemas for redefinitions appropriate to a particular type of TAN file. </a:documentation>
     <interleave>
       <ref name="decl-core"/>
       <ref name="decl-non-core"/>
     </interleave>
   </define>
-  <!--    Reserved for any declarations that are shared across classes -->
   <define name="decl-core">
+    <a:documentation>   Reserved for any declarations that are shared across classes</a:documentation>
     <empty/>
   </define>
-  <!--    decl-non-core to be filled out by each TAN-class-X.rnc file -->
   <define name="decl-non-core">
+    <a:documentation>   decl-non-core to be filled out by each TAN-class-X.rnc file</a:documentation>
     <empty/>
   </define>
 </grammar>

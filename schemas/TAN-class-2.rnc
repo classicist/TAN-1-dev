@@ -2,48 +2,48 @@ namespace ns1 = "tag:textalign.net,2015:ns"
 
 include "TAN-core.rnc" inherit = ns1 {
     decl-non-core = decl-class-2 & decl-non-class-2
-    # All sources are TAN files, so no source rights should be declared--they're already stated
+    ## All sources are TAN files, so no source rights should be declared--they're already stated
     source-rights = empty
 }
-# Reserved for declarations common to all class 2 files
+## Reserved for declarations common to all class 2 files
 decl-class-2 =
     decl-token-opt
     & decl-supp-div-opt
     & decl-implicit-div-type-refs-opt
     & (decl-rename-type-opt, decl-rename-n-opt)
-# Reserved for declarations specific to individual types of class 2 files 
+## Reserved for declarations specific to individual types of class 2 files 
 decl-non-class-2 = empty
-# 
-# Reserved for modification in different types of Class 2 files, to specify how many tokenization declarations are allowed.
+## 
+## Reserved for modification in different types of Class 2 files, to specify how many tokenization declarations are allowed.
 decl-token-opt = decl-token+
-# Declaration of which tokenization methods have been used, either by id ref to the xml:id in the source TAN-T(EI) file, or by an IRI + name pattern reference to a TAN-R-tok file
 decl-token =
+## Which tokenization methods have been used, either by id ref to the xml:id in the source TAN-T(EI) file, or by an IRI + name pattern reference to a TAN-R-tok file
     element tokenization {
         ed-stamp?,
         (inclusion
          | (source-ref, (tokenization-ref | entity-digital-tan-other-ref)))
     }
-# Reserved for modification in different types of Class 2 files, to specify how many suppress-div-type declarations are allowed.
+## Reserved for modification in different types of Class 2 files, to specify how many suppress-div-type declarations are allowed.
 decl-supp-div-opt = decl-supp-div-type*
-# Option to suppress specific div types in a reference. Must preserve the Leaf Div Uniqueness Rule (LDUR).
 decl-supp-div-type =
+## Option to suppress specific div types in a reference. Must preserve the Leaf Div Uniqueness Rule (LDUR).
     element suppress-div-types {
         ed-stamp?,
         (inclusion | (source-ref, div-type-ref))
     }
-# Option to drop references to div types and use only @n values. Must not be applied to sources with empty @n values or if the LDUR would be broken.
 decl-implicit-div-type-refs-opt =
+## Option to drop references to div types and use only @n values. Must not be applied to sources with empty @n values or if the LDUR would be broken.
     element implicit-div-type-refs { ed-stamp?, (inclusion | source-ref) }*
-# Declaration to change the name of the div-type in one or more sources
 decl-rename-type-opt = decl-rename-div-type*
 decl-rename-div-type =
+## Provisional change of name for the div-type in one or more sources
     element rename-div-types {
         ed-stamp?,
         (inclusion | (source-ref, name-change+))
     }
-# Declaration to change the name of the n value in one or more sources in one or more given div types; used to reconcile refs that rely on non-numbering n values
 decl-rename-n-opt = decl-rename-div-n*
 decl-rename-div-n =
+## Declaration to change the name of the n value in one or more sources in one or more given div types; used to reconcile refs that rely on non-numbering n values
     element rename-div-ns {
         ed-stamp?,
         (inclusion | (source-ref, div-type-ref, name-change+))
@@ -60,10 +60,10 @@ name-change =
         }
     }
 certainty-stamp = cert-claim?, ed-stamp?
-# Option to include an internal id. Not needed in TAN-LM files.
+## Option to include an internal id. Not needed in TAN-LM files.
 id-option = internal-id
-# Sets of alignments of tan:tok or tan:div-ref, shared by body of TAN-A-* files
 alignment =
+## Sets of alignments of tan:tok or tan:div-ref, shared by body of TAN-A-* files
     element align {
         alignment-inclusion-opt
         | (alignment-attributes-non-class-2,
@@ -73,8 +73,8 @@ alignment =
 alignment-attributes-non-class-2 = empty
 alignment-content-non-class-2 = empty
 alignment-inclusion-opt = inclusion
-#    Reference to a token or token fragment. Used in the body of class 2 TAN files to make claims about tokens or token fragments 
 token-list =
+## Token or token fragment. Used in the body of class 2 TAN files to make claims about tokens or token fragments 
     element tok {
         certainty-stamp,
         source-ref,

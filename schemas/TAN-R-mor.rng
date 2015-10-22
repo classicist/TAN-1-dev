@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:local="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <start>
+    <element name="TAN-R-mor">
+      <ref name="TAN-root"/>
+    </element>
+  </start>
+  <include href="TAN-class-3.rng">
+    <define name="decl-non-class-3">
+      <a:documentation>every TAN-R-mor file has one or more src-lang and feature elements</a:documentation>
+      <interleave>
+        <oneOrMore>
+          <ref name="lang-outside"/>
+        </oneOrMore>
+        <oneOrMore>
+          <ref name="morph-feature"/>
+        </oneOrMore>
+      </interleave>
+    </define>
+    <define name="TAN-body-core">
+      <ref name="TAN-R-mor-body"/>
+    </define>
+  </include>
+  <define name="morph-feature">
+    <a:documentation>TAN-R-mor files declare the morphological features that are allowed for a given language</a:documentation>
+    <element name="feature">
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <ref name="internal-id"/>
+          <interleave>
+            <zeroOrMore>
+              <ref name="comment"/>
+            </zeroOrMore>
+            <ref name="entity-nondigital-ref"/>
+          </interleave>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="TAN-R-mor-body">
+    <a:documentation>TAN-R-mor body consists of zero or more assert, report, category, or options</a:documentation>
+    <interleave>
+      <zeroOrMore>
+        <ref name="assert"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="report"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="category"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="options"/>
+      </zeroOrMore>
+    </interleave>
+  </define>
+  <define name="assert">
+    <a:documentation>Modeled loosely on Schematron assert, will return message if the test pattern is false</a:documentation>
+    <element name="assert">
+      <ref name="test-pattern"/>
+    </element>
+  </define>
+  <define name="report">
+    <a:documentation>Modeled loosely on Schematron report, will return message if the test pattern is true</a:documentation>
+    <element name="report">
+      <ref name="test-pattern"/>
+    </element>
+  </define>
+  <define name="test-pattern">
+    <a:documentation>Test pattern attributes for determining whether to return the message provided by text </a:documentation>
+    <optional>
+      <ref name="ed-stamp"/>
+    </optional>
+    <choice>
+      <ref name="inclusion"/>
+      <group>
+        <optional>
+          <ref name="cert-claim"/>
+        </optional>
+        <optional>
+          <ref name="filter"/>
+        </optional>
+        <choice>
+          <ref name="code-regex-test"/>
+          <ref name="token-regex-test"/>
+          <ref name="feature-test"/>
+          <ref name="filter-qty-test"/>
+        </choice>
+        <text/>
+      </group>
+    </choice>
+  </define>
+  <define name="filter">
+    <a:documentation>Report or assert should be triggered only if the following features are found in a tan:m code</a:documentation>
+    <attribute name="feature-filter"/>
+  </define>
+  <define name="code-regex-test">
+    <a:documentation>Regular expression, used as a pattern to check matches in codes used in the m elements of TAN-LM files </a:documentation>
+    <attribute name="code-regex-test"/>
+  </define>
+  <define name="token-regex-test">
+    <a:documentation>Regular expression, used as a pattern to check matches in tokens cited in the m elements of TAN-LM files </a:documentation>
+    <attribute name="token-regex-test"/>
+  </define>
+  <define name="feature-test">
+    <a:documentation>declares the feature  required to trigger the report or assertion</a:documentation>
+    <attribute name="feature-test"/>
+  </define>
+  <define name="filter-qty-test">
+    <a:documentation>declares how many filters need to be present to invoke the assertion or report</a:documentation>
+    <attribute name="filter-qty-test">
+      <data type="integer"/>
+    </attribute>
+  </define>
+  <define name="category">
+    <a:documentation>A set of features that share a common grammatical category such as gender, number, etc.</a:documentation>
+    <element name="category">
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <interleave>
+          <zeroOrMore>
+            <ref name="comment"/>
+          </zeroOrMore>
+          <group>
+            <ref name="entity-nondigital-ref"/>
+            <oneOrMore>
+              <ref name="options"/>
+            </oneOrMore>
+          </group>
+        </interleave>
+      </choice>
+    </element>
+  </define>
+  <define name="options">
+    <a:documentation>Declares the option of using a code in lieu of an xml:id. Code must be unique among sibling options </a:documentation>
+    <element name="option">
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <ref name="feature-ref"/>
+          <ref name="code"/>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="feature-ref">
+    <a:documentation>Points to the xml:id value of a feature</a:documentation>
+    <attribute name="feature">
+      <data type="IDREF" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
+    </attribute>
+  </define>
+  <define name="code">
+    <a:documentation>Provides a code to be used in TAN-LM files to pick a particular feature.</a:documentation>
+    <attribute name="code">
+      <data type="string">
+        <a:documentation>hyphen reserved for "not applicable"; spaces and (),| reserved for @feature-test expressions</a:documentation>
+        <param name="pattern">[^\-\(\),|\s]|[^\(\),|\s]+</param>
+      </data>
+    </attribute>
+  </define>
+</grammar>

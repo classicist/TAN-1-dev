@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:local="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <start>
+    <element name="TAN-A-div">
+      <ref name="TAN-root"/>
+    </element>
+  </start>
+  <include href="TAN-class-2.rng">
+    <!-- TAN-A-div files must have one or more sources -->
+    <define name="source-list">
+      <oneOrMore>
+        <ref name="source-item"/>
+      </oneOrMore>
+    </define>
+    <!-- TAN-A-div sources must be named -->
+    <define name="source-id-opt">
+      <ref name="internal-id"/>
+    </define>
+    <!-- no levels of certainty are allowed in TAN-A-div files; substitute is strength-claim -->
+    <define name="certainty-stamp">
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+    </define>
+    <!-- TAN-A-div files may not point to individual characters/glyphs -->
+    <define name="char-ref">
+      <empty/>
+    </define>
+    <!-- TAN-A-div files do not require a tokenization choice within a filter (choice enforced by Schematron) -->
+    <define name="decl-token-opt">
+      <zeroOrMore>
+        <ref name="decl-token"/>
+      </zeroOrMore>
+    </define>
+    <define name="TAN-body-core">
+      <zeroOrMore>
+        <ref name="work-equiv"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="div-type-equiv"/>
+      </zeroOrMore>
+      <optional>
+        <ref name="split"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="realignment"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="alignment"/>
+      </zeroOrMore>
+    </define>
+    <!-- alignments may take either an id with no supplementary variables or else no id and optional variables indicating strength, exclusivity, distribution, and auto-alignment -->
+    <define name="alignment-attributes-non-class-2">
+      <choice>
+        <ref name="internal-id"/>
+        <group>
+          <optional>
+            <ref name="strength-claim"/>
+          </optional>
+          <optional>
+            <ref name="exclusive-claim"/>
+          </optional>
+          <optional>
+            <ref name="distribute-claim"/>
+          </optional>
+        </group>
+      </choice>
+    </define>
+    <!-- alignments must contain either one or more div-refs or a list of IDREFS to other alignments -->
+    <define name="alignment-content-non-class-2">
+      <choice>
+        <ref name="alignment-ref"/>
+        <oneOrMore>
+          <ref name="align-div-list"/>
+        </oneOrMore>
+      </choice>
+    </define>
+  </include>
+  <!-- reconciles any differences of IRIs for the type of work -->
+  <define name="work-equiv">
+    <element name="equate-works">
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <ref name="source-ref"/>
+      </choice>
+    </element>
+  </define>
+  <!-- reconciles any differences of div-type IRIs for the type of canonical division -->
+  <define name="div-type-equiv">
+    <element name="equate-div-types">
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <ref name="div-type-ref-cluster"/>
+          <oneOrMore>
+            <ref name="div-type-ref-cluster"/>
+          </oneOrMore>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="div-type-ref-cluster">
+    <element name="div-type-ref">
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <ref name="source-ref"/>
+      <ref name="div-type-ref"/>
+    </element>
+  </define>
+  <!-- creates new splits in leaf divs, to create alignments more refined than what a TAN-T file might offer -->
+  <define name="split">
+    <element name="split-leaf-div-at">
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <interleave>
+          <zeroOrMore>
+            <ref name="comment"/>
+          </zeroOrMore>
+          <oneOrMore>
+            <ref name="token-list"/>
+          </oneOrMore>
+        </interleave>
+      </choice>
+    </element>
+  </define>
+  <!--
+    used to temper the strength of an alignment, suitable for alignments we qualify through "cf." and the
+    like. Cannot used in type and doubt because this model disallows both.
+  -->
+  <define name="strength-claim">
+    <attribute name="strength">
+      <data type="string">
+        <param name="pattern">0\.\d+</param>
+      </data>
+    </attribute>
+  </define>
+  <define name="realignment">
+    <element name="realign">
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <interleave>
+          <zeroOrMore>
+            <ref name="comment"/>
+          </zeroOrMore>
+          <group>
+            <optional>
+              <ref name="anchor"/>
+            </optional>
+            <oneOrMore>
+              <ref name="realign-div-list"/>
+            </oneOrMore>
+          </group>
+        </interleave>
+      </choice>
+    </element>
+  </define>
+  <define name="anchor">
+    <element name="anchor-div-ref">
+      <ref name="source-ref"/>
+      <ref name="pointer-to-div-range"/>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <optional>
+        <ref name="seg-ref"/>
+      </optional>
+    </element>
+  </define>
+  <define name="realign-div-list">
+    <element name="div-ref">
+      <ref name="source-ref"/>
+      <ref name="pointer-to-div-range"/>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <optional>
+        <ref name="seg-ref"/>
+      </optional>
+    </element>
+  </define>
+  <define name="exclusive-claim">
+    <a:documentation>Does or does not the specially declared alignment pass on to
+other implicitly aligned segments? Suppose a TAN-A-div file has as sources A, B, and C (3 versions 
+of Work 1) and M, N, and O (3 versions of Work 2). Suppose an &lt;align&gt; linking refs in A to
+refs in M. @exclusive = false (default value) links not only A to M, but to any refs in B and C
+that link to A and to any refs in N and O that align with M. This relationship is transitive, so
+will be applied to any passages that align with any other aligned passages, work notwithstanding.
+Set @exclusive = true to declare the alignment to be valid only between A and M and no others.</a:documentation>
+    <attribute name="exclusive">
+      <data type="boolean"/>
+    </attribute>
+  </define>
+  <!--
+    Is the <align> to be treated as a case of multiple align? Default value is false. If declared to be
+    true, then for every source in every <div-ref> the references will be placed in a sequence.
+    The first item in each sequence will be aligned only with each other, and so on through every item in
+    every sequence. Therefore the number of references derived from @refs must be identical. Further, all 
+    refs in a single @ref must be siblings.  
+  -->
+  <define name="distribute-claim">
+    <attribute name="distribute">
+      <data type="boolean"/>
+    </attribute>
+  </define>
+  <!-- IDREFS of aligns -->
+  <define name="alignment-ref">
+    <attribute name="alignments"/>
+  </define>
+  <define name="align-div-list">
+    <element name="div-ref">
+      <ref name="source-ref"/>
+      <ref name="pointer-to-div-range"/>
+      <optional>
+        <ref name="strength-claim"/>
+      </optional>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <optional>
+        <ref name="seg-ref"/>
+      </optional>
+    </element>
+  </define>
+  <!--
+    Optional segment picker. If provided, every @ref for every @src must point to a leaf div, and there must
+    be an appropriate number of splits declared for those leaf divs in split-leaf-div-at.
+  -->
+  <define name="seg-ref">
+    <attribute name="seg">
+      <ref name="seq-picker"/>
+    </attribute>
+  </define>
+</grammar>

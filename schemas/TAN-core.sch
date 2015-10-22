@@ -138,12 +138,12 @@
       <let name="this-nfc-char-seq" value="tokenize(replace(normalize-unicode(.),'(.)','$1 '),' ')"/>
       <let name="this-non-nfc-seq"
          value="distinct-values($this-raw-char-seq[not(.=$this-nfc-char-seq)])"/>
-      <assert test=". = normalize-unicode(.)" sqf:fix="normalize-unicode">All text needs to be
+      <!--<assert test=". = normalize-unicode(.)" sqf:fix="normalize-unicode">All text needs to be
          normalized (NFC). Errors: <value-of
             select="for $i in $this-non-nfc-seq return concat($i,' (U+',
             tan:dec-to-hex(string-to-codepoints($i)),') at ',
             string-join(for $j in index-of($this-raw-char-seq,$i) return string($j),' ')),' '"
-         /></assert>
+         /></assert>-->
       <sqf:fix id="normalize-unicode">
          <sqf:description>
             <sqf:title>Convert to normalized (NFC) Unicode</sqf:title>

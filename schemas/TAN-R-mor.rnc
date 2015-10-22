@@ -4,24 +4,24 @@ datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
 start = element TAN-R-mor { TAN-root }
 include "TAN-class-3.rnc" {
-    # every TAN-R-mor file has one or more src-lang and feature elements
+    ## every TAN-R-mor file has one or more src-lang and feature elements
     decl-non-class-3 = lang-outside+ & morph-feature+
     TAN-body-core = TAN-R-mor-body
 }
-# TAN-R-mor files declare the morphological features that are allowed for a given language
+## TAN-R-mor files declare the morphological features that are allowed for a given language
 morph-feature =
     element feature {
         ed-stamp?,
         (inclusion
          | (internal-id, (comment* & entity-nondigital-ref)))
     }
-# TAN-R-mor body consists of zero or more assert, report, category, or options
+## TAN-R-mor body consists of zero or more assert, report, category, or options
 TAN-R-mor-body = assert* & report* & category* & options*
-# Modeled loosely on Schematron assert, will return message if the test pattern is false
+## Modeled loosely on Schematron assert, will return message if the test pattern is false
 assert = element assert { test-pattern }
-# Modeled loosely on Schematron report, will return message if the test pattern is true
+## Modeled loosely on Schematron report, will return message if the test pattern is true
 report = element report { test-pattern }
-# Test pattern attributes for determining whether to return the message provided by text 
+## Test pattern attributes for determining whether to return the message provided by text 
 test-pattern =
     ed-stamp?,
     (inclusion
@@ -29,34 +29,34 @@ test-pattern =
         filter?,
         (code-regex-test | token-regex-test | feature-test | filter-qty-test),
         text))
-# Report or assert should be triggered only if the following features are found in a tan:m code
+## Report or assert should be triggered only if the following features are found in a tan:m code
 filter = attribute feature-filter { text }
-# Regular expression, used as a pattern to check matches in codes used in the m elements of TAN-LM files 
+## Regular expression, used as a pattern to check matches in codes used in the m elements of TAN-LM files 
 code-regex-test = attribute code-regex-test { text }
-# Regular expression, used as a pattern to check matches in tokens cited in the m elements of TAN-LM files 
+## Regular expression, used as a pattern to check matches in tokens cited in the m elements of TAN-LM files 
 token-regex-test = attribute token-regex-test { text }
-# declares the feature  required to trigger the report or assertion
+## declares the feature  required to trigger the report or assertion
 feature-test = attribute feature-test { text }
-# declares how many filters need to be present to invoke the assertion or report
+## declares how many filters need to be present to invoke the assertion or report
 filter-qty-test = attribute filter-qty-test { xsd:integer }
-# A set of features that share a common grammatical category such as gender, number, etc.
+## A set of features that share a common grammatical category such as gender, number, etc.
 category =
     element category {
         ed-stamp?,
         (inclusion
          | (comment* & (entity-nondigital-ref, options+)))
     }
-# Declares the option of using a code in lieu of an xml:id. Code must be unique among sibling options 
+## Declares the option of using a code in lieu of an xml:id. Code must be unique among sibling options 
 options =
     element option {
         ed-stamp?,
         (inclusion | (feature-ref, code))
     }
-# Points to the xml:id value of a feature
+## Points to the xml:id value of a feature
 feature-ref = attribute feature { d:IDREF }
-# Provides a code to be used in TAN-LM files to pick a particular feature.
+## Provides a code to be used in TAN-LM files to pick a particular feature.
 code =
     attribute code {
-        # hyphen reserved for "not applicable"; spaces and (),| reserved for @feature-test expressions
+        ## hyphen reserved for "not applicable"; spaces and (),| reserved for @feature-test expressions
         xsd:string { pattern = "[^\-\(\),|\s]|[^\(\),|\s]+" }
     }

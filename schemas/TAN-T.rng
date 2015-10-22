@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <start>
+    <element name="TAN-T">
+      <ref name="TAN-root"/>
+    </element>
+  </start>
+  <include href="TAN-class-1.rng">
+    <define name="TAN-body-core">
+      <ref name="lang-of-content"/>
+      <oneOrMore>
+        <ref name="text-div"/>
+      </oneOrMore>
+    </define>
+  </include>
+  <define name="text-div">
+    <element name="div">
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <attribute name="type">
+            <data type="string">
+              <param name="pattern">\w*</param>
+            </data>
+          </attribute>
+          <attribute name="n">
+            <ref name="n-val"/>
+          </attribute>
+          <optional>
+            <ref name="lang-of-content"/>
+          </optional>
+          <choice>
+            <oneOrMore>
+              <ref name="text-div"/>
+            </oneOrMore>
+            <text/>
+          </choice>
+        </group>
+      </choice>
+    </element>
+  </define>
+</grammar>

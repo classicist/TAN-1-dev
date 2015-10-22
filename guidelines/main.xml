@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="http://docbook.org/xml/5.0/rng/docbook.rng" schematypens="http://relaxng.org/ns/structure/1.0"?>
 <?xml-model href="http://docbook.org/xml/5.0/rng/docbook.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
-<book xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
+<book xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" 
+   xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0">
    <info>
       <title>The Text Alignment Network: Official Guidelines</title>
       <legalnotice>
@@ -57,7 +58,7 @@
       <title>General Overview</title>
       <chapter>
          <title>Introduction</title>
-         <sect1>
+         <section>
             <title>Definition and audience </title>
             <para>The Text Alignment Network (TAN) is a suite of XML encoding formats and associated
                rules and recommended practices, intended to serve anyone who wishes to encode,
@@ -78,8 +79,8 @@
                twenty-first-century studies). Although expressive of scholarly nuance and
                complexity, TAN files are meant to benefit everyone, to be used in broad applications
                such as multilingual publishing, language learning, and machine translation.</para>
-         </sect1>
-         <sect1>
+         </section>
+         <section>
             <title>Rationale and purpose</title>
             <para>Translations, quotations, paraphrases, and so forth—all forms of text reuse—are
                important sources for scholars. Some texts have been lost in their original form and
@@ -207,8 +208,8 @@
                         editors and readers.</para>
                   </listitem>
                </itemizedlist></para>
-         </sect1>
-         <sect1 xml:id="design_principles">
+         </section>
+         <section xml:id="design_principles">
             <title>Design Principles</title>
             <para>To facilitate the research questions mentioned above, the TAN encoding formats and
                this manual have been designed around a few core principles.</para>
@@ -306,7 +307,7 @@
                   </listitem>
                </itemizedlist>
             </para>
-         </sect1>
+         </section>
       </chapter>
       <chapter xml:id="gentle_guide">
          <title>Starting off with the TAN Format</title>
@@ -2402,6 +2403,7 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
       </chapter>
       <chapter xml:id="class_common">
          <title>Patterns and Structures Common to All TAN Encoding Formats</title>
+         <xi:include href="inclusions/core-patterns.xml"/>
          <section xml:id="patterns">
             <title>Common Patterns</title>
             <section xml:id="iri_and_name">
@@ -2863,6 +2865,7 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                </example>
             </section>
          </section>
+         <xi:include href="inclusions/TAN-core.xml"></xi:include>
          <section xml:id="structure">
             <title>Overall Structure (root)</title>
             <para><table frame="all">

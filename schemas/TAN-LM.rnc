@@ -4,25 +4,25 @@ datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
 start = element TAN-LM { TAN-root }
 include "TAN-class-2.rnc" {
-    # TAN-LM files must each have at least one lexicon and one TAN-R-mor declaration
+    ## TAN-LM files must each have at least one lexicon and one TAN-R-mor declaration
     decl-non-class-2 = decl-lexi+ & decl-morph+
-    # TAN-LM files point only to one source
+    ## TAN-LM files point only to one source
     source-list = source-item
-    # Because TAN-LM files depend on only one source, no id references to sources are needed
+    ## Because TAN-LM files depend on only one source, no id references to sources are needed
     source-ref = empty
     id-option = empty
     TAN-body-core = lexicon-attr, grammar-attr, TAN-LM-body-core
-    # TAN-LM files may have no more than one suppress-div-type field. Multiple div-types should be space delimited in @div-type-ref
+    ## TAN-LM files may have no more than one suppress-div-type field. Multiple div-types should be space delimited in @div-type-ref
     decl-supp-div-opt = decl-supp-div-type?
 }
-# Declaration element: identifies grammatical authorities used.
 decl-morph =
+## Declaration element: identifies grammatical authorities used.
     element morphology {
         ed-stamp?,
         (inclusion | (internal-id, lang-outside*, entity-digital-tan-other-ref))
     }
-# Declaration element: identifies lexicographical authorities used
 decl-lexi =
+## Declaration element: identifies lexicographical authorities used
     element lexicon {
         ed-stamp?,
         (inclusion

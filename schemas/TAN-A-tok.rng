@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:local="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0">
+  <start>
+    <element name="TAN-A-tok">
+      <ref name="TAN-root"/>
+    </element>
+  </start>
+  <include href="TAN-class-2.rng">
+    <define name="source-list">
+      <a:documentation>TAN-A-tok files take exactly two sources</a:documentation>
+      <ref name="source-item"/>
+      <ref name="source-item"/>
+    </define>
+    <define name="source-id-opt">
+      <a:documentation>TAN-A-tok sources must be named</a:documentation>
+      <ref name="internal-id"/>
+    </define>
+    <define name="decl-non-class-2">
+      <oneOrMore>
+        <ref name="decl-brel"/>
+      </oneOrMore>
+      <oneOrMore>
+        <ref name="decl-reus"/>
+      </oneOrMore>
+    </define>
+    <define name="TAN-body-core">
+      <ref name="bitext-relation-attr"/>
+      <ref name="reuse-type-attr"/>
+      <oneOrMore>
+        <ref name="alignment"/>
+      </oneOrMore>
+    </define>
+    <define name="alignment-attributes-non-class-2">
+      <a:documentation>alignments may claim bitext relations and reuse type</a:documentation>
+      <optional>
+        <ref name="internal-id"/>
+      </optional>
+      <optional>
+        <ref name="bitext-relation-attr"/>
+      </optional>
+      <optional>
+        <ref name="reuse-type-attr"/>
+      </optional>
+    </define>
+    <define name="alignment-content-non-class-2">
+      <a:documentation>alignments must contain one or more toks</a:documentation>
+      <oneOrMore>
+        <ref name="token-list"/>
+      </oneOrMore>
+    </define>
+  </include>
+  <define name="decl-brel">
+    <element name="bitext-relation">
+      <a:documentation>Identifies how one text-bearing object relates to another by specifying the chain of derivation (as in stemmatics) that connects one to the other.</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <ref name="internal-id"/>
+          <interleave>
+            <zeroOrMore>
+              <ref name="comment"/>
+            </zeroOrMore>
+            <ref name="entity-nondigital-ref"/>
+          </interleave>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="decl-reus">
+    <oneOrMore>
+      <element name="reuse-type">
+        <a:documentation>Identifies a category of text reuse (e.g., translation, mistranslation, paraphrase, ridicule).</a:documentation>
+        <optional>
+          <ref name="ed-stamp"/>
+        </optional>
+        <choice>
+          <ref name="inclusion"/>
+          <group>
+            <ref name="internal-id"/>
+            <interleave>
+              <zeroOrMore>
+                <ref name="comment"/>
+              </zeroOrMore>
+              <ref name="entity-nondigital-ref"/>
+            </interleave>
+          </group>
+        </choice>
+      </element>
+    </oneOrMore>
+  </define>
+  <define name="bitext-relation-attr">
+    <attribute name="bitext-relation">
+      <data type="IDREFS"/>
+    </attribute>
+  </define>
+  <define name="reuse-type-attr">
+    <attribute name="reuse-type">
+      <data type="IDREFS"/>
+    </attribute>
+  </define>
+</grammar>

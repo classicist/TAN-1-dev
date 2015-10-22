@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<grammar ns="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+<grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:local="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <include href="TAN-core.rng">
     <define name="decl-non-core">
       <interleave>
@@ -7,22 +7,20 @@
         <ref name="decl-non-class-1"/>
       </interleave>
     </define>
-    <!-- No class 1 file may use @src, because there is only one source allowed -->
     <define name="source-ref">
+      <a:documentation>No class 1 file may use @src, because there is only one source allowed</a:documentation>
       <empty/>
     </define>
-    <!-- Any class 1 file that declares a core TAN tokenization pattern, must use one of the following options -->
     <define name="tokenization-ref-text">
+      <a:documentation>Any class 1 file that declares a core TAN tokenization pattern, must use one of the following options</a:documentation>
       <data type="string">
         <param name="pattern">(precise|general(-words-only)?)-\d+</param>
       </data>
     </define>
   </include>
-  <!--
-    Class 1 files must declare a single work, perhaps one version, one or more divisions, one or more
-    recommended tokenizations, perhaps one filter, and perhaps one 
-  -->
   <define name="decl-class-1">
+    <a:documentation>Class 1 files must declare a single work, perhaps one version, one or more divisions, one or more
+recommended tokenizations, perhaps one filter, and perhaps one </a:documentation>
     <interleave>
       <ref name="decl-work"/>
       <optional>
@@ -42,13 +40,13 @@
       </optional>
     </interleave>
   </define>
-  <!-- Reserved for declarations specific to individual types of class 1 files -->
   <define name="decl-non-class-1">
+    <a:documentation>Reserved for declarations specific to individual types of class 1 files</a:documentation>
     <empty/>
   </define>
-  <!-- The work that has been transcribed -->
   <define name="decl-work">
     <element name="work">
+      <a:documentation>The work that has been transcribed</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -63,9 +61,9 @@
       </choice>
     </element>
   </define>
-  <!-- Version of the work has been transcribed (for text-bearing objects that have multiple versions of the work) -->
   <define name="decl-vers">
     <element name="version">
+      <a:documentation>Version of the work has been transcribed (for text-bearing objects that have multiple versions of the work)</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -80,9 +78,9 @@
       </choice>
     </element>
   </define>
-  <!-- Types of textual divisions into which a transcription has been segmented (e.g., title, paragraph, stanza) -->
   <define name="decl-div">
     <element name="div-type">
+      <a:documentation>Types of textual divisions into which a transcription has been segmented (e.g., title, paragraph, stanza)</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -103,9 +101,9 @@
       </choice>
     </element>
   </define>
-  <!-- Recommended pattern to be used to segment a text into word tokens. -->
   <define name="decl-tok-rec">
     <element name="recommended-tokenization">
+      <a:documentation>Recommended pattern to be used to segment a text into word tokens.</a:documentation>
       <choice>
         <empty/>
         <ref name="tokenization-ref"/>
@@ -125,23 +123,24 @@
       </choice>
     </element>
   </define>
-  <!-- Recommendation on whether references to the transcription should make div types explicit or implicit. -->
   <define name="decl-ref-rec">
     <element name="recommended-div-type-refs">
+      <a:documentation>Recommendation on whether references to the transcription should make div types explicit or implicit.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
-      <data type="string">
-        <param name="pattern">implicit|explicit</param>
-      </data>
+      <choice>
+        <ref name="inclusion"/>
+        <data type="string">
+          <param name="pattern">implicit|explicit</param>
+        </data>
+      </choice>
     </element>
   </define>
-  <!--
-    
-    Filter declaring alterations that have been made or should be made to the source(s).
-  -->
   <define name="decl-filt">
+    <a:documentation/>
     <element name="filter">
+      <a:documentation>Filter declaring alterations that have been made or should be made to the source(s).</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -166,9 +165,9 @@
       </zeroOrMore>
     </interleave>
   </define>
-  <!-- Normalizations made to a source file. Typically applies to tacit corrections made in the transcription or interpetation of a source (e.g., suppression of discretionary hyphenation). -->
   <define name="decl-filt-norm">
     <element name="normalization">
+      <a:documentation>Normalizations made to a source file. Typically applies to tacit corrections made in the transcription or interpetation of a source (e.g., suppression of discretionary hyphenation). </a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -188,13 +187,13 @@
       </choice>
     </element>
   </define>
-  <!-- Replacements that have been made to an XML source file. -->
   <define name="decl-filt-repl">
+    <a:documentation>Replacements that have been made to an XML source file. </a:documentation>
     <ref name="func-replace"/>
   </define>
-  <!-- Transliteration scheme applied to a source. -->
   <define name="decl-filt-tlit">
     <element name="transliteration">
+      <a:documentation>Transliteration scheme applied to a source.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0">
+  <start>
+    <element name="TAN-R-tok">
+      <ref name="TAN-root"/>
+    </element>
+  </start>
+  <include href="TAN-class-3.rng">
+    <define name="TAN-body-core">
+      <zeroOrMore>
+        <ref name="func-replace"/>
+      </zeroOrMore>
+      <ref name="func-tokenize"/>
+      <oneOrMore>
+        <ref name="exampleAB"/>
+      </oneOrMore>
+    </define>
+    <define name="decl-non-class-3">
+      <zeroOrMore>
+        <ref name="lang-outside"/>
+      </zeroOrMore>
+    </define>
+  </include>
+  <define name="exampleAB">
+    <element name="example">
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <interleave>
+        <zeroOrMore>
+          <ref name="comment"/>
+        </zeroOrMore>
+        <group>
+          <element name="input">
+            <optional>
+              <ref name="ed-stamp"/>
+            </optional>
+            <text/>
+          </element>
+          <oneOrMore>
+            <element name="output-token">
+              <optional>
+                <ref name="ed-stamp"/>
+              </optional>
+              <text/>
+            </element>
+          </oneOrMore>
+        </group>
+      </interleave>
+    </element>
+  </define>
+</grammar>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar xmlns:ns1="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <include href="TAN-core.rng" ns="tag:textalign.net,2015:ns">
+    <define name="decl-non-core">
+      <interleave>
+        <ref name="decl-class-2"/>
+        <ref name="decl-non-class-2"/>
+      </interleave>
+    </define>
+    <define name="source-rights">
+      <a:documentation>All sources are TAN files, so no source rights should be declared--they're already stated</a:documentation>
+      <empty/>
+    </define>
+  </include>
+  <define name="decl-class-2">
+    <a:documentation>Reserved for declarations common to all class 2 files</a:documentation>
+    <interleave>
+      <ref name="decl-token-opt"/>
+      <ref name="decl-supp-div-opt"/>
+      <ref name="decl-implicit-div-type-refs-opt"/>
+      <group>
+        <ref name="decl-rename-type-opt"/>
+        <ref name="decl-rename-n-opt"/>
+      </group>
+    </interleave>
+  </define>
+  <define name="decl-non-class-2">
+    <a:documentation>Reserved for declarations specific to individual types of class 2 files </a:documentation>
+    <empty/>
+  </define>
+  <define name="decl-token-opt">
+    <a:documentation>
+Reserved for modification in different types of Class 2 files, to specify how many tokenization declarations are allowed.</a:documentation>
+    <oneOrMore>
+      <ref name="decl-token"/>
+    </oneOrMore>
+  </define>
+  <define name="decl-token">
+    <element name="tokenization">
+      <a:documentation>Which tokenization methods have been used, either by id ref to the xml:id in the source TAN-T(EI) file, or by an IRI + name pattern reference to a TAN-R-tok file</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <ref name="source-ref"/>
+          <choice>
+            <ref name="tokenization-ref"/>
+            <ref name="entity-digital-tan-other-ref"/>
+          </choice>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="decl-supp-div-opt">
+    <a:documentation>Reserved for modification in different types of Class 2 files, to specify how many suppress-div-type declarations are allowed.</a:documentation>
+    <zeroOrMore>
+      <ref name="decl-supp-div-type"/>
+    </zeroOrMore>
+  </define>
+  <define name="decl-supp-div-type">
+    <element name="suppress-div-types">
+      <a:documentation>Option to suppress specific div types in a reference. Must preserve the Leaf Div Uniqueness Rule (LDUR).</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <ref name="source-ref"/>
+          <ref name="div-type-ref"/>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="decl-implicit-div-type-refs-opt">
+    <zeroOrMore>
+      <element name="implicit-div-type-refs">
+        <a:documentation>Option to drop references to div types and use only @n values. Must not be applied to sources with empty @n values or if the LDUR would be broken.</a:documentation>
+        <optional>
+          <ref name="ed-stamp"/>
+        </optional>
+        <choice>
+          <ref name="inclusion"/>
+          <ref name="source-ref"/>
+        </choice>
+      </element>
+    </zeroOrMore>
+  </define>
+  <define name="decl-rename-type-opt">
+    <zeroOrMore>
+      <ref name="decl-rename-div-type"/>
+    </zeroOrMore>
+  </define>
+  <define name="decl-rename-div-type">
+    <element name="rename-div-types">
+      <a:documentation>Provisional change of name for the div-type in one or more sources</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <ref name="source-ref"/>
+          <oneOrMore>
+            <ref name="name-change"/>
+          </oneOrMore>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="decl-rename-n-opt">
+    <zeroOrMore>
+      <ref name="decl-rename-div-n"/>
+    </zeroOrMore>
+  </define>
+  <define name="decl-rename-div-n">
+    <element name="rename-div-ns">
+      <a:documentation>Declaration to change the name of the n value in one or more sources in one or more given div types; used to reconcile refs that rely on non-numbering n values</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <ref name="source-ref"/>
+          <ref name="div-type-ref"/>
+          <oneOrMore>
+            <ref name="name-change"/>
+          </oneOrMore>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="name-change">
+    <element name="rename">
+      <attribute name="old">
+        <choice>
+          <ref name="n-val"/>
+          <data type="string">
+            <param name="pattern">#[ai]</param>
+          </data>
+        </choice>
+      </attribute>
+      <attribute name="new">
+        <choice>
+          <ref name="n-val"/>
+          <data type="string">
+            <param name="pattern">#1</param>
+          </data>
+        </choice>
+      </attribute>
+    </element>
+  </define>
+  <define name="certainty-stamp">
+    <optional>
+      <ref name="cert-claim"/>
+    </optional>
+    <optional>
+      <ref name="ed-stamp"/>
+    </optional>
+  </define>
+  <define name="id-option">
+    <a:documentation>Option to include an internal id. Not needed in TAN-LM files.</a:documentation>
+    <ref name="internal-id"/>
+  </define>
+  <define name="alignment">
+    <element name="align">
+      <a:documentation>Sets of alignments of tan:tok or tan:div-ref, shared by body of TAN-A-* files</a:documentation>
+      <choice>
+        <ref name="alignment-inclusion-opt"/>
+        <group>
+          <ref name="alignment-attributes-non-class-2"/>
+          <ref name="certainty-stamp"/>
+          <interleave>
+            <zeroOrMore>
+              <ref name="comment"/>
+            </zeroOrMore>
+            <ref name="alignment-content-non-class-2"/>
+          </interleave>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="alignment-attributes-non-class-2">
+    <empty/>
+  </define>
+  <define name="alignment-content-non-class-2">
+    <empty/>
+  </define>
+  <define name="alignment-inclusion-opt">
+    <ref name="inclusion"/>
+  </define>
+  <define name="token-list">
+    <element name="tok">
+      <a:documentation>Token or token fragment. Used in the body of class 2 TAN files to make claims about tokens or token fragments </a:documentation>
+      <ref name="certainty-stamp"/>
+      <ref name="source-ref"/>
+      <ref name="pointer-to-div-range"/>
+      <optional>
+        <ref name="token-value-ref"/>
+      </optional>
+      <optional>
+        <ref name="token-value-order-ref"/>
+      </optional>
+      <ref name="char-ref"/>
+    </element>
+  </define>
+  <define name="char-ref">
+    <optional>
+      <attribute name="chars">
+        <ref name="seq-picker"/>
+      </attribute>
+    </optional>
+  </define>
+</grammar>

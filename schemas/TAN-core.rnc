@@ -47,7 +47,7 @@ internal-id =
         d:ID { pattern = "\w\S*" }
     }
 
-##     Any generic IRI identifier.
+## Any generic IRI identifier.
 IRI-gen = xsd:anyURI { pattern = "[a-zA-Z][\-.+a-zA-Z0-9]+:\S+" }
 
 ##     Acceptable values of @n, used by class 1 and class 2 files
@@ -99,7 +99,7 @@ token-value-ref =
         xsd:string { pattern = ".+" }
     }
 
-##     Unused pattern, restricted to URIs. Kept in case the regular expression is helpful in the future.
+# Unused pattern, restricted to URIs. Kept in case the regular expression is helpful in the future.
 URI-gen =
     xsd:anyURI { pattern = "[a-zA-Z][\-.+a-zA-Z0-9]+:[\-._~+:/?#\[\]%@!$&'\(\)*+,;=a-zA-Z0-9]+" }
 
@@ -191,8 +191,9 @@ metadata-human =
     element name { metadata-desc }+,
     element desc { metadata-desc }*
 
-##    Pointer (link) to a div in a TAP-T(EI) file 
-pointer-to-div = attribute ref { div-ref }
+##    Pointer (link) to a div in a TAN-T(EI) file
+# seemingly otiose, but commenting out before deleting
+# pointer-to-div = attribute ref { div-ref }
 
 ##    Pointer (link) to a range of divs in a TAN-T(EI) file 
 pointer-to-div-range = attribute ref { div-range-ref }

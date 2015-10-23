@@ -6,28 +6,28 @@
     </element>
   </start>
   <include href="TAN-class-2.rng">
-    <!-- TAN-A-div files must have one or more sources -->
     <define name="source-list">
+      <a:documentation>TAN-A-div files must have one or more sources</a:documentation>
       <oneOrMore>
         <ref name="source-item"/>
       </oneOrMore>
     </define>
-    <!-- TAN-A-div sources must be named -->
     <define name="source-id-opt">
+      <a:documentation>TAN-A-div sources must be named</a:documentation>
       <ref name="internal-id"/>
     </define>
-    <!-- no levels of certainty are allowed in TAN-A-div files; substitute is strength-claim -->
     <define name="certainty-stamp">
+      <a:documentation>no levels of certainty are allowed in TAN-A-div files; substitute is strength-claim</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
     </define>
-    <!-- TAN-A-div files may not point to individual characters/glyphs -->
     <define name="char-ref">
+      <a:documentation>TAN-A-div files may not point to individual characters/glyphs</a:documentation>
       <empty/>
     </define>
-    <!-- TAN-A-div files do not require a tokenization choice within a filter (choice enforced by Schematron) -->
     <define name="decl-token-opt">
+      <a:documentation>TAN-A-div files do not require a tokenization choice within a filter (choice enforced by Schematron)</a:documentation>
       <zeroOrMore>
         <ref name="decl-token"/>
       </zeroOrMore>
@@ -49,8 +49,8 @@
         <ref name="alignment"/>
       </zeroOrMore>
     </define>
-    <!-- alignments may take either an id with no supplementary variables or else no id and optional variables indicating strength, exclusivity, distribution, and auto-alignment -->
     <define name="alignment-attributes-non-class-2">
+      <a:documentation>alignments may take either an id with no supplementary variables or else no id and optional variables indicating strength, exclusivity, distribution, and auto-alignment</a:documentation>
       <choice>
         <ref name="internal-id"/>
         <group>
@@ -66,8 +66,8 @@
         </group>
       </choice>
     </define>
-    <!-- alignments must contain either one or more div-refs or a list of IDREFS to other alignments -->
     <define name="alignment-content-non-class-2">
+      <a:documentation>alignments must contain either one or more div-refs or a list of IDREFS to other alignments</a:documentation>
       <choice>
         <ref name="alignment-ref"/>
         <oneOrMore>
@@ -76,9 +76,21 @@
       </choice>
     </define>
   </include>
-  <!-- reconciles any differences of IRIs for the type of work -->
+  <!-- Common patterns -->
+  <define name="realign-div-list">
+    <ref name="div-ref-list"/>
+  </define>
+  <define name="div-ref-list">
+    <element name="div-ref">
+      <a:documentation>References a &lt;div&gt;</a:documentation>
+      <ref name="div-ref-pattern"/>
+    </element>
+  </define>
+  <!-- TAN-A-div structure -->
   <define name="work-equiv">
     <element name="equate-works">
+      <a:documentation>Declares an ad hoc equivalence of works for class 1 sources that have no shared &lt;IRI&gt;s 
+under &lt;work&gt;</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -88,9 +100,10 @@
       </choice>
     </element>
   </define>
-  <!-- reconciles any differences of div-type IRIs for the type of canonical division -->
   <define name="div-type-equiv">
     <element name="equate-div-types">
+      <a:documentation>Declares an ad hoc equivalence of div types for class 1 sources that have no shared &lt;IRI&gt;s
+under a particular &lt;div-type&gt; </a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -107,6 +120,7 @@
   </define>
   <define name="div-type-ref-cluster">
     <element name="div-type-ref">
+      <a:documentation>References a &lt;div-type&gt; in a class 1 source</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -114,9 +128,11 @@
       <ref name="div-type-ref"/>
     </element>
   </define>
-  <!-- creates new splits in leaf divs, to create alignments more refined than what a TAN-T file might offer -->
   <define name="split">
     <element name="split-leaf-div-at">
+      <a:documentation>Creates ad hoc splits in leaf &lt;div&gt;s, to create alignments more refined 
+than what a class 1 source offers; useful for &lt;realign&gt; and &lt;align&gt; actions that
+require dealing with textual units smaller than leaf &lt;div&gt;s.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -133,11 +149,9 @@
       </choice>
     </element>
   </define>
-  <!--
-    used to temper the strength of an alignment, suitable for alignments we qualify through "cf." and the
-    like. Cannot used in type and doubt because this model disallows both.
-  -->
   <define name="strength-claim">
+    <a:documentation>Used to temper the strength of an alignment, suitable for alignments we qualify through "cf." and the
+like. Cannot used in type and doubt because this model disallows both.</a:documentation>
     <attribute name="strength">
       <data type="string">
         <param name="pattern">0\.\d+</param>
@@ -146,6 +160,8 @@
   </define>
   <define name="realignment">
     <element name="realign">
+      <a:documentation>Reassigns the default alignment of &lt;div&gt;s in a class 1 source 
+to zero or more locations in other versions of the same work</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -169,27 +185,19 @@
   </define>
   <define name="anchor">
     <element name="anchor-div-ref">
-      <ref name="source-ref"/>
-      <ref name="pointer-to-div-range"/>
-      <optional>
-        <ref name="ed-stamp"/>
-      </optional>
-      <optional>
-        <ref name="seg-ref"/>
-      </optional>
+      <a:documentation>References a &lt;div&gt; to which other &lt;div-ref&gt;s should be realigned</a:documentation>
+      <ref name="div-ref-pattern"/>
     </element>
   </define>
-  <define name="realign-div-list">
-    <element name="div-ref">
-      <ref name="source-ref"/>
-      <ref name="pointer-to-div-range"/>
-      <optional>
-        <ref name="ed-stamp"/>
-      </optional>
-      <optional>
-        <ref name="seg-ref"/>
-      </optional>
-    </element>
+  <define name="div-ref-pattern">
+    <ref name="source-ref"/>
+    <ref name="pointer-to-div-range"/>
+    <optional>
+      <ref name="ed-stamp"/>
+    </optional>
+    <optional>
+      <ref name="seg-ref"/>
+    </optional>
   </define>
   <define name="exclusive-claim">
     <a:documentation>Does or does not the specially declared alignment pass on to
@@ -203,42 +211,29 @@ Set @exclusive = true to declare the alignment to be valid only between A and M 
       <data type="boolean"/>
     </attribute>
   </define>
-  <!--
-    Is the <align> to be treated as a case of multiple align? Default value is false. If declared to be
-    true, then for every source in every <div-ref> the references will be placed in a sequence.
-    The first item in each sequence will be aligned only with each other, and so on through every item in
-    every sequence. Therefore the number of references derived from @refs must be identical. Further, all 
-    refs in a single @ref must be siblings.  
-  -->
   <define name="distribute-claim">
+    <a:documentation>Is the &lt;align&gt; to be treated as a case of multiple align? Default value is false. If declared to be
+true, then for every source in every &lt;div-ref&gt; the references will be placed in a sequence.
+The first item in each sequence will be aligned only with each other, and so on through every item in
+every sequence. Therefore the number of references derived from @refs must be identical. Further, all 
+refs in a single @ref must be siblings.  </a:documentation>
     <attribute name="distribute">
       <data type="boolean"/>
     </attribute>
   </define>
-  <!-- IDREFS of aligns -->
   <define name="alignment-ref">
+    <a:documentation>IDREFS of aligns</a:documentation>
     <attribute name="alignments"/>
   </define>
   <define name="align-div-list">
-    <element name="div-ref">
-      <ref name="source-ref"/>
-      <ref name="pointer-to-div-range"/>
-      <optional>
-        <ref name="strength-claim"/>
-      </optional>
-      <optional>
-        <ref name="ed-stamp"/>
-      </optional>
-      <optional>
-        <ref name="seg-ref"/>
-      </optional>
-    </element>
+    <ref name="div-ref-list"/>
+    <optional>
+      <ref name="strength-claim"/>
+    </optional>
   </define>
-  <!--
-    Optional segment picker. If provided, every @ref for every @src must point to a leaf div, and there must
-    be an appropriate number of splits declared for those leaf divs in split-leaf-div-at.
-  -->
   <define name="seg-ref">
+    <a:documentation>Optional segment picker. If provided, every @ref for every @src must point to a leaf div, and there must
+be an appropriate number of splits declared for those leaf divs in split-leaf-div-at.</a:documentation>
     <attribute name="seg">
       <ref name="seq-picker"/>
     </attribute>

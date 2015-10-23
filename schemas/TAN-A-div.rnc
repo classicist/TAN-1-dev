@@ -21,17 +21,31 @@ include "TAN-class-2.rnc" {
     ## alignments must contain either one or more div-refs or a list of IDREFS to other alignments
     alignment-content-non-class-2 = alignment-ref | align-div-list+
 }
-## reconciles any differences of IRIs for the type of work
-work-equiv = element equate-works { ed-stamp?, (inclusion | source-ref) }
-## reconciles any differences of div-type IRIs for the type of canonical division 
+# Common patterns
+realign-div-list = div-ref-list
+div-ref-list = 
+## References a <div>
+element div-ref { div-ref-pattern }
+
+# TAN-A-div structure
+work-equiv = 
+## Declares an ad hoc equivalence of works for class 1 sources that have no shared <IRI>s 
+## under <work>
+element equate-works { ed-stamp?, (inclusion | source-ref) }
 div-type-equiv =
+## Declares an ad hoc equivalence of div types for class 1 sources that have no shared <IRI>s
+## under a particular <div-type> 
     element equate-div-types {
         ed-stamp?,
         (inclusion | (div-type-ref-cluster, div-type-ref-cluster+))
     }
-div-type-ref-cluster = element div-type-ref { ed-stamp?, source-ref, div-type-ref }
-## creates new splits in leaf divs, to create alignments more refined than what a TAN-T file might offer
+div-type-ref-cluster = 
+## References a <div-type> in a class 1 source
+element div-type-ref { ed-stamp?, source-ref, div-type-ref }
 split =
+## Creates ad hoc splits in leaf <div>s, to create alignments more refined 
+## than what a class 1 source offers; useful for <realign> and <align> actions that
+## require dealing with textual units smaller than leaf <div>s.
     element split-leaf-div-at {
         ed-stamp?,
         (inclusion | (comment* & token-list+))
@@ -43,13 +57,17 @@ strength-claim =
         xsd:string { pattern = "0\.\d+" }
     }
 realignment =
+## Reassigns the default alignment of <div>s in a class 1 source 
+## to zero or more locations in other versions of the same work
     element realign {
         ed-stamp?,
         (inclusion
          | (comment* & (anchor?, realign-div-list+)))
     }
-anchor = element anchor-div-ref { source-ref, pointer-to-div-range, ed-stamp?, seg-ref? }
-realign-div-list = element div-ref { source-ref, pointer-to-div-range, ed-stamp?, seg-ref? }
+anchor = 
+## References a <div> to which other <div-ref>s should be realigned
+element anchor-div-ref { div-ref-pattern }
+div-ref-pattern = source-ref, pointer-to-div-range, ed-stamp?, seg-ref?
 ## Does or does not the specially declared alignment pass on to
 ## other implicitly aligned segments? Suppose a TAN-A-div file has as sources A, B, and C (3 versions 
 ## of Work 1) and M, N, and O (3 versions of Work 2). Suppose an <align> linking refs in A to
@@ -66,8 +84,7 @@ exclusive-claim = attribute exclusive { xsd:boolean }
 distribute-claim = attribute distribute { xsd:boolean }
 ## IDREFS of aligns
 alignment-ref = attribute alignments { text }
-align-div-list =
-    element div-ref { source-ref, pointer-to-div-range, strength-claim?, ed-stamp?, seg-ref? }
+align-div-list = div-ref-list, strength-claim?
 ## Optional segment picker. If provided, every @ref for every @src must point to a leaf div, and there must
 ## be an appropriate number of splits declared for those leaf divs in split-leaf-div-at.
 seg-ref = attribute seg { seq-picker }

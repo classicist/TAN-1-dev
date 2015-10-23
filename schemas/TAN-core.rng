@@ -61,7 +61,7 @@
     </attribute>
   </define>
   <define name="IRI-gen">
-    <a:documentation>    Any generic IRI identifier.</a:documentation>
+    <a:documentation>Any generic IRI identifier.</a:documentation>
     <data type="anyURI">
       <param name="pattern">[a-zA-Z][\-.+a-zA-Z0-9]+:\S+</param>
     </data>
@@ -140,8 +140,8 @@
       </data>
     </attribute>
   </define>
+  <!-- Unused pattern, restricted to URIs. Kept in case the regular expression is helpful in the future. -->
   <define name="URI-gen">
-    <a:documentation>    Unused pattern, restricted to URIs. Kept in case the regular expression is helpful in the future.</a:documentation>
     <data type="anyURI">
       <param name="pattern">[a-zA-Z][\-.+a-zA-Z0-9]+:[\-._~+:/?#\[\]%@!$&amp;'\(\)*+,;=a-zA-Z0-9]+</param>
     </data>
@@ -359,13 +359,12 @@
       </element>
     </zeroOrMore>
   </define>
-  <define name="pointer-to-div">
-    <a:documentation>   Pointer (link) to a div in a TAP-T(EI) file </a:documentation>
-    <attribute name="ref">
-      <ref name="div-ref"/>
-    </attribute>
-  </define>
   <define name="pointer-to-div-range">
+    <a:documentation>   Pointer (link) to a div in a TAN-T(EI) file</a:documentation>
+    <!--
+      seemingly otiose, but commenting out before deleting
+      pointer-to-div = attribute ref { div-ref }
+    -->
     <a:documentation>   Pointer (link) to a range of divs in a TAN-T(EI) file </a:documentation>
     <attribute name="ref">
       <ref name="div-range-ref"/>

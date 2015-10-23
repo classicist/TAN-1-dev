@@ -167,7 +167,7 @@ Reserved for modification in different types of Class 2 files, to specify how ma
   </define>
   <define name="alignment">
     <element name="align">
-      <a:documentation>Sets of alignments of tan:tok or tan:div-ref, shared by body of TAN-A-* files</a:documentation>
+      <a:documentation>Declares an ad hoc alignment of passages or words through children &lt;tok&gt;s (TAN-A-tok) or &lt;div-ref&gt;s (TAN-A-div)</a:documentation>
       <choice>
         <ref name="alignment-inclusion-opt"/>
         <group>

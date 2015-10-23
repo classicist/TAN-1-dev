@@ -63,7 +63,7 @@ certainty-stamp = cert-claim?, ed-stamp?
 ## Option to include an internal id. Not needed in TAN-LM files.
 id-option = internal-id
 alignment =
-## Sets of alignments of tan:tok or tan:div-ref, shared by body of TAN-A-* files
+## Declares an ad hoc alignment of passages or words through children <tok>s (TAN-A-tok) or <div-ref>s (TAN-A-div)
     element align {
         alignment-inclusion-opt
         | (alignment-attributes-non-class-2,

@@ -2,109 +2,175 @@
 <section xmlns="http://docbook.org/ns/docbook"
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:rng="http://relaxng.org/ns/structure/1.0"
+         xmlns:fn="http://www.w3.org/2005/xpath-functions"
          xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
          version="5.0">
-   <title>TAN-A-div elements at a glance</title>
-   <para>all elements: TAN-A-div equate-works equate-div-types div-type-ref split-leaf-div-at realign anchor-div-ref div-ref TAN-A-tok bitext-relation reuse-type work version div-type recommended-tokenization recommended-div-type-refs filter normalization transliteration tokenization suppress-div-types implicit-div-type-refs rename-div-types rename-div-ns rename align tok for-lang checksum value comment pattern flags replace replacement tokenize IRI master-location location name desc head body rights-excluding-sources inclusion source rights-source-only see-also relationship declarations agent role agentrole change TAN-LM morphology lexicon ana lm joined l m TAN-R-mor feature assert report category option TAN-R-tok example input output-token TAN-T div</para>
-   <para>duplicate elements: div-ref IRI for-lang checksum value comment pattern flags replace replacement master-location location name desc head body rights-excluding-sources inclusion source rights-source-only see-also relationship declarations agent role agentrole change work version div-type recommended-tokenization recommended-div-type-refs filter normalization transliteration</para>
+   <title>TAN-A-div elements and attributes summarized</title>
    <para>
-      <table frame="all">
-         <title>Synopsis of elements</title>
-         <tgroup cols="4">
-            <colspec colname="c1" colnum="1" colwidth="1.59*"/>
-            <colspec colname="c2" colnum="2" colwidth="1*"/>
-            <colspec colname="c3" colnum="3" colwidth="1.44*"/>
-            <colspec colname="c4" colnum="4" colwidth="1.75*"/>
-            <thead>
-               <row>
-                  <entry>name</entry>
-                  <entry>definition</entry>
-                  <entry>description</entry>
-                  <entry>used by</entry>
-               </row>
-            </thead>
-            <tbody>
-               <row xml:id="tan-element-anchor-div-ref">
-                  <entry>
-                     <code>anchor-div-ref</code>
-                  </entry>
-                  <entry/>
-                  <entry/>
-                  <entry/>
-               </row>
-               <row xml:id="tan-element-div-ref">
-                  <entry>
-                     <code>div-ref</code>
-                  </entry>
-                  <entry/>
-                  <entry/>
-                  <entry/>
-               </row>
-               <row xml:id="tan-element-div-ref">
-                  <entry>
-                     <code>div-ref</code>
-                  </entry>
-                  <entry/>
-                  <entry/>
-                  <entry/>
-               </row>
-               <row xml:id="tan-element-div-type-ref">
-                  <entry>
-                     <code>div-type-ref</code>
-                  </entry>
-                  <entry/>
-                  <entry/>
-                  <entry>
-                     <code>div-type-ref<xref linkend="tan-element-div-type-ref"/>
-                     </code>
-                     <code>suppress-div-types<xref linkend="tan-element-suppress-div-types"/>
-                     </code>
-                     <code>rename-div-ns<xref linkend="tan-element-rename-div-ns"/>
-                     </code>
-                  </entry>
-               </row>
-               <row xml:id="tan-element-equate-div-types">
-                  <entry>
-                     <code>equate-div-types</code>
-                  </entry>
-                  <entry/>
-                  <entry/>
-                  <entry/>
-               </row>
-               <row xml:id="tan-element-equate-works">
-                  <entry>
-                     <code>equate-works</code>
-                  </entry>
-                  <entry/>
-                  <entry/>
-                  <entry/>
-               </row>
-               <row xml:id="tan-element-realign">
-                  <entry>
-                     <code>realign</code>
-                  </entry>
-                  <entry/>
-                  <entry/>
-                  <entry/>
-               </row>
-               <row xml:id="tan-element-split-leaf-div-at">
-                  <entry>
-                     <code>split-leaf-div-at</code>
-                  </entry>
-                  <entry/>
-                  <entry/>
-                  <entry/>
-               </row>
-               <row xml:id="tan-element-TAN-A-div">
-                  <entry>
-                     <code>TAN-A-div</code>
-                  </entry>
-                  <entry/>
-                  <entry/>
-                  <entry/>
-               </row>
-            </tbody>
-         </tgroup>
-      </table>
-   </para>
+      <emphasis>Elements</emphasis>: TAN-A-div anchor-div-ref div-ref div-type-ref equate-div-types equate-works realign split-leaf-div-at</para>
+   <para>
+      <emphasis>Attributes</emphasis>: alignments distribute exclusive seg strength</para>
+   <section xml:id="tan-element-anchor-div-ref">
+      <title>
+         <code>&lt;anchor-div-ref&gt;</code>
+      </title>
+      <para>Element: <code>anchor-div-ref</code>:
+            <emphasis>References a <code>&lt;div&gt;</code> to which other <code>&lt;div-ref&gt;</code>s should be realigned</emphasis>
+      </para>
+      <para>Definition: <code>(@src, @ref, (@ed-who, @ed-when)?, @seg?)</code>
+      </para>
+      <para>Used by: <code>realign<xref linkend="tan-element-realign"/>
+         </code>
+      </para>
+   </section>
+   <section xml:id="tan-element-div-ref">
+      <title>
+         <code>&lt;div-ref&gt;</code>
+      </title>
+      <para>Element: <code>div-ref</code>:
+            <emphasis>References a <code>&lt;div&gt;</code>
+         </emphasis>
+      </para>
+      <para>Definition: <code>(@src, @ref, (@ed-who, @ed-when)?, @seg?)</code>
+      </para>
+      <para>Used by: <code>realign<xref linkend="tan-element-realign"/>
+         </code>
+         <code>align<xref linkend="tan-element-align"/>
+         </code>
+      </para>
+   </section>
+   <section xml:id="tan-element-div-type-ref">
+      <title>
+         <code>&lt;div-type-ref&gt;</code>
+      </title>
+      <para>Element: <code>div-type-ref</code>:
+            <emphasis>References a <code>&lt;div-type&gt;</code> in a class 1 source</emphasis>
+      </para>
+      <para>Definition: <code>(@ed-who, @ed-when)?, @src, @div-type-ref</code>
+      </para>
+      <para>Used by: <code>equate-div-types<xref linkend="tan-element-equate-div-types"/>
+         </code>
+      </para>
+   </section>
+   <section xml:id="tan-element-equate-div-types">
+      <title>
+         <code>&lt;equate-div-types&gt;</code>
+      </title>
+      <para>Element: <code>equate-div-types</code>:
+            <emphasis>Declares an ad hoc equivalence of div types for class 1 sources that have no shared <code>&lt;IRI&gt;</code>s
+under a particular <code>&lt;div-type&gt;</code> 
+         </emphasis>
+      </para>
+      <para>Definition: <code>(@ed-who, @ed-when)?, (@include, &lt;div-type-ref&gt; , &lt;div-type-ref&gt;)</code>
+      </para>
+      <para>Used by: <code>body<xref linkend="tan-element-body"/>
+         </code>
+      </para>
+   </section>
+   <section xml:id="tan-element-equate-works">
+      <title>
+         <code>&lt;equate-works&gt;</code>
+      </title>
+      <para>Element: <code>equate-works</code>:
+            <emphasis>Declares an ad hoc equivalence of works for class 1 sources that have no shared <code>&lt;IRI&gt;</code>s 
+under <code>&lt;work&gt;</code>
+         </emphasis>
+      </para>
+      <para>Definition: <code>(@ed-who, @ed-when)?, (@include, | @src)</code>
+      </para>
+      <para>Used by: <code>body<xref linkend="tan-element-body"/>
+         </code>
+      </para>
+   </section>
+   <section xml:id="tan-element-realign">
+      <title>
+         <code>&lt;realign&gt;</code>
+      </title>
+      <para>Element: <code>realign</code>:
+            <emphasis>Reassigns the default alignment of <code>&lt;div&gt;</code>s in a class 1 source 
+to zero or more locations in other versions of the same work</emphasis>
+      </para>
+      <para>Definition: <code>(@ed-who, @ed-when)?, (@include, &lt;comment&gt; &lt;anchor-div-ref&gt;?, &lt;div-ref&gt;)</code>
+      </para>
+      <para>Used by: <code>body<xref linkend="tan-element-body"/>
+         </code>
+      </para>
+   </section>
+   <section xml:id="tan-element-split-leaf-div-at">
+      <title>
+         <code>&lt;split-leaf-div-at&gt;</code>
+      </title>
+      <para>Element: <code>split-leaf-div-at</code>:
+            <emphasis>Creates ad hoc splits in leaf <code>&lt;div&gt;</code>s, to create alignments more refined 
+than what a class 1 source offers; useful for <code>&lt;realign&gt;</code> and <code>&lt;align&gt;</code> actions that
+require dealing with textual units smaller than leaf <code>&lt;div&gt;</code>s.</emphasis>
+      </para>
+      <para>Definition: <code>(@ed-who, @ed-when)?, (@include, &lt;comment&gt; &lt;tok&gt;)</code>
+      </para>
+      <para>Used by: <code>body<xref linkend="tan-element-body"/>
+         </code>
+      </para>
+   </section>
+   <section xml:id="tan-element-TAN-A-div">
+      <title>
+         <code>&lt;TAN-A-div&gt;</code>
+      </title>
+      <para>Definition: <code>(@id, @TAN-version, (@ed-who, @ed-when)?, &lt;head&gt; , &lt;body&gt;)</code>
+      </para>
+      <para>Used by: </para>
+   </section>
+   <section xml:id="tan-element-alignments">
+      <title>
+         <code>@alignments</code>
+      </title>
+      <para>Definition: <code/>
+      </para>
+      <para>Used by: <code>align<xref linkend="tan-element-align"/>
+         </code>
+      </para>
+   </section>
+   <section xml:id="tan-element-distribute">
+      <title>
+         <code>@distribute</code>
+      </title>
+      <para>Definition: <code/>
+      </para>
+      <para>Used by: <code>align<xref linkend="tan-element-align"/>
+         </code>
+      </para>
+   </section>
+   <section xml:id="tan-element-exclusive">
+      <title>
+         <code>@exclusive</code>
+      </title>
+      <para>Definition: <code/>
+      </para>
+      <para>Used by: <code>align<xref linkend="tan-element-align"/>
+         </code>
+      </para>
+   </section>
+   <section xml:id="tan-element-seg">
+      <title>
+         <code>@seg</code>
+      </title>
+      <para>Definition: <code>((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?(\s*, \s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*</code>
+      </para>
+      <para>Used by: <code>div-ref<xref linkend="tan-element-div-ref"/>
+         </code>
+         <code>anchor-div-ref<xref linkend="tan-element-anchor-div-ref"/>
+         </code>
+      </para>
+   </section>
+   <section xml:id="tan-element-strength">
+      <title>
+         <code>@strength</code>
+      </title>
+      <para>Definition: <code>0\.\d+</code>
+      </para>
+      <para>Used by: <code>align<xref linkend="tan-element-align"/>
+         </code>
+         <code>align<xref linkend="tan-element-align"/>
+         </code>
+      </para>
+   </section>
 </section>

@@ -6269,6 +6269,7 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                alignments inferred wherever possible, and when not overridden explicitly. Alignments
                are also transitive. If passage A aligns with B, then anything that aligns with A
                will align with anything that aligns with B.</para>
+            <xi:include href="inclusions/TAN-A-div.xml"/>
             <section>
                <title>Rootmost Element and Header</title>
                <para>The rootmost element of a TAN division-based alignment file is

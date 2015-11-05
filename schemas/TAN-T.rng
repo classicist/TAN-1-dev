@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<grammar ns="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+<grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:local="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0">
   <start>
     <element name="TAN-T">
+      <a:documentation>specifies that the TAN file contains a transcription. Root element.</a:documentation>
       <ref name="TAN-root"/>
     </element>
   </start>
@@ -15,20 +16,15 @@
   </include>
   <define name="text-div">
     <element name="div">
+      <a:documentation>marks a textual unit. Contains other &lt;div&gt;s or text, but not both (no mixed content).</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
       <choice>
         <ref name="inclusion"/>
         <group>
-          <attribute name="type">
-            <data type="string">
-              <param name="pattern">\w*</param>
-            </data>
-          </attribute>
-          <attribute name="n">
-            <ref name="n-val"/>
-          </attribute>
+          <ref name="type"/>
+          <ref name="n"/>
           <optional>
             <ref name="lang-of-content"/>
           </optional>
@@ -41,5 +37,19 @@
         </group>
       </choice>
     </element>
+  </define>
+  <define name="type">
+    <!-- altered definition from xsd:string { pattern = "\w*" } -->
+    <attribute name="type">
+      <a:documentation>indicates what type of textual unit &lt;div&gt; marks. Points to a &lt;div-type&gt; declared in &lt;declarations&gt;.</a:documentation>
+      <data type="IDREFS"/>
+    </attribute>
+  </define>
+  <define name="n">
+    <attribute name="n">
+      <a:documentation>contains the name of the &lt;div&gt;. Consists of a string of word characters.</a:documentation>
+      <a:documentation>Examples: '4', '', 'Psalms'</a:documentation>
+      <ref name="n-val"/>
+    </attribute>
   </define>
 </grammar>

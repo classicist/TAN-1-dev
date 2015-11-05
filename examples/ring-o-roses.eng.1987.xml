@@ -18,7 +18,7 @@
          <IRI>http://lccn.loc.gov/87042504</IRI>
          <name>Mother Goose, from nursery to literature / by Gloria T. Delama, 1987.</name>
       </source>
-      <declarations>
+      <declarations ed-who="park" ed-when="2015-10-31">
          <work>
             <IRI>http://dbpedia.org/resource/Ring_a_Ring_o%27_Roses</IRI>
             <name>Ring around the Rosie</name>

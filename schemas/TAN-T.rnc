@@ -1,18 +1,30 @@
-default namespace = "tag:textalign.net,2015:ns"
-namespace local = "tag:textalign.net,2015:ns"
+default namespace local = "tag:textalign.net,2015:ns"
 
-start = element TAN-T { TAN-root }
+datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
+
+start =
+    
+    ## specifies that the TAN file contains a transcription. Root element.
+    element TAN-T { TAN-root }
 include "TAN-class-1.rnc" {
     TAN-body-core = lang-of-content, text-div+
 }
 text-div =
+    
+    ## marks a textual unit. Contains other <div>s or text, but not both (no mixed content).
     element div {
         ed-stamp?,
         (inclusion
-         | (attribute type {
-                xsd:string { pattern = "\w*" }
-            },
-            attribute n { n-val },
-            lang-of-content?,
-            (text-div+ | text)))
+         | (type, n, lang-of-content?, (text-div+ | text)))
     }
+type =
+    # altered definition from xsd:string { pattern = "\w*" } 
+    
+    ## indicates what type of textual unit <div> marks. Points to a <div-type> declared in <declarations>.
+    attribute type { d:IDREFS }
+n =
+    
+    ## contains the name of the <div>. Consists of a string of word characters.
+    
+    ## Examples: '4', '', 'Psalms'
+    attribute n { n-val }

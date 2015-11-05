@@ -1,722 +1,133 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<section xmlns="http://docbook.org/ns/docbook"
-         xmlns:xlink="http://www.w3.org/1999/xlink"
-         version="5.0">
-   <title>8</title>
-   <para>
-  
-  
-  
-  
-    
-  
-  
-  
-    
-      
-        (high)|(low)|(0\.\d+)
-      
-    
-  
-  
-  
-    Test double-hash rendered on two
-lines
-    
-      \w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*
-    
-  
-  
-  
-    
-      (\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*)((\s*,|\s+-)\s+(\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*))*
-    
-  
-  
-  
-    
-  
-  
-  
-    
-  
-  
-  
-    
-      
-        
-        
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-        \w\S*
-      
-    
-  
-  
-  
-    
-      [a-zA-Z][\-.+a-zA-Z0-9]+:\S+
-    
-  
-  
-  
-    
-      \w*
-    
-  
-  
-  
-    
-      
-        1(\W+dev)?
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-  
-  
-  
-    
-  
-  
-  
-    
-  
-  
-  
-    
-      ((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?(\s*,\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*
-    
-  
-  
-  
-    
-      
-        .+
-      
-    
-  
-  
-  
-    
-      [a-zA-Z][\-.+a-zA-Z0-9]+:[\-._~+:/?#\[\]%@!$&amp;'\(\)*+,;=a-zA-Z0-9]+
-    
-  
-  
-  
-    
-      tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-(0\d|1[0-2]))?(-([0-2]\d|3[01]))?:\S+
-    
-  
-  
-  
-    
-      
-        
-        
-      
-    
-  
-  
-  
-  
-    
-      
-      
-        
-      
-    
-  
-  
-  
-    
-      
-      
-      
-    
-  
-  
-  
-    
-    
-  
-  
-  
-    
-    
-    
-      
-    
-    
-      
-    
-  
-  
-  
-    
-      
-    
-    
-    
-      
-    
-    
-      
-    
-  
-  
-  
-    
-    
-      
-    
-  
-  
-  
-    
-      
-    
-    
-  
-  
-  
-    
-      
-        
-      
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        [smixq]+
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-            
-          
-          
-            
-              
-            
-            
-              
-              
-                
-                  
-                
-                
-              
-              
-                
-              
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-            
-          
-          
-            
-            
-              
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-      
-      
-    
-  
-  
-    
-      
-    
-    
-      
-    
-    
-      (.|\n)+
-    
-  
-  
-    
-      
-        
-      
-    
-    
-      
-        
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-    
-  
-  
-  
-  
-    
-      
-    
-    
-    
-      
-    
-    
-    
-  
-  
-  
-  
-    
-      
-        
-      
-      
-        
-          
-        
-        
-          
-          
-          
-          
-          
-          
-          
-            
-          
-          
-            
-          
-          
-            
-          
-          
-            
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-      
-      
-        
-          
-        
-        
-      
-    
-  
-  
-    
-  
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-          
-            
-              
-            
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-    
-      
-        
-      
-      
-      
-        
-          
-        
-        
-      
-    
-  
-  
-  
-    
-  
-  
-    
-      
-        
-      
-      
-        
-          
-        
-      
-      
-        
-        
-          
-          
-            
-              
-            
-            
-              
-                
-                
-                
-              
-              
-                
-              
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-            
-          
-          
-            
-              
-            
-            
-          
-        
-      
-    
-  
-  
-  
-    
-  
-  
-  
-    
-      
-    
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-            
-          
-          
-            
-            
-              
-              
-              
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-          
-            (new|old) version|(parent|child|ancestor|descendant|cousin) edition|alternatively (divided|normalized) edition|dependent|auxiliary
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-          
-        
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-            
-          
-          
-          
-            
-              
-            
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-          
-            
-              
-            
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-        
-          
-            
-              
-              
-            
-          
-          
-            
-              
-              
-            
-          
-          
-            
-          
-          
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-      
-      
-    
-  
-  
-  
-  
-    
-      
-      
-    
-  
-  
-  
-    
-  
-  
-  
-    
-  
-</para>
-</section>
+<?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-LM elements and attributes summarized</title><section xml:id="element-ana"><title><code>&lt;ana&gt;</code></title><para>The element <code>ana</code> contains a set of one or more lexico-morphological analyses asserted of one or more tokens</para><para>Definition: <code>(((@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, @<link linkend="attribute-include">include</link>) | ([[ {TAN-A-div.rng:} (@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)? OR  {TAN-class-2.rng:} (@<link linkend="attribute-cert">cert</link>?, (@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?)]], @<link linkend="attribute-xmlid">xml:id</link>?, (&lt;<link linkend="element-comment">comment</link>&gt;* &amp; ((&lt;<link linkend="element-joined">joined</link>&gt; | |&lt;<link linkend="element-tok">tok</link>&gt;)+, &lt;<link linkend="element-lm">lm</link>&gt;+))))</code></para><para>Used by: <code><xref linkend="element-body"/></code></para><caution><itemizedlist><listitem><para>Any ana with an @xml:id must point to no more than one token.</para></listitem></itemizedlist></caution><example><title><code>&lt;ana&gt;</code></title><programlisting>&lt;TAN-LM TAN-version="1" id="tag:parkj@textalign.net,2015:ring01-lm"&gt;
+   &lt;body lexicon="test" morphology="penn" in-progress="false"&gt;
+      <emphasis role="bold">&lt;ana&gt;</emphasis>
+         &lt;tok ref="line 1" ord="1 - last-1"/&gt;
+         &lt;lm&gt;
+            ...........
+         &lt;/lm&gt;
+      <emphasis role="bold">&lt;/ana&gt;</emphasis>
+      <emphasis role="bold">&lt;ana&gt;</emphasis>
+         &lt;tok ref="line 1" ord="last"/&gt;
+         &lt;lm&gt;
+            ...........
+         &lt;/lm&gt;
+      <emphasis role="bold">&lt;/ana&gt;</emphasis>
+      <emphasis role="bold">&lt;ana xml:id="anatest"&gt;</emphasis>
+         &lt;tok ref="line 2" ord="1"/&gt;
+         &lt;lm&gt;
+            ...........
+         &lt;/lm&gt;
+      <emphasis role="bold">&lt;/ana&gt;</emphasis>
+      <emphasis role="bold">&lt;ana&gt;</emphasis>
+         &lt;tok ref="line 2" ord="2"/&gt;
+         &lt;lm&gt;
+            ...........
+         &lt;/lm&gt;
+      <emphasis role="bold">&lt;/ana&gt;</emphasis>
+      <emphasis role="bold">&lt;ana&gt;</emphasis>
+         ...........
+      <emphasis role="bold">&lt;/ana&gt;</emphasis>
+      ...........
+   &lt;/body&gt;
+&lt;/TAN-LM&gt;
+</programlisting></example></section><section xml:id="element-joined"><title><code>&lt;joined&gt;</code></title><para>The element <code>joined</code> indicates that the enclosed tokens are to be treated as a single token. Useful for cases where a word or lexeme is split across boundaries created by <code>&lt;<link linkend="element-div">div</link>&gt;</code> or <code>&lt;<link linkend="element-tokenization">tokenization</link>&gt;</code> </para><para>Definition: <code>@<link linkend="attribute-xmlid">xml:id</link>?, &lt;<link linkend="element-tok">tok</link>&gt;, &lt;<link linkend="element-tok">tok</link>&gt;+</code></para><para>Used by: <code><xref linkend="element-ana"/></code></para></section><section xml:id="element-l"><title><code>&lt;l&gt;</code></title><para>The element <code>l</code> names a lexeme</para><para>Definition: <code>@<link linkend="attribute-lexicon">lexicon</link>?, @<link linkend="attribute-def-ref">def-ref</link>?, [[ {TAN-A-div.rng:} (@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)? OR  {TAN-class-2.rng:} (@<link linkend="attribute-cert">cert</link>?, (@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?)]], @<link linkend="attribute-ord">ord</link>?, text</code></para><para>Used by: <code><xref linkend="element-lm"/></code></para><example><title><code>&lt;l&gt;</code></title><programlisting>&lt;TAN-LM TAN-version="1" id="tag:parkj@textalign.net,2015:ring01-lm"&gt;
+   &lt;body lexicon="test" morphology="penn" in-progress="false"&gt;
+      &lt;ana&gt;
+         &lt;lm&gt;
+            <emphasis role="bold">&lt;l lexicon="test"&gt;</emphasis>ring-a-ring-a-rose<emphasis role="bold">&lt;/l&gt;</emphasis>
+            &lt;m&gt;NNS ;&lt;/m&gt;
+         &lt;/lm&gt;
+      &lt;/ana&gt;
+      &lt;ana&gt;
+         &lt;lm&gt;
+            <emphasis role="bold">&lt;l&gt;</emphasis>posy<emphasis role="bold">&lt;/l&gt;</emphasis>
+            &lt;m&gt;NNS&lt;/m&gt;
+         &lt;/lm&gt;
+      &lt;/ana&gt;
+   &lt;/body&gt;
+&lt;/TAN-LM&gt;
+</programlisting></example></section><section xml:id="element-lexicon"><title><code>&lt;lexicon&gt;</code></title><para>The element <code>lexicon</code> names a lexicographical authority used</para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (@<link linkend="attribute-include">include</link> | (@<link linkend="attribute-xmlid">xml:id</link>, &lt;<link linkend="element-for-lang">for-lang</link>&gt;*, ((&lt;<link linkend="element-IRI">IRI</link>&gt;+, (&lt;<link linkend="element-name">name</link>&gt;+, &lt;<link linkend="element-desc">desc</link>&gt;*), &lt;<link linkend="element-checksum">checksum</link>&gt;*, &lt;<link linkend="element-location">location</link>&gt;+) | |(&lt;<link linkend="element-IRI">IRI</link>&gt;+, (&lt;<link linkend="element-name">name</link>&gt;+, &lt;<link linkend="element-desc">desc</link>&gt;*)))))</code></para><para>Used by: <code><xref linkend="element-declarations"/></code></para><example><title><code>&lt;lexicon&gt;</code></title><programlisting>      &lt;declarations&gt;
+         &lt;morphology xml:id="penn" ed-when="2015-08-20-04:00" ed-who="park"&gt;
+            ...........
+         &lt;/morphology&gt;
+         <emphasis role="bold">&lt;lexicon xml:id="test"&gt;</emphasis>
+            &lt;IRI&gt;tag:kalvesmaki@gmail.com,2014:lexicon:eng:test&lt;/IRI&gt;
+            &lt;name&gt;test lexicon&lt;/name&gt;
+         <emphasis role="bold">&lt;/lexicon&gt;</emphasis>
+         &lt;tokenization which="general-1"/&gt;
+      &lt;/declarations&gt;
+</programlisting></example></section><section xml:id="element-lm"><title><code>&lt;lm&gt;</code></title><para>The element <code>lm</code> contains lexical data or morphological data</para><para>Definition: <code>[[ {TAN-A-div.rng:} (@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)? OR  {TAN-class-2.rng:} (@<link linkend="attribute-cert">cert</link>?, (@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?)]], (&lt;<link linkend="element-comment">comment</link>&gt;* &amp; ((&lt;<link linkend="element-l">l</link>&gt;+, &lt;<link linkend="element-m">m</link>&gt;*) | (&lt;<link linkend="element-l">l</link>&gt;*, &lt;<link linkend="element-m">m</link>&gt;+)))</code></para><para>Used by: <code><xref linkend="element-ana"/></code></para><example><title><code>&lt;lm&gt;</code></title><programlisting>&lt;TAN-LM TAN-version="1" id="tag:parkj@textalign.net,2015:ring01-lm"&gt;
+   &lt;body lexicon="test" morphology="penn" in-progress="false"&gt;
+      &lt;ana&gt;
+         &lt;tok ref="line 1" ord="1 - last-1"/&gt;
+         <emphasis role="bold">&lt;lm&gt;</emphasis>
+            &lt;l lexicon="test"&gt;ring-a-ring-a-rose&lt;/l&gt;
+            &lt;m&gt;NNS ;&lt;/m&gt;
+         <emphasis role="bold">&lt;/lm&gt;</emphasis>
+      &lt;/ana&gt;
+      &lt;ana&gt;
+         &lt;tok ref="line 1" ord="last"/&gt;
+         <emphasis role="bold">&lt;lm&gt;</emphasis>
+            &lt;m&gt;; .&lt;/m&gt;
+         <emphasis role="bold">&lt;/lm&gt;</emphasis>
+      &lt;/ana&gt;
+      &lt;ana xml:id="anatest"&gt;
+         &lt;tok ref="line 2" ord="1"/&gt;
+         <emphasis role="bold">&lt;lm&gt;</emphasis>
+            &lt;m&gt;; NN&lt;/m&gt;
+         <emphasis role="bold">&lt;/lm&gt;</emphasis>
+      &lt;/ana&gt;
+      &lt;ana&gt;
+         &lt;tok ref="line 2" ord="2"/&gt;
+         <emphasis role="bold">&lt;lm&gt;</emphasis>
+            &lt;m&gt;NN&lt;/m&gt;
+         <emphasis role="bold">&lt;/lm&gt;</emphasis>
+      &lt;/ana&gt;
+   &lt;/body&gt;
+&lt;/TAN-LM&gt;
+</programlisting></example></section><section xml:id="element-m"><title><code>&lt;m&gt;</code></title><para>The element <code>m</code> carries a morphological code that conforms to the rules or patterns established in the underlying TAN-R-mor file.</para><para>Definition: <code>[[ {TAN-A-div.rng:} (@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)? OR  {TAN-class-2.rng:} (@<link linkend="attribute-cert">cert</link>?, (@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?)]], @<link linkend="attribute-morphology">morphology</link>?, string (pattern [^\s\(\),|]+(\s+[^\s\(\),|]+)*)</code></para><para>Used by: <code><xref linkend="element-lm"/></code></para><caution><itemizedlist><listitem><para>&lt;m&gt; may not have more codes than allowed by the underlying TAN-R-mor file.</para></listitem><listitem><para> If any invalid values are found during validation a list of possible valid values will be returned. </para></listitem><listitem><para> If an invalid code is found in a particular location, a list of valid values for that location will be returned </para></listitem><listitem><para>All codes must adhere to the rules declared in the underlying TAN-R-mor file</para></listitem></itemizedlist></caution><important><itemizedlist><listitem><para> If &lt;m&gt; matches a rule in the underlying TAN-R-mor file that is marked by a degree of certainty, a warning will be returned </para></listitem></itemizedlist></important><example><title><code>&lt;m&gt;</code></title><programlisting>&lt;TAN-LM TAN-version="1" id="tag:parkj@textalign.net,2015:ring01-lm"&gt;
+   &lt;body lexicon="test" morphology="penn" in-progress="false"&gt;
+      &lt;ana&gt;
+         &lt;lm&gt;
+            &lt;l lexicon="test"&gt;ring-a-ring-a-rose&lt;/l&gt;
+            <emphasis role="bold">&lt;m&gt;</emphasis>NNS ;<emphasis role="bold">&lt;/m&gt;</emphasis>
+         &lt;/lm&gt;
+      &lt;/ana&gt;
+      &lt;ana&gt;
+         &lt;lm&gt;
+            <emphasis role="bold">&lt;m&gt;</emphasis>; .<emphasis role="bold">&lt;/m&gt;</emphasis>
+         &lt;/lm&gt;
+      &lt;/ana&gt;
+      &lt;ana xml:id="anatest"&gt;
+         &lt;lm&gt;
+            <emphasis role="bold">&lt;m&gt;</emphasis>; NN<emphasis role="bold">&lt;/m&gt;</emphasis>
+         &lt;/lm&gt;
+      &lt;/ana&gt;
+      &lt;ana&gt;
+         &lt;lm&gt;
+            <emphasis role="bold">&lt;m&gt;</emphasis>NN<emphasis role="bold">&lt;/m&gt;</emphasis>
+         &lt;/lm&gt;
+      &lt;/ana&gt;
+   &lt;/body&gt;
+&lt;/TAN-LM&gt;
+</programlisting></example></section><section xml:id="element-morphology"><title><code>&lt;morphology&gt;</code></title><para>The element <code>morphology</code> identifies a <code>&lt;<link linkend="element-TAN-R-mor">TAN-R-mor</link>&gt;</code> file that defines the parts of speech for a language, the codes for those parts, and the rules for combining them</para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (@<link linkend="attribute-include">include</link> | (@<link linkend="attribute-xmlid">xml:id</link>, &lt;<link linkend="element-for-lang">for-lang</link>&gt;*, (&lt;<link linkend="element-IRI">IRI</link>&gt;, (&lt;<link linkend="element-name">name</link>&gt;+, &lt;<link linkend="element-desc">desc</link>&gt;*), &lt;<link linkend="element-checksum">checksum</link>&gt;*, &lt;<link linkend="element-location">location</link>&gt;+)))</code></para><para>Used by: <code><xref linkend="element-declarations"/></code></para><example><title><code>&lt;morphology&gt;</code></title><programlisting>      &lt;declarations&gt;
+         <emphasis role="bold">&lt;morphology xml:id="penn" ed-when="2015-08-20-04:00" ed-who="park"&gt;</emphasis>
+            &lt;IRI&gt;tag:kalvesmaki.com,2014:tan-r-mor:eng:penn&lt;/IRI&gt;
+            &lt;name&gt;Penn Treebank tag set&lt;/name&gt;
+            &lt;location when-accessed="2015-08-20"&gt;https://raw.githubusercontent.com/Arithmeticus/TAN-class-3/master/TAN-R-mor/eng.kalvesmaki.com%2C2014.2.xml&lt;/location&gt;
+            ...........
+         <emphasis role="bold">&lt;/morphology&gt;</emphasis>
+         &lt;lexicon xml:id="test"&gt;
+            ...........
+         &lt;/lexicon&gt;
+         ...........
+      &lt;/declarations&gt;
+</programlisting></example></section><section xml:id="element-TAN-LM"><title><code>&lt;TAN-LM&gt;</code></title><para>The element <code>TAN-LM</code> specifies that the file is a TAN file containing lexico-morphology data about a text. Root element.</para><para>Definition: <code>(@<link linkend="attribute-id">id</link>, @<link linkend="attribute-TAN-version">TAN-version</link>, (@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, &lt;<link linkend="element-head">head</link>&gt;, &lt;<link linkend="element-body">body</link>&gt;)</code></para><para>Used by: none</para><example><title><code>&lt;TAN-LM&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-LM TAN-version="1" id="tag:parkj@textalign.net,2015:ring01-lm"&gt;</emphasis>
+   &lt;head&gt;
+      ...........
+   &lt;/head&gt;
+   &lt;body lexicon="test" morphology="penn" in-progress="false"&gt;
+      ...........
+   &lt;/body&gt;
+<emphasis role="bold">&lt;/TAN-LM&gt;</emphasis>
+</programlisting></example></section></section>

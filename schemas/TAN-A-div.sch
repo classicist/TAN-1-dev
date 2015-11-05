@@ -2,7 +2,7 @@
 <!-- to do:
 -->
 <schema xmlns="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2"
-   xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
+   xmlns:sqf="http://www.schematron-quickfix.com/validator/process" xmlns:tan="tag:textalign.net,2015:ns"
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
    <title>Schematron tests for TAN-A-div files.</title>
    <ns prefix="tan" uri="tag:textalign.net,2015:ns"/>
@@ -22,17 +22,16 @@
          <report test="$this-old = $sibling-olds">Old values may not be duplicated</report>
          <report test="$this-new = $sibling-news">New values may not be duplicated</report>
          <report test="for $i in $this-src-list return $src-1st-da-all-div-types/tan:source[$i]/tan:div-type[@xml:id=$this-new]">
-            You may not rename to a div type id that is already in use by the source.
+            You may not change a name into one that is already in use by the source as a div-type id.
          </report>
       </rule>
       <rule context="tan:equate-works">
          <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
          <let name="this-work-iris" value="for $i in $this-src-list return $src-1st-da-heads[$i]/tan:declarations/tan:work/tan:IRI"/>
          <let name="repeated-works" value="$this-work-iris[index-of($this-work-iris,.)[2]]"/>
-         <report test="exists($repeated-works)">Sources already share work IRIs: 
-            <value-of select="$repeated-works"/>. No equate-works is
-            needed.</report>
-         <report test="matches(@src,'\?')">Help: current work groups: <value-of select="for $i in
+         <report test="exists($repeated-works)" role="warning">Works that already have at least one shared IRI need not be equated.
+            <value-of select="$repeated-works"/></report>
+         <report test="matches(@src,'\?')" role="info"><!-- If there is a question mark in @src, validation will return a list of works currently clustered -->Help: current work groups: <value-of select="for $i in
             distinct-values($equate-works) return concat('(',string-join(for $j in index-of($equate-works,$i) return $src-ids[$j],' '),')')"/></report>
       </rule>
       <rule context="tan:equate-div-types">
@@ -57,9 +56,8 @@
                      concat($src-ids[$this-src-list[$i]], ' : ', $this-div-type-list[$i], ' = ', $src-ids[$this-src-list[$j]], ' : ', $this-div-type-list[$j])
                   else
                      ()"/>
-         <report test="exists($this-src-div-type-equivs)">Sources' div types already share IRIs.
-               <value-of select="string-join($this-src-div-type-equivs, ', ')"/>. No
-            equate-div-types is needed.</report>
+         <report test="exists($this-src-div-type-equivs)" role="warning">Div types that already have at least one shared IRI need not be equated.
+               <value-of select="string-join($this-src-div-type-equivs, ', ')"/></report>
       </rule>
       <rule context="tan:div-type-ref">
          <let name="this-src-list"
@@ -83,7 +81,7 @@
                      concat($src-ids[$this-src-list[$i]], ' : ', $this-div-type-list[$i])
                   else
                      ()"/>
-         <report test="exists($this-is-duplicate)">Duplicate div-type-ref (<value-of
+         <report test="exists($this-is-duplicate)">Div-type-refs may not be duplicated (<value-of
                select="string-join($this-is-duplicate, ', ')"/>).</report>
       </rule>
       <rule context="tan:split-leaf-div-at">
@@ -98,11 +96,11 @@
          <let name="duplicate-splits" value="for $i in $these-splits//tan:tok return
             if ($leaf-div-splits-raw[position() ne $this-pos]/tan:source[@id = $i/../../@id]/tan:div[@ref = $i/../@ref]/tan:tok[@n = $i/@n]) 
             then concat($i/../../@id,': ',$i/../@ref,' tok ',$i/@n) else ()"/>
-         <report test="exists($duplicate-splits) and not($help-requested)">Splitting a leaf div more than once in the 
-            same place is not allowed (<value-of select="string-join($duplicate-splits,' ')"/>).</report>
-         <assert test="tan:src-ids-to-nos(@src) = $tokenized-sources">Source lacks a tokenization
+         <report test="exists($duplicate-splits) and not($help-requested)">May not be used to split a leaf div more than once in the 
+            same place (<value-of select="string-join($duplicate-splits,' ')"/>).</report>
+         <assert test="tan:src-ids-to-nos(@src) = $tokenized-sources">Requires a tokenization
             declaration.</assert>
-         <report test="$these-splits//@error">Tokenization error: <value-of select="for $i in $these-splits//@error return
+         <report test="$these-splits//@error" tan:does-not-apply-to="tok">Tokenization error: <value-of select="for $i in $these-splits//@error return
             $tokenization-errors[$i]"/></report>
       </rule>
       <rule context="tan:realign">
@@ -116,7 +114,7 @@
          <report test="count(distinct-values($these-works)) ne 1">realign sources must all share the
             same work (<value-of select="count(distinct-values($these-works))"/> works currently
             referred to)</report>
-         <report test="$this-normalized/@error">Distribution error. Each source must have the same
+         <report test="$this-normalized/@error">Distribution enforced: each source must have the same
             number of single references (unmatched: <value-of select="$this-normalized[@error]/tan:div-ref/@*"/>)
          </report>
       </rule>
@@ -126,12 +124,12 @@
          <let name="this-align-normalized" value="tan:normalize-align(.)"/>
          <report test="if (@distribute) then count(distinct-values($this-work-list)) eq 1 else false()">@distribute
             has no effect on an align that invokes only one work</report>
-         <report test="$this-align-normalized/@error">@distribute requires one-to-one correlation between
-         each atomic ref in each work/ source. Uncorrelated: 
-            <value-of
-               select="$this-align-normalized[@error]/tan:div-ref/(@ref,
+         <report test="$this-align-normalized/@error">@distribute requires one-to-one correlation
+            between each atomic ref in each work / source (uncorrelated: <value-of
+               select="
+                  $this-align-normalized[@error]/tan:div-ref/(@ref,
                   @seg)"
-            /></report>
+            />)</report>
       </rule>
       <rule context="tan:div-ref|tan:anchor-div-ref">
          <let name="this" value="."/>
@@ -208,8 +206,8 @@
                      ()"/>).</report>
          <report
             test="$qty-of-srcs-with-implicit-div-types gt 0 and $qty-of-srcs-with-implicit-div-types ne count($this-src-list)"
-            >Either all sources or no sources must be declared in implicit-div-type-refs</report>
-         <report test="exists($duplicate-sibling)">Sibling div-refs may not duplicate each other.</report>
+            >Sources that take implicit div type references may not be mixed with those that take explicit ones.</report>
+         <report test="exists($duplicate-sibling)" tan:does-not-apply-to="anchor-div-ref">Sibling div-refs may not duplicate each other.</report>
          <report test="if (exists($this-segs)) then (($this-seg-max gt $seg-ceiling) or ($this-seg-min-last lt 1)) 
             else false()">Every segment cited must appear in every div in every source (divs chosen have
             <value-of select="$seg-ceiling"/> segments max)</report>
@@ -217,11 +215,11 @@
             used on a div that has not been split</report>
          <report test="if (exists($this-segs)) then $seg-count = 0 else false()">@seg may be used
             only with leaf divs</report>
-         <report test="$is-anchor and count($this-src-list) gt 1">An anchor div ref must point to
+         <report test="$is-anchor and count($this-src-list) gt 1" tan:does-not-apply-to="div-ref">An anchor div ref must point to
             only one source.</report>
-         <report test="$is-anchor and (some $i in ($anchor-is-realigned) satisfies $i)">An anchor may not be
+         <report test="$is-anchor and (some $i in ($anchor-is-realigned) satisfies $i)" tan:does-not-apply-to="div-ref">An anchor may not be
             realigned by a div ref.</report>
-         <report test="not($is-anchor) and $is-being-realigned and (some $i in ($div-ref-is-anchored) satisfies $i)">An
+         <report test="not($is-anchor) and $is-being-realigned and (some $i in ($div-ref-is-anchored) satisfies $i)" tan:does-not-apply-to="anchor-div-ref">An
             anchor may not be realigned by a div ref.</report>
       </rule>
 

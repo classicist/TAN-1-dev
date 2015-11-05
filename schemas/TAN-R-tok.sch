@@ -35,7 +35,7 @@
          <assert sqf:fix="correct-output"
             test="every $i in $matches
             satisfies $i = true() and count($output) = count($expected-output)"
-            >Input does not match output <xsl:choose>
+            >Input must match output <xsl:choose>
                <xsl:when test="$matches = false()">(output-token <xsl:value-of
                      select="index-of($matches, false())"/>; expected: "<xsl:value-of
                      select="
@@ -50,6 +50,7 @@
          <sqf:fix id="correct-output">
             <sqf:description>
                <sqf:title>Correct &lt;output-token&gt; elements</sqf:title>
+               <sqf:p>Selecting this quick fix will replace all &lt;example-output> elements with the correct results.</sqf:p>
             </sqf:description>
             <sqf:replace match="tan:output-token"/>
             <sqf:replace match="text()[preceding-sibling::tan:input]"/>

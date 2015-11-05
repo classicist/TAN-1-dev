@@ -1,722 +1,228 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<section xmlns="http://docbook.org/ns/docbook"
-         xmlns:xlink="http://www.w3.org/1999/xlink"
-         version="5.0">
-   <title>3</title>
-   <para>
-  
-  
-  
-  
-    
-  
-  
-  
-    
-      
-        (high)|(low)|(0\.\d+)
-      
-    
-  
-  
-  
-    Test double-hash rendered on two
-lines
-    
-      \w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*
-    
-  
-  
-  
-    
-      (\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*)((\s*,|\s+-)\s+(\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*))*
-    
-  
-  
-  
-    
-  
-  
-  
-    
-  
-  
-  
-    
-      
-        
-        
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-        \w\S*
-      
-    
-  
-  
-  
-    
-      [a-zA-Z][\-.+a-zA-Z0-9]+:\S+
-    
-  
-  
-  
-    
-      \w*
-    
-  
-  
-  
-    
-      
-        1(\W+dev)?
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-  
-  
-  
-    
-  
-  
-  
-    
-  
-  
-  
-    
-      ((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?(\s*,\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*
-    
-  
-  
-  
-    
-      
-        .+
-      
-    
-  
-  
-  
-    
-      [a-zA-Z][\-.+a-zA-Z0-9]+:[\-._~+:/?#\[\]%@!$&amp;'\(\)*+,;=a-zA-Z0-9]+
-    
-  
-  
-  
-    
-      tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-(0\d|1[0-2]))?(-([0-2]\d|3[01]))?:\S+
-    
-  
-  
-  
-    
-      
-        
-        
-      
-    
-  
-  
-  
-  
-    
-      
-      
-        
-      
-    
-  
-  
-  
-    
-      
-      
-      
-    
-  
-  
-  
-    
-    
-  
-  
-  
-    
-    
-    
-      
-    
-    
-      
-    
-  
-  
-  
-    
-      
-    
-    
-    
-      
-    
-    
-      
-    
-  
-  
-  
-    
-    
-      
-    
-  
-  
-  
-    
-      
-    
-    
-  
-  
-  
-    
-      
-        
-      
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        [smixq]+
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-            
-          
-          
-            
-              
-            
-            
-              
-              
-                
-                  
-                
-                
-              
-              
-                
-              
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-            
-          
-          
-            
-            
-              
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-      
-      
-    
-  
-  
-    
-      
-    
-    
-      
-    
-    
-      (.|\n)+
-    
-  
-  
-    
-      
-        
-      
-    
-    
-      
-        
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-    
-  
-  
-  
-  
-    
-      
-    
-    
-    
-      
-    
-    
-    
-  
-  
-  
-  
-    
-      
-        
-      
-      
-        
-          
-        
-        
-          
-          
-          
-          
-          
-          
-          
-            
-          
-          
-            
-          
-          
-            
-          
-          
-            
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-      
-      
-        
-          
-        
-        
-      
-    
-  
-  
-    
-  
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-          
-            
-              
-            
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-    
-      
-        
-      
-      
-      
-        
-          
-        
-        
-      
-    
-  
-  
-  
-    
-  
-  
-    
-      
-        
-      
-      
-        
-          
-        
-      
-      
-        
-        
-          
-          
-            
-              
-            
-            
-              
-                
-                
-                
-              
-              
-                
-              
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-            
-          
-          
-            
-              
-            
-            
-          
-        
-      
-    
-  
-  
-  
-    
-  
-  
-  
-    
-      
-    
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-            
-          
-          
-            
-            
-              
-              
-              
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-          
-            (new|old) version|(parent|child|ancestor|descendant|cousin) edition|alternatively (divided|normalized) edition|dependent|auxiliary
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-          
-        
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-            
-          
-          
-          
-            
-              
-            
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-          
-            
-              
-            
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-        
-          
-            
-              
-              
-            
-          
-          
-            
-              
-              
-            
-          
-          
-            
-          
-          
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-      
-      
-    
-  
-  
-  
-  
-    
-      
-      
-    
-  
-  
-  
-    
-  
-  
-  
-    
-  
-</para>
-</section>
+<?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-class-2 elements and attributes summarized</title><section xml:id="element-align"><title><code>&lt;align&gt;</code></title><para>The element <code>align</code> declares an ad hoc alignment of words or divs. If in a TAN-A-tok file, <code>&lt;<link linkend="element-align">align</link>&gt;</code> governs <code>&lt;<link linkend="element-tok">tok</link>&gt;</code>s; in TAN-A-div files, <code>&lt;<link linkend="element-div-ref">div-ref</link>&gt;</code></para><para>In TAN-A-tok files, the children are <code>&lt;<link linkend="element-tok">tok</link>&gt;</code>s, and <code>&lt;<link linkend="element-align">align</link>&gt;</code> specifies that all the tokens invoked for one source collectively align with the tokens in the other. This version of <code>&lt;<link linkend="element-align">align</link>&gt;</code> allows <code>@<link linkend="attribute-cert">cert</link></code>, <code>@<link linkend="attribute-bitext-relation">bitext-relation</link></code>, and <code>@<link linkend="attribute-reuse-type">reuse-type</link></code>, in addition to the editorial stamp. </para><para>In TAN-A-div files, the children are <code>&lt;<link linkend="element-div-ref">div-ref</link>&gt;</code>s, and <code>&lt;<link linkend="element-align">align</link>&gt;</code> by default specifies that every <code>&lt;<link linkend="element-div-ref">div-ref</link>&gt;</code>, taken as a group, is to be aligned with every other <code>&lt;<link linkend="element-div-ref">div-ref</link>&gt;</code>. This version of <code>&lt;<link linkend="element-align">align</link>&gt;</code> allows <code>@<link linkend="attribute-strength">strength</link></code>, <code>@<link linkend="attribute-exclusive">exclusive</link></code>, and <code>@<link linkend="attribute-distribute">distribute</link></code>, which affect the default behavior of <code>&lt;<link linkend="element-align">align</link>&gt;</code> (see documentation on specific attributes for details). </para><para>Definition: <code>(@<link linkend="attribute-include">include</link> | ([[ {TAN-A-div.rng:} (@<link linkend="attribute-xmlid">xml:id</link> | (@<link linkend="attribute-strength">strength</link>?, @<link linkend="attribute-exclusive">exclusive</link>?, @<link linkend="attribute-distribute">distribute</link>?)) OR  {TAN-A-tok.rng:} (@<link linkend="attribute-xmlid">xml:id</link>?, @<link linkend="attribute-bitext-relation">bitext-relation</link>?, @<link linkend="attribute-reuse-type">reuse-type</link>?)]], [[ {TAN-A-div.rng:} (@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)? OR  {TAN-class-2.rng:} (@<link linkend="attribute-cert">cert</link>?, (@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?)]], (&lt;<link linkend="element-comment">comment</link>&gt;* &amp; [[ {TAN-A-div.rng:} (@<link linkend="attribute-alignments">alignments</link> | &lt;<link linkend="element-div-ref">div-ref</link>&gt;+) OR  {TAN-A-tok.rng:} &lt;<link linkend="element-tok">tok</link>&gt;+]])))</code></para><para>Used by: <code><xref linkend="element-body"/></code><code><xref linkend="element-body"/></code></para><caution><itemizedlist><listitem><para>@distribute has no effect on an align that invokes only one work</para></listitem><listitem><para>@distribute requires one-to-one correlation between each atomic ref in each work / source</para></listitem></itemizedlist></caution><example><title><code>&lt;align&gt;</code></title><programlisting>&lt;TAN-A-tok TAN-version="1" id="tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring02"&gt;
+   &lt;body bitext-relation="B-descends-from-A" reuse-type="adaptation" in-progress="false"&gt;
+      <emphasis role="bold">&lt;align&gt;</emphasis>
+         &lt;tok src="ring1881" ref="line 1" ord="1"/&gt;
+         &lt;tok src="ring1987" ref="l 1" ord="1"/&gt;
+      <emphasis role="bold">&lt;/align&gt;</emphasis>
+      <emphasis role="bold">&lt;align&gt;</emphasis>
+         &lt;tok src="ring1881" ref="line 1" ord="2"/&gt;
+         &lt;tok src="ring1987" ref="l 1" ord="2"/&gt;
+      <emphasis role="bold">&lt;/align&gt;</emphasis>
+      <emphasis role="bold">&lt;align&gt;</emphasis>
+         &lt;tok src="ring1881" ref="line 1" ord="3"/&gt;
+         &lt;tok src="ring1987" ref="l 1" ord="3"/&gt;
+      <emphasis role="bold">&lt;/align&gt;</emphasis>
+      <emphasis role="bold">&lt;align&gt;</emphasis>
+         &lt;tok src="ring1881" ref="line 1" ord="4"/&gt;
+         &lt;tok src="ring1987" ref="l 1" ord="4"/&gt;
+      <emphasis role="bold">&lt;/align&gt;</emphasis>
+      <emphasis role="bold">&lt;align&gt;</emphasis>
+         &lt;tok src="ring1881" ref="line 1" ord="5"/&gt;
+         &lt;tok src="ring1987" ref="l 1" ord="5"/&gt;
+      <emphasis role="bold">&lt;/align&gt;</emphasis>
+      <emphasis role="bold">&lt;align&gt;</emphasis>
+         &lt;tok src="ring1881" ref="line 2" val="A"/&gt;
+         &lt;tok src="ring1987" ref="l 2" val="A"/&gt;
+      <emphasis role="bold">&lt;/align&gt;</emphasis>
+      <emphasis role="bold">&lt;align&gt;</emphasis>
+         &lt;tok src="ring1881" ref="line 2" val="pocket"/&gt;
+         &lt;tok src="ring1987" ref="l 2" val="pocket"/&gt;
+      <emphasis role="bold">&lt;/align&gt;</emphasis>
+      <emphasis role="bold">&lt;align&gt;</emphasis>
+         &lt;tok src="ring1881" ref="line 2" val="full"/&gt;
+         &lt;tok src="ring1987" ref="l 2" val="full"/&gt;
+      <emphasis role="bold">&lt;/align&gt;</emphasis>
+      <emphasis role="bold">&lt;align&gt;</emphasis>
+         &lt;tok src="ring1881" ref="line 2" val="of"/&gt;
+         &lt;tok src="ring1987" ref="l 2" val="of"/&gt;
+      <emphasis role="bold">&lt;/align&gt;</emphasis>
+      <emphasis role="bold">&lt;align&gt;</emphasis>
+         &lt;tok src="ring1881" ref="line 2" val="posies"/&gt;
+         &lt;tok src="ring1987" ref="l 2" val="posies"/&gt;
+      <emphasis role="bold">&lt;/align&gt;</emphasis>
+      <emphasis role="bold">&lt;align&gt;</emphasis>
+         &lt;tok src="ring1881" ref="line 3" ord="1, 2"/&gt;
+         &lt;tok src="ring1987" ref="l 3" ord="1"/&gt;
+      <emphasis role="bold">&lt;/align&gt;</emphasis>
+      <emphasis role="bold">&lt;align&gt;</emphasis>
+         &lt;tok src="ring1881" ref="line 3" ord="3 - 4"/&gt;
+         &lt;tok src="ring1987" ref="l 3" ord="2"/&gt;
+      <emphasis role="bold">&lt;/align&gt;</emphasis>
+      <emphasis role="bold">&lt;align&gt;</emphasis>
+         &lt;tok src="ring1881" ref="line 4" ord="1"/&gt;
+         &lt;tok src="ring1987" ref="l 4" ord="1"/&gt;
+      <emphasis role="bold">&lt;/align&gt;</emphasis>
+      <emphasis role="bold">&lt;align&gt;</emphasis>
+         ...........
+      <emphasis role="bold">&lt;/align&gt;</emphasis>
+      <emphasis role="bold">&lt;align&gt;</emphasis>
+         &lt;tok src="ring1881" ref="line 4" ord="3"/&gt;
+         &lt;tok src="ring1987" ref="l 4" ord="2"/&gt;
+      <emphasis role="bold">&lt;/align&gt;</emphasis>
+      <emphasis role="bold">&lt;align&gt;</emphasis>
+         &lt;tok src="ring1881" ref="line 4" ord="last-1"/&gt;
+         &lt;tok src="ring1987" ref="l 4" ord="last-1"/&gt;
+      <emphasis role="bold">&lt;/align&gt;</emphasis>
+      <emphasis role="bold">&lt;align&gt;</emphasis>
+         &lt;tok src="ring1881" ref="line 4" ord="last"/&gt;
+         &lt;tok src="ring1987" ref="l 4" ord="last"/&gt;
+      <emphasis role="bold">&lt;/align&gt;</emphasis>
+   &lt;/body&gt;
+&lt;/TAN-A-tok&gt;
+</programlisting></example></section><section xml:id="element-implicit-div-type-refs"><title><code>&lt;implicit-div-type-refs&gt;</code></title><para>The element <code>implicit-div-type-refs</code> indicates that div types will be dropped for one or more sources, so that references to <code>&lt;<link linkend="element-div">div</link>&gt;</code>s in that source will be exclusively through <code>@<link linkend="attribute-n">n</link></code> values.</para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (@<link linkend="attribute-include">include</link> | |@<link linkend="attribute-src">src</link>)</code></para><para>Used by: <code><xref linkend="element-declarations"/></code></para><caution><itemizedlist><listitem><para>Implicitation not allowed for sources with empty values for @n.</para></listitem><listitem><para>Implicitation not allowed for sources where ignoring types would result in duplicate flattened references to leaf divs, a violation of the Leaf Div Uniqueness Rule.</para></listitem></itemizedlist></caution><example><title><code>&lt;implicit-div-type-refs&gt;</code></title><programlisting>      &lt;declarations&gt;
+         <emphasis role="bold">&lt;implicit-div-type-refs src="eng-uk eng-us ger eng-1790"/&gt;</emphasis>
+         &lt;tokenization src="eng-us" which="general-1"/&gt;
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;implicit-div-type-refs&gt;</code></title><programlisting>      &lt;declarations&gt;
+         ...........
+         &lt;reuse-type xml:id="correlationGeneral"&gt;
+            ...........
+         &lt;/reuse-type&gt;
+         &lt;tokenization src="eng ger" which="general-1"/&gt;
+         &lt;rename-div-ns src="ger" div-type-ref="Zeile"&gt;
+            &lt;rename old="#a" new="#1"/&gt;
+            &lt;rename old="e" new="4"/&gt;
+         &lt;/rename-div-ns&gt;
+         <emphasis role="bold">&lt;implicit-div-type-refs src="eng ger"/&gt;</emphasis>
+      &lt;/declarations&gt;
+</programlisting></example></section><section xml:id="element-rename"><title><code>&lt;rename&gt;</code></title><para>The element <code>rename</code> indicates the name of a <code>&lt;<link linkend="element-div">div</link>&gt;</code> <code>@<link linkend="attribute-n">n</link></code> or <code>@<link linkend="attribute-type">type</link></code> that should be changed, and the name to which it should be changed.</para><para>Definition: <code>@<link linkend="attribute-old">old</link>, @<link linkend="attribute-new">new</link></code></para><para>Used by: <code><xref linkend="element-rename-div-ns"/></code><code><xref linkend="element-rename-div-types"/></code></para><caution><itemizedlist><listitem><para>Old values may not be duplicated</para></listitem><listitem><para>New values may not be duplicated</para></listitem><listitem><para>You may not change a name into one that is already in use by the source as a div-type id.</para></listitem><listitem><para>For rename-div-types, every div type must be found in every source.</para></listitem><listitem><para>For rename-div-ns, every n value must be found in at least one div type in every source.</para></listitem><listitem><para>For rename-div-ns, if a numeration system is to be renamed, the appropriate rename element must have the valid pattern identifiers in @old and @new for letter, Roman, or Arabic numerals -- #a, #i, or #1 respectively</para></listitem><listitem><para>@old and @new may not take the same value</para></listitem><listitem><para>If converting @n numeration from letter numerals to Arabic, the @n values for each div type of each source must be predominantly letter numerals</para></listitem><listitem><para>If converting @n numeration from roman numerals to Arabic, the @n values for each div type of each source must be predominantly Roman numerals</para></listitem></itemizedlist></caution><example><title><code>&lt;rename&gt;</code></title><programlisting>      &lt;declarations&gt;
+         ...........
+         &lt;reuse-type xml:id="correlationGeneral"&gt;
+            ...........
+         &lt;/reuse-type&gt;
+         &lt;tokenization src="eng ger" which="general-1"/&gt;
+         &lt;rename-div-ns src="ger" div-type-ref="Zeile"&gt;
+            <emphasis role="bold">&lt;rename old="#a" new="#1"/&gt;</emphasis>
+            <emphasis role="bold">&lt;rename old="e" new="4"/&gt;</emphasis>
+         &lt;/rename-div-ns&gt;
+         &lt;implicit-div-type-refs src="eng ger"/&gt;
+      &lt;/declarations&gt;
+</programlisting></example></section><section xml:id="element-rename-div-ns"><title><code>&lt;rename-div-ns&gt;</code></title><para>The element <code>rename-div-ns</code> reassigns n values for one or more sources and one or more div types. </para><para>This element is especially useful for converting Roman numerals or letter numerals into Arabic numerals. This feature is strictly speaking a convenience, not a necessity. All TAN-compliant preprocessors are required to automatically detect Roman and alphabetic numbering systems and treat them as Arabic numerals. </para><para>It is also useful for div types that use descriptive names for <code>@<link linkend="attribute-n">n</link></code> (such as books of the Bible), particularly for reconciling those names with a system that prevails or is preferred (e.g., "mt" to "Matt"). </para><para>Note for TAN-A-div users: Although this element can reconcile simple differences, it should not be used for more complex inconsistencies that affect alignment, best handled in the <code>&lt;<link linkend="element-body">body</link>&gt;</code> of a TAN-A-div file.</para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (@<link linkend="attribute-include">include</link> | (@<link linkend="attribute-src">src</link>, , &lt;<link linkend="element-rename">rename</link>&gt;+))</code></para><para>Used by: <code><xref linkend="element-declarations"/></code></para><caution><itemizedlist><listitem><para>Every div type value must valid in every source.</para></listitem><listitem><para>May not refer to a div type by a name that has been changed elsewhere.</para></listitem><listitem><para>For rename-div-ns, every n value must be found in at least one div type in every source.</para></listitem><listitem><para>For rename-div-ns, if a numeration system is to be renamed, the appropriate rename element must have the valid pattern identifiers in @old and @new for letter, Roman, or Arabic numerals -- #a, #i, or #1 respectively</para></listitem><listitem><para>@old and @new may not take the same value</para></listitem><listitem><para>If converting @n numeration from letter numerals to Arabic, the @n values for each div type of each source must be predominantly letter numerals</para></listitem><listitem><para>If converting @n numeration from roman numerals to Arabic, the @n values for each div type of each source must be predominantly Roman numerals</para></listitem></itemizedlist></caution><example><title><code>&lt;rename-div-ns&gt;</code></title><programlisting>      &lt;declarations&gt;
+         ...........
+         &lt;tokenization src="eng ger" which="general-1"/&gt;
+         <emphasis role="bold">&lt;rename-div-ns src="ger" div-type-ref="Zeile"&gt;</emphasis>
+            &lt;rename old="#a" new="#1"/&gt;
+            &lt;rename old="e" new="4"/&gt;
+         <emphasis role="bold">&lt;/rename-div-ns&gt;</emphasis>
+         &lt;implicit-div-type-refs src="eng ger"/&gt;
+      &lt;/declarations&gt;
+</programlisting></example></section><section xml:id="element-rename-div-types"><title><code>&lt;rename-div-types&gt;</code></title><para>The element <code>rename-div-types</code> reassigns the name of a div-type in one or more sources. This feature is strictly speaking a convenience. It does not change the underlying definiton of the div-type.</para><para>Note for TAN-A-div users: If you wish to change the underlying meaning of the div type, you should use the element <code>&lt;<link linkend="element-equate-div-types">equate-div-types</link>&gt;</code></para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (@<link linkend="attribute-include">include</link> | (@<link linkend="attribute-src">src</link>, &lt;<link linkend="element-rename">rename</link>&gt;+))</code></para><para>Used by: <code><xref linkend="element-declarations"/></code></para><important><itemizedlist><listitem><para>Renaming div types for a source where div type references are declared to be implicit has no effect.</para></listitem></itemizedlist></important><caution><itemizedlist><listitem><para>For rename-div-types, every div type must be found in every source.</para></listitem></itemizedlist></caution></section><section xml:id="element-suppress-div-types"><title><code>&lt;suppress-div-types&gt;</code></title><para>The element <code>suppress-div-types</code> marks div types in a source that should be suppressed in references. Any suppression of a div type must preserve the Leaf Div Uniqueness Rule (LDUR).</para><para>This element will be used seldomly, for cases where a source has a div type that is dispensable in text references. </para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (@<link linkend="attribute-include">include</link> | (@<link linkend="attribute-src">src</link>, ))</code></para><para>Used by: <code><xref linkend="element-declarations"/></code></para></section><section xml:id="element-tok"><title><code>&lt;tok&gt;</code></title><para>The element <code>tok</code> identifies one or more words or word fragments, to make assertions. </para><para>Definition: <code>[[ {TAN-A-div.rng:} (@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)? OR  {TAN-class-2.rng:} (@<link linkend="attribute-cert">cert</link>?, (@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?)]], @<link linkend="attribute-src">src</link>, @<link linkend="attribute-ref">ref</link>, @<link linkend="attribute-val">val</link>?, @<link linkend="attribute-ord">ord</link>?, @<link linkend="attribute-chars">chars</link>?</code></para><para>Used by: <code><xref linkend="element-align"/></code><code><xref linkend="element-ana"/></code><code><xref linkend="element-joined"/></code><code><xref linkend="element-split-leaf-div-at"/></code></para><caution><itemizedlist><listitem><para>May not be used to split a leaf div more than once in the same place.</para></listitem><listitem><para>Requires a tokenization declaration.</para></listitem><listitem><para>May not point to the same token that a sibling tok element does.</para></listitem><listitem><para>Must point to a string value via @val, a sequence via @ord, or both.</para></listitem><listitem><para>Every value of @ref must be found in every source.</para></listitem><listitem><para>Every token picked must appear in every ref in every source</para></listitem><listitem><para>If @chars is used, every character must appear in every token in every ref in every source</para></listitem><listitem><para>@ref must refer to a leaf div in every source</para></listitem><listitem><para>Sources that take implicit div type references may not be mixed with those that take explicit ones.</para></listitem><listitem><para>May not be used to split a leaf div at the first token.</para></listitem></itemizedlist></caution><note><itemizedlist><listitem><para> If you insert a question mark anywhere as the value of @ord and then validate the file, you will be given a list of allowed values. </para></listitem><listitem><para> If you insert a question mark anywhere as the value of @chars and then validate the file, you will be given a list of allowed values. </para></listitem><listitem><para> If you insert a question mark anywhere as the value of @val and then validate the file, you will be given a list of allowed values. </para></listitem></itemizedlist></note><example><title><code>&lt;tok&gt;</code></title><programlisting>      &lt;split-leaf-div-at&gt;
+         <emphasis role="bold">&lt;tok src="eng-us" ref="2" ord="last"/&gt;</emphasis>
+      &lt;/split-leaf-div-at&gt;
+</programlisting></example><example><title><code>&lt;tok&gt;</code></title><programlisting>&lt;TAN-A-tok TAN-version="1" id="tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring02"&gt;
+   &lt;head&gt;
+      &lt;declarations&gt;
+         ...........
+         &lt;reuse-type xml:id="adaptation"&gt;
+            ...........
+         &lt;/reuse-type&gt;
+         &lt;tokenization src="ring1881 ring1987" which="general-1"/&gt;
+      &lt;/declarations&gt;
+   &lt;/head&gt;
+   &lt;body bitext-relation="B-descends-from-A" reuse-type="adaptation" in-progress="false"&gt;
+      &lt;align&gt;
+         <emphasis role="bold">&lt;tok src="ring1881" ref="line 1" ord="1"/&gt;</emphasis>
+         <emphasis role="bold">&lt;tok src="ring1987" ref="l 1" ord="1"/&gt;</emphasis>
+      &lt;/align&gt;
+      &lt;align&gt;
+         <emphasis role="bold">&lt;tok src="ring1881" ref="line 1" ord="2"/&gt;</emphasis>
+         <emphasis role="bold">&lt;tok src="ring1987" ref="l 1" ord="2"/&gt;</emphasis>
+      &lt;/align&gt;
+      &lt;align&gt;
+         <emphasis role="bold">&lt;tok src="ring1881" ref="line 1" ord="3"/&gt;</emphasis>
+         <emphasis role="bold">&lt;tok src="ring1987" ref="l 1" ord="3"/&gt;</emphasis>
+      &lt;/align&gt;
+      &lt;align&gt;
+         <emphasis role="bold">&lt;tok src="ring1881" ref="line 1" ord="4"/&gt;</emphasis>
+         <emphasis role="bold">&lt;tok src="ring1987" ref="l 1" ord="4"/&gt;</emphasis>
+      &lt;/align&gt;
+      &lt;align&gt;
+         <emphasis role="bold">&lt;tok src="ring1881" ref="line 1" ord="5"/&gt;</emphasis>
+         <emphasis role="bold">&lt;tok src="ring1987" ref="l 1" ord="5"/&gt;</emphasis>
+      &lt;/align&gt;
+      &lt;align&gt;
+         <emphasis role="bold">&lt;tok src="ring1881" ref="line 2" val="A"/&gt;</emphasis>
+         <emphasis role="bold">&lt;tok src="ring1987" ref="l 2" val="A"/&gt;</emphasis>
+      &lt;/align&gt;
+      &lt;align&gt;
+         <emphasis role="bold">&lt;tok src="ring1881" ref="line 2" val="pocket"/&gt;</emphasis>
+         <emphasis role="bold">&lt;tok src="ring1987" ref="l 2" val="pocket"/&gt;</emphasis>
+      &lt;/align&gt;
+      &lt;align&gt;
+         <emphasis role="bold">&lt;tok src="ring1881" ref="line 2" val="full"/&gt;</emphasis>
+         <emphasis role="bold">&lt;tok src="ring1987" ref="l 2" val="full"/&gt;</emphasis>
+      &lt;/align&gt;
+      &lt;align&gt;
+         <emphasis role="bold">&lt;tok src="ring1881" ref="line 2" val="of"/&gt;</emphasis>
+         <emphasis role="bold">&lt;tok src="ring1987" ref="l 2" val="of"/&gt;</emphasis>
+      &lt;/align&gt;
+      &lt;align&gt;
+         <emphasis role="bold">&lt;tok src="ring1881" ref="line 2" val="posies"/&gt;</emphasis>
+         <emphasis role="bold">&lt;tok src="ring1987" ref="l 2" val="posies"/&gt;</emphasis>
+      &lt;/align&gt;
+      &lt;align&gt;
+         <emphasis role="bold">&lt;tok src="ring1881" ref="line 3" ord="1, 2"/&gt;</emphasis>
+         <emphasis role="bold">&lt;tok src="ring1987" ref="l 3" ord="1"/&gt;</emphasis>
+      &lt;/align&gt;
+      &lt;align&gt;
+         <emphasis role="bold">&lt;tok src="ring1881" ref="line 3" ord="3 - 4"/&gt;</emphasis>
+         <emphasis role="bold">&lt;tok src="ring1987" ref="l 3" ord="2"/&gt;</emphasis>
+      &lt;/align&gt;
+      &lt;align&gt;
+         <emphasis role="bold">&lt;tok src="ring1881" ref="line 4" ord="1"/&gt;</emphasis>
+         <emphasis role="bold">&lt;tok src="ring1987" ref="l 4" ord="1"/&gt;</emphasis>
+      &lt;/align&gt;
+      &lt;align&gt;
+         <emphasis role="bold">&lt;tok src="ring1881" ref="line 4" ord="2"/&gt;</emphasis>
+      &lt;/align&gt;
+      &lt;align&gt;
+         <emphasis role="bold">&lt;tok src="ring1881" ref="line 4" ord="3"/&gt;</emphasis>
+         <emphasis role="bold">&lt;tok src="ring1987" ref="l 4" ord="2"/&gt;</emphasis>
+      &lt;/align&gt;
+      &lt;align&gt;
+         <emphasis role="bold">&lt;tok src="ring1881" ref="line 4" ord="last-1"/&gt;</emphasis>
+         <emphasis role="bold">&lt;tok src="ring1987" ref="l 4" ord="last-1"/&gt;</emphasis>
+      &lt;/align&gt;
+      &lt;align&gt;
+         <emphasis role="bold">&lt;tok src="ring1881" ref="line 4" ord="last"/&gt;</emphasis>
+         <emphasis role="bold">&lt;tok src="ring1987" ref="l 4" ord="last"/&gt;</emphasis>
+      &lt;/align&gt;
+   &lt;/body&gt;
+&lt;/TAN-A-tok&gt;
+</programlisting></example></section><section xml:id="element-tokenization"><title><code>&lt;tokenization&gt;</code></title><para>The element <code>tokenization</code> specifies a tokenization method to be applied to one or more sources, either by (1) pointing to a TAN-R-tok file, (2) pointing by IDREF to a <code>&lt;<link linkend="element-recommended-tokenization">recommended-tokenization</link>&gt;</code> in a source, or (3) using a reserved tokenization keyword.</para><para>Class 2 files that do not require tokenization (i.e., TAN-A-div) must include <code>&lt;<link linkend="element-tokenization">tokenization</link>&gt;</code> only if the file uses elements (e.g., <code>&lt;<link linkend="element-split-leaf-div-at">split-leaf-div-at</link>&gt;</code>) that assume tokenization. </para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (@<link linkend="attribute-include">include</link> | (@<link linkend="attribute-src">src</link>, (@<link linkend="attribute-which">which</link> | |(&lt;<link linkend="element-IRI">IRI</link>&gt;, (&lt;<link linkend="element-name">name</link>&gt;+, &lt;<link linkend="element-desc">desc</link>&gt;*), &lt;<link linkend="element-checksum">checksum</link>&gt;*, &lt;<link linkend="element-location">location</link>&gt;+))))</code></para><para>Used by: <code><xref linkend="element-declarations"/></code></para><caution><itemizedlist><listitem><para>Common tokenization errors: <itemizedlist><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para>'location</para></listitem><listitem><para>fails</para></listitem><listitem><para>to</para></listitem><listitem><para>point</para></listitem><listitem><para>to</para></listitem><listitem><para>an</para></listitem><listitem><para>available</para></listitem><listitem><para>document
+a</para></listitem><listitem><para>required</para></listitem><listitem><para>@which</para></listitem><listitem><para>is</para></listitem><listitem><para>missing
+points</para></listitem><listitem><para>to</para></listitem><listitem><para>a</para></listitem><listitem><para>recommended-tokenization</para></listitem><listitem><para>element</para></listitem><listitem><para>where</para></listitem><listitem><para>the</para></listitem><listitem><para>location</para></listitem><listitem><para>element</para></listitem><listitem><para>fails</para></listitem><listitem><para>to</para></listitem><listitem><para>point</para></listitem><listitem><para>to</para></listitem><listitem><para>an</para></listitem><listitem><para>available</para></listitem><listitem><para>document
+@which</para></listitem><listitem><para>is</para></listitem><listitem><para>neither</para></listitem><listitem><para>in</para></listitem><listitem><para>the</para></listitem><listitem><para>source</para></listitem><listitem><para>nor</para></listitem><listitem><para>is</para></listitem><listitem><para>it</para></listitem><listitem><para>a</para></listitem><listitem><para>reserved</para></listitem><listitem><para>keyword
+core</para></listitem><listitem><para>TAN-R-tok</para></listitem><listitem><para>invoked
+but</para></listitem><listitem><para>is</para></listitem><listitem><para>somehow</para></listitem><listitem><para>unavailable
+tokenizations</para></listitem><listitem><para>fail</para></listitem><listitem><para>to</para></listitem><listitem><para>accommodate</para></listitem><listitem><para>every</para></listitem><listitem><para>language</para></listitem><listitem><para>used</para></listitem><listitem><para>by</para></listitem><listitem><para>a</para></listitem><listitem><para>source'</para></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem><listitem><para/></listitem></itemizedlist></para></listitem></itemizedlist></caution><example><title><code>&lt;tokenization&gt;</code></title><programlisting>      &lt;declarations&gt;
+         &lt;implicit-div-type-refs src="eng-uk eng-us ger eng-1790"/&gt;
+         <emphasis role="bold">&lt;tokenization src="eng-us" which="general-1"/&gt;</emphasis>
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;tokenization&gt;</code></title><programlisting>      &lt;declarations&gt;
+         ...........
+         &lt;reuse-type xml:id="adaptation"&gt;
+            ...........
+         &lt;/reuse-type&gt;
+         <emphasis role="bold">&lt;tokenization src="ring1881 ring1987" which="general-1"/&gt;</emphasis>
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;tokenization&gt;</code></title><programlisting>      &lt;declarations&gt;
+         ...........
+         &lt;reuse-type xml:id="correlationGeneral"&gt;
+            ...........
+         &lt;/reuse-type&gt;
+         <emphasis role="bold">&lt;tokenization src="eng ger" which="general-1"/&gt;</emphasis>
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;tokenization&gt;</code></title><programlisting>      &lt;declarations&gt;
+         ...........
+         &lt;reuse-type xml:id="correlationGeneral"&gt;
+            ...........
+         &lt;/reuse-type&gt;
+         <emphasis role="bold">&lt;tokenization src="eng ger" which="general-1"/&gt;</emphasis>
+         &lt;rename-div-ns src="ger" div-type-ref="Zeile"&gt;
+            &lt;rename old="#a" new="#1"/&gt;
+            &lt;rename old="e" new="4"/&gt;
+         &lt;/rename-div-ns&gt;
+         &lt;implicit-div-type-refs src="eng ger"/&gt;
+      &lt;/declarations&gt;
+</programlisting></example></section></section>

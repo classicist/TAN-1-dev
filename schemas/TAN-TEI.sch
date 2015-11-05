@@ -15,10 +15,10 @@
       <rule context="@xml:id">
          <assert test="count(index-of($ids,.)) = 1">@xml:id assignments must be unique</assert>
       </rule>
-      <rule context="@ed-when | @ed-who">
+      <!--<rule context="@ed-when | @ed-who">
          <assert test="../@ed-when and ../@ed-who">Neither @ed-when nor @ed-who may appear
             alone.</assert>
-      </rule>
+      </rule>-->
       <rule context="@when-iso">
          <report role="warn" test=". = ''" sqf:fix="insert-todays-date insert-current-dateTime">@iso-when should not be
             empty.</report>

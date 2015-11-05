@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<reserved-keywords xmlns="tag:textalign.net,2015:ns">
+    <group affects-element="recommended-tokenization tokenization">
+        <item>
+            <IRI see="../TAN-R-tok/precise-1.xml"/>
+            <desc see="../TAN-R-tok/precise-1.xml"/>
+            <keyword>precise-1</keyword>
+        </item>
+        <item>
+            <IRI see="../TAN-R-tok/general-1.xml"/>
+            <desc see="../TAN-R-tok/general-1.xml"/>
+            <keyword>general-1</keyword>
+        </item>
+        <item>
+            <IRI see="../TAN-R-tok/general-words-only-1.xml"/>
+            <desc see="../TAN-R-tok/general-words-only-1.xml"/>
+            <keyword>general-words-only-1</keyword>
+        </item>
+    </group>
+    <group affects-element="relationship">
+        <item>
+            <IRI>tag:textalign.net,2015:relationship:auxiliary</IRI>
+            <desc>Digital or nondigital entity that was helpful in creating or editing the present
+                file.</desc>
+            <keyword>auxiliary</keyword>
+        </item>
+        <group class="tan">
+            <item>
+                <IRI>tag:textalign.net,2015:relationship:dependent</IRI>
+                <desc>TAN file that uses the present file as a source.</desc>
+                <keyword>dependent</keyword>
+            </item>
+            <group class="edition">
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:parent-edition</IRI>
+                    <desc>The edition from which the current one branches.</desc>
+                    <keyword>parent edition</keyword>
+                </item>
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:child-edition</IRI>
+                    <desc>An edition branched off from the current edition.</desc>
+                    <keyword>child edition</keyword>
+                </item>
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:sibling-edition</IRI>
+                    <desc>An edition that shares the same parent as the current edition.</desc>
+                    <keyword>sibling edition</keyword>
+                </item>
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:ancestor-edition</IRI>
+                    <desc>An edition that is an anscestor to the current edition.</desc>
+                    <keyword>ancestor edition</keyword>
+                </item>
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:descendant-edition</IRI>
+                    <desc>An edition that descends from the current edition.</desc>
+                    <keyword>descendant edition</keyword>
+                </item>
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:cousin-edition</IRI>
+                    <desc>An edition that shares the same ancestor as the current edition</desc>
+                    <keyword>cousin edition</keyword>
+                </item>
+                <group class="class1">
+                    <item>
+                        <IRI>tag:textalign.net,2015:relationship:alternatively-divided-edition</IRI>
+                        <desc>An edition that is identical in &lt;body&gt;text content to the
+                            current edition. The only difference is that it is segmented into a
+                            different &lt;div&gt; hierarchy.</desc>
+                        <keyword>alternatively divided edition</keyword>
+                    </item>
+                    <item>
+                        <IRI>tag:textalign.net,2015:relationship:alternatively-normalized-edition</IRI>
+                        <desc>An edition that is identical in &lt;body&gt;text content to the
+                            current edition, but pursues a different approach to
+                            normalization.</desc>
+                        <keyword>alternatively normalized edition</keyword>
+                    </item>
+                </group>
+            </group>
+            <group class="version">
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:old-version</IRI>
+                    <desc>TAN file superceded by the present file.</desc>
+                    <keyword>old version</keyword>
+                </item>
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:new-version</IRI>
+                    <desc>TAN file that supercedes the present file.</desc>
+                    <keyword>new version</keyword>
+                </item>
+            </group>
+        </group>
+    </group>
+</reserved-keywords>

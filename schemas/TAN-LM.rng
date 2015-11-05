@@ -2,6 +2,7 @@
 <grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0">
   <start>
     <element name="TAN-LM">
+      <a:documentation>specifies that the file is a TAN file containing lexico-morphology data about a text. Root element.</a:documentation>
       <ref name="TAN-root"/>
     </element>
   </start>
@@ -42,7 +43,7 @@
   </include>
   <define name="decl-morph">
     <element name="morphology">
-      <a:documentation>Declaration element: identifies grammatical authorities used.</a:documentation>
+      <a:documentation>identifies a &lt;TAN-R-mor&gt; file that defines the parts of speech for a language, the codes for those parts, and the rules for combining them</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -60,7 +61,7 @@
   </define>
   <define name="decl-lexi">
     <element name="lexicon">
-      <a:documentation>Declaration element: identifies lexicographical authorities used</a:documentation>
+      <a:documentation>names a lexicographical authority used</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -81,17 +82,20 @@
   </define>
   <define name="lexicon-attr">
     <attribute name="lexicon">
+      <a:documentation>points to one or more &lt;lexicon&gt; IDs</a:documentation>
       <data type="IDREFS"/>
     </attribute>
   </define>
   <define name="grammar-attr">
     <attribute name="morphology">
+      <a:documentation>points to one or more &lt;morphology&gt; IDs</a:documentation>
       <data type="IDREF"/>
     </attribute>
   </define>
   <define name="TAN-LM-body-core">
     <oneOrMore>
       <element name="ana">
+        <a:documentation>contains a set of one or more lexico-morphological analyses asserted of one or more tokens</a:documentation>
         <choice>
           <group>
             <optional>
@@ -117,19 +121,30 @@
                 </oneOrMore>
                 <oneOrMore>
                   <element name="lm">
+                    <a:documentation>contains lexical data or morphological data</a:documentation>
                     <ref name="certainty-stamp"/>
                     <interleave>
                       <zeroOrMore>
                         <ref name="comment"/>
                       </zeroOrMore>
-                      <group>
-                        <zeroOrMore>
-                          <ref name="lexeme"/>
-                        </zeroOrMore>
-                        <zeroOrMore>
-                          <ref name="morph"/>
-                        </zeroOrMore>
-                      </group>
+                      <choice>
+                        <group>
+                          <oneOrMore>
+                            <ref name="lexeme"/>
+                          </oneOrMore>
+                          <zeroOrMore>
+                            <ref name="morph"/>
+                          </zeroOrMore>
+                        </group>
+                        <group>
+                          <zeroOrMore>
+                            <ref name="lexeme"/>
+                          </zeroOrMore>
+                          <oneOrMore>
+                            <ref name="morph"/>
+                          </oneOrMore>
+                        </group>
+                      </choice>
                     </interleave>
                   </element>
                 </oneOrMore>
@@ -142,6 +157,7 @@
   </define>
   <define name="joined-token">
     <element name="joined">
+      <a:documentation>indicates that the enclosed tokens are to be treated as a single token. Useful for cases where a word or lexeme is split across boundaries created by &lt;div&gt; or &lt;tokenization&gt; </a:documentation>
       <optional>
         <ref name="internal-id"/>
       </optional>
@@ -153,11 +169,14 @@
   </define>
   <define name="lexeme">
     <element name="l">
+      <a:documentation>names a lexeme</a:documentation>
       <optional>
         <ref name="lexicon-attr"/>
       </optional>
       <optional>
-        <attribute name="def-ref"/>
+        <attribute name="def-ref">
+          <a:documentation>identifies which definition is meant. Essential in cases where a lexicon has multiple entries for lexemes that are  orthographically indistinguishable.</a:documentation>
+        </attribute>
       </optional>
       <ref name="certainty-stamp"/>
       <optional>
@@ -168,6 +187,7 @@
   </define>
   <define name="morph">
     <element name="m">
+      <a:documentation>carries a morphological code that conforms to the rules or patterns established in the underlying TAN-R-mor file.</a:documentation>
       <ref name="certainty-stamp"/>
       <optional>
         <ref name="grammar-attr"/>

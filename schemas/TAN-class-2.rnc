@@ -2,68 +2,102 @@ namespace ns1 = "tag:textalign.net,2015:ns"
 
 include "TAN-core.rnc" inherit = ns1 {
     decl-non-core = decl-class-2 & decl-non-class-2
+    
     ## All sources are TAN files, so no source rights should be declared--they're already stated
     source-rights = empty
 }
+
 ## Reserved for declarations common to all class 2 files
 decl-class-2 =
     decl-token-opt
     & decl-supp-div-opt
     & decl-implicit-div-type-refs-opt
     & (decl-rename-type-opt, decl-rename-n-opt)
+
 ## Reserved for declarations specific to individual types of class 2 files 
 decl-non-class-2 = empty
+
 ## 
 ## Reserved for modification in different types of Class 2 files, to specify how many tokenization declarations are allowed.
 decl-token-opt = decl-token+
 decl-token =
-## Which tokenization methods have been used, either by id ref to the xml:id in the source TAN-T(EI) file, or by an IRI + name pattern reference to a TAN-R-tok file
+    
+    ## specifies a tokenization method to be applied to one or more sources, either by (1) pointing to a TAN-R-tok file, (2) pointing by IDREF to a <recommended-tokenization> in a source, or (3) using a reserved tokenization keyword.
+    
+    ## Class 2 files that do not require tokenization (i.e., TAN-A-div) must include <tokenization> only if the file uses elements (e.g., <split-leaf-div-at>) that assume tokenization. 
     element tokenization {
         ed-stamp?,
         (inclusion
-         | (source-ref, (tokenization-ref | entity-digital-tan-other-ref)))
+         | (source-ref, (keyword-ref | entity-digital-tan-other-ref)))
     }
+
 ## Reserved for modification in different types of Class 2 files, to specify how many suppress-div-type declarations are allowed.
 decl-supp-div-opt = decl-supp-div-type*
 decl-supp-div-type =
-## Option to suppress specific div types in a reference. Must preserve the Leaf Div Uniqueness Rule (LDUR).
+    
+    ## marks div types in a source that should be suppressed in references. Any suppression of a div type must preserve the Leaf Div Uniqueness Rule (LDUR).
+    
+    ## This element will be used seldomly, for cases where a source has a div type that is dispensable in text references. 
     element suppress-div-types {
         ed-stamp?,
         (inclusion | (source-ref, div-type-ref))
     }
 decl-implicit-div-type-refs-opt =
-## Option to drop references to div types and use only @n values. Must not be applied to sources with empty @n values or if the LDUR would be broken.
+    
+    ## indicates that div types will be dropped for one or more sources, so that references to <div>s in that source will be exclusively through @n values.
     element implicit-div-type-refs { ed-stamp?, (inclusion | source-ref) }*
 decl-rename-type-opt = decl-rename-div-type*
 decl-rename-div-type =
-## Provisional change of name for the div-type in one or more sources
+    
+    ## reassigns the name of a div-type in one or more sources. This feature is strictly speaking a convenience. It does not change the underlying definiton of the div-type.
+    
+    ## Note for TAN-A-div users: If you wish to change the underlying meaning of the div type, you should use the element <equate-div-types>
     element rename-div-types {
         ed-stamp?,
         (inclusion | (source-ref, name-change+))
     }
 decl-rename-n-opt = decl-rename-div-n*
 decl-rename-div-n =
-## Declaration to change the name of the n value in one or more sources in one or more given div types; used to reconcile refs that rely on non-numbering n values
+    
+    ## reassigns n values for one or more sources and one or more div types. 
+    
+    ## This element is especially useful for converting Roman numerals or letter numerals into Arabic numerals. This feature is strictly speaking a convenience, not a necessity. All TAN-compliant preprocessors are required to automatically detect Roman and alphabetic numbering systems and treat them as Arabic numerals. 
+    
+    ## It is also useful for div types that use descriptive names for @n (such as books of the Bible), particularly for reconciling those names with a system that prevails or is preferred (e.g., "mt" to "Matt"). 
+    
+    ## Note for TAN-A-div users: Although this element can reconcile simple differences, it should not be used for more complex inconsistencies that affect alignment, best handled in the <body> of a TAN-A-div file.
     element rename-div-ns {
         ed-stamp?,
         (inclusion | (source-ref, div-type-ref, name-change+))
     }
 name-change =
+    
+    ## indicates the name of a <div> @n or @type that should be changed, and the name to which it should be changed.
     element rename {
+        
+        ## name of an @n or @type in a source to be renamed
         attribute old {
             n-val
             | xsd:string { pattern = "#[ai]" }
         },
+        
+        ## new name for an @n or @type that is to be renamed
         attribute new {
             n-val
             | xsd:string { pattern = "#1" }
         }
     }
 certainty-stamp = cert-claim?, ed-stamp?
+
 ## Option to include an internal id. Not needed in TAN-LM files.
 id-option = internal-id
 alignment =
-## Declares an ad hoc alignment of passages or words through children <tok>s (TAN-A-tok) or <div-ref>s (TAN-A-div)
+    
+    ## declares an ad hoc alignment of words or divs. If in a TAN-A-tok file, <align> governs <tok>s; in TAN-A-div files, <div-ref>
+    
+    ## In TAN-A-tok files, the children are <tok>s, and <align> specifies that all the tokens invoked for one source collectively align with the tokens in the other. This version of <align> allows @cert, @bitext-relation, and @reuse-type, in addition to the editorial stamp. 
+    
+    ## In TAN-A-div files, the children are <div-ref>s, and <align> by default specifies that every <div-ref>, taken as a group, is to be aligned with every other <div-ref>. This version of <align> allows @strength, @exclusive, and @distribute, which affect the default behavior of <align> (see documentation on specific attributes for details). 
     element align {
         alignment-inclusion-opt
         | (alignment-attributes-non-class-2,
@@ -73,8 +107,16 @@ alignment =
 alignment-attributes-non-class-2 = empty
 alignment-content-non-class-2 = empty
 alignment-inclusion-opt = inclusion
+
+div-type-ref =
+    # Moved from core on 2015-11-03; delete by 2016 if everything's ok.
+    
+    ## is used by class-2 files to point to one or more <div-type>s in class-1 files. Permits multiple values separated by spaces.
+    attribute div-type-ref { text }
+
 token-list =
-## Token or token fragment. Used in the body of class 2 TAN files to make claims about tokens or token fragments 
+    
+    ## identifies one or more words or word fragments, to make assertions. 
     element tok {
         certainty-stamp,
         source-ref,
@@ -83,4 +125,8 @@ token-list =
         token-value-order-ref?,
         char-ref
     }
-char-ref = attribute chars { seq-picker }?
+char-ref = 
+## list of one or more characters, specified through Arabic numerals, the keyword 'last' or 'last-X' (where X is a valid number), joined with commas or hyphens.
+
+## Examples: '1', 'last', 'last-3 - last-1', '1, 3, 5, 7 - 11, last-8, last'
+attribute chars { seq-picker }?

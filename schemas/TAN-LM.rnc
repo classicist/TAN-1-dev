@@ -2,56 +2,85 @@ default namespace = "tag:textalign.net,2015:ns"
 
 datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
-start = element TAN-LM { TAN-root }
+start =
+    
+    ## specifies that the file is a TAN file containing lexico-morphology data about a text. Root element.
+    element TAN-LM { TAN-root }
 include "TAN-class-2.rnc" {
+    
     ## TAN-LM files must each have at least one lexicon and one TAN-R-mor declaration
     decl-non-class-2 = decl-lexi+ & decl-morph+
+    
     ## TAN-LM files point only to one source
     source-list = source-item
+    
     ## Because TAN-LM files depend on only one source, no id references to sources are needed
     source-ref = empty
     id-option = empty
     TAN-body-core = lexicon-attr, grammar-attr, TAN-LM-body-core
+    
     ## TAN-LM files may have no more than one suppress-div-type field. Multiple div-types should be space delimited in @div-type-ref
     decl-supp-div-opt = decl-supp-div-type?
 }
 decl-morph =
-## Declaration element: identifies grammatical authorities used.
+    
+    ## identifies a <TAN-R-mor> file that defines the parts of speech for a language, the codes for those parts, and the rules for combining them
     element morphology {
         ed-stamp?,
         (inclusion | (internal-id, lang-outside*, entity-digital-tan-other-ref))
     }
 decl-lexi =
-## Declaration element: identifies lexicographical authorities used
+    
+    ## names a lexicographical authority used
     element lexicon {
         ed-stamp?,
         (inclusion
          | (internal-id, lang-outside*, (entity-digital-generic-ref | entity-nondigital-ref)))
     }
-lexicon-attr = attribute lexicon { d:IDREFS }
-grammar-attr = attribute morphology { d:IDREF }
+lexicon-attr =
+    
+    ## points to one or more <lexicon> IDs
+    attribute lexicon { d:IDREFS }
+grammar-attr =
+    
+    ## points to one or more <morphology> IDs
+    attribute morphology { d:IDREF }
 TAN-LM-body-core =
+    
+    ## contains a set of one or more lexico-morphological analyses asserted of one or more tokens
     element ana {
         (ed-stamp?, inclusion)
         | (certainty-stamp,
            internal-id?,
            (comment*
             & ((joined-token | token-list)+,
+               
+               ## contains lexical data or morphological data
                element lm {
                    certainty-stamp,
-                   (comment* & (lexeme*, morph*))
+                   (comment*
+                    & ((lexeme+, morph*) | (lexeme*, morph+)))
                }+)))
     }+
-joined-token = element joined { internal-id?, token-list, token-list+ }
+joined-token =
+    
+    ## indicates that the enclosed tokens are to be treated as a single token. Useful for cases where a word or lexeme is split across boundaries created by <div> or <tokenization> 
+    element joined { internal-id?, token-list, token-list+ }
 lexeme =
+    
+    ## names a lexeme
     element l {
         lexicon-attr?,
+        
+        ## identifies which definition is meant. Essential in cases where a lexicon has multiple entries for lexemes that are  orthographically indistinguishable.
         attribute def-ref { text }?,
         certainty-stamp,
         token-value-order-ref?,
         text
     }
 morph =
+    
+    ## carries a morphological code that conforms to the rules or patterns established in the underlying TAN-R-mor file.
     element m {
         certainty-stamp,
         grammar-attr?,

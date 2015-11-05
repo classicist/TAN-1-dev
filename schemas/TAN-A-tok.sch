@@ -37,13 +37,16 @@
                   satisfies *[name(.) = $i]"
             >Every declaration invoked by the head inclusion must be repeated here (<value-of
                select="$incl-declarations"/>)</assert>-->
-         <report
-            test="exists($missing-declarations)" sqf:fix="add-declaration"
-            >Every declaration invoked by the head inclusion must be repeated here (missing: <value-of
-               select="$missing-declarations"/>)</report>
+         <report test="exists($missing-declarations) and exists($head-inclusion)"
+            sqf:fix="add-declaration">In a TAN-A-tok file, if there is a source/@include, then an
+            entire set of sources are being imported, and, consequently, every declaration in the
+            inclusion must also be included (missing: <value-of select="$missing-declarations"
+            />)</report>
          <sqf:fix id="add-declaration">
             <sqf:description>
                <sqf:title>Add declaration</sqf:title>
+               <sqf:p>Choosing this option will insert the first missing child of the declarations
+                  element. If multiple declarations are missing, repeat as needed.</sqf:p>
             </sqf:description>
             <sqf:add target="{$missing-declarations[1]}" node-type="element" match="."
                position="first-child" select="//tan:source[1]/@include">
@@ -54,12 +57,15 @@
          </report>-->
       </rule>
       <rule context="*[parent::tan:declarations]">
-         <report test="exists($head-inclusion) and not(@include)" sqf:fix="replace-with-inclusion">If there is a head inclusion,
-            every declaration element must be empty and point to the inclusion with @include.
-         </report>
+         <report test="exists($head-inclusion) and not(@include)" sqf:fix="replace-with-inclusion"
+            tan:does-not-apply-to="declarations">In a TAN-A-tok file, if there is a source/@include,
+            then an entire set of sources are being imported, and, consequently, every declaration
+            in the inclusion must also be included. </report>
          <sqf:fix id="replace-with-inclusion">
             <sqf:description>
                <sqf:title>Replace with inclusion</sqf:title>
+               <sqf:p>Choosing this option will replace a child element of declarations with one 
+                  that specifies @include to point to the value of source/@include</sqf:p>
             </sqf:description>
             <sqf:delete match="*"/>
             <sqf:delete match="@*"/>

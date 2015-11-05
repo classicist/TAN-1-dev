@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<errors xmlns="tag:textalign.net,2015:ns">
+    <group affects-attribute="include" affects-element="inclusion">
+        <error>Inclusion must be supported in parent element</error>
+        <error>Replacement element must be found in target inclusion</error>
+        <error>Inclusion may not be circular</error>
+        <error>Functions based on inclusions must be applied to elements that have the same
+            name</error>
+    </group>
+    <group affects-element="recommended-tokenization tokenization">
+        <error>&lt;location> must point to an available document.</error>
+        <error>If there is no &lt;location> then @which must be present.</error>
+        <error>If &lt;tokenization> points to a &lt;recommended-tokenization> the latter must point
+            to an available document.</error>
+        <error>The value of @which must be either in the source or a reserved keyword.</error>
+        <error>If a core TAN-R-tok file is invoked, it must be available.</error>
+        <error>Tokenizations must accommodate every language used by a source.</error>
+    </group>
+</errors>

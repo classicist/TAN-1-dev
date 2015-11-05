@@ -10,6 +10,7 @@
         <sqf:fix id="insert-id">
             <sqf:description>
                 <sqf:title>Insert @xml:id</sqf:title>
+                <sqf:p>Choose this option to add an @xml:id to a source element that requires an id value.</sqf:p>
             </sqf:description>
             <sqf:add node-type="attribute" match="." target="xml:id"/>
         </sqf:fix>

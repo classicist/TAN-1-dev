@@ -2,6 +2,7 @@
 <grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:local="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <start>
     <element name="TAN-R-mor">
+      <a:documentation>specifies that the TAN file contains definitions for the parts of speech for a language, the codes for those parts, and the rules for combining them. Root element.</a:documentation>
       <ref name="TAN-root"/>
     </element>
   </start>
@@ -24,6 +25,7 @@
   <define name="morph-feature">
     <a:documentation>TAN-R-mor files declare the morphological features that are allowed for a given language</a:documentation>
     <element name="feature">
+      <a:documentation>names, through its IRI + name pattern, a grammatical concept (e.g., plural, subjunctive, 1st person) that characterizes a language.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -59,19 +61,19 @@
     </interleave>
   </define>
   <define name="assert">
-    <a:documentation>Modeled loosely on Schematron assert, will return message if the test pattern is false</a:documentation>
     <element name="assert">
+      <a:documentation>names a pattern that, if found to be false in any &lt;m&gt; in a dependent TAN-LM file, will return the enclosed message upon validation of the dependent file, along with an error or warning. Modeled loosely on Schematron &lt;report&gt;.</a:documentation>
       <ref name="test-pattern"/>
     </element>
   </define>
   <define name="report">
-    <a:documentation>Modeled loosely on Schematron report, will return message if the test pattern is true</a:documentation>
     <element name="report">
+      <a:documentation>names a pattern that, if found to be true in any &lt;m&gt; in a dependent TAN-LM file, will return the enclosed message upon validation of the dependent file, along with an error or warning. Modeled loosely on Schematron &lt;report&gt;.</a:documentation>
       <ref name="test-pattern"/>
     </element>
   </define>
   <define name="test-pattern">
-    <a:documentation>Test pattern attributes for determining whether to return the message provided by text </a:documentation>
+    <a:documentation>Test pattern attributes for determining whether to return the message provided by text.</a:documentation>
     <optional>
       <ref name="ed-stamp"/>
     </optional>
@@ -95,30 +97,38 @@
     </choice>
   </define>
   <define name="filter">
-    <a:documentation>Report or assert should be triggered only if the following features are found in a tan:m code</a:documentation>
-    <attribute name="feature-filter"/>
+    <attribute name="feature-filter">
+      <a:documentation>specifies that when a dependent TAN-LM file is validated and the condition for the parent &lt;report&gt; or &lt;assert&gt; is triggered by the value of a given &lt;m&gt;, the message should be returned only if the &lt;m&gt; has at least one of the features mentioned by @feature-filter.</a:documentation>
+    </attribute>
   </define>
   <define name="code-regex-test">
-    <a:documentation>Regular expression, used as a pattern to check matches in codes used in the m elements of TAN-LM files </a:documentation>
-    <attribute name="code-regex-test"/>
+    <attribute name="code-regex-test">
+      <a:documentation>asserts a pattern in the form of a regular expression that is to be used to check matches in codes in &lt;m&gt;s in a dependent TAN-LM file.</a:documentation>
+      <a:documentation>One of four tests for determining the truth value that will trigger the message in a &lt;report&gt; or &lt;assert&gt; </a:documentation>
+    </attribute>
   </define>
   <define name="token-regex-test">
-    <a:documentation>Regular expression, used as a pattern to check matches in tokens cited in the m elements of TAN-LM files </a:documentation>
-    <attribute name="token-regex-test"/>
+    <attribute name="token-regex-test">
+      <a:documentation>carries a regular expression that is to be used to check the truth value of a &lt;report&gt; or &lt;assert&gt;. When a dependent TAN-LM file is validated, if the pattern matches the resolved value of any &lt;tok&gt;, the value will be true, and affect whether a message is triggered in any &lt;m&gt; elements that share an &lt;ana&gt; ancestor.</a:documentation>
+      <a:documentation>One of four tests for determining the truth value that will trigger the message in a &lt;report&gt; or &lt;assert&gt; </a:documentation>
+    </attribute>
   </define>
   <define name="feature-test">
-    <a:documentation>declares the feature  required to trigger the report or assertion</a:documentation>
-    <attribute name="feature-test"/>
+    <attribute name="feature-test">
+      <a:documentation>indicates one or more features that are used to check the truth value of a &lt;report&gt; or &lt;assert&gt;. When a dependent TAN-LM file is validated, this attribute returns true for any feature that is found in an &lt;m&gt; element, and false otherwise.</a:documentation>
+      <a:documentation>One of four tests for determining the truth value that will trigger the message in a &lt;report&gt; or &lt;assert&gt; </a:documentation>
+    </attribute>
   </define>
   <define name="filter-qty-test">
-    <a:documentation>declares how many filters need to be present to invoke the assertion or report</a:documentation>
     <attribute name="filter-qty-test">
+      <a:documentation>specifies a number greater than one indicating how many of the features in @feature-filter must be present for the condition to be true. This is useful for situations where it is desired to flag values of &lt;m&gt; that try to combine incompatible features.</a:documentation>
+      <a:documentation>One of four tests for determining the truth value that will trigger the message in a &lt;report&gt; or &lt;assert&gt; </a:documentation>
       <data type="integer"/>
     </attribute>
   </define>
   <define name="category">
-    <a:documentation>A set of features that share a common grammatical category such as gender, number, etc.</a:documentation>
     <element name="category">
+      <a:documentation>creates a set of features that share a common grammatical trait such as gender, number, etc.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -139,8 +149,8 @@
     </element>
   </define>
   <define name="options">
-    <a:documentation>Declares the option of using a code in lieu of an xml:id. Code must be unique among sibling options </a:documentation>
     <element name="option">
+      <a:documentation>indicates a way to refer to a feature, supplementing the assigned @xml:id. Useful for situations where a code requires a value that is otherwise disallowed by @xml:id</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -154,14 +164,14 @@
     </element>
   </define>
   <define name="feature-ref">
-    <a:documentation>Points to the xml:id value of a feature</a:documentation>
     <attribute name="feature">
+      <a:documentation>refers to a feature by means of its @xml:id</a:documentation>
       <data type="IDREF" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
     </attribute>
   </define>
   <define name="code">
-    <a:documentation>Provides a code to be used in TAN-LM files to pick a particular feature.</a:documentation>
     <attribute name="code">
+      <a:documentation>contains a string that can be used as an alternative code for a &lt;feature&gt;.</a:documentation>
       <data type="string">
         <a:documentation>hyphen reserved for "not applicable"; spaces and (),| reserved for @feature-test expressions</a:documentation>
         <param name="pattern">[^\-\(\),|\s]|[^\(\),|\s]+</param>

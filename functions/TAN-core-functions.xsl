@@ -13,12 +13,12 @@
                 other contexts.</xd:p>
         </xd:desc>
     </xd:doc>
+    
+    <xsl:include href="TAN-parameters.xsl"/>
 
-    <xsl:param name="separator-type-and-n" select="'.'" as="xs:string"/>
-    <xsl:param name="separator-type-and-n-regex" select="'\.'" as="xs:string"/>
-    <xsl:param name="separator-hierarchy" select="':'" as="xs:string"/>
-    <xsl:param name="separator-hierarchy-regex" select="':'" as="xs:string"/>
-
+    <xsl:variable name="schema-version-major" select="1"/>
+    <xsl:variable name="schema-version-minor" select="'dev'"/>
+    
     <xsl:variable name="root" select="/"/>
     <xsl:variable name="head">
         <!--<xsl:apply-templates mode="include" select="/*/tan:head"/>-->
@@ -110,38 +110,26 @@
             $class-1-root-names,
             $class-2-root-names,
             $class-3-root-names"/>
-    <xsl:variable name="inclusion-errors"
-        select="
-            ('@inclusion not supported in parent element',
-            'replacement element not found in target inclusion',
-            'inclusion is circular',
-            'inclusion function being applied to elements that do not have the same name')"/>
+    
+    <!--<xsl:variable name="inclusion-errors"
+        select="$errors//tan:group[@affects-attribute = 'include']/tan:error" as="xs:string*"/>
+    
     <xsl:variable name="relationship-keywords-for-tan-versions"
-        select="
-            ('new version',
-            'old version')"/>
+        select="$keywords//tan:group[@affects-element = 'relationship']/descendant-or-self::tan:group[@class = 'tan']/descendant-or-self::tan:group[@class = 'version']//tan:keyword"
+        as="xs:string*"/>
     <xsl:variable name="relationship-keywords-for-tan-editions"
-        select="
-            ('parent edition',
-            'child edition',
-            'sibling edition',
-            'ancestor edition',
-            'descendant edition',
-            'cousin edition')"/>
+        select="$keywords//tan:group[@affects-element = 'relationship']/descendant-or-self::tan:group[@class = 'tan']/descendant-or-self::tan:group[@class = 'edition']//tan:keyword"
+        as="xs:string*"/>
     <xsl:variable name="relationship-keywords-for-class-1-editions"
-        select="
-            ('alternatively divided edition',
-            'alternatively normalized edition')"/>
+        select="$keywords//tan:group[@affects-element = 'relationship']/descendant-or-self::tan:group[@class = 'tan']/descendant-or-self::tan:group[@class = 'edition']/descendant-or-self::tan:group[@class = 'class1']//tan:keyword"
+        as="xs:string*"/>
     <xsl:variable name="relationship-keywords-for-tan-files"
         select="
-            ($relationship-keywords-for-tan-versions,
-            $relationship-keywords-for-tan-editions,
-            $relationship-keywords-for-class-1-editions,
-            'dependent')"/>
+            $keywords//tan:group[@affects-element = 'relationship']/descendant-or-self::tan:group[@class = 'tan']//tan:keyword"
+        as="xs:string*"/>
     <xsl:variable name="relationship-keywords-all"
-        select="
-            $relationship-keywords-for-tan-files,
-            'auxiliary'"/>
+        select="$keywords//tan:group[@affects-element = 'relationship']/descendant-or-self::tan:group[@class = 'tan']//tan:keyword"
+        as="xs:string*"/>-->
 
     <xsl:variable name="elements-that-must-always-refer-to-tan-files"
         select="
@@ -149,14 +137,18 @@
             'tokenization',
             'morphology',
             'inclusion')"/>
+    <xsl:variable name="tag-urn-regex-pattern" select="'tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-(0\d|1[0-2]))?(-([0-2]\d|3[01]))?:\S+'"/>
 
     <!-- variables related to tokenization -->
     <!-- Keywords reserved for officially supplied TAN-R-tok patterns -->
-    <xsl:variable name="tokenization-which-reserved"
+    <!--<xsl:variable name="tokenization-which-reserved"
         select="
             'general-1',
             'general-words-only-1',
-            'precise-1'"/>
+            'precise-1'"/>-->
+    <xsl:variable name="tokenization-which-reserved"
+        select="$keywords//tan:group[tokenize(@affects-element, '\s+') = 'tokenization']//tan:keyword"
+        as="xs:string*"/>
     <!-- Reserved URLs for officially supplied TAN-R-tok patterns -->
     <xsl:variable name="tokenization-which-reserved-url"
         select="
@@ -171,15 +163,15 @@
             return
                 doc($i)"/>
     <!-- Error messages for failures to name or access tokenization patterns -->
-    <xsl:variable name="tokenization-errors"
+    <!--<xsl:variable name="tokenization-errors"
         select="
-            'no location points to an available document',
-            'no @which',
-            'no location in the recommended-tokenization element points to an available document',
+            'location fails to point to an available document',
+            'a required @which is missing',
+            'points to a recommended-tokenization element where the location element fails to point to an available document',
             '@which is neither in the source nor is it a reserved keyword',
-            'core TAN-R-tok invoked, but no document available',
-            'source uses language unsupported by the tokenizations chosen'
-            "/>
+            'core TAN-R-tok invoked, but is somehow unavailable',
+            'tokenizations fail to accommodate every language used by a source'
+            "/>-->
     <!-- Are officially supplied TAN-R-tok patterns available -->
     <xsl:variable name="tokenization-which-reserved-doc-available"
         select="

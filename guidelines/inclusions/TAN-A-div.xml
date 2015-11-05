@@ -1,176 +1,91 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<section xmlns="http://docbook.org/ns/docbook"
-         xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:rng="http://relaxng.org/ns/structure/1.0"
-         xmlns:fn="http://www.w3.org/2005/xpath-functions"
-         xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
-         version="5.0">
-   <title>TAN-A-div elements and attributes summarized</title>
-   <para>
-      <emphasis>Elements</emphasis>: TAN-A-div anchor-div-ref div-ref div-type-ref equate-div-types equate-works realign split-leaf-div-at</para>
-   <para>
-      <emphasis>Attributes</emphasis>: alignments distribute exclusive seg strength</para>
-   <section xml:id="tan-element-anchor-div-ref">
-      <title>
-         <code>&lt;anchor-div-ref&gt;</code>
-      </title>
-      <para>Element: <code>anchor-div-ref</code>:
-            <emphasis>References a <code>&lt;div&gt;</code> to which other <code>&lt;div-ref&gt;</code>s should be realigned</emphasis>
-      </para>
-      <para>Definition: <code>(@src, @ref, (@ed-who, @ed-when)?, @seg?)</code>
-      </para>
-      <para>Used by: <code>realign<xref linkend="tan-element-realign"/>
-         </code>
-      </para>
-   </section>
-   <section xml:id="tan-element-div-ref">
-      <title>
-         <code>&lt;div-ref&gt;</code>
-      </title>
-      <para>Element: <code>div-ref</code>:
-            <emphasis>References a <code>&lt;div&gt;</code>
-         </emphasis>
-      </para>
-      <para>Definition: <code>(@src, @ref, (@ed-who, @ed-when)?, @seg?)</code>
-      </para>
-      <para>Used by: <code>realign<xref linkend="tan-element-realign"/>
-         </code>
-         <code>align<xref linkend="tan-element-align"/>
-         </code>
-      </para>
-   </section>
-   <section xml:id="tan-element-div-type-ref">
-      <title>
-         <code>&lt;div-type-ref&gt;</code>
-      </title>
-      <para>Element: <code>div-type-ref</code>:
-            <emphasis>References a <code>&lt;div-type&gt;</code> in a class 1 source</emphasis>
-      </para>
-      <para>Definition: <code>(@ed-who, @ed-when)?, @src, @div-type-ref</code>
-      </para>
-      <para>Used by: <code>equate-div-types<xref linkend="tan-element-equate-div-types"/>
-         </code>
-      </para>
-   </section>
-   <section xml:id="tan-element-equate-div-types">
-      <title>
-         <code>&lt;equate-div-types&gt;</code>
-      </title>
-      <para>Element: <code>equate-div-types</code>:
-            <emphasis>Declares an ad hoc equivalence of div types for class 1 sources that have no shared <code>&lt;IRI&gt;</code>s
-under a particular <code>&lt;div-type&gt;</code> 
-         </emphasis>
-      </para>
-      <para>Definition: <code>(@ed-who, @ed-when)?, (@include, &lt;div-type-ref&gt; , &lt;div-type-ref&gt;)</code>
-      </para>
-      <para>Used by: <code>body<xref linkend="tan-element-body"/>
-         </code>
-      </para>
-   </section>
-   <section xml:id="tan-element-equate-works">
-      <title>
-         <code>&lt;equate-works&gt;</code>
-      </title>
-      <para>Element: <code>equate-works</code>:
-            <emphasis>Declares an ad hoc equivalence of works for class 1 sources that have no shared <code>&lt;IRI&gt;</code>s 
-under <code>&lt;work&gt;</code>
-         </emphasis>
-      </para>
-      <para>Definition: <code>(@ed-who, @ed-when)?, (@include, | @src)</code>
-      </para>
-      <para>Used by: <code>body<xref linkend="tan-element-body"/>
-         </code>
-      </para>
-   </section>
-   <section xml:id="tan-element-realign">
-      <title>
-         <code>&lt;realign&gt;</code>
-      </title>
-      <para>Element: <code>realign</code>:
-            <emphasis>Reassigns the default alignment of <code>&lt;div&gt;</code>s in a class 1 source 
-to zero or more locations in other versions of the same work</emphasis>
-      </para>
-      <para>Definition: <code>(@ed-who, @ed-when)?, (@include, &lt;comment&gt; &lt;anchor-div-ref&gt;?, &lt;div-ref&gt;)</code>
-      </para>
-      <para>Used by: <code>body<xref linkend="tan-element-body"/>
-         </code>
-      </para>
-   </section>
-   <section xml:id="tan-element-split-leaf-div-at">
-      <title>
-         <code>&lt;split-leaf-div-at&gt;</code>
-      </title>
-      <para>Element: <code>split-leaf-div-at</code>:
-            <emphasis>Creates ad hoc splits in leaf <code>&lt;div&gt;</code>s, to create alignments more refined 
-than what a class 1 source offers; useful for <code>&lt;realign&gt;</code> and <code>&lt;align&gt;</code> actions that
-require dealing with textual units smaller than leaf <code>&lt;div&gt;</code>s.</emphasis>
-      </para>
-      <para>Definition: <code>(@ed-who, @ed-when)?, (@include, &lt;comment&gt; &lt;tok&gt;)</code>
-      </para>
-      <para>Used by: <code>body<xref linkend="tan-element-body"/>
-         </code>
-      </para>
-   </section>
-   <section xml:id="tan-element-TAN-A-div">
-      <title>
-         <code>&lt;TAN-A-div&gt;</code>
-      </title>
-      <para>Definition: <code>(@id, @TAN-version, (@ed-who, @ed-when)?, &lt;head&gt; , &lt;body&gt;)</code>
-      </para>
-      <para>Used by: </para>
-   </section>
-   <section xml:id="tan-element-alignments">
-      <title>
-         <code>@alignments</code>
-      </title>
-      <para>Definition: <code/>
-      </para>
-      <para>Used by: <code>align<xref linkend="tan-element-align"/>
-         </code>
-      </para>
-   </section>
-   <section xml:id="tan-element-distribute">
-      <title>
-         <code>@distribute</code>
-      </title>
-      <para>Definition: <code/>
-      </para>
-      <para>Used by: <code>align<xref linkend="tan-element-align"/>
-         </code>
-      </para>
-   </section>
-   <section xml:id="tan-element-exclusive">
-      <title>
-         <code>@exclusive</code>
-      </title>
-      <para>Definition: <code/>
-      </para>
-      <para>Used by: <code>align<xref linkend="tan-element-align"/>
-         </code>
-      </para>
-   </section>
-   <section xml:id="tan-element-seg">
-      <title>
-         <code>@seg</code>
-      </title>
-      <para>Definition: <code>((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?(\s*, \s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*</code>
-      </para>
-      <para>Used by: <code>div-ref<xref linkend="tan-element-div-ref"/>
-         </code>
-         <code>anchor-div-ref<xref linkend="tan-element-anchor-div-ref"/>
-         </code>
-      </para>
-   </section>
-   <section xml:id="tan-element-strength">
-      <title>
-         <code>@strength</code>
-      </title>
-      <para>Definition: <code>0\.\d+</code>
-      </para>
-      <para>Used by: <code>align<xref linkend="tan-element-align"/>
-         </code>
-         <code>align<xref linkend="tan-element-align"/>
-         </code>
-      </para>
-   </section>
-</section>
+<?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-A-div elements and attributes summarized</title><section xml:id="element-anchor-div-ref"><title><code>&lt;anchor-div-ref&gt;</code></title><para>The element <code>anchor-div-ref</code> points to a <code>&lt;<link linkend="element-div">div</link>&gt;</code> to which other <code>&lt;<link linkend="element-div">div</link>&gt;</code>s in other versions of the same work should be realigned (via subsequent <code>&lt;<link linkend="element-div-ref">div-ref</link>&gt;</code>s). The first child of a <code>&lt;<link linkend="element-realign">realign</link>&gt;</code>, it is constructed exactly like <code>&lt;<link linkend="element-div-ref">div-ref</link>&gt;</code>, except that the mandatory <code>@<link linkend="attribute-src">src</link></code> may point only to a single source. </para><para><code>&lt;<link linkend="element-anchor-div-ref">anchor-div-ref</link>&gt;</code> is always followed by one or more <code>&lt;<link linkend="element-div-ref">div-ref</link>&gt;</code>s. </para><para>If <code>&lt;<link linkend="element-anchor-div-ref">anchor-div-ref</link>&gt;</code> points to only one reference (i.e., <code>@<link linkend="attribute-src">src</link></code>, <code>@<link linkend="attribute-ref">ref</link></code>, and <code>@<link linkend="attribute-seg">seg</link></code> [if present] each have only one value) then however many references are made in subsequent <code>&lt;<link linkend="element-div-ref">div-ref</link>&gt;</code>s, they will all be realigned to that one anchor reference. </para><para>But if <code>&lt;<link linkend="element-anchor-div-ref">anchor-div-ref</link>&gt;</code> has more than one reference, then distribution is in effect. Every nth reference will be the anchor for the nth reference in subsequent <code>&lt;<link linkend="element-div-ref">div-ref</link>&gt;</code>s (grouped by source).</para><para>Definition: <code>((@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, @<link linkend="attribute-src">src</link>, @<link linkend="attribute-ref">ref</link>, @<link linkend="attribute-seg">seg</link>?)</code></para><para>Used by: <code><xref linkend="element-realign"/></code></para><caution><itemizedlist><listitem><para>Every ref cited must be found in every source.</para></listitem><listitem><para>Sources that take implicit div type references may not be mixed with those that take explicit ones.</para></listitem><listitem><para>Every segment cited must appear in every div in every source</para></listitem><listitem><para>@seg should not be used on a div that has not been split</para></listitem><listitem><para>@seg may be used only with leaf divs</para></listitem><listitem><para>An anchor div ref must point to only one source.</para></listitem><listitem><para>An anchor may not be realigned by a div ref.</para></listitem></itemizedlist></caution><example><title><code>&lt;anchor-div-ref&gt;</code></title><programlisting>      &lt;realign&gt;
+         <emphasis role="bold">&lt;anchor-div-ref src="eng-us" ref="4"/&gt;</emphasis>
+         &lt;div-ref src="ger" ref="e"/&gt;
+      &lt;/realign&gt;
+</programlisting></example></section><section xml:id="element-div-ref"><title><code>&lt;div-ref&gt;</code></title><para>The element <code>div-ref</code> points to one or more <code>&lt;<link linkend="element-div">div</link>&gt;</code>s (or segments of <code>&lt;<link linkend="element-div">div</link>&gt;</code>s) in one or more sources</para><para>Definition: <code>((@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, @<link linkend="attribute-src">src</link>, @<link linkend="attribute-ref">ref</link>, @<link linkend="attribute-seg">seg</link>?)</code></para><para>Used by: <code><xref linkend="element-align"/></code><code><xref linkend="element-realign"/></code></para><example><title><code>&lt;div-ref&gt;</code></title><programlisting>      &lt;realign&gt;
+         &lt;anchor-div-ref src="eng-us" ref="4"/&gt;
+         <emphasis role="bold">&lt;div-ref src="ger" ref="e"/&gt;</emphasis>
+      &lt;/realign&gt;
+</programlisting></example></section><section xml:id="element-div-type-ref"><title><code>&lt;div-type-ref&gt;</code></title><para>The element <code>div-type-ref</code> points to a <code>&lt;<link linkend="element-div-type">div-type</link>&gt;</code> in one or more sources. You must use either the <code>@<link linkend="attribute-xmlid">xml:id</link></code> assigned by the source to that div type or its renamed value, if renamed under <code>&lt;<link linkend="element-rename-div-types">rename-div-types</link>&gt;</code>. </para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, @<link linkend="attribute-src">src</link>, </code></para><para>Used by: <code><xref linkend="element-equate-div-types"/></code></para><caution><itemizedlist><listitem><para>Div-type-refs may not be duplicated.</para></listitem></itemizedlist></caution><example><title><code>&lt;div-type-ref&gt;</code></title><programlisting>   &lt;body&gt;
+      &lt;equate-works src="eng-uk ger"/&gt;
+      &lt;equate-div-types&gt;
+         <emphasis role="bold">&lt;div-type-ref src="ger" div-type-ref="Zeile"/&gt;</emphasis>
+         <emphasis role="bold">&lt;div-type-ref src="eng-uk" div-type-ref="line"/&gt;</emphasis>
+      &lt;/equate-div-types&gt;
+      &lt;split-leaf-div-at&gt;
+         &lt;tok src="eng-us" ref="2" ord="last"/&gt;
+      &lt;/split-leaf-div-at&gt;
+      &lt;realign&gt;
+         &lt;anchor-div-ref src="eng-us" ref="4"/&gt;
+         &lt;div-ref src="ger" ref="e"/&gt;
+      &lt;/realign&gt;
+   &lt;/body&gt;
+</programlisting></example></section><section xml:id="element-equate-div-types"><title><code>&lt;equate-div-types&gt;</code></title><para>The element <code>equate-div-types</code> declares an ad hoc equivalence between div types that are not defined by their sources as being identical.</para><para>Any two <code>&lt;<link linkend="element-div-type">div-type</link>&gt;</code>s that share at least one <code>&lt;<link linkend="element-IRI">IRI</link>&gt;</code> value will be treated as equivalent; those that do not will be treated as different div types. <code>&lt;<link linkend="element-equate-div-types">equate-div-types</link>&gt;</code> permits you to make an ad hoc equivalence between one or more <code>&lt;<link linkend="element-div-type-ref">div-type-ref</link>&gt;</code>s.</para><para><code>&lt;<link linkend="element-equate-div-types">equate-div-types</link>&gt;</code> are assumed to be greedy and transitive. If div type X of source A is stated to be equivalent to type Y of source B, then any div type in any source identical to X will be identical to any div type in any source identical to Y. So to equate two div types, each with multiple members, you need declare the equivalence between only one member of each work, not all of them. </para><para>This element does not imply that the two types of division are, in reality, one and the same. It merely states that, for the purposes of this alignment, they should be treated as equivalent.</para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (@<link linkend="attribute-include">include</link> | (&lt;<link linkend="element-div-type-ref">div-type-ref</link>&gt;, &lt;<link linkend="element-div-type-ref">div-type-ref</link>&gt;+))</code></para><para>Used by: <code><xref linkend="element-body"/></code></para><important><itemizedlist><listitem><para>Div types that already have at least one shared IRI need not be equated.</para></listitem></itemizedlist></important><example><title><code>&lt;equate-div-types&gt;</code></title><programlisting>   &lt;body&gt;
+      &lt;equate-works src="eng-uk ger"/&gt;
+      <emphasis role="bold">&lt;equate-div-types&gt;</emphasis>
+         &lt;div-type-ref src="ger" div-type-ref="Zeile"/&gt;
+         &lt;div-type-ref src="eng-uk" div-type-ref="line"/&gt;
+      <emphasis role="bold">&lt;/equate-div-types&gt;</emphasis>
+      &lt;split-leaf-div-at&gt;
+         ...........
+      &lt;/split-leaf-div-at&gt;
+      &lt;realign&gt;
+         &lt;anchor-div-ref src="eng-us" ref="4"/&gt;
+         &lt;div-ref src="ger" ref="e"/&gt;
+      &lt;/realign&gt;
+   &lt;/body&gt;
+</programlisting></example></section><section xml:id="element-equate-works"><title><code>&lt;equate-works&gt;</code></title><para>The element <code>equate-works</code> declares an ad hoc equivalence between works that are not defined by their sources as being identical.</para><para>Any two <code>&lt;<link linkend="element-work">work</link>&gt;</code>s that share at least one <code>&lt;<link linkend="element-IRI">IRI</link>&gt;</code> value will be treated as equivalent; those that do not will be treated as different div types. <code>&lt;<link linkend="element-equate-works">equate-works</link>&gt;</code> permits you to make an ad hoc equivalence between one or more <code>&lt;<link linkend="element-work">work</link>&gt;</code>s.</para><para><code>&lt;<link linkend="element-equate-div-types">equate-div-types</link>&gt;</code> are assumed to be greedy and transitive. If work X of source A is stated to be equivalent to work Y of source B, then any work in any source identical to X will be identical to any work in any source identical to Y. So to equate two works, each with multiple members, you need declare the equivalence between only one member of each work, not all of them.</para><para>This element does not imply that the two works are, in reality, one and the same. It merely states that, for the purposes of this alignment, they should be treated as equivalent.</para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (@<link linkend="attribute-include">include</link> | |@<link linkend="attribute-src">src</link>)</code></para><para>Used by: <code><xref linkend="element-body"/></code></para><important><itemizedlist><listitem><para>Works that already have at least one shared IRI need not be equated.</para></listitem></itemizedlist></important><note><itemizedlist><listitem><para> If there is a question mark in @src, validation will return a list of works currently clustered </para></listitem></itemizedlist></note><example><title><code>&lt;equate-works&gt;</code></title><programlisting>   &lt;body&gt;
+      <emphasis role="bold">&lt;equate-works src="eng-uk ger"/&gt;</emphasis>
+      &lt;equate-div-types&gt;
+         &lt;div-type-ref src="ger" div-type-ref="Zeile"/&gt;
+         &lt;div-type-ref src="eng-uk" div-type-ref="line"/&gt;
+      &lt;/equate-div-types&gt;
+      &lt;split-leaf-div-at&gt;
+         &lt;tok src="eng-us" ref="2" ord="last"/&gt;
+      &lt;/split-leaf-div-at&gt;
+      &lt;realign&gt;
+         &lt;anchor-div-ref src="eng-us" ref="4"/&gt;
+         &lt;div-ref src="ger" ref="e"/&gt;
+      &lt;/realign&gt;
+   &lt;/body&gt;
+</programlisting></example></section><section xml:id="element-realign"><title><code>&lt;realign&gt;</code></title><para>The element <code>realign</code> corrects wrongly aligned divisions and segments in versions of the same work</para><para>An UNANCHORED realigment is useful for divisions that need to be removed from any automatic alignment. It consists solely of one or more <code>&lt;<link linkend="element-div-ref">div-ref</link>&gt;</code>s. The effect is (1) to sever each referenced <code>&lt;<link linkend="element-div">div</link>&gt;</code> from any automatic alignment and (2) to realign each source's nth reference (div or segment) with the nth reference in every other other source, if any, invoked in the <code>&lt;<link linkend="element-realign">realign</link>&gt;</code>. If only one source is invoked in a <code>&lt;<link linkend="element-realign">realign</link>&gt;</code>, only the first effect takes place: the references are effectively severed from any automatic alignment with any other version for that source. Realignment is inherited, affecting not only the specified <code>&lt;<link linkend="element-div">div</link>&gt;</code>s but their descendants too.</para><para>An ANCHORED realignment is useful for making sure a minority of misplaced <code>&lt;<link linkend="element-div">div</link>&gt;</code>s align with the majority. It begins with a single <code>&lt;<link linkend="element-anchor-div-ref">anchor-div-ref</link>&gt;</code> as the first child of <code>&lt;<link linkend="element-realign">realign</link>&gt;</code>, then one or more <code>&lt;<link linkend="element-div-ref">div-ref</link>&gt;</code>s. The effect is (1) to sever each referenced <code>&lt;<link linkend="element-div">div</link>&gt;</code> from any automatic alignment and (2) to realign each source's nth reference (div or segment) with the nth reference in the anchor. If <code>&lt;<link linkend="element-anchor-div-ref">anchor-div-ref</link>&gt;</code> points to only one reference then all subsequent <code>&lt;<link linkend="element-div-ref">div-ref</link>&gt;</code>s will be tethered to that one anchor reference.</para><para>UNANCHORED <code>&lt;<link linkend="element-realign">realign</link>&gt;</code>s effectively sever every <code>&lt;<link linkend="element-div-ref">div-ref</link>&gt;</code> from any automatic alignment. But ANCHORED <code>&lt;<link linkend="element-realign">realign</link>&gt;</code>s shifts automatic alignment to the anchor. This method is helpful for synchronizing a few sources with the reference system followed by the majority.</para><para>Because of the distributive nature of the realignment, every value of <code>@<link linkend="attribute-ref">ref</link></code> that involves a hyphen must have siblings on the left and right side of the hyphen (i.e., ref="bk.1 - bk.2:ch.1" would be invalid). </para><para>For both anchored and unanchored alignments alike, the order of <code>&lt;<link linkend="element-div-ref">div-ref</link>&gt;</code>s is immaterial.</para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (@<link linkend="attribute-include">include</link> | (&lt;<link linkend="element-comment">comment</link>&gt;* &amp; (&lt;<link linkend="element-anchor-div-ref">anchor-div-ref</link>&gt;?, &lt;<link linkend="element-div-ref">div-ref</link>&gt;+)))</code></para><para>Used by: <code><xref linkend="element-body"/></code></para><caution><itemizedlist><listitem><para>realign sources must all share the same work</para></listitem><listitem><para>Distribution enforced: each source must have the same number of single references</para></listitem></itemizedlist></caution><example><title><code>&lt;realign&gt;</code></title><programlisting>   &lt;body&gt;
+      &lt;equate-works src="eng-uk ger"/&gt;
+      &lt;equate-div-types&gt;
+         &lt;div-type-ref src="ger" div-type-ref="Zeile"/&gt;
+         &lt;div-type-ref src="eng-uk" div-type-ref="line"/&gt;
+      &lt;/equate-div-types&gt;
+      &lt;split-leaf-div-at&gt;
+         ...........
+      &lt;/split-leaf-div-at&gt;
+      <emphasis role="bold">&lt;realign&gt;</emphasis>
+         &lt;anchor-div-ref src="eng-us" ref="4"/&gt;
+         &lt;div-ref src="ger" ref="e"/&gt;
+      <emphasis role="bold">&lt;/realign&gt;</emphasis>
+   &lt;/body&gt;
+</programlisting></example></section><section xml:id="element-split-leaf-div-at"><title><code>&lt;split-leaf-div-at&gt;</code></title><para>The element <code>split-leaf-div-at</code> creates ad hoc splits in leaf <code>&lt;<link linkend="element-div">div</link>&gt;</code>s, to facilitate alignments and realignments of textual units smaller than leaf <code>&lt;<link linkend="element-div">div</link>&gt;</code>s. Any leaf div may be split as many times as one wishes, but never smaller than the token level, as defined by <code>&lt;<link linkend="element-tokenization">tokenization</link>&gt;</code>s.</para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (@<link linkend="attribute-include">include</link> | (&lt;<link linkend="element-comment">comment</link>&gt;* &amp; &lt;<link linkend="element-tok">tok</link>&gt;+))</code></para><para>Used by: <code><xref linkend="element-body"/></code></para><caution><itemizedlist><listitem><para>If a leaf div is to be split, there must be at least one tokenization declared.</para></listitem></itemizedlist></caution><example><title><code>&lt;split-leaf-div-at&gt;</code></title><programlisting>   &lt;body&gt;
+      ...........
+      &lt;equate-div-types&gt;
+         ...........
+      &lt;/equate-div-types&gt;
+      <emphasis role="bold">&lt;split-leaf-div-at&gt;</emphasis>
+         &lt;tok src="eng-us" ref="2" ord="last"/&gt;
+      <emphasis role="bold">&lt;/split-leaf-div-at&gt;</emphasis>
+      &lt;realign&gt;
+         ...........
+      &lt;/realign&gt;
+   &lt;/body&gt;
+</programlisting></example></section><section xml:id="element-TAN-A-div"><title><code>&lt;TAN-A-div&gt;</code></title><para>The element <code>TAN-A-div</code> specifies that the file is a div-based TAN alignment file. Root element.</para><para>Definition: <code>(@<link linkend="attribute-id">id</link>, @<link linkend="attribute-TAN-version">TAN-version</link>, (@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, &lt;<link linkend="element-head">head</link>&gt;, &lt;<link linkend="element-body">body</link>&gt;)</code></para><para>Used by: none</para><tip><para><emphasis role="bold">Schematron Quick Fix: Get local source element with this document's IRI + name pattern </emphasis>Suppose you find a TAN file that you wish to make a source for another. Selecting
+               this option will insert a tan:source element as the next child, complete with the
+               appropriate values for tan:IRI and tan:name, and with a tan:location that points to
+               the local directory.</para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Get absolute source element with this document's IRI + name pattern </emphasis>As above, but with an absolute URL.</para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Get local inclusion element with this document's IRI + name pattern </emphasis>Suppose you find a TAN file that has elements you want to automatically include
+               in another. Selecting this option will insert a tan:include element as the next
+               child, complete with the appropriate values for tan:IRI and tan:name, and with a
+               tan:location that points to the local directory.</para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Get absolute inclusion element with this document's IRI + name pattern </emphasis>As above, but with an absolute URL.</para></tip><example><title><code>&lt;TAN-A-div&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-A-div TAN-version="1" id="tag:parkj@textalign.net,2015:ring01-TAN-A-ring02"&gt;</emphasis>
+   &lt;head&gt;
+      ...........
+   &lt;/head&gt;
+   &lt;body&gt;
+      ...........
+   &lt;/body&gt;
+<emphasis role="bold">&lt;/TAN-A-div&gt;</emphasis>
+</programlisting></example></section></section>

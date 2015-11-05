@@ -5,7 +5,7 @@
     id="tag:parkj@textalign.net,2015:ring01-lm">
     <head>
         <name>Part-of-speech analysis of 1881 version of Ring a Ring o' Roses</name>
-        <master-location>ring-o-roses.eng.1881.lm.xml</master-location>
+        <master-location>http://textalign.net/release/1/dev/examples/TAN-LM/ring-o-roses.eng.1881.lm.xml</master-location>
         <rights-excluding-sources rights-holder="kalvesmaki">
             <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
             <name>Creative Commons Attribution 4.0 International License</name>
@@ -23,6 +23,7 @@
                 <name>Penn Treebank tag set</name>
                 <location when-accessed="2015-08-20"
                     >https://raw.githubusercontent.com/Arithmeticus/TAN-class-3/master/TAN-R-mor/eng.kalvesmaki.com%2C2014.2.xml</location>
+                <location when-accessed="2015-11-03-05:00">../TAN-R-mor/eng.kalvesmaki.com%2C2014.2.xml</location>
             </morphology>
             <lexicon xml:id="test">
                 <IRI>tag:kalvesmaki@gmail.com,2014:lexicon:eng:test</IRI>

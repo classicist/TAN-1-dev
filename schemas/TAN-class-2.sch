@@ -21,10 +21,10 @@
          test="every $i in $self-resolved
                satisfies exists(tan:first-loc-available($i))"
          role="fatal">At least one copy of each source must be available to validate file.</assert>
-      <report test="exists($duplicate-leafdiv-flatrefs)">After declarations are applied, source breaks
-         the Leaf Div Uniqueness Rule at <value-of
-            select="string-join($duplicate-leafdiv-flatrefs,', ')"/></report>
-      <report test="$exists-new-version" role="warning" sqf:fix="use-new-edition">New version
+      <report test="exists($duplicate-leafdiv-flatrefs)">After declarations are applied, source must
+         preserve the Leaf Div Uniqueness Rule (broken at <value-of
+            select="string-join($duplicate-leafdiv-flatrefs, ', ')"/>).</report>
+      <report test="$exists-new-version" role="warning" sqf:fix="use-new-edition"><!-- Upon validation, if a source is found to have a <see-also> that has a <relationship> of 'new-version', a warning will be returned indicating that an updated version is available -->New version
          exists. IRI: <value-of select="$exists-new-version/tan:IRI"/> Name: <value-of
             select="$exists-new-version/tan:name"/>
          <value-of select="$exists-new-version/tan:desc"/> Location: <value-of
@@ -32,6 +32,7 @@
       <sqf:fix id="use-new-edition">
          <sqf:description>
             <sqf:title>Replace with new version</sqf:title>
+            <sqf:p>If the source is found to have a see-also that has a relationship of 'new-version', choosing this option will replace the IRI + name pattern with the one in the source file's see-also.</sqf:p>
          </sqf:description>
          <sqf:delete match="child::*"/>
          <sqf:add match="."
@@ -49,7 +50,7 @@
          value="for $i in (1 to count($this-tokz-per-src)), $j in $this-tokz-per-src[$i] return 
          if ($j/tan:location[. = $tokenization-errors]) then concat($src-ids[$this-src-list[$i]],': ',$j/tan:location) else ()"
       />
-      <report test="$these-tokz-errors">Error: <value-of select="$these-tokz-errors"/>
+      <report test="$these-tokz-errors" id="tokenization-errors">Error: <value-of select="$these-tokz-errors"/>
       </report>
    </rule>
    <rule context="tan:suppress-div-types|tan:div-type-ref|tan:rename-div-ns">
@@ -64,13 +65,11 @@
       <let name="src-div-type-uses-old"
          value="for $i in $this-src-list, $j in $this-div-types, $k in $rename-div-types/tan:source[$i]/tan:rename[@old = $j]
          return concat($src-ids[$i],':',$j)"/>
-      <report test="count($src-div-type-mismatch) gt 0">Invalid value (<value-of select="$src-div-type-mismatch"/>). Must refer to a valid div type 
-         in every source: 
-         <value-of
+      <report test="count($src-div-type-mismatch) gt 0">Every div type value must valid in every source (<value-of
             select="for $i in $this-src-list,
             $j in $src-1st-da-all-div-types/tan:source[$i]//@xml:id return ($rename-div-types/tan:source[$i]/tan:rename[@old = $j]/@new,$j)[1]"
-         />.</report>
-      <report test="exists($src-div-type-uses-old)">Uses old value, changed by rename element
+         />).</report>
+      <report test="exists($src-div-type-uses-old)">May not refer to a div type by a name that has been changed elsewhere
             (<value-of select="$src-div-type-uses-old"/>).</report>
    </rule>
    <rule context="tan:implicit-div-type-refs">
@@ -81,9 +80,10 @@
          matches($j,concat($separator-type-and-n-regex,'$|',$separator-hierarchy-regex,$separator-type-and-n-regex))) then $i else ()"/>
       <report test="exists($empty-ns)">Implicitation not allowed for sources with empty values for
          @n (<value-of select="for $i in $empty-ns return $src-ids[$i]"/>).</report>
-      <report test="exists($duplicate-implicit-refs)">Implicitation not allowed for sources where ignoring
-         types would result in duplicate flattened references (<value-of
-            select="string-join($duplicate-implicit-refs,'; ')"/>).</report>
+      <report test="exists($duplicate-implicit-refs)">Implicitation not allowed for sources where
+         ignoring types would result in duplicate flattened references to leaf divs, a violation of
+         the Leaf Div Uniqueness Rule (<value-of select="string-join($duplicate-implicit-refs,'; ')"
+         />).</report>
    </rule>
    <rule context="tan:rename-div-types">
       <report role="warning" test="@src = tokenize(../tan:implicit-div-type-refs/@src,'\s+')"
@@ -95,7 +95,7 @@
       <let name="this-div-type" value="@old"/>
       <assert
          test="every $i in $this-src-list satisfies $src-1st-da-heads[$i]//tan:div-type[@xml:id=$this-div-type]"
-         >Every div type must be found in every source.</assert>
+         >For rename-div-types, every div type must be found in every source.</assert>
    </rule>
    <rule context="tan:rename[parent::tan:rename-div-ns]">
       <let name="this-src-list" value="tan:src-ids-to-nos(../@src)"/>
@@ -126,16 +126,18 @@
          $separator-type-and-n-regex,
          $this-div-n,
          '$'))]"
-         >Every n value must be found in at least one div type in every source.</assert>
-      <assert test="matches(@old,'#') = matches(@new,'#')">If a numeration system is to be renamed,
-         a numeration system pattern (#a, #i, or #1) must appear in both @old and @new</assert>
+         >For rename-div-ns, every n value must be found in at least one div type in every source.</assert>
+      <assert test="matches(@old,'#') = matches(@new,'#')">For rename-div-ns, if a numeration system
+         is to be renamed, the appropriate rename element must have the valid pattern identifiers in @old and @new for letter, Roman, or Arabic numerals -- #a, #i, or #1 respectively</assert>
       <report test="@old = @new">@old and @new may not take the same value</report>
-      <assert test="if (@old = '#a') then ($ns-are-type-a) else true()">Div types for each source
-         must be predominantly letter numerals (currently <value-of select="string-join($ns-are-what-type,', ')"
-         />)</assert>
-      <assert test="if (@old = '#i') then ($ns-are-type-a) else true()">Div types for each source
-         must be predominantly Roman numerals (currently <value-of select="string-join($ns-are-what-type,', ')"
-         />)</assert>
+      <assert test="if (@old = '#a') then ($ns-are-type-a) else true()">If converting @n numeration
+         from letter numerals to Arabic, the @n values for each div type of each source must be
+         predominantly letter numerals (currently <value-of
+            select="string-join($ns-are-what-type,', ')"/>)</assert>
+      <assert test="if (@old = '#i') then ($ns-are-type-a) else true()">If converting @n numeration
+         from roman numerals to Arabic, the @n values for each div type of each source must be
+         predominantly Roman numerals (currently <value-of
+            select="string-join($ns-are-what-type,', ')"/>)</assert>
    </rule>
    <rule context="@ref">
       <let name="these-refs" value="normalize-space(.)"/>
@@ -165,7 +167,7 @@
          test="$ref-range-must-join-siblings and (some $i in tan:ref-range-check(.) satisfies $i = false())"
          >In any @ref whose values might be distributed, every range (references joined by a hyphen)
          must begin and end with siblings.</report>
-      <report test="matches(.,'\?')">Help: <value-of select="$possible-refs"/></report>
+      <report test="matches(.,'\?')" role="info"><!-- If you add a question mark to a partially completed reference, you will get in response a list of all possible valid references -->Help: <value-of select="$possible-refs"/></report>
    </rule>
    <rule context="tan:tok">
       <let name="src-data-for-this-tok" value="tan:pick-tokenized-prepped-class-1-data(.)"/>
@@ -193,50 +195,55 @@
          if (deep-equal($i,$j)) then 
          if ($i/../@ref = $j/../@ref and $i/../../@id = $j/../../@id) then true() else () 
          else ()"/>
-      <report test="exists($duplicate-tokens) and not($help-requested)">Sibling tok elements may not point to the same
-         token.</report>
-      <report test="$src-data-for-this-tok/tan:div/@error">Every ref cited must be found in every
-         source (<value-of
-            select="for $i in $src-data-for-this-tok/tan:div[@error] return concat($i/../@id,': ',$i/@ref)"
-         />).</report>
+      <report test="exists($duplicate-tokens) and not($help-requested)">May not point to the same
+         token that a sibling tok element does.</report>
       <report test="some $i in $src-data-for-this-tok/tan:div satisfies $i = $tokenization-errors"
-         >Tokenization error (<value-of
+         tan:does-not-apply-to="tok">Tokenization error (<value-of
             select="for $i in $src-data-for-this-tok/tan:div[. = $tokenization-errors] return concat($i/@ref,': ',$i/@lang)"
          />)</report>
-      <report test="not(@ord or @val)">tok must point to a string value, a sequence, or
+      <report test="not(@ord or @val)">Must point to a string value via @val, a sequence via @ord, or
          both.</report>
+      <report test="$src-data-for-this-tok/tan:div/@error">Every value of @ref must be found in
+         every source (<value-of
+            select="for $i in $src-data-for-this-tok/tan:div[@error] return concat($i/../@id,': ',$i/@ref)"
+         />).</report>
       <report test="$src-data-for-this-tok/tan:div/tan:tok[@error]">Every token picked must appear
          in every ref in every source<value-of
             select="if (tokenize(@val,'\s+') = 'last') then ' (&quot;last&quot; 
             usually goes with the attribute @ord, not @val)' else ()"
-         />. Errors: <value-of
+         /> (errors: <value-of
             select="for $i in $src-data-for-this-tok/tan:div[tan:tok[@error]] return 
             concat($i/../@id,':',$i/@ref,' : ',string-join($i/tan:tok/@error,' '))"
-         /></report>
+         />)</report>
       <report
          test="if (exists($this-chars)) then ($this-char-max gt $char-ceiling) or ($this-char-min-last lt 1) 
          else false()"
-         >Every character cited must appear in every token in every ref in every source (tokens
+         >If @chars is used, every character must appear in every token in every ref in every source (tokens
          chosen have <value-of select="$char-ceiling"/> characters max)</report>
-      <report test="$src-data-for-this-tok/tan:div[not(@lang)]">Every tok must point to a leaf div
-            (<value-of
+      <report test="$src-data-for-this-tok/tan:div[not(@lang)]">@ref must refer to a leaf div in
+         every source (<value-of
             select="string-join(for $i in $src-data-for-this-tok/tan:div[not(@lang)] return concat($i/../@id,':',$i/@ref),', ')"
          />)</report>
-      <report test="matches(@ord,'\?')" role="warning">Help: acceptable values 1 through <value-of
+      <report test="matches(@ord,'\?')" role="info">
+         <!-- If you insert a question mark anywhere as the value of @ord and then validate the file, you will be given a list of allowed values. -->
+         Help: acceptable values 1 through <value-of
             select="$token-ceiling"/></report>
-      <report test="matches(@chars,'\?')" role="warning">Help: acceptable values 1 through <value-of
+      <report test="matches(@chars,'\?')" role="info">
+         <!-- If you insert a question mark anywhere as the value of @chars and then validate the file, you will be given a list of allowed values. -->
+         Help: acceptable values 1 through <value-of
             select="$char-ceiling"/></report>
       <report
          test="$this-src-qty-with-implicit-div-types gt 0 and 
          $this-src-qty-with-implicit-div-types ne count(tan:src-ids-to-nos(@src))"
-         >Either all or none of the sources mentioned in @src should be declared in
-         implicit-div-type-refs (<value-of select="$this-src-qty-with-implicit-div-types"/>,
+         >Sources that take implicit div type references may not be mixed with those that take explicit ones. (<value-of select="$this-src-qty-with-implicit-div-types"/>,
             <value-of select="count(tan:src-ids-to-nos(@src))"/>)</report>
       <report
          test="$src-data-for-this-tok//tan:tok[@n = '1'][not(@error)] and parent::tan:split-leaf-div-at and
             not($help-requested)"
-         >No leaf div may be split at the first token.</report>
-      <report test="@val and $help-requested" role="warning">Help: 
+         >May not be used to split a leaf div at the first token.</report>
+      <report test="@val and $help-requested" role="info">
+         <!-- If you insert a question mark anywhere as the value of @val and then validate the file, you will be given a list of allowed values. -->
+         Help: 
          <value-of
             select="for $i in $src-data-for-this-tok,
                   $j in $i/tan:div

@@ -2,7 +2,9 @@ default namespace local = "tag:textalign.net,2015:ns"
 
 datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
-start = element TAN-A-tok { TAN-root }
+start = 
+## specifies that the file is a token-based TAN alignment file. Root element.
+element TAN-A-tok { TAN-root }
 include "TAN-class-2.rnc" {
     ## TAN-A-tok files take exactly two sources
     source-list = source-item, source-item
@@ -16,18 +18,24 @@ include "TAN-class-2.rnc" {
     alignment-content-non-class-2 = token-list+
 }
 decl-brel =
-## Identifies how one text-bearing object relates to another by specifying the chain of derivation (as in stemmatics) that connects one to the other.
+## identifies how one the text on one text-bearing object relates to that on another by specifying the chain of derivation from one to the other. This element should not be used to describe any activities (e.g., translation, copying), which should be documented in <reuse-type>. 
+
+## For examples see iris.xml 
     element bitext-relation {
         ed-stamp?,
         (inclusion
          | (internal-id, (comment* & entity-nondigital-ref)))
     }
 decl-reus =
-## Identifies a category of text reuse (e.g., translation, mistranslation, paraphrase, ridicule).
+## identifies a category of text reuse (e.g., translation, mistranslation, paraphrase, ridicule).
     element reuse-type {
         ed-stamp?,
         (inclusion
          | (internal-id, (comment* & entity-nondigital-ref)))
     }+
-bitext-relation-attr = attribute bitext-relation { d:IDREFS }
-reuse-type-attr = attribute reuse-type { d:IDREFS }
+bitext-relation-attr = 
+## points to one or more <bitext-relation> @xml:id values that qualify the type of relation that holds. Multiple values assume inclusive or (A or B or A and B)
+attribute bitext-relation { d:IDREFS }
+reuse-type-attr = 
+## points to one or more <reuse-type> @xml:id values that qualify the type of textual reuse that holds. Multiple values assume inclusive or (A or B or A and B)
+attribute reuse-type { d:IDREFS }

@@ -1,722 +1,204 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<section xmlns="http://docbook.org/ns/docbook"
-         xmlns:xlink="http://www.w3.org/1999/xlink"
-         version="5.0">
-   <title>2</title>
-   <para>
-  
-  
-  
-  
-    
-  
-  
-  
-    
-      
-        (high)|(low)|(0\.\d+)
-      
-    
-  
-  
-  
-    Test double-hash rendered on two
-lines
-    
-      \w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*
-    
-  
-  
-  
-    
-      (\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*)((\s*,|\s+-)\s+(\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*))*
-    
-  
-  
-  
-    
-  
-  
-  
-    
-  
-  
-  
-    
-      
-        
-        
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-        \w\S*
-      
-    
-  
-  
-  
-    
-      [a-zA-Z][\-.+a-zA-Z0-9]+:\S+
-    
-  
-  
-  
-    
-      \w*
-    
-  
-  
-  
-    
-      
-        1(\W+dev)?
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-  
-  
-  
-    
-  
-  
-  
-    
-  
-  
-  
-    
-      ((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?(\s*,\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*
-    
-  
-  
-  
-    
-      
-        .+
-      
-    
-  
-  
-  
-    
-      [a-zA-Z][\-.+a-zA-Z0-9]+:[\-._~+:/?#\[\]%@!$&amp;'\(\)*+,;=a-zA-Z0-9]+
-    
-  
-  
-  
-    
-      tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-(0\d|1[0-2]))?(-([0-2]\d|3[01]))?:\S+
-    
-  
-  
-  
-    
-      
-        
-        
-      
-    
-  
-  
-  
-  
-    
-      
-      
-        
-      
-    
-  
-  
-  
-    
-      
-      
-      
-    
-  
-  
-  
-    
-    
-  
-  
-  
-    
-    
-    
-      
-    
-    
-      
-    
-  
-  
-  
-    
-      
-    
-    
-    
-      
-    
-    
-      
-    
-  
-  
-  
-    
-    
-      
-    
-  
-  
-  
-    
-      
-    
-    
-  
-  
-  
-    
-      
-        
-      
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        [smixq]+
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-            
-          
-          
-            
-              
-            
-            
-              
-              
-                
-                  
-                
-                
-              
-              
-                
-              
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-            
-          
-          
-            
-            
-              
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-      
-      
-    
-  
-  
-    
-      
-    
-    
-      
-    
-    
-      (.|\n)+
-    
-  
-  
-    
-      
-        
-      
-    
-    
-      
-        
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-    
-  
-  
-  
-  
-    
-      
-    
-    
-    
-      
-    
-    
-    
-  
-  
-  
-  
-    
-      
-        
-      
-      
-        
-          
-        
-        
-          
-          
-          
-          
-          
-          
-          
-            
-          
-          
-            
-          
-          
-            
-          
-          
-            
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-      
-      
-        
-          
-        
-        
-      
-    
-  
-  
-    
-  
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-          
-            
-              
-            
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-    
-  
-  
-    
-      
-        
-      
-      
-      
-        
-          
-        
-        
-      
-    
-  
-  
-  
-    
-  
-  
-    
-      
-        
-      
-      
-        
-          
-        
-      
-      
-        
-        
-          
-          
-            
-              
-            
-            
-              
-                
-                
-                
-              
-              
-                
-              
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-            
-          
-          
-            
-              
-            
-            
-          
-        
-      
-    
-  
-  
-  
-    
-  
-  
-  
-    
-      
-    
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-            
-          
-          
-            
-            
-              
-              
-              
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-          
-            (new|old) version|(parent|child|ancestor|descendant|cousin) edition|alternatively (divided|normalized) edition|dependent|auxiliary
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-          
-        
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-            
-          
-          
-          
-            
-              
-            
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-        
-        
-          
-          
-            
-              
-            
-            
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-        
-          
-            
-              
-              
-            
-          
-          
-            
-              
-              
-            
-          
-          
-            
-          
-          
-          
-        
-      
-    
-  
-  
-  
-    
-      
-        
-      
-      
-      
-      
-    
-  
-  
-  
-  
-    
-      
-      
-    
-  
-  
-  
-    
-  
-  
-  
-    
-  
-</para>
-</section>
+<?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-class-1 elements and attributes summarized</title><section xml:id="element-div-type"><title><code>&lt;div-type&gt;</code></title><para>The element <code>div-type</code> declares a type of textual division (e.g., title, paragraph, stanza). You may have as many <code>&lt;<link linkend="element-div-types">div-types</link>&gt;</code> as you wish, and they need not all be used.</para><para>See iris.xml for suggested IRI + name values for division types. </para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (@<link linkend="attribute-include">include</link> | (?, @<link linkend="attribute-xmlid">xml:id</link>, (&lt;<link linkend="element-comment">comment</link>&gt;* &amp; (&lt;<link linkend="element-IRI">IRI</link>&gt;+, (&lt;<link linkend="element-name">name</link>&gt;+, &lt;<link linkend="element-desc">desc</link>&gt;*)))))</code></para><para>Used by: <code><xref linkend="element-declarations"/></code></para><example><title><code>&lt;div-type&gt;</code></title><programlisting>   &lt;head&gt;
+      &lt;declarations&gt;
+         &lt;work&gt;
+            ...........
+         &lt;/work&gt;
+         <emphasis role="bold">&lt;div-type xml:id="p"&gt;</emphasis>
+            &lt;IRI&gt;http://dbpedia.org/resource/Page_(paper)&lt;/IRI&gt;
+            &lt;name&gt;page&lt;/name&gt;
+         <emphasis role="bold">&lt;/div-type&gt;</emphasis>
+         <emphasis role="bold">&lt;div-type xml:id="c"&gt;</emphasis>
+            &lt;IRI&gt;http://dbpedia.org/resource/Column_(typography)&lt;/IRI&gt;
+            &lt;name&gt;column&lt;/name&gt;
+         <emphasis role="bold">&lt;/div-type&gt;</emphasis>
+         <emphasis role="bold">&lt;div-type xml:id="l"&gt;</emphasis>
+            &lt;IRI&gt;tag:textalign.net,2015:div-type:line:physical&lt;/IRI&gt;
+            &lt;name&gt;physical line&lt;/name&gt;
+         <emphasis role="bold">&lt;/div-type&gt;</emphasis>
+         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
+         ...........
+      &lt;/declarations&gt;
+   &lt;/head&gt;
+</programlisting></example><example><title><code>&lt;div-type&gt;</code></title><programlisting>      &lt;declarations&gt;
+         &lt;work include="master"/&gt;
+         <emphasis role="bold">&lt;div-type include="master"/&gt;</emphasis>
+         &lt;recommended-tokenization which="general-words-only-1"/&gt;
+         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
+         ...........
+      &lt;/declarations&gt;
+</programlisting></example></section><section xml:id="element-filter"><title><code>&lt;filter&gt;</code></title><para>The element <code>filter</code> declares alterations that have been made to the source.</para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (&lt;<link linkend="element-comment">comment</link>&gt;* &amp; (&lt;<link linkend="element-normalization">normalization</link>&gt;* &amp; &lt;<link linkend="element-replace">replace</link>&gt;* &amp; &lt;<link linkend="element-transliteration">transliteration</link>&gt;*))</code></para><para>Used by: <code><xref linkend="element-declarations"/></code></para><example><title><code>&lt;filter&gt;</code></title><programlisting>      &lt;declarations&gt;
+         ...........
+         &lt;recommended-tokenization which="general-words-only-1"/&gt;
+         <emphasis role="bold">&lt;filter&gt;</emphasis>
+            &lt;normalization&gt;
+               ...........
+            &lt;/normalization&gt;
+         <emphasis role="bold">&lt;/filter&gt;</emphasis>
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;filter&gt;</code></title><programlisting>      &lt;declarations&gt;
+         ...........
+         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
+         <emphasis role="bold">&lt;filter&gt;</emphasis>
+            &lt;normalization&gt;
+               ...........
+            &lt;/normalization&gt;
+         <emphasis role="bold">&lt;/filter&gt;</emphasis>
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;filter&gt;</code></title><programlisting>      &lt;declarations&gt;
+         ...........
+         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
+         <emphasis role="bold">&lt;filter&gt;</emphasis>
+            &lt;normalization&gt;
+               ...........
+            &lt;/normalization&gt;
+         <emphasis role="bold">&lt;/filter&gt;</emphasis>
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;filter&gt;</code></title><programlisting>      &lt;declarations&gt;
+         ...........
+         &lt;recommended-tokenization which="general-1"/&gt;
+         <emphasis role="bold">&lt;filter&gt;</emphasis>
+            &lt;normalization&gt;
+               ...........
+            &lt;/normalization&gt;
+            &lt;normalization&gt;
+               ...........
+            &lt;/normalization&gt;
+         <emphasis role="bold">&lt;/filter&gt;</emphasis>
+      &lt;/declarations&gt;
+</programlisting></example></section><section xml:id="element-normalization"><title><code>&lt;normalization&gt;</code></title><para>The element <code>normalization</code> specifies an alteration made to a source file to bring the text into conformity with standards or common expectations. Typically applies to minor corrections made in the transcription or interpetation of a source (e.g., suppression of discretionary hyphenation). You should declare every change you have made to the source.</para><para><code>&lt;<link linkend="element-normalization">normalization</link>&gt;</code> is especially helpful in reference to nondigital sources, but it may be made also for digital sources, to declare global changes that would be cumbersome, difficult, or impossible to describe in <code>&lt;<link linkend="element-replace">replace</link>&gt;</code>. </para><para>See iris.xml for suggested IRI + name values for normalizations. </para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (@<link linkend="attribute-include">include</link> | (&lt;<link linkend="element-comment">comment</link>&gt;* &amp; (&lt;<link linkend="element-for-lang">for-lang</link>&gt;*, (&lt;<link linkend="element-IRI">IRI</link>&gt;+, (&lt;<link linkend="element-name">name</link>&gt;+, &lt;<link linkend="element-desc">desc</link>&gt;*)))))</code></para><para>Used by: <code><xref linkend="element-filter"/></code></para><example><title><code>&lt;normalization&gt;</code></title><programlisting>         &lt;filter&gt;
+            <emphasis role="bold">&lt;normalization&gt;</emphasis>
+               &lt;IRI&gt;tag:textalign.net,2015:normalization:hyphens-discretionary-removed&lt;/IRI&gt;
+               &lt;name&gt;discretionary hyphens suppressed&lt;/name&gt;
+            <emphasis role="bold">&lt;/normalization&gt;</emphasis>
+         &lt;/filter&gt;
+</programlisting></example><example><title><code>&lt;normalization&gt;</code></title><programlisting>         &lt;filter&gt;
+            <emphasis role="bold">&lt;normalization&gt;</emphasis>
+               &lt;IRI&gt;tag:textalign.net,2015:normalization:hyphens-discretionary-removed&lt;/IRI&gt;
+               &lt;name&gt;discretionary hyphens suppressed&lt;/name&gt;
+            <emphasis role="bold">&lt;/normalization&gt;</emphasis>
+         &lt;/filter&gt;
+</programlisting></example><example><title><code>&lt;normalization&gt;</code></title><programlisting>         &lt;filter&gt;
+            <emphasis role="bold">&lt;normalization&gt;</emphasis>
+               &lt;IRI&gt;tag:textalign.net,2015:normalization:hyphens-discretionary-removed&lt;/IRI&gt;
+               &lt;name&gt;discretionary hyphens suppressed&lt;/name&gt;
+            <emphasis role="bold">&lt;/normalization&gt;</emphasis>
+         &lt;/filter&gt;
+</programlisting></example><example><title><code>&lt;normalization&gt;</code></title><programlisting>         &lt;filter&gt;
+            <emphasis role="bold">&lt;normalization&gt;</emphasis>
+               &lt;IRI&gt;tag:textalign.net,2015:normalization:music-printed-removed&lt;/IRI&gt;
+               &lt;name&gt;Printed music has been removed.&lt;/name&gt;
+            <emphasis role="bold">&lt;/normalization&gt;</emphasis>
+            <emphasis role="bold">&lt;normalization&gt;</emphasis>
+               ...........
+            <emphasis role="bold">&lt;/normalization&gt;</emphasis>
+         &lt;/filter&gt;
+</programlisting></example></section><section xml:id="element-recommended-div-type-refs"><title><code>&lt;recommended-div-type-refs&gt;</code></title><para>The element <code>recommended-div-type-refs</code> suggests whether div types in references to the transcription should be explicit (e.g., book.John:chapter.3:verse.16) or implicit (e.g., John 3:16). If not present, explicit is assumed.</para><para>Anyone using your file need not adhere to your recommendation. If you mark the value as implicit, someone who prefers the verbose syntax is welcome to do so. But the converse is not true: explicit means only the verbose form may be used.</para><para>Although this element is optional, it is suggested especially for long files, because it will reduce the time to validate any dependent files.</para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (@<link linkend="attribute-include">include</link> | string (pattern implicit|explicit))</code></para><para>Used by: <code><xref linkend="element-declarations"/></code></para><caution><itemizedlist><listitem><para>Implicit div refs cannot be recommended if any @n have empty values.</para></listitem><listitem><para>Implicit div refs cannot be recommended if any flattened refs result in duplicates.</para></listitem></itemizedlist></caution><example><title><code>&lt;recommended-div-type-refs&gt;</code></title><programlisting>      &lt;declarations&gt;
+         ...........
+         &lt;div-type xml:id="l"&gt;
+            ...........
+         &lt;/div-type&gt;
+         <emphasis role="bold">&lt;recommended-div-type-refs&gt;</emphasis>implicit<emphasis role="bold">&lt;/recommended-div-type-refs&gt;</emphasis>
+         &lt;recommended-tokenization which="general-words-only-1"/&gt;
+         ...........
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;recommended-div-type-refs&gt;</code></title><programlisting>      &lt;declarations&gt;
+         ...........
+         &lt;recommended-tokenization which="general-words-only-1"/&gt;
+         <emphasis role="bold">&lt;recommended-div-type-refs&gt;</emphasis>implicit<emphasis role="bold">&lt;/recommended-div-type-refs&gt;</emphasis>
+         &lt;filter&gt;
+            ...........
+         &lt;/filter&gt;
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;recommended-div-type-refs&gt;</code></title><programlisting>      &lt;declarations&gt;
+         ...........
+         &lt;recommended-tokenization which="general-words-only-1"/&gt;
+         <emphasis role="bold">&lt;recommended-div-type-refs&gt;</emphasis>implicit<emphasis role="bold">&lt;/recommended-div-type-refs&gt;</emphasis>
+         &lt;filter&gt;
+            ...........
+         &lt;/filter&gt;
+      &lt;/declarations&gt;
+</programlisting></example></section><section xml:id="element-recommended-tokenization"><title><code>&lt;recommended-tokenization&gt;</code></title><para>The element <code>recommended-tokenization</code> suggests an ideal TAN-R-tok pattern to be used to segment a text into word tokens. If no thought has been given to tokenization, this element should be left empty. There are two kinds of tokenization patterns.</para><para>(1) Core: general-1, general-words-only-1, and precise-1 (values of <code>@<link linkend="attribute-which">which</link></code>). </para><para>(2) Custom: each <code>&lt;<link linkend="element-recommended-tokenization">recommended-tokenization</link>&gt;</code> must point through an IRI + name pattern a specific TAN-R-tok file, and must take a unique value for <code>@<link linkend="attribute-xmlid">xml:id</link></code>, to be used by dependent class 2 TAN files.</para><para>You may have as many <code>&lt;<link linkend="element-recommended-tokenization">recommended-tokenization</link>&gt;</code>s as you like, but the order is important: the optimal tokenizing pattern should be placed first.</para><para>Definition: <code>(@<link linkend="attribute-which">which</link> | |@<link linkend="attribute-include">include</link> | (@<link linkend="attribute-xmlid">xml:id</link>, (@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (&lt;<link linkend="element-comment">comment</link>&gt;* &amp; (&lt;<link linkend="element-IRI">IRI</link>&gt;, (&lt;<link linkend="element-name">name</link>&gt;+, &lt;<link linkend="element-desc">desc</link>&gt;*), &lt;<link linkend="element-checksum">checksum</link>&gt;*, &lt;<link linkend="element-location">location</link>&gt;+))))</code></para><para>Used by: <code><xref linkend="element-declarations"/></code></para><caution><itemizedlist><listitem><para>@which may take only one of the reserved tokenization names</para></listitem><listitem><para>@xml:id values may not use a reserved tokenization name</para></listitem><listitem><para>Recommended tokenization must point to a TAN-R-tok file.</para></listitem><listitem><para>Every language used in the transcription must be accommodated by at least one recommended tokenization patterns.</para></listitem><listitem><para>Tokenization patterns must be able to predictably handle any combining characters</para></listitem></itemizedlist></caution><important><itemizedlist><listitem><para>If pointing to a TAN-R-tok file meant for specific languages, at least one of them must be used in the body of the transcription.</para></listitem></itemizedlist></important><example><title><code>&lt;recommended-tokenization&gt;</code></title><programlisting>      &lt;declarations&gt;
+         ...........
+         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
+         <emphasis role="bold">&lt;recommended-tokenization which="general-words-only-1"/&gt;</emphasis>
+         &lt;filter&gt;
+            ...........
+         &lt;/filter&gt;
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;recommended-tokenization&gt;</code></title><programlisting>      &lt;declarations&gt;
+         &lt;work include="master"/&gt;
+         &lt;div-type include="master"/&gt;
+         <emphasis role="bold">&lt;recommended-tokenization which="general-words-only-1"/&gt;</emphasis>
+         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
+         ...........
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;recommended-tokenization&gt;</code></title><programlisting>      &lt;declarations&gt;
+         ...........
+         &lt;div-type xml:id="ic"&gt;
+            ...........
+         &lt;/div-type&gt;
+         <emphasis role="bold">&lt;recommended-tokenization which="general-words-only-1"/&gt;</emphasis>
+         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
+         ...........
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;recommended-tokenization&gt;</code></title><programlisting>      &lt;declarations&gt;
+         ...........
+         &lt;div-type xml:id="para"&gt;
+            ...........
+         &lt;/div-type&gt;
+         <emphasis role="bold">&lt;recommended-tokenization which="general-1"/&gt;</emphasis>
+         &lt;filter&gt;
+            ...........
+         &lt;/filter&gt;
+      &lt;/declarations&gt;
+</programlisting></example></section><section xml:id="element-transliteration"><title><code>&lt;transliteration&gt;</code></title><para>The element <code>transliteration</code> indicates a transliteration scheme that has been applied to a source. </para><para>This may be useful for texts easier to handle in a Latin alphabet rather than a native one.  </para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (@<link linkend="attribute-include">include</link> | (&lt;<link linkend="element-comment">comment</link>&gt;* &amp; (&lt;<link linkend="element-for-lang">for-lang</link>&gt;*, (&lt;<link linkend="element-IRI">IRI</link>&gt;+, (&lt;<link linkend="element-name">name</link>&gt;+, &lt;<link linkend="element-desc">desc</link>&gt;*)))))</code></para><para>Used by: <code><xref linkend="element-filter"/></code></para></section><section xml:id="element-version"><title><code>&lt;version&gt;</code></title><para>The element <code>version</code> states the version of the work has been transcribed. Applicable to text-bearing objects that have multiple versions of the same work such as a bilingual edition of a text.</para><para>Very few work-versions have their own URN names. It is advisable to assign a tag URN or a UUID. If you have used an IRI for <code>&lt;<link linkend="element-work">work</link>&gt;</code> that you are entitled to modify, you may wish to add a suffix that will name the version. If you need to specify exactly where on a text-bearing object a version appears, <code>&lt;<link linkend="element-desc">desc</link>&gt;</code> or <code>&lt;<link linkend="element-comment">comment</link>&gt;</code> should be used.</para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (@<link linkend="attribute-include">include</link> | (&lt;<link linkend="element-comment">comment</link>&gt;* &amp; (&lt;<link linkend="element-IRI">IRI</link>&gt;+, (&lt;<link linkend="element-name">name</link>&gt;+, &lt;<link linkend="element-desc">desc</link>&gt;*))))</code></para><para>Used by: <code><xref linkend="element-declarations"/></code></para><example><title><code>&lt;version&gt;</code></title><programlisting>      &lt;declarations&gt;
+         &lt;work&gt;
+            ...........
+         &lt;/work&gt;
+         <emphasis role="bold">&lt;version&gt;</emphasis>
+            &lt;IRI&gt;urn:uuid:31648039-3dbb-49b9-b66e-9bd2cd11630e&lt;/IRI&gt;
+            &lt;name&gt;zweite Version&lt;/name&gt;
+         <emphasis role="bold">&lt;/version&gt;</emphasis>
+         &lt;div-type xml:id="Zeile"&gt;
+            ...........
+         &lt;/div-type&gt;
+         ...........
+      &lt;/declarations&gt;
+</programlisting></example></section><section xml:id="element-work"><title><code>&lt;work&gt;</code></title><para>The element <code>work</code> indicates which textual work has been transcribed. Must be a conceptual entity, not a physical one.</para><para>The term "work" is only pragmatically defined in TAN. Any unitary text that lends itself in ordinary discourse to reference by means of noun, proper or common. A work may be composed of other works, be a part of other works, or even overlap with other works. E.g., the Lord's Prayer, the Gospel of Luke, the Tetravengelion, the New Testament, and the Bible are all valid works.</para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (@<link linkend="attribute-include">include</link> | (&lt;<link linkend="element-comment">comment</link>&gt;* &amp; (&lt;<link linkend="element-IRI">IRI</link>&gt;+, (&lt;<link linkend="element-name">name</link>&gt;+, &lt;<link linkend="element-desc">desc</link>&gt;*))))</code></para><para>Used by: <code><xref linkend="element-declarations"/></code></para><caution><itemizedlist><listitem><para>There may be no more than one work element.</para></listitem></itemizedlist></caution><example><title><code>&lt;work&gt;</code></title><programlisting>      &lt;declarations&gt;
+         <emphasis role="bold">&lt;work&gt;</emphasis>
+            &lt;IRI&gt;http://dbpedia.org/resource/Categories_(Aristotle)&lt;/IRI&gt;
+            &lt;name&gt;Aristotle, Categories&lt;/name&gt;
+         <emphasis role="bold">&lt;/work&gt;</emphasis>
+         &lt;div-type xml:id="p"&gt;
+            ...........
+         &lt;/div-type&gt;
+         ...........
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;work&gt;</code></title><programlisting>      &lt;declarations&gt;
+         <emphasis role="bold">&lt;work include="master"/&gt;</emphasis>
+         &lt;div-type include="master"/&gt;
+         &lt;recommended-tokenization which="general-words-only-1"/&gt;
+         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
+         ...........
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;work&gt;</code></title><programlisting>      &lt;declarations&gt;
+         <emphasis role="bold">&lt;work&gt;</emphasis>
+            &lt;IRI&gt;http://dbpedia.org/resource/Categories_(Aristotle)&lt;/IRI&gt;
+            &lt;name&gt;Aristotle, Categories&lt;/name&gt;
+         <emphasis role="bold">&lt;/work&gt;</emphasis>
+         &lt;div-type xml:id="ch"&gt;
+            ...........
+         &lt;/div-type&gt;
+         ...........
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;work&gt;</code></title><programlisting>      &lt;declarations&gt;
+         <emphasis role="bold">&lt;work&gt;</emphasis>
+            &lt;IRI&gt;tag:kalvesmaki@gmail.com,2014:work:gomme.1898.ring-o-roses&lt;/IRI&gt;
+            &lt;name&gt;Article by Alice Bertha Gomme on Ring a Ring o' Roses&lt;/name&gt;
+         <emphasis role="bold">&lt;/work&gt;</emphasis>
+         &lt;div-type xml:id="sect"&gt;
+            ...........
+         &lt;/div-type&gt;
+         ...........
+      &lt;/declarations&gt;
+</programlisting></example></section></section>

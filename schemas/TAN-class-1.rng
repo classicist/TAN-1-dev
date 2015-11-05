@@ -19,8 +19,7 @@
     </define>
   </include>
   <define name="decl-class-1">
-    <a:documentation>Class 1 files must declare a single work, perhaps one version, one or more divisions, one or more
-recommended tokenizations, perhaps one filter, and perhaps one </a:documentation>
+    <a:documentation>Class 1 files must declare a single work, perhaps one version, one or more divisions, one or more recommended tokenizations, perhaps one filter, and perhaps one </a:documentation>
     <interleave>
       <ref name="decl-work"/>
       <optional>
@@ -46,7 +45,8 @@ recommended tokenizations, perhaps one filter, and perhaps one </a:documentation
   </define>
   <define name="decl-work">
     <element name="work">
-      <a:documentation>The work that has been transcribed</a:documentation>
+      <a:documentation>indicates which textual work has been transcribed. Must be a conceptual entity, not a physical one.</a:documentation>
+      <a:documentation>The term "work" is only pragmatically defined in TAN. Any unitary text that lends itself in ordinary discourse to reference by means of noun, proper or common. A work may be composed of other works, be a part of other works, or even overlap with other works. E.g., the Lord's Prayer, the Gospel of Luke, the Tetravengelion, the New Testament, and the Bible are all valid works.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -63,7 +63,8 @@ recommended tokenizations, perhaps one filter, and perhaps one </a:documentation
   </define>
   <define name="decl-vers">
     <element name="version">
-      <a:documentation>Version of the work has been transcribed (for text-bearing objects that have multiple versions of the work)</a:documentation>
+      <a:documentation>states the version of the work has been transcribed. Applicable to text-bearing objects that have multiple versions of the same work such as a bilingual edition of a text.</a:documentation>
+      <a:documentation>Very few work-versions have their own URN names. It is advisable to assign a tag URN or a UUID. If you have used an IRI for &lt;work&gt; that you are entitled to modify, you may wish to add a suffix that will name the version. If you need to specify exactly where on a text-bearing object a version appears, &lt;desc&gt; or &lt;comment&gt; should be used.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -80,7 +81,8 @@ recommended tokenizations, perhaps one filter, and perhaps one </a:documentation
   </define>
   <define name="decl-div">
     <element name="div-type">
-      <a:documentation>Types of textual divisions into which a transcription has been segmented (e.g., title, paragraph, stanza)</a:documentation>
+      <a:documentation>declares a type of textual division (e.g., title, paragraph, stanza). You may have as many &lt;div-types&gt; as you wish, and they need not all be used.</a:documentation>
+      <a:documentation>See iris.xml for suggested IRI + name values for division types. </a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -103,7 +105,10 @@ recommended tokenizations, perhaps one filter, and perhaps one </a:documentation
   </define>
   <define name="decl-tok-rec">
     <element name="recommended-tokenization">
-      <a:documentation>Recommended pattern to be used to segment a text into word tokens.</a:documentation>
+      <a:documentation>suggests an ideal TAN-R-tok pattern to be used to segment a text into word tokens. If no thought has been given to tokenization, this element should be left empty. There are two kinds of tokenization patterns.</a:documentation>
+      <a:documentation>(1) Core: general-1, general-words-only-1, and precise-1 (values of @which). </a:documentation>
+      <a:documentation>(2) Custom: each &lt;recommended-tokenization&gt; must point through an IRI + name pattern a specific TAN-R-tok file, and must take a unique value for @xml:id, to be used by dependent class 2 TAN files.</a:documentation>
+      <a:documentation>You may have as many &lt;recommended-tokenization&gt;s as you like, but the order is important: the optimal tokenizing pattern should be placed first.</a:documentation>
       <choice>
         <empty/>
         <ref name="tokenization-ref"/>
@@ -125,7 +130,9 @@ recommended tokenizations, perhaps one filter, and perhaps one </a:documentation
   </define>
   <define name="decl-ref-rec">
     <element name="recommended-div-type-refs">
-      <a:documentation>Recommendation on whether references to the transcription should make div types explicit or implicit.</a:documentation>
+      <a:documentation>suggests whether div types in references to the transcription should be explicit (e.g., book.John:chapter.3:verse.16) or implicit (e.g., John 3:16). If not present, explicit is assumed.</a:documentation>
+      <a:documentation>Anyone using your file need not adhere to your recommendation. If you mark the value as implicit, someone who prefers the verbose syntax is welcome to do so. But the converse is not true: explicit means only the verbose form may be used.</a:documentation>
+      <a:documentation>Although this element is optional, it is suggested especially for long files, because it will reduce the time to validate any dependent files.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -140,7 +147,7 @@ recommended tokenizations, perhaps one filter, and perhaps one </a:documentation
   <define name="decl-filt">
     <a:documentation/>
     <element name="filter">
-      <a:documentation>Filter declaring alterations that have been made or should be made to the source(s).</a:documentation>
+      <a:documentation>declares alterations that have been made to the source.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -167,7 +174,9 @@ recommended tokenizations, perhaps one filter, and perhaps one </a:documentation
   </define>
   <define name="decl-filt-norm">
     <element name="normalization">
-      <a:documentation>Normalizations made to a source file. Typically applies to tacit corrections made in the transcription or interpetation of a source (e.g., suppression of discretionary hyphenation). </a:documentation>
+      <a:documentation>specifies an alteration made to a source file to bring the text into conformity with standards or common expectations. Typically applies to minor corrections made in the transcription or interpetation of a source (e.g., suppression of discretionary hyphenation). You should declare every change you have made to the source.</a:documentation>
+      <a:documentation>&lt;normalization&gt; is especially helpful in reference to nondigital sources, but it may be made also for digital sources, to declare global changes that would be cumbersome, difficult, or impossible to describe in &lt;replace&gt;. </a:documentation>
+      <a:documentation>See iris.xml for suggested IRI + name values for normalizations. </a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -193,7 +202,8 @@ recommended tokenizations, perhaps one filter, and perhaps one </a:documentation
   </define>
   <define name="decl-filt-tlit">
     <element name="transliteration">
-      <a:documentation>Transliteration scheme applied to a source.</a:documentation>
+      <a:documentation>indicates a transliteration scheme that has been applied to a source. </a:documentation>
+      <a:documentation>This may be useful for texts easier to handle in a Latin alphabet rather than a native one.  </a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>

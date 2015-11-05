@@ -1,69 +1,113 @@
 default namespace local = "tag:textalign.net,2015:ns"
 
 include "TAN-core.rnc" {
-   decl-non-core = decl-class-1 & decl-non-class-1
-   ## No class 1 file may use @src, because there is only one source allowed
-   source-ref = empty
-   ## Any class 1 file that declares a core TAN tokenization pattern, must use one of the following options
-   tokenization-ref-text = xsd:string { pattern = "(precise|general(-words-only)?)-\d+" }
+    decl-non-core = decl-class-1 & decl-non-class-1
+    
+    ## No class 1 file may use @src, because there is only one source allowed
+    source-ref = empty
+    
+    # Commented out 2015-11-05, to move @which to general keyword holder
+    # Any class 1 file that declares a core TAN tokenization pattern, must use one of the following options
+    # tokenization-ref-text = xsd:string { pattern = "(precise|general(-words-only)?)-\d+" }
 }
-## Class 1 files must declare a single work, perhaps one version, one or more divisions, one or more
-## recommended tokenizations, perhaps one filter, and perhaps one 
+
+## Class 1 files must declare a single work, perhaps one version, one or more divisions, one or more recommended tokenizations, perhaps one filter, and perhaps one 
 decl-class-1 = decl-work & decl-vers? & decl-div+ & decl-tok-rec+ & decl-ref-rec? & decl-filt?
+
 ## Reserved for declarations specific to individual types of class 1 files
 decl-non-class-1 = empty
 decl-work =
-## The work that has been transcribed
-   element work {
-      ed-stamp?,
-      (inclusion | (comment* & entity-nondigital-ref))
-   }
+    
+    ## indicates which textual work has been transcribed. Must be a conceptual entity, not a physical one.
+    
+    ## The term "work" is only pragmatically defined in TAN. Any unitary text that lends itself in ordinary discourse to reference by means of noun, proper or common. A work may be composed of other works, be a part of other works, or even overlap with other works. E.g., the Lord's Prayer, the Gospel of Luke, the Tetravengelion, the New Testament, and the Bible are all valid works.
+    element work {
+        ed-stamp?,
+        (inclusion | (comment* & entity-nondigital-ref))
+    }
 decl-vers =
-## Version of the work has been transcribed (for text-bearing objects that have multiple versions of the work)
-   element version {
-      ed-stamp?,
-      (inclusion | (comment* & entity-nondigital-ref))
-   }
+    
+    ## states the version of the work has been transcribed. Applicable to text-bearing objects that have multiple versions of the same work such as a bilingual edition of a text.
+    
+    ## Very few work-versions have their own URN names. It is advisable to assign a tag URN or a UUID. If you have used an IRI for <work> that you are entitled to modify, you may wish to add a suffix that will name the version. If you need to specify exactly where on a text-bearing object a version appears, <desc> or <comment> should be used.
+    element version {
+        ed-stamp?,
+        (inclusion | (comment* & entity-nondigital-ref))
+    }
 decl-div =
-## Types of textual divisions into which a transcription has been segmented (e.g., title, paragraph, stanza)
-   element div-type {
-      ed-stamp?,
-      (inclusion
-       | (ns-are-numerals?, internal-id, (comment* & entity-nondigital-ref)))
-   }
+    
+    ## declares a type of textual division (e.g., title, paragraph, stanza). You may have as many <div-types> as you wish, and they need not all be used.
+    
+    ## See iris.xml for suggested IRI + name values for division types. 
+    element div-type {
+        ed-stamp?,
+        (inclusion
+         | (ns-are-numerals?, internal-id, (comment* & entity-nondigital-ref)))
+    }
+
+ns-are-numerals =
+    # moved from core on 2015-11-03; delete by 2016 if everything's ok
+    
+    ## specifies whether @n values of a particular <div-type> is a numeral. By default the value is true unless values fail to match standard patterns for numeral systems (Arabic, Roman, etc.)
+    attribute ns-are-numerals { xsd:boolean }
+
+
 decl-tok-rec =
-## Recommended pattern to be used to segment a text into word tokens.
-   element recommended-tokenization {
-      empty
-      | tokenization-ref
-      | inclusion
-      | (internal-id, ed-stamp?, (comment* & entity-digital-tan-other-ref))
-   }
+    
+    ## suggests an ideal TAN-R-tok pattern to be used to segment a text into word tokens. If no thought has been given to tokenization, this element should be left empty. There are two kinds of tokenization patterns.
+    
+    ## (1) Core: general-1, general-words-only-1, and precise-1 (values of @which). 
+    
+    ## (2) Custom: each <recommended-tokenization> must point through an IRI + name pattern a specific TAN-R-tok file, and must take a unique value for @xml:id, to be used by dependent class 2 TAN files.
+    
+    ## You may have as many <recommended-tokenization>s as you like, but the order is important: the optimal tokenizing pattern should be placed first.
+    element recommended-tokenization {
+        empty
+        | keyword-ref
+        | inclusion
+        | (internal-id, ed-stamp?, (comment* & entity-digital-tan-other-ref))
+    }
 decl-ref-rec =
-## Recommendation on whether references to the transcription should make div types explicit or implicit.
-   element recommended-div-type-refs {
-      ed-stamp?,
-      (inclusion
-       | xsd:string { pattern = "implicit|explicit" })
-   }
-## 
-decl-filt = 
-## Filter declaring alterations that have been made or should be made to the source(s).
-element filter { ed-stamp?, (comment* & decl-filter-content) }
+    
+    ## suggests whether div types in references to the transcription should be explicit (e.g., book.John:chapter.3:verse.16) or implicit (e.g., John 3:16). If not present, explicit is assumed.
+    
+    ## Anyone using your file need not adhere to your recommendation. If you mark the value as implicit, someone who prefers the verbose syntax is welcome to do so. But the converse is not true: explicit means only the verbose form may be used.
+    
+    ## Although this element is optional, it is suggested especially for long files, because it will reduce the time to validate any dependent files.
+    element recommended-div-type-refs {
+        ed-stamp?,
+        (inclusion
+         | xsd:string { pattern = "implicit|explicit" })
+    }
+
+##
+decl-filt =
+    
+    ## declares alterations that have been made to the source.
+    element filter { ed-stamp?, (comment* & decl-filter-content) }
 decl-filter-content = decl-filt-norm* & decl-filt-repl* & decl-filt-tlit*
 decl-filt-norm =
-## Normalizations made to a source file. Typically applies to tacit corrections made in the transcription or interpetation of a source (e.g., suppression of discretionary hyphenation). 
-   element normalization {
-      ed-stamp?,
-      (inclusion
-       | (comment* & (lang-outside*, entity-nondigital-ref)))
-   }
+    
+    ## specifies an alteration made to a source file to bring the text into conformity with standards or common expectations. Typically applies to minor corrections made in the transcription or interpetation of a source (e.g., suppression of discretionary hyphenation). You should declare every change you have made to the source.
+    
+    ## <normalization> is especially helpful in reference to nondigital sources, but it may be made also for digital sources, to declare global changes that would be cumbersome, difficult, or impossible to describe in <replace>. 
+    
+    ## See iris.xml for suggested IRI + name values for normalizations. 
+    element normalization {
+        ed-stamp?,
+        (inclusion
+         | (comment* & (lang-outside*, entity-nondigital-ref)))
+    }
+
 ## Replacements that have been made to an XML source file. 
 decl-filt-repl = func-replace
 decl-filt-tlit =
-## Transliteration scheme applied to a source.
-   element transliteration {
-      ed-stamp?,
-      (inclusion
-       | (comment* & (lang-outside*, entity-nondigital-ref)))
-   }
+    
+    ## indicates a transliteration scheme that has been applied to a source. 
+    
+    ## This may be useful for texts easier to handle in a Latin alphabet rather than a native one.  
+    element transliteration {
+        ed-stamp?,
+        (inclusion
+         | (comment* & (lang-outside*, entity-nondigital-ref)))
+    }

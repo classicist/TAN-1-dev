@@ -2,6 +2,7 @@
 <grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:local="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <start>
     <element name="TAN-A-div">
+      <a:documentation>specifies that the file is a div-based TAN alignment file. Root element.</a:documentation>
       <ref name="TAN-root"/>
     </element>
   </start>
@@ -77,20 +78,29 @@
     </define>
   </include>
   <!-- Common patterns -->
-  <define name="realign-div-list">
-    <ref name="div-ref-list"/>
-  </define>
   <define name="div-ref-list">
     <element name="div-ref">
-      <a:documentation>References a &lt;div&gt;</a:documentation>
+      <a:documentation>points to one or more &lt;div&gt;s (or segments of &lt;div&gt;s) in one or more sources</a:documentation>
       <ref name="div-ref-pattern"/>
     </element>
+  </define>
+  <define name="div-ref-pattern">
+    <optional>
+      <ref name="ed-stamp"/>
+    </optional>
+    <ref name="source-ref"/>
+    <ref name="pointer-to-div-range"/>
+    <optional>
+      <ref name="seg-ref"/>
+    </optional>
   </define>
   <!-- TAN-A-div structure -->
   <define name="work-equiv">
     <element name="equate-works">
-      <a:documentation>Declares an ad hoc equivalence of works for class 1 sources that have no shared &lt;IRI&gt;s 
-under &lt;work&gt;</a:documentation>
+      <a:documentation>declares an ad hoc equivalence between works that are not defined by their sources as being identical.</a:documentation>
+      <a:documentation>Any two &lt;work&gt;s that share at least one &lt;IRI&gt; value will be treated as equivalent; those that do not will be treated as different div types. &lt;equate-works&gt; permits you to make an ad hoc equivalence between one or more &lt;work&gt;s.</a:documentation>
+      <a:documentation>&lt;equate-div-types&gt; are assumed to be greedy and transitive. If work X of source A is stated to be equivalent to work Y of source B, then any work in any source identical to X will be identical to any work in any source identical to Y. So to equate two works, each with multiple members, you need declare the equivalence between only one member of each work, not all of them.</a:documentation>
+      <a:documentation>This element does not imply that the two works are, in reality, one and the same. It merely states that, for the purposes of this alignment, they should be treated as equivalent.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -102,8 +112,10 @@ under &lt;work&gt;</a:documentation>
   </define>
   <define name="div-type-equiv">
     <element name="equate-div-types">
-      <a:documentation>Declares an ad hoc equivalence of div types for class 1 sources that have no shared &lt;IRI&gt;s
-under a particular &lt;div-type&gt; </a:documentation>
+      <a:documentation>declares an ad hoc equivalence between div types that are not defined by their sources as being identical.</a:documentation>
+      <a:documentation>Any two &lt;div-type&gt;s that share at least one &lt;IRI&gt; value will be treated as equivalent; those that do not will be treated as different div types. &lt;equate-div-types&gt; permits you to make an ad hoc equivalence between one or more &lt;div-type-ref&gt;s.</a:documentation>
+      <a:documentation>&lt;equate-div-types&gt; are assumed to be greedy and transitive. If div type X of source A is stated to be equivalent to type Y of source B, then any div type in any source identical to X will be identical to any div type in any source identical to Y. So to equate two div types, each with multiple members, you need declare the equivalence between only one member of each work, not all of them. </a:documentation>
+      <a:documentation>This element does not imply that the two types of division are, in reality, one and the same. It merely states that, for the purposes of this alignment, they should be treated as equivalent.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -120,7 +132,7 @@ under a particular &lt;div-type&gt; </a:documentation>
   </define>
   <define name="div-type-ref-cluster">
     <element name="div-type-ref">
-      <a:documentation>References a &lt;div-type&gt; in a class 1 source</a:documentation>
+      <a:documentation>points to a &lt;div-type&gt; in one or more sources. You must use either the @xml:id assigned by the source to that div type or its renamed value, if renamed under &lt;rename-div-types&gt;. </a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -130,9 +142,7 @@ under a particular &lt;div-type&gt; </a:documentation>
   </define>
   <define name="split">
     <element name="split-leaf-div-at">
-      <a:documentation>Creates ad hoc splits in leaf &lt;div&gt;s, to create alignments more refined 
-than what a class 1 source offers; useful for &lt;realign&gt; and &lt;align&gt; actions that
-require dealing with textual units smaller than leaf &lt;div&gt;s.</a:documentation>
+      <a:documentation>creates ad hoc splits in leaf &lt;div&gt;s, to facilitate alignments and realignments of textual units smaller than leaf &lt;div&gt;s. Any leaf div may be split as many times as one wishes, but never smaller than the token level, as defined by &lt;tokenization&gt;s.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -150,9 +160,8 @@ require dealing with textual units smaller than leaf &lt;div&gt;s.</a:documentat
     </element>
   </define>
   <define name="strength-claim">
-    <a:documentation>Used to temper the strength of an alignment, suitable for alignments we qualify through "cf." and the
-like. Cannot used in type and doubt because this model disallows both.</a:documentation>
     <attribute name="strength">
+      <a:documentation>Used to temper the strength of an alignment. Suitable for alignments you would wish to qualify ordinarily with "cf." and the like. Does not imply doubt, uncertainty, or the reason for the alignment.</a:documentation>
       <data type="string">
         <param name="pattern">0\.\d+</param>
       </data>
@@ -160,8 +169,12 @@ like. Cannot used in type and doubt because this model disallows both.</a:docume
   </define>
   <define name="realignment">
     <element name="realign">
-      <a:documentation>Reassigns the default alignment of &lt;div&gt;s in a class 1 source 
-to zero or more locations in other versions of the same work</a:documentation>
+      <a:documentation>corrects wrongly aligned divisions and segments in versions of the same work</a:documentation>
+      <a:documentation>An UNANCHORED realigment is useful for divisions that need to be removed from any automatic alignment. It consists solely of one or more &lt;div-ref&gt;s. The effect is (1) to sever each referenced &lt;div&gt; from any automatic alignment and (2) to realign each source's nth reference (div or segment) with the nth reference in every other other source, if any, invoked in the &lt;realign&gt;. If only one source is invoked in a &lt;realign&gt;, only the first effect takes place: the references are effectively severed from any automatic alignment with any other version for that source. Realignment is inherited, affecting not only the specified &lt;div&gt;s but their descendants too.</a:documentation>
+      <a:documentation>An ANCHORED realignment is useful for making sure a minority of misplaced &lt;div&gt;s align with the majority. It begins with a single &lt;anchor-div-ref&gt; as the first child of &lt;realign&gt;, then one or more &lt;div-ref&gt;s. The effect is (1) to sever each referenced &lt;div&gt; from any automatic alignment and (2) to realign each source's nth reference (div or segment) with the nth reference in the anchor. If &lt;anchor-div-ref&gt; points to only one reference then all subsequent &lt;div-ref&gt;s will be tethered to that one anchor reference.</a:documentation>
+      <a:documentation>UNANCHORED &lt;realign&gt;s effectively sever every &lt;div-ref&gt; from any automatic alignment. But ANCHORED &lt;realign&gt;s shifts automatic alignment to the anchor. This method is helpful for synchronizing a few sources with the reference system followed by the majority.</a:documentation>
+      <a:documentation>Because of the distributive nature of the realignment, every value of @ref that involves a hyphen must have siblings on the left and right side of the hyphen (i.e., ref="bk.1 - bk.2:ch.1" would be invalid). </a:documentation>
+      <a:documentation>For both anchored and unanchored alignments alike, the order of &lt;div-ref&gt;s is immaterial.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -185,56 +198,39 @@ to zero or more locations in other versions of the same work</a:documentation>
   </define>
   <define name="anchor">
     <element name="anchor-div-ref">
-      <a:documentation>References a &lt;div&gt; to which other &lt;div-ref&gt;s should be realigned</a:documentation>
+      <a:documentation>points to a &lt;div&gt; to which other &lt;div&gt;s in other versions of the same work should be realigned (via subsequent &lt;div-ref&gt;s). The first child of a &lt;realign&gt;, it is constructed exactly like &lt;div-ref&gt;, except that the mandatory @src may point only to a single source. </a:documentation>
+      <a:documentation>&lt;anchor-div-ref&gt; is always followed by one or more &lt;div-ref&gt;s. </a:documentation>
+      <a:documentation>If &lt;anchor-div-ref&gt; points to only one reference (i.e., @src, @ref, and @seg [if present] each have only one value) then however many references are made in subsequent &lt;div-ref&gt;s, they will all be realigned to that one anchor reference. </a:documentation>
+      <a:documentation>But if &lt;anchor-div-ref&gt; has more than one reference, then distribution is in effect. Every nth reference will be the anchor for the nth reference in subsequent &lt;div-ref&gt;s (grouped by source).</a:documentation>
       <ref name="div-ref-pattern"/>
     </element>
   </define>
-  <define name="div-ref-pattern">
-    <ref name="source-ref"/>
-    <ref name="pointer-to-div-range"/>
-    <optional>
-      <ref name="ed-stamp"/>
-    </optional>
-    <optional>
-      <ref name="seg-ref"/>
-    </optional>
+  <define name="realign-div-list">
+    <ref name="div-ref-list"/>
   </define>
   <define name="exclusive-claim">
-    <a:documentation>Does or does not the specially declared alignment pass on to
-other implicitly aligned segments? Suppose a TAN-A-div file has as sources A, B, and C (3 versions 
-of Work 1) and M, N, and O (3 versions of Work 2). Suppose an &lt;align&gt; linking refs in A to
-refs in M. @exclusive = false (default value) links not only A to M, but to any refs in B and C
-that link to A and to any refs in N and O that align with M. This relationship is transitive, so
-will be applied to any passages that align with any other aligned passages, work notwithstanding.
-Set @exclusive = true to declare the alignment to be valid only between A and M and no others.</a:documentation>
     <attribute name="exclusive">
+      <a:documentation>indicates whether a specially declared alignment is transitive, passing on to other implicitly aligned segments. If false (default), then if X is aligned with Y, then anything that aligns with X will align with anything that aligns with Y. If true then the alignment holds only between the specified references (useful, e.g., for specifying that only one version of a work quotes from another). </a:documentation>
       <data type="boolean"/>
     </attribute>
   </define>
   <define name="distribute-claim">
-    <a:documentation>Is the &lt;align&gt; to be treated as a case of multiple align? Default value is false. If declared to be
-true, then for every source in every &lt;div-ref&gt; the references will be placed in a sequence.
-The first item in each sequence will be aligned only with each other, and so on through every item in
-every sequence. Therefore the number of references derived from @refs must be identical. Further, all 
-refs in a single @ref must be siblings.  </a:documentation>
     <attribute name="distribute">
+      <a:documentation>indicates whether values should be matched one-to-one, or grouped. If false (default) references will be aligned en masse or in groups. If true, then every nth ref in every source will be aligned with the nth ref in every other source. Therefore the number of references derived from @refs must be identical.  </a:documentation>
       <data type="boolean"/>
     </attribute>
   </define>
   <define name="alignment-ref">
-    <a:documentation>IDREFS of aligns</a:documentation>
-    <attribute name="alignments"/>
+    <attribute name="alignments">
+      <a:documentation>points to IDREFS of aligns</a:documentation>
+    </attribute>
   </define>
   <define name="align-div-list">
     <ref name="div-ref-list"/>
-    <optional>
-      <ref name="strength-claim"/>
-    </optional>
   </define>
   <define name="seg-ref">
-    <a:documentation>Optional segment picker. If provided, every @ref for every @src must point to a leaf div, and there must
-be an appropriate number of splits declared for those leaf divs in split-leaf-div-at.</a:documentation>
     <attribute name="seg">
+      <a:documentation>picks specific segments in a leaf div (and only to leaf divs). There must be an appropriate number of splits declared for those leaf divs in &lt;split-leaf-div-at&gt;.</a:documentation>
       <ref name="seq-picker"/>
     </attribute>
   </define>

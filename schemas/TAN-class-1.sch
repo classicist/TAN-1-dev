@@ -52,26 +52,27 @@
       <let name="discrepancies-there"
          value="for $i in count($this-resolved) return string-join(for $j in $first-docs[$i]//(tan:div, tei:div)[not((tan:div, tei:div))] return 
          if (contains($this-text,normalize-space(string-join($j//text(),'')))) then () else tan:flatref($j),', ')"/>
-      <report test="for $i in count($this-resolved) return $is-strict-alternative[$i] and not($shares-same-source[$i])">Alternative editions must
+      <report test="for $i in count($this-resolved) return $is-strict-alternative[$i] and not($shares-same-source[$i])">In class 1 files, alternative editions must
          share the same source.</report>
-      <report test="for $i in count($this-resolved) return $is-strict-alternative[$i] and not($shares-same-work[$i])">Alternative editions must
+      <report test="for $i in count($this-resolved) return $is-strict-alternative[$i] and not($shares-same-work[$i])">In class 1 files, alternative editions must
          share the same work.</report>
-      <report test="for $i in count($this-resolved) return $is-strict-alternative[$i] and not($shares-same-work-version[$i])">Alternative editions
+      <report test="for $i in count($this-resolved) return $is-strict-alternative[$i] and not($shares-same-work-version[$i])">In class 1 files, alternative editions
          must share the same work-version.</report>
-      <report test="for $i in count($this-resolved) return $is-alternatively-divided-edition[$i] and not($is-same-text[$i])">Alternatively divided
-         editions must treat the identical transcription. <value-of select="true()"/> <value-of
+      <report test="for $i in count($this-resolved) return $is-alternatively-divided-edition[$i] and not($is-same-text[$i])">In class 1 files, alternatively divided
+         editions must preserve identical transcriptions. <value-of select="true()"/> <value-of
             select="if (exists($discrepancies-here)) then concat('Discrepancies here: ',string-join(($discrepancies-here),', '),'. ') else ()"
             /><value-of
             select="if (exists($discrepancies-there)) then concat('Discrepancies in alternative edition: ',string-join(($discrepancies-there),', '),'. ') else ()"
          /></report>
    </rule>
    <rule context="tan:work">
-      <report test="$head/tan:declarations/tan:work[2]">There may be no more than two work
-         elements.</report>
-      <report test="$head/tan:declarations/tan:work/@error">Error: <value-of
+      <report test="$head/tan:declarations/tan:work[2]">There may be no more than one work
+         element.</report>
+      <!-- unclear why we need this next report; not deleting until it can be determined that it's already covered with tests on @include -->
+      <!--<report test="$head/tan:declarations/tan:work/@error" >Error: <value-of
             select="string-join(for $i in $head/tan:declarations/tan:work/@error
          return $inclusion-errors[number($i)],', ')"
-         /></report>
+         /></report>-->
    </rule>
    <rule context="tan:recommended-tokenization">
       <let name="this-resolved" value="tan:resolve-include(.)"/>
@@ -87,27 +88,29 @@
       <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
             select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
       <!-- END TESTING BLOCK -->
-      <report test="some $i in $this-count satisfies $this-resolved[$i]/@which and $this-which-is-reserved[$i] = false()">@which must be one of the
-         following: <value-of select="string-join($tokenization-which-reserved,', ')"/></report>
+      <report
+         test="some $i in $this-count satisfies $this-resolved[$i]/@which and $this-which-is-reserved[$i] = false()"
+         >@which may take only one of the reserved tokenization names (<value-of
+            select="string-join($tokenization-which-reserved,', ')"/>)</report>
       <report test="some $i in $this-count satisfies $this-resolved[$i]/@xml:id = $tokenization-which-reserved">@xml:id values may not use a reserved
-         keyword for tokenization.</report>
+         tokenization name</report>
       <assert test="every $i in $rec-tokz-1st-da satisfies name($i/*) = 'TAN-R-tok'">Recommended
          tokenization must point to a TAN-R-tok file.</assert>
-      <report role="warning" test="exists($tokz-mismatch-1)">TAN-R-tok file is meant for specific
-         languages (<value-of select="$tokz-mismatch-1/tan:for-lang"/>), none of which are used in the body
-            (<value-of select="$languages-used"/>).</report>
+      <report role="warning" test="exists($tokz-mismatch-1)">If pointing to a TAN-R-tok file meant for specific
+         languages, at least one of them must be used in the body of the transcription (tokenization languages: 
+         <value-of select="$tokz-mismatch-1/tan:for-lang"/>; languages used: <value-of select="$languages-used"/>).</report>
       <report
          test="not('*' = $recommended-tokenizations/tan:for-lang) and $languages-used[not(. = $recommended-tokenizations/tan:for-lang)]"
-         >Some languages used in the transcription (<value-of
-            select="$transcription-langs[not(. = $recommended-tokenizations/tan:for-lang)]"/>) have
-         not been supplied recommended tokenization patterns (currently supported: <value-of
-            select="$recommended-tokenizations/tan:for-lang"/>).</report>
-      <report test="exists($this-tokz-fails-modifiers-at-what-div)">Tokenization patterns fail
-         to predictably handle the combining characters at <value-of
+         >Every language used in the transcription must be accommodated by at least one recommended
+         tokenization patterns (unsupported: <value-of
+            select="$transcription-langs[not(. = $recommended-tokenizations/tan:for-lang)]"/>;
+         currently supported: <value-of select="$recommended-tokenizations/tan:for-lang"
+         />).</report>
+      <report test="exists($this-tokz-fails-modifiers-at-what-div)">Tokenization patterns must be able to predictably handle any combining characters (error at <value-of
             select="for $i in (1 to count($tokz-error-refs)) 
             return concat($tokz-error-refs[$i],' ',string-join(for $j in $tokz-error-vals[$i]/tan:modifier return
             concat('pos ',$j/@where,' (U+',$j/@cp,')'),' '))"
-         />.</report>
+         />)</report>
    </rule>
    <rule context="tan:recommended-div-type-refs">
       <let name="implicit-is-recommended" value="if (. = 'implicit') then true() else false()"/>
@@ -126,9 +129,9 @@
    </rule>
    <rule context="tan:body|tei:body">
       <let name="duplicate-leafdivs" value="$leafdiv-flatrefs[index-of($leafdiv-flatrefs,.)[2]]"/>
-      <report test="if (exists($duplicate-leafdivs)) then true() else false()">Leaf div references
-         must be unique. Violations at <value-of select="distinct-values($duplicate-leafdivs)"
-         />.</report>
+      <report test="if (exists($duplicate-leafdivs)) then true() else false()">In class 1 files, leaf div references
+         must be unique (violations at <value-of select="distinct-values($duplicate-leafdivs)"
+         />)</report>
    </rule>
    <rule context="tei:div | tan:div">
       <let name="this-type" value="@type"/>

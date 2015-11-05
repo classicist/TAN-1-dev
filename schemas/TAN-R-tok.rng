@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<grammar ns="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0">
+<grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:local="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0">
   <start>
     <element name="TAN-R-tok">
+      <a:documentation>specifies that the TAN file contains definitions for tokenization. Root element.</a:documentation>
       <ref name="TAN-root"/>
     </element>
   </start>
@@ -23,6 +24,7 @@
   </include>
   <define name="exampleAB">
     <element name="example">
+      <a:documentation>provides an example of a string and its result after the tokenization pattern is applied.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -31,22 +33,30 @@
           <ref name="comment"/>
         </zeroOrMore>
         <group>
-          <element name="input">
-            <optional>
-              <ref name="ed-stamp"/>
-            </optional>
-            <text/>
-          </element>
+          <ref name="input"/>
           <oneOrMore>
-            <element name="output-token">
-              <optional>
-                <ref name="ed-stamp"/>
-              </optional>
-              <text/>
-            </element>
+            <ref name="output"/>
           </oneOrMore>
         </group>
       </interleave>
+    </element>
+  </define>
+  <define name="input">
+    <element name="input">
+      <a:documentation>contains example input to be tokenized</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <text/>
+    </element>
+  </define>
+  <define name="output">
+    <element name="output-token">
+      <a:documentation>contains one token that results after the tokenization pattern is applied to the previous &lt;input&gt;</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <text/>
     </element>
   </define>
 </grammar>

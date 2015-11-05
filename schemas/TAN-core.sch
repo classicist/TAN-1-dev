@@ -5,16 +5,18 @@
    xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema"
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
    <title>Core Schematron tests for all TAN files.</title>
-   <let name="schema-version-major" value="1"/>
-   <let name="schema-version-minor" value="'dev'"/>
    <let name="now" value="tan:dateTime-to-decimal(current-dateTime())"/>
-   <rule context="/*">
+   <rule context="/*" tan:applies-to="TAN-A-div TAN-A-tok">
       <report test="true()" role="warning"
          sqf:fix="get-morph-local get-morph-abs get-tok-local get-tok-abs get-incl-local get-incl-abs get-source-local get-source-abs"
          >This version of TAN is unstable and unpublished. Use it at your own risk.</report>
       <sqf:fix id="get-source-local">
          <sqf:description>
             <sqf:title>Get local source element with this document's IRI + name pattern</sqf:title>
+            <sqf:p>Suppose you find a TAN file that you wish to make a source for another. Selecting
+               this option will insert a tan:source element as the next child, complete with the
+               appropriate values for tan:IRI and tan:name, and with a tan:location that points to
+               the local directory.</sqf:p>
          </sqf:description>
          <sqf:add match="tan:head" position="before">
             <source xmlns="tag:textalign.net,2015:ns" xml:id="{replace($doc-uri,'.*/([^/]+$)','$1')}">
@@ -30,6 +32,7 @@
       <sqf:fix id="get-source-abs">
          <sqf:description>
             <sqf:title>Get absolute source element with this document's IRI + name pattern</sqf:title>
+            <sqf:p>As above, but with an absolute URL.</sqf:p>
          </sqf:description>
          <sqf:add match="tan:head" position="before">
             <source xmlns="tag:textalign.net,2015:ns" xml:id="{replace($doc-uri,'.*/([^/]+$)','$1')}">
@@ -45,6 +48,10 @@
       <sqf:fix id="get-incl-local">
          <sqf:description>
             <sqf:title>Get local inclusion element with this document's IRI + name pattern</sqf:title>
+            <sqf:p>Suppose you find a TAN file that has elements you want to automatically include
+               in another. Selecting this option will insert a tan:include element as the next
+               child, complete with the appropriate values for tan:IRI and tan:name, and with a
+               tan:location that points to the local directory.</sqf:p>
          </sqf:description>
          <sqf:add match="tan:head" position="before">
             <inclusion xml:id="{replace(base-uri(),'.*/([^/]+$)','$1')}" xmlns="tag:textalign.net,2015:ns">
@@ -60,6 +67,7 @@
       <sqf:fix id="get-incl-abs">
          <sqf:description>
             <sqf:title>Get absolute inclusion element with this document's IRI + name pattern</sqf:title>
+            <sqf:p>As above, but with an absolute URL.</sqf:p>
          </sqf:description>
          <sqf:add match="tan:head" position="before">
             <inclusion xml:id="{replace(base-uri(),'.*/([^/]+$)','$1')}" xmlns="tag:textalign.net,2015:ns">
@@ -162,15 +170,17 @@
             <value-of select="$schema-version-minor"/></report>
       <sqf:fix id="correct-major-version-only">
          <sqf:description>
-            <sqf:title>Update to <value-of select="$schema-version-major"/></sqf:title>
+            <sqf:title>Update to major version <value-of select="$schema-version-major"/></sqf:title>
+            <sqf:p>Choose this quick fix to replace the major version with $schema-version-major </sqf:p>
          </sqf:description>
          <sqf:replace match="." target="TAN-version" node-type="attribute"><value-of
                select="$schema-version-major"/></sqf:replace>
       </sqf:fix>
       <sqf:fix id="correct-whole-version">
          <sqf:description>
-            <sqf:title>Update to <value-of select="$schema-version-major"/>/<value-of
+            <sqf:title>Update to major+minor version <value-of select="concat($schema-version-major,'/')"/><value-of
                   select="$schema-version-minor"/></sqf:title>
+            <sqf:p>Choose this quick fix to replace the major and minor version with $schema-version-major / $schema-version-minor </sqf:p>
          </sqf:description>
          <sqf:replace match="." target="TAN-version" node-type="attribute"><value-of
                select="$schema-version-major"/>/<value-of select="$schema-version-minor"
@@ -181,17 +191,19 @@
       <let name="is-in-progress" value="if ($body/@in-progress = false()) then false() else true()"/>
       <let name="duplicate-ids" value="$all-ids[index-of($all-ids,.)[2]]"/>
       <report test="($is-in-progress = false()) and (not(tan:master-location))"
+         tan:applies-to="master-location"
          sqf:fix="add-master-location-fixed add-master-location-relative">Any TAN file marked as
          being no longer in progress must have at least one master-location (after name and before
          rights-excluding-sources).</report>
-      <report test="exists($duplicate-ids)">Duplicate ids: <value-of
+      <report test="exists($duplicate-ids)" tan:applies-to="xml:id">No duplication of @xml:ids is permitted (<value-of
             select="for $i in 
          $duplicate-ids return concat($i,' (',count(index-of($all-ids,$i)),' times: element ',
          string-join(distinct-values(for $j in $head//*[@xml:id = $i] return name($j)),', '),')')"
-         /></report>
+         />)</report>
       <sqf:fix id="add-master-location-fixed">
          <sqf:description>
             <sqf:title>Add master-location element after &lt;name&gt; with fixed URL</sqf:title>
+            <sqf:p>Choosing this option will insert a master-location immediately after name, with the absolute value of the current file's URL.</sqf:p>
          </sqf:description>
          <sqf:add node-type="element" target="master-location" position="after" match="tan:name"
                ><value-of select="$doc-uri"/></sqf:add>
@@ -199,6 +211,7 @@
       <sqf:fix id="add-master-location-relative">
          <sqf:description>
             <sqf:title>Add master-location element after &lt;name&gt; with relative URL</sqf:title>
+            <sqf:p>Choosing this option will insert a master-location immediately after name, with the simple filename current file (i.e., no path).</sqf:p>
          </sqf:description>
          <sqf:add node-type="element" target="master-location" position="after" match="tan:name"
                ><value-of select="replace($doc-uri,$doc-parent-directory,'')"/></sqf:add>
@@ -231,26 +244,26 @@
          value="if (../tan:relationship = ('old version') or matches(../tan:relationship,'edition$')) then true() else false()"/>
       <report role="warning" sqf:fix="replace-file"
          test="if (exists($loc-doc) and $is-master-location) then (max($loc-ver-nos) != max($doc-ver-nos)) else false()"
-         >Version found in master location (<value-of select="$loc-ver-date-latest"/>) does not
-         match this version (<value-of select="$doc-ver"/>)</report>
+         tan:does-not-apply-to="location"><!-- If file version does not match that found in a master location, a warning will be returned -->Version of file does not match that of the master location (<value-of select="$doc-ver"/> versus <value-of select="$loc-ver-date-latest"/>)</report>
       <report test="$loc-doc-is-available = false() and not($resource-type = 'inclusion')"
-         role="warn" sqf:fix="change-to-current-file-rel-uri change-to-current-file-base-uri">The
+         role="warning" sqf:fix="change-to-current-file-rel-uri change-to-current-file-base-uri"
+         ><!-- If a file that is referenced is either unavailable or not valid XML, a warning will be returned -->The
             <value-of select="$resource-type"/> is either unavailable or is available but is not
          valid XML.</report>
       <assert
          test="if (exists($loc-doc) and $is-master-location) then deep-equal(root(.),$loc-doc) else true()"
-         role="warning">The current document does not match the master document</assert>
-      <report role="warn"
+         role="warning" tan:does-not-apply-to="location"><!-- If the current file does not match one found in a master location, a warning will be returned -->The current document does not match the master document</assert>
+      <report role="warning"
          test="if ($is-location-of-tan-file and $is-first-da-location) 
-         then $is-in-progress else false()"
-         >Underlying TAN file is marked as being in progress (checked only against first document
+         then $is-in-progress else false()" tan:does-not-apply-to="master-location"
+         ><!-- If a referenced file is marked as being in progress, a warning will be returned -->Underlying TAN file is marked as being in progress (checked only against first document
          available)</report>
       <report sqf:fix="replace-with-current-date"
          test="if ($is-location-of-tan-file and $is-first-da-location and $updates-should-be-checked
          and exists($when-accessed)) 
          then (max($loc-ver-nos) gt $when-accessed) 
-         else false()"
-         role="warn">TAN file updated (<value-of select="$loc-ver-date-latest"/>) since last
+         else false()" tan:does-not-apply-to="master-location" tan:applies-to="when-accessed"
+         role="warning"><!-- If a TAN file has been updated since it was last accessed, a warning will be returned -->TAN file updated (<value-of select="$loc-ver-date-latest"/>) since last
          accessed (tested only against first location available) <value-of
             select="for $i in $loc-ver-date-nodes-latest return
             if (name($i) = ('comment','change')) then concat(name($i),': ',$i) else
@@ -259,31 +272,35 @@
       <report
          test="tan:must-refer-to-external-tan-file(.) and not(preceding-sibling::tan:IRI/text() and preceding-sibling::tan:name/text())
          and exists($loc-doc)"
-         role="warning" sqf:fix="replace-IRI-and-name">IRI or name missing from TAN file.</report>
+         role="warning" sqf:fix="replace-IRI-and-name"><!-- If a sibling <name> or <IRI> is missing, a warning will be returned -->IRI or name missing.</report>
       <sqf:fix id="change-to-current-file-rel-uri" use-when="self::tan:master-location">
          <sqf:description>
             <sqf:title>Replace with local uri</sqf:title>
+            <sqf:p>Choosing this option replace the content with the current filename (without path)</sqf:p>
          </sqf:description>
          <sqf:replace match="text()" select="replace(base-uri(),'.*/([^/]+$)','$1')"/>
       </sqf:fix>
-      <sqf:fix id="change-to-current-file-base-uri" use-when="self::tan:master-location">
+      <sqf:fix id="change-to-current-file-base-uri" use-when="self::tan:master-location" tan:does-not-apply-to="location">
          <sqf:description>
             <sqf:title>Replace with base uri</sqf:title>
+            <sqf:p>Choosing this option will replace the content with the absolute URL to the current file</sqf:p>
          </sqf:description>
          <sqf:replace match="." select="base-uri()"/>
       </sqf:fix>
       <sqf:fix id="replace-with-current-date">
          <sqf:description>
             <sqf:title>Change date to today's date</sqf:title>
+            <sqf:p>Choosing this option will replace the content of @when-accessed with the current date</sqf:p>
          </sqf:description>
          <sqf:replace match="@when-accessed" target="when-accessed" node-type="attribute">
             <value-of select="current-date()"/>
          </sqf:replace>
       </sqf:fix>
-      <sqf:fix id="replace-file">
+      <sqf:fix id="replace-file" tan:does-not-apply-to="location">
          <sqf:description>
             <sqf:title>Replace current tan:head and tan:body with tan:head and tan:body from file at
                master location</sqf:title>
+            <sqf:p>Choosing this option provides a radical reset of the current document, replacing the head and body with the head and body of the first document available</sqf:p>
          </sqf:description>
          <sqf:replace match="/*/tan:head" select="$loc-doc/*/tan:head"/>
          <sqf:replace match="/*/tan:body" select="$loc-doc/*/tan:body"/>
@@ -291,6 +308,7 @@
       <sqf:fix id="replace-IRI-and-name">
          <sqf:description>
             <sqf:title>Replace IRI and name with target values</sqf:title>
+            <sqf:p>Choosing this option for a TAN file will replace the content of the IRI and name elements with the values found in the first document available.</sqf:p>
          </sqf:description>
          <sqf:replace match="preceding-sibling::tan:IRI"><xsl:element name="IRI"><xsl:value-of
                   select="$loc-doc/*/@id"/></xsl:element></sqf:replace>
@@ -308,21 +326,21 @@
       <let name="point-to-which-tan" value="for $i in $first-docs return name($i/*)"/>
       <report
          test="for $i in count($this-resolved) return $must-point-to-external-tan[$i] and not($point-to-which-tan[$i] = $all-root-names)"
-         >Must point to TAN file (checked only against first location available). <value-of
+         ><!-- If relationship keyword is $relationship-keywords-for-tan-files then parent element must point to TAN file.-->Must point to TAN file (checked only against first location available). <value-of
             select="if (exists($point-to-which-tan)) 
                then concat('root element: ',string-join($point-to-which-tan,', ')) else ()"
          /></report>
       <report
          test="for $i in count($this-resolved) return $these-relationships[$i] = $relationship-keywords-for-tan-editions and 
          $point-to-which-tan[$i] ne name(/*)"
-         >The <value-of select="$these-relationships"/> must be the same TAN format (root element of
+         ><!-- If relationship keyword is $relationship-keywords-for-tan-editions then parent element must point to a TAN file of the same time as the current file. -->The <value-of select="$these-relationships"/> must be the same TAN format (root element of
          target = <value-of select="$point-to-which-tan"/>).</report>
       <report
          test="for $i in count($this-resolved) return $these-relationships[$i] = 'dependent' and not($first-docs[$i]/*/tan:head/tan:source[tan:IRI = $doc-id])"
-         >Dependent file has no source whose IRI matches this document's id.</report>
+         >If relationship is dependent, then the current document's id must be found in at least one IRI in the dependent file.</report>
       <report
          test="for $i in count($this-resolved) return $these-relationships[$i] = $relationship-keywords-for-tan-editions and $doc-id = $first-docs[$i]/*/@id"
-         >The <value-of select="$these-relationships"/> cannot have the same @id value as this
+         ><!-- If relationship keyword is  $relationship-keywords-for-tan-editions then the current file and the see-also file cannot have the same @id value. -->The <value-of select="$these-relationships"/> cannot have the same @id value as this
          file.</report>
 
    </rule>
@@ -331,23 +349,27 @@
          relationship through an IRI + name pattern, the value must be: <value-of
             select="string-join($relationship-keywords-all,', ')"/>
       </report>
+      <assert test="if (@which) then @which = $relationship-keywords-all else true()">@which must point to a reserved keyword
+            (<value-of select="$relationship-keywords-all"/>)</assert>
    </rule>
    <rule context="tan:agent">
       <let name="all-agent-uris" value="concat(' ',string-join($head/tan:agent/tan:IRI,' '))"/>
       <let name="match" value="matches($all-agent-uris,concat(' tag:',$tan-iri-namespace))"/>
-      <assert test="$match">At least one agent must have an IRI with a tag URI whose namespace
-         matches that of the URI name, <value-of select="$tan-iri-namespace"/></assert>
+      <assert test="$match">To attach responsibility for the TAN file to a person or organization,
+         at least one agent must have an IRI element that contains a tag URI whose namespace matches
+         that of the URI name (<value-of select="$tan-iri-namespace"/>)</assert>
    </rule>
    <rule context="@when[parent::tan:*]|@ed-when|@when-accessed">
       <let name="this-time" value="tan:dateTime-to-decimal(.)"/>
       <report test="$this-time > $now">Future dates are not allowed (today's date and time is
             <value-of select="current-dateTime()"/>).</report>
       <assert test="(. castable as xs:dateTime) or (. castable as xs:date)"
-         sqf:default-fix="current-date" sqf:fix="current-date current-date-time">@<value-of
-            select="name(.)"/> must be date or dateTime</assert>
+         sqf:default-fix="current-date" sqf:fix="current-date current-date-time">Must be date or dateTime (@
+         <value-of select="name(.)"/>)</assert>
       <sqf:fix id="current-date">
          <sqf:description>
             <sqf:title>Change date to today's date</sqf:title>
+            <sqf:p>If value is invalid, this quick fix will be made available, to replace the content of with the current date.</sqf:p>
          </sqf:description>
          <sqf:replace match="." target="when" node-type="attribute" use-when="name(.) = 'when'">
             <value-of select="current-date()"/>
@@ -364,6 +386,7 @@
       <sqf:fix id="current-date-time">
          <sqf:description>
             <sqf:title>Change date to today's date-time</sqf:title>
+            <sqf:p>If value is invalid, this quick fix will be made available, to replace the content of with the current dateTime.</sqf:p>
          </sqf:description>
          <sqf:replace match="." target="when" node-type="attribute" use-when="name(.) = 'when'">
             <value-of select="current-dateTime()"/>
@@ -400,24 +423,25 @@
          value="for $n in $idrefs return name(($head, $body)//*[@xml:id = $n][1])"/>
       <assert sqf:fix="get-ids"
          test="every $k in $idrefs-currently-target-what-element satisfies $k = $should-refer-to-which-element"
-            >@<value-of select="$this-attribute-name"/> must refer to <value-of
+         id="attr-ids">@<value-of select="$this-attribute-name"/> must refer to <value-of
             select="$should-refer-to-which-element"/>s (<value-of
             select="string-join($valid-values,', ')"/>)
             <value-of
             select="if (count($idrefs-currently-target-what-element) gt 0) then concat('(currently points to ',string-join($idrefs-currently-target-what-element,', '),')') else ()"
          /></assert>
-      <assert test="count($idrefs)=count(distinct-values($idrefs))">@<value-of
-            select="$should-refer-to-which-element"/> must not contain duplicates</assert>
+      <assert test="count($idrefs)=count(distinct-values($idrefs))">Must not contain duplicates</assert>
       <sqf:fix id="get-ids">
          <sqf:description>
             <sqf:title>Replace content of attribute with all valid values</sqf:title>
+            <sqf:p>To see a list of all possible valid values, add any invalid content, then choose
+               this quick fix to replace all content with every possible value.</sqf:p>
          </sqf:description>
          <sqf:add match="." target="{name(.)}" select="string-join($valid-values,' ')" node-type="attribute"/>
       </sqf:fix>
    </rule>
    <rule context="@regex-test|tan:pattern">
-      <report test="matches(.,'\\[^nrtpPsSiIcCdDwW\\|.?*+(){}#x2D#x5B#x5D#x5E\]\[\^\-]')">Escape
-         sequence not recognized by XML schema. See http://www.w3.org/TR/xmlschema-2/#regexs for
+      <report test="matches(.,'\\[^nrtpPsSiIcCdDwW\\|.?*+(){}#x2D#x5B#x5D#x5E\]\[\^\-]')">Every escape
+         sequence must be recognized by XML schema. See http://www.w3.org/TR/xmlschema-2/#regexs for
          details.</report>
    </rule>
    <rule context="tan:IRI">
@@ -427,15 +451,16 @@
       <let name="first-doc"
          value="if (exists($first-loc)) then doc(resolve-uri($first-loc,$doc-uri)) else ()"/>
       <let name="first-da-iri-name" value="$first-doc/*/@id"/>
-      <assert test="$count = 1">An IRI should appear only once in a TAN document.</assert>
+      <assert test="$count = 1">No duplication allowed: an IRI should appear only once in a file.</assert>
       <report
          test="if (exists($first-loc)) then ($is-iri-of-tan-file and not(text() = $first-da-iri-name))
          else false()"
-         sqf:fix="replace-with-tan-id">TAN id mismatch (expected: <value-of
+         sqf:fix="replace-with-tan-id">If referring to a TAN file, the value must be a tag URN that matches exactly the TAN id (expected: <value-of
             select="$first-da-iri-name"/>)</report>
       <sqf:fix id="replace-with-tan-id">
          <sqf:description>
             <sqf:title>Replace with TAN id of 1st document available</sqf:title>
+            <sqf:p>Choosing this option will replace the content of an IRI element with the value of the TAN id</sqf:p>
          </sqf:description>
          <sqf:stringReplace match="./text()" regex=".+">
             <value-of select="$first-da-iri-name"/>
@@ -458,10 +483,10 @@
       <report test="false()">Testing. var1: <value-of select="$test1"/> var2: <value-of
          select="$test2"/> var3: <value-of select="$test3"/></report>
       <!-- END TESTING BLOCK -->
-      <report test="exists($duplicate-ids)">Inclusion introduces duplicate ids: <value-of
-            select="$duplicate-ids"/></report>
+      <report test="exists($duplicate-ids)">No inclusion may introduce a duplicate @xml:id (<value-of
+            select="$duplicate-ids"/>)</report>
       <assert test="exists($first-loc-avail)" role="fatal">Every inclusion must have at least one
-         location that accesses the included document.</assert>
+         location that leads to an available document.</assert>
       <!--<report
          test="if ($first-doc/tan:body/@in-progress = false() or $first-doc/tei:text/tei:body/@in-progress = false()) 
          then false() else true()"
@@ -473,17 +498,19 @@
       <let name="self-resolved" value="tan:resolve-include(.)"/>
       <let name="self-resolved-text" value="string-join($self-resolved//text(),'')"/>
       <assert test="$self-resolved-text = normalize-unicode($self-resolved-text)">All included
-         text needs to be normalized (NFC). Open inclusion, validate, and resolve. </assert>
-      <report test="$self-resolved//@error" role="fatal">Inclusion error: <value-of
+         text needs to be normalized (NFC; open inclusion, validate, and resolve). </assert>
+      <report test="$self-resolved//@error" role="fatal"><!-- Possible validation errors: $inclusion-errors -->Inclusion error: <value-of
             select="for $i
          in $self-resolved//@error return $inclusion-errors[number($i)]"
          /></report>
       <report test="text()" sqf:fix="explicate">Text is not allowed in an element with
          @include.</report>
-      <!--<report test="true()">test</report>-->
       <sqf:fix id="explicate">
          <sqf:description>
             <sqf:title>Replace with inclusions</sqf:title>
+            <sqf:p>Any element that has @include must be empty. But if you intentionally open it up
+               and add text, even space characters, this quick fix will be made available upon
+               validation. Choose it to comment out the original element and add after it the complete set of elements found in the inclusion (recursively checked against any inclusions in the included document). This is especially helpful for cases where you wish to use a TAN document as a starting point for a new file.</sqf:p>
          </sqf:description>
          <sqf:add match="." position="before">
             <xsl:comment>&lt;<xsl:value-of select="name(.)"/> include="<xsl:value-of select="@include"/>"/></xsl:comment>

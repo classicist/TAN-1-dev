@@ -1,90 +1,124 @@
 default namespace local = "tag:textalign.net,2015:ns"
 
-datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
-
-start = element TAN-A-div { TAN-root }
+start =
+    
+    ## specifies that the file is a div-based TAN alignment file. Root element.
+    element TAN-A-div { TAN-root }
 include "TAN-class-2.rnc" {
+    
     ## TAN-A-div files must have one or more sources
     source-list = source-item+
+    
     ## TAN-A-div sources must be named
     source-id-opt = internal-id
+    
     ## no levels of certainty are allowed in TAN-A-div files; substitute is strength-claim
     certainty-stamp = ed-stamp?
+    
     ## TAN-A-div files may not point to individual characters/glyphs
     char-ref = empty
+    
     ## TAN-A-div files do not require a tokenization choice within a filter (choice enforced by Schematron)
     decl-token-opt = decl-token*
     TAN-body-core = work-equiv*, div-type-equiv*, split?, realignment*, alignment*
+    
     ## alignments may take either an id with no supplementary variables or else no id and optional variables indicating strength, exclusivity, distribution, and auto-alignment
     alignment-attributes-non-class-2 =
         internal-id | (strength-claim?, exclusive-claim?, distribute-claim?)
+    
     ## alignments must contain either one or more div-refs or a list of IDREFS to other alignments
     alignment-content-non-class-2 = alignment-ref | align-div-list+
 }
 # Common patterns
-realign-div-list = div-ref-list
-div-ref-list = 
-## References a <div>
-element div-ref { div-ref-pattern }
-
+div-ref-list =
+    
+    ## points to one or more <div>s (or segments of <div>s) in one or more sources
+    element div-ref { div-ref-pattern }
+div-ref-pattern = ed-stamp?, source-ref, pointer-to-div-range, seg-ref?
 # TAN-A-div structure
-work-equiv = 
-## Declares an ad hoc equivalence of works for class 1 sources that have no shared <IRI>s 
-## under <work>
-element equate-works { ed-stamp?, (inclusion | source-ref) }
+work-equiv =
+    
+    ## declares an ad hoc equivalence between works that are not defined by their sources as being identical.
+    
+    ## Any two <work>s that share at least one <IRI> value will be treated as equivalent; those that do not will be treated as different div types. <equate-works> permits you to make an ad hoc equivalence between one or more <work>s.
+    
+    ## <equate-div-types> are assumed to be greedy and transitive. If work X of source A is stated to be equivalent to work Y of source B, then any work in any source identical to X will be identical to any work in any source identical to Y. So to equate two works, each with multiple members, you need declare the equivalence between only one member of each work, not all of them.
+    
+    ## This element does not imply that the two works are, in reality, one and the same. It merely states that, for the purposes of this alignment, they should be treated as equivalent.
+    element equate-works { ed-stamp?, (inclusion | source-ref) }
 div-type-equiv =
-## Declares an ad hoc equivalence of div types for class 1 sources that have no shared <IRI>s
-## under a particular <div-type> 
+    
+    ## declares an ad hoc equivalence between div types that are not defined by their sources as being identical.
+    
+    ## Any two <div-type>s that share at least one <IRI> value will be treated as equivalent; those that do not will be treated as different div types. <equate-div-types> permits you to make an ad hoc equivalence between one or more <div-type-ref>s.
+    
+    ## <equate-div-types> are assumed to be greedy and transitive. If div type X of source A is stated to be equivalent to type Y of source B, then any div type in any source identical to X will be identical to any div type in any source identical to Y. So to equate two div types, each with multiple members, you need declare the equivalence between only one member of each work, not all of them. 
+    
+    ## This element does not imply that the two types of division are, in reality, one and the same. It merely states that, for the purposes of this alignment, they should be treated as equivalent.
     element equate-div-types {
         ed-stamp?,
         (inclusion | (div-type-ref-cluster, div-type-ref-cluster+))
     }
-div-type-ref-cluster = 
-## References a <div-type> in a class 1 source
-element div-type-ref { ed-stamp?, source-ref, div-type-ref }
+div-type-ref-cluster =
+    
+    ## points to a <div-type> in one or more sources. You must use either the @xml:id assigned by the source to that div type or its renamed value, if renamed under <rename-div-types>. 
+    element div-type-ref { ed-stamp?, source-ref, div-type-ref }
 split =
-## Creates ad hoc splits in leaf <div>s, to create alignments more refined 
-## than what a class 1 source offers; useful for <realign> and <align> actions that
-## require dealing with textual units smaller than leaf <div>s.
+    
+    ## creates ad hoc splits in leaf <div>s, to facilitate alignments and realignments of textual units smaller than leaf <div>s. Any leaf div may be split as many times as one wishes, but never smaller than the token level, as defined by <tokenization>s.
     element split-leaf-div-at {
         ed-stamp?,
         (inclusion | (comment* & token-list+))
     }
-## Used to temper the strength of an alignment, suitable for alignments we qualify through "cf." and the
-## like. Cannot used in type and doubt because this model disallows both.
 strength-claim =
+    
+    ## Used to temper the strength of an alignment. Suitable for alignments you would wish to qualify ordinarily with "cf." and the like. Does not imply doubt, uncertainty, or the reason for the alignment.
     attribute strength {
         xsd:string { pattern = "0\.\d+" }
     }
 realignment =
-## Reassigns the default alignment of <div>s in a class 1 source 
-## to zero or more locations in other versions of the same work
+    
+    ## corrects wrongly aligned divisions and segments in versions of the same work
+    
+    ## An UNANCHORED realigment is useful for divisions that need to be removed from any automatic alignment. It consists solely of one or more <div-ref>s. The effect is (1) to sever each referenced <div> from any automatic alignment and (2) to realign each source's nth reference (div or segment) with the nth reference in every other other source, if any, invoked in the <realign>. If only one source is invoked in a <realign>, only the first effect takes place: the references are effectively severed from any automatic alignment with any other version for that source. Realignment is inherited, affecting not only the specified <div>s but their descendants too.
+    
+    ## An ANCHORED realignment is useful for making sure a minority of misplaced <div>s align with the majority. It begins with a single <anchor-div-ref> as the first child of <realign>, then one or more <div-ref>s. The effect is (1) to sever each referenced <div> from any automatic alignment and (2) to realign each source's nth reference (div or segment) with the nth reference in the anchor. If <anchor-div-ref> points to only one reference then all subsequent <div-ref>s will be tethered to that one anchor reference.
+    
+    ## UNANCHORED <realign>s effectively sever every <div-ref> from any automatic alignment. But ANCHORED <realign>s shifts automatic alignment to the anchor. This method is helpful for synchronizing a few sources with the reference system followed by the majority.
+    
+    ## Because of the distributive nature of the realignment, every value of @ref that involves a hyphen must have siblings on the left and right side of the hyphen (i.e., ref="bk.1 - bk.2:ch.1" would be invalid). 
+    
+    ## For both anchored and unanchored alignments alike, the order of <div-ref>s is immaterial.
     element realign {
         ed-stamp?,
         (inclusion
          | (comment* & (anchor?, realign-div-list+)))
     }
-anchor = 
-## References a <div> to which other <div-ref>s should be realigned
-element anchor-div-ref { div-ref-pattern }
-div-ref-pattern = source-ref, pointer-to-div-range, ed-stamp?, seg-ref?
-## Does or does not the specially declared alignment pass on to
-## other implicitly aligned segments? Suppose a TAN-A-div file has as sources A, B, and C (3 versions 
-## of Work 1) and M, N, and O (3 versions of Work 2). Suppose an <align> linking refs in A to
-## refs in M. @exclusive = false (default value) links not only A to M, but to any refs in B and C
-## that link to A and to any refs in N and O that align with M. This relationship is transitive, so
-## will be applied to any passages that align with any other aligned passages, work notwithstanding.
-## Set @exclusive = true to declare the alignment to be valid only between A and M and no others.
-exclusive-claim = attribute exclusive { xsd:boolean }
-## Is the <align> to be treated as a case of multiple align? Default value is false. If declared to be
-## true, then for every source in every <div-ref> the references will be placed in a sequence.
-## The first item in each sequence will be aligned only with each other, and so on through every item in
-## every sequence. Therefore the number of references derived from @refs must be identical. Further, all 
-## refs in a single @ref must be siblings.  
-distribute-claim = attribute distribute { xsd:boolean }
-## IDREFS of aligns
-alignment-ref = attribute alignments { text }
-align-div-list = div-ref-list, strength-claim?
-## Optional segment picker. If provided, every @ref for every @src must point to a leaf div, and there must
-## be an appropriate number of splits declared for those leaf divs in split-leaf-div-at.
-seg-ref = attribute seg { seq-picker }
+anchor =
+    
+    ## points to a <div> to which other <div>s in other versions of the same work should be realigned (via subsequent <div-ref>s). The first child of a <realign>, it is constructed exactly like <div-ref>, except that the mandatory @src may point only to a single source. 
+    
+    ## <anchor-div-ref> is always followed by one or more <div-ref>s. 
+    
+    ## If <anchor-div-ref> points to only one reference (i.e., @src, @ref, and @seg [if present] each have only one value) then however many references are made in subsequent <div-ref>s, they will all be realigned to that one anchor reference. 
+    
+    ## But if <anchor-div-ref> has more than one reference, then distribution is in effect. Every nth reference will be the anchor for the nth reference in subsequent <div-ref>s (grouped by source).
+    element anchor-div-ref { div-ref-pattern }
+realign-div-list = div-ref-list
+exclusive-claim =
+    
+    ## indicates whether a specially declared alignment is transitive, passing on to other implicitly aligned segments. If false (default), then if X is aligned with Y, then anything that aligns with X will align with anything that aligns with Y. If true then the alignment holds only between the specified references (useful, e.g., for specifying that only one version of a work quotes from another). 
+    attribute exclusive { xsd:boolean }
+distribute-claim =
+    
+    ## indicates whether values should be matched one-to-one, or grouped. If false (default) references will be aligned en masse or in groups. If true, then every nth ref in every source will be aligned with the nth ref in every other source. Therefore the number of references derived from @refs must be identical.  
+    attribute distribute { xsd:boolean }
+alignment-ref =
+    
+    ## points to IDREFS of aligns
+    attribute alignments { text }
+align-div-list = div-ref-list
+seg-ref =
+    
+    ## picks specific segments in a leaf div (and only to leaf divs). There must be an appropriate number of splits declared for those leaf divs in <split-leaf-div-at>.
+    attribute seg { seq-picker }

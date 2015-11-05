@@ -2,6 +2,7 @@
 <grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:local="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0">
   <start>
     <element name="TAN-A-tok">
+      <a:documentation>specifies that the file is a token-based TAN alignment file. Root element.</a:documentation>
       <ref name="TAN-root"/>
     </element>
   </start>
@@ -51,7 +52,8 @@
   </include>
   <define name="decl-brel">
     <element name="bitext-relation">
-      <a:documentation>Identifies how one text-bearing object relates to another by specifying the chain of derivation (as in stemmatics) that connects one to the other.</a:documentation>
+      <a:documentation>identifies how one the text on one text-bearing object relates to that on another by specifying the chain of derivation from one to the other. This element should not be used to describe any activities (e.g., translation, copying), which should be documented in &lt;reuse-type&gt;. </a:documentation>
+      <a:documentation>For examples see iris.xml </a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -72,7 +74,7 @@
   <define name="decl-reus">
     <oneOrMore>
       <element name="reuse-type">
-        <a:documentation>Identifies a category of text reuse (e.g., translation, mistranslation, paraphrase, ridicule).</a:documentation>
+        <a:documentation>identifies a category of text reuse (e.g., translation, mistranslation, paraphrase, ridicule).</a:documentation>
         <optional>
           <ref name="ed-stamp"/>
         </optional>
@@ -93,11 +95,13 @@
   </define>
   <define name="bitext-relation-attr">
     <attribute name="bitext-relation">
+      <a:documentation>points to one or more &lt;bitext-relation&gt; @xml:id values that qualify the type of relation that holds. Multiple values assume inclusive or (A or B or A and B)</a:documentation>
       <data type="IDREFS"/>
     </attribute>
   </define>
   <define name="reuse-type-attr">
     <attribute name="reuse-type">
+      <a:documentation>points to one or more &lt;reuse-type&gt; @xml:id values that qualify the type of textual reuse that holds. Multiple values assume inclusive or (A or B or A and B)</a:documentation>
       <data type="IDREFS"/>
     </attribute>
   </define>

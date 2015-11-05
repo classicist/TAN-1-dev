@@ -23,9 +23,10 @@
          return
             doc(resolve-uri($i,$doc-uri))"/>-->
    <pattern>
-      <rule context="tan:lm">
+      <!-- not needed b/c of rnc definition -->
+      <!--<rule context="tan:lm">
          <report test="not(tan:l|tan:m)">lm must take at least one l or m.</report>
-      </rule>
+      </rule>-->
       <rule context="tan:ana">
          <let name="single-tok-test"
             value="if (@xml:id) then
@@ -102,21 +103,24 @@
                select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
          <!-- END TESTING BLOCK -->
          <report
-            test="if (exists($this-morph-cat-qty)) then count($this-val) gt $this-morph-cat-qty else ()"
-            >M has too many codes</report>
-         <report test="exists($invalid-codes) and not(exists($this-morph-cat-qty))">Invalid value(s)
+            test="if (exists($this-morph-cat-qty)) then
+                  count($this-val) gt $this-morph-cat-qty
+               else
+                  ()"
+            >&lt;m> may not have more codes than allowed by the underlying TAN-R-mor file.</report>
+         <report test="exists($invalid-codes) and not(exists($this-morph-cat-qty))"><!-- If any invalid values are found during validation a list of possible valid values will be returned. -->Invalid value(s)
                (<value-of select="$invalid-codes"/>); valid values: <value-of
                select="$mory-1st-da-features[$this-mory-no]/tan:feature/(tan:option/@code,
                   @xml:id)"
             /></report>
-         <report test="exists($invalid-codes) and exists($this-morph-cat-qty)">Invalid codes at position(s) 
+         <report test="exists($invalid-codes) and exists($this-morph-cat-qty)"><!-- If an invalid code is found in a particular location, a list of valid values for that location will be returned -->Invalid codes at position(s) 
             <value-of select="$invalid-codes"/>; valid values: <value-of select="for $i in $invalid-codes return
                concat('[',string($i),': ',string-join(for $j in $this-mory//tan:category[$i]/tan:option return 
                concat($j/@code,' (',$j/@feature,') '),
                ' '),'] ')"/></report>
-         <report test="exists($all-tests[@cert])" role="warning"><value-of select="for $i in $all-tests[@cert] return
+         <report test="exists($all-tests[@cert])" role="warning"><!-- If <m> matches a rule in the underlying TAN-R-mor file that is marked by a degree of certainty, a warning will be returned --><value-of select="for $i in $all-tests[@cert] return
             concat('Confidence ',$i/@cert,' : ',$i/text())"/></report>
-         <report test="exists($all-tests[not(@cert)])">Error: <xsl:value-of select="$all-tests[not(@cert)]/text()"/></report>
+         <report test="exists($all-tests[not(@cert)])">All codes must adhere to the rules declared in the underlying TAN-R-mor file (<xsl:value-of select="$all-tests[not(@cert)]/text()"/>)</report>
       </rule>
       
       <!-- FUNCTIONS -->

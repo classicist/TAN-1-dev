@@ -20,8 +20,8 @@
          <let name="these-langs" value="$head/tan:declarations/tan:for-lang"/>
          <let name="langs-not-supported-by-inclusion" value="for $i in $these-inclusions, $j in index-of($feature-incl-refs,$i), $k in $these-langs return
             if ($incl-1st-da-resolved[$j]//tan:for-lang[. = $k]) then () else $k"/>
-         <report test="exists($langs-not-supported-by-inclusion)">Included features have not been written for every language declared by
-         this file (<value-of select="$langs-not-supported-by-inclusion"/>).</report>
+         <report test="exists($langs-not-supported-by-inclusion)">Included features must be written for every language declared by
+         the current file (<value-of select="$langs-not-supported-by-inclusion"/>).</report>
       </rule>
       <rule context="@code">
          <let name="code" value="."/>
@@ -78,8 +78,8 @@
             test="count(for $i in $this-seq return if ($i instance of xs:integer) then $i else ()) mod 2 = 1"
             >Parentheses in @feature-test must be balanced.</report>
          <report test="matches($this,'[^\(\),|]+ \(|\) [^\(\),|]+')">Feature references and
-            parentheses must be separated by an operator.</report>
-         <report test="exists($invalid-features)">The feature(s) <value-of
+            parentheses must be separated by a pipe operator: |</report>
+         <report test="exists($invalid-features)"><!-- Must refer to <feature>s in the <declarations> -->The feature(s) <value-of
                select="string-join($invalid-features, ', ')"/> have not been declared.</report>
       </rule>
       <rule context="@feature-filter">
@@ -91,7 +91,7 @@
                      ()
                   else
                      $i"/>
-         <report test="exists($invalid-features)">The feature(s) <value-of
+         <report test="exists($invalid-features)"><!-- Must refer to <feature>s in the <declarations> -->The feature(s) <value-of
                select="string-join($invalid-features, ', ')"/> have not been declared.</report>
       </rule>
       <rule context="@filter-qty-test">

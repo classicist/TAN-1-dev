@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<TAN-schemas-for-guidelines xmlns="tag:kalvesmaki.com,2015:ns">
+<TAN-schemas-for-guidelines xmlns="tag:textalign.net,2015:ns">
     <section which="TAN-core"></section>
     <section which="TAN-class-1"></section>
     <section which="TAN-T"></section>

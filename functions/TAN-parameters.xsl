@@ -46,7 +46,7 @@
         $keywords//tan:group[@affects-element = 'relationship']/descendant-or-self::tan:group[@class = 'tan']//tan:keyword"
         as="xs:string*"/>
     <xsl:variable name="relationship-keywords-all"
-        select="$keywords//tan:group[@affects-element = 'relationship']/descendant-or-self::tan:group[@class = 'tan']//tan:keyword"
+        select="$keywords//tan:group[@affects-element = 'relationship']//tan:keyword"
         as="xs:string*"/>
     
 </xsl:stylesheet>

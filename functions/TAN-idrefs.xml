@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<id-idrefs xmlns="tag:textalign.net,2015:ns">
+    <id element="agent">
+        <idrefs attribute="who"/>
+        <idrefs attribute="ed-who"/>
+    </id>
+    <id element="role">
+        <idrefs attribute="roles"/>
+    </id>
+    <id element="source">
+        <idrefs attribute="src"/>
+    </id>
+    <id element="div-type">
+        <idrefs attribute="type"/>
+    </id>
+    <id element="lexicon">
+        <idrefs attribute="lexicon"/>
+    </id>
+    <id element="morphology">
+        <idrefs attribute="morphology"/>
+    </id>
+    <id element="reuse-type">
+        <idrefs attribute="reuse-type"/>
+    </id>
+    <id element="bitext-relation">
+        <idrefs attribute="bitext-relation"/>
+    </id>
+    <id element="feature">
+        <idrefs attribute="feature"/>
+    </id>
+    <id element="align">
+        <idrefs attribute="alignments"/>
+    </id>
+    <id element="inclusion">
+        <idrefs attribute="include"/>
+    </id>
+</id-idrefs>

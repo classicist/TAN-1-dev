@@ -6,9 +6,6 @@
    <ns prefix="tan" uri="tag:textalign.net,2015:ns"/>
    <ns prefix="tei" uri="http://www.tei-c.org/ns/1.0"/>
    <ns prefix="xs" uri="http://www.w3.org/2001/XMLSchema"/>
-   <!-- to do: new rule: context: @chars | assert: @chars may not be invoked for tokens that
-      have combining characters
-   -->
 
    <!-- common core below -->
    <include href="TAN-core.sch"/>

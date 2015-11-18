@@ -2,40 +2,61 @@ default namespace local = "tag:textalign.net,2015:ns"
 
 datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
-start = 
-## specifies that the file is a token-based TAN alignment file. Root element.
-element TAN-A-tok { TAN-root }
+start =
+    
+    ## specifies that the file is a token-based TAN alignment file. Root element.
+    element TAN-A-tok { TAN-root }
 include "TAN-class-2.rnc" {
+    
     ## TAN-A-tok files take exactly two sources
     source-list = source-item, source-item
+    
     ## TAN-A-tok sources must be named
     source-id-opt = internal-id
     decl-non-class-2 = decl-brel+, decl-reus+
     TAN-body-core = bitext-relation-attr, reuse-type-attr, alignment+
+    
     ## alignments may claim bitext relations and reuse type
     alignment-attributes-non-class-2 = internal-id?, bitext-relation-attr?, reuse-type-attr?
+    
     ## alignments must contain one or more toks
     alignment-content-non-class-2 = token-list+
+    
+    continuation-opt = continuation
 }
 decl-brel =
-## identifies how one the text on one text-bearing object relates to that on another by specifying the chain of derivation from one to the other. This element should not be used to describe any activities (e.g., translation, copying), which should be documented in <reuse-type>. 
-
-## For examples see iris.xml 
+    
+    ## identifies how the text on one text-bearing object relates to that on another by specifying a relationship, e.g., B is a direct copy of A, B and A descent from a commont parent, etc. See main.xml#tan-a-tok for theoretical background.
+    
+    ## In most cases, there will be need for only one of these elements. But multiple values may be helpful for cases where a bitext has a complex history, for example, a textual object that was created over time, and in different phases.
+    
+    ## This element should not be used to describe any activities (e.g., translation, copying), reserved for <reuse-type>. 
+    
+    ## For examples see iris.xml 
     element bitext-relation {
         ed-stamp?,
         (inclusion
          | (internal-id, (comment* & entity-nondigital-ref)))
     }
 decl-reus =
-## identifies a category of text reuse (e.g., translation, mistranslation, paraphrase, ridicule).
+    
+    ## identifies a category of text reuse (e.g., translation, mistranslation, paraphrase, ridicule). See main.xml#tan-a-tok for theoretical background.
+    
+    ## For examples see iris.xml 
     element reuse-type {
         ed-stamp?,
         (inclusion
          | (internal-id, (comment* & entity-nondigital-ref)))
     }+
-bitext-relation-attr = 
-## points to one or more <bitext-relation> @xml:id values that qualify the type of relation that holds. Multiple values assume inclusive or (A or B or A and B)
-attribute bitext-relation { d:IDREFS }
-reuse-type-attr = 
-## points to one or more <reuse-type> @xml:id values that qualify the type of textual reuse that holds. Multiple values assume inclusive or (A or B or A and B)
-attribute reuse-type { d:IDREFS }
+bitext-relation-attr =
+    
+    ## points to one or more <bitext-relation> @xml:id values that qualify the type of relation that holds. Multiple values assume inclusive or (A or B or A and B)
+    
+    ## This attribute is inheritable. See main.xml#inheritable_attributes
+    attribute bitext-relation { d:IDREFS }
+reuse-type-attr =
+    
+    ## points to one or more <reuse-type> @xml:id values that qualify the type of textual reuse that holds. Multiple values assume inclusive or (A or B or A and B)
+    
+    ## This attribute is inheritable. See main.xml#inheritable_attributes
+    attribute reuse-type { d:IDREFS }

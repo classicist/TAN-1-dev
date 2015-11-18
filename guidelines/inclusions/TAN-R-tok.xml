@@ -1,55 +1,99 @@
-<?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-R-tok elements and attributes summarized</title><section xml:id="element-example"><title><code>&lt;example&gt;</code></title><para>The element <code>example</code> provides an example of a string and its result after the tokenization pattern is applied.</para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (&lt;<link linkend="element-comment">comment</link>&gt;* &amp; (&lt;<link linkend="element-input">input</link>&gt;, &lt;<link linkend="element-output-token">output-token</link>&gt;+))</code></para><para>Used by: <code><xref linkend="element-body"/></code></para><caution><itemizedlist><listitem><para>Input must match output</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Correct &lt;output-token&gt; elements </emphasis>Selecting this quick fix will replace all &lt;example-output&gt; elements with the correct results.</para></tip><example><title><code>&lt;example&gt;</code></title><programlisting>   &lt;body in-progress="false"&gt;
-      ...........
-      &lt;tokenize&gt;
-         ...........
-      &lt;/tokenize&gt;
-      <emphasis role="bold">&lt;example&gt;</emphasis>
-         &lt;input&gt;I said, "Where is the ping-pong table?"&lt;/input&gt;
-         &lt;output-token&gt;I&lt;/output-token&gt;
-         &lt;output-token&gt;said&lt;/output-token&gt;
-         ...........
-      <emphasis role="bold">&lt;/example&gt;</emphasis>
-   &lt;/body&gt;
-</programlisting></example><example><title><code>&lt;example&gt;</code></title><programlisting>   &lt;body in-progress="false"&gt;
-      ...........
-      &lt;tokenize&gt;
-         ...........
-      &lt;/tokenize&gt;
-      <emphasis role="bold">&lt;example&gt;</emphasis>
-         &lt;input&gt;I said, "Where is the ping-pong table?"&lt;/input&gt;
-         &lt;output-token&gt;I&lt;/output-token&gt;
-         &lt;output-token&gt;said&lt;/output-token&gt;
-         ...........
-      <emphasis role="bold">&lt;/example&gt;</emphasis>
-   &lt;/body&gt;
-</programlisting></example><example><title><code>&lt;example&gt;</code></title><programlisting>   &lt;body in-progress="false"&gt;
-      ...........
-      &lt;tokenize&gt;
-         ...........
-      &lt;/tokenize&gt;
-      <emphasis role="bold">&lt;example&gt;</emphasis>
-         &lt;input&gt;I said​, "​Where is the ping-pong table​?​"&lt;/input&gt;
-         &lt;output-token&gt;I&lt;/output-token&gt;
-         &lt;output-token&gt;said&lt;/output-token&gt;
-         ...........
-      <emphasis role="bold">&lt;/example&gt;</emphasis>
-   &lt;/body&gt;
-</programlisting></example></section><section xml:id="element-input"><title><code>&lt;input&gt;</code></title><para>The element <code>input</code> contains example input to be tokenized</para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, text</code></para><para>Used by: <code><xref linkend="element-example"/></code></para><example><title><code>&lt;input&gt;</code></title><programlisting>      &lt;example&gt;
+<?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-R-tok elements and attributes summarized</title><section xml:id="element-example"><title><code>&lt;example&gt;</code></title><para>The element <code>example</code> provides an example of a string and its result after the tokenization pattern is applied.</para><synopsis><emphasis>Definition:</emphasis>
+   (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
+   <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
+   <code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
+      (<code><link linkend="element-input">&lt;input&gt;</link></code>,
+      <code><link linkend="element-output-token">&lt;output-token&gt;</link></code>+)</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> </para><caution><itemizedlist><listitem><para>Input must match output</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Correct &lt;output-token&gt; elements </emphasis>Selecting this quick fix will replace all <code><link linkend="element-example-output">&lt;example-output&gt;</link></code> elements with the correct results.</para></tip><example><title><code>&lt;example&gt;</code></title><programlisting>&lt;snippets-to-turn-into-real-TAN-examples&gt;
+   .........
+   &lt;comment&gt; In this example, &lt;change&gt; ascribes an alteration to Cheh, but the edit stamp
+        credits Smith with last changing the &lt;change&gt;.&lt;/comment&gt;
+   <emphasis role="bold">&lt;example&gt;</emphasis>
+      &lt;title&gt;
+         .........
+      &lt;/title&gt;
+      &lt;programlisting&gt;      ...........
+   &lt;recommended-tokenization xml:id="penn"&gt;
+      &lt;IRI&gt;tag:textalign.net,2015:tokenization:eng.1&lt;/IRI&gt;
+      &lt;name&gt;Tokenization pattern for English, in Penn Treebank style&lt;/name&gt;
+      &lt;location when-accessed="2015-03-17"&gt;../TAN-R-tok/tok.eng.1.xml&lt;/location&gt;
+   &lt;/recommended-tokenization&gt;
+   &lt;recommended-tokenization which="general"/&gt;
+      ...........               &lt;/programlisting&gt;
+   <emphasis role="bold">&lt;/example&gt;</emphasis>
+   <emphasis role="bold">&lt;example&gt;</emphasis>
+      &lt;title&gt;
+         .........
+      &lt;/title&gt;
+      &lt;programlisting&gt;      ...........
+   &lt;filter&gt;
+      &lt;normalization&gt;
+         &lt;for-lang&gt;grc&lt;/for-lang&gt;
+         &lt;IRI&gt;tag:textalign.net,2015:normalization:hyphens-discretionary-removed&lt;/IRI&gt;
+         &lt;name&gt;Suppression of hyphens&lt;/name&gt;
+      &lt;/normalization&gt;
+      &lt;replace&gt;
+         &lt;pattern&gt;&amp;lt;lb[^/]*\s*break\s*=\s*"no"[^/]*\s*/&gt;&lt;/pattern&gt;
+         &lt;replacement/&gt;
+      &lt;/replace&gt;
+      &lt;replace&gt;
+         &lt;pattern&gt;&amp;lt;lb[^/]*\s*[^/]*/&gt;&lt;/pattern&gt;
+         &lt;replacement&gt; &lt;/replacement&gt;
+      &lt;/replace&gt;
+   &lt;/filter&gt;
+      ...........&lt;/programlisting&gt;
+      &lt;caption&gt;
+         .........
+      &lt;/caption&gt;
+   <emphasis role="bold">&lt;/example&gt;</emphasis>
+   <emphasis role="bold">&lt;example&gt;</emphasis>
+      &lt;title&gt;
+         .........
+      &lt;/title&gt;
+      &lt;para&gt;
+         .........
+      &lt;/para&gt;
+      &lt;caption&gt;
+         .........
+      &lt;/caption&gt;
+   <emphasis role="bold">&lt;/example&gt;</emphasis>
+   <emphasis role="bold">&lt;example&gt;</emphasis>
+      &lt;title&gt;
+         .........
+      &lt;/title&gt;
+      &lt;para&gt;
+         .........
+      &lt;/para&gt;
+      &lt;caption&gt;
+         .........
+      &lt;/caption&gt;
+   <emphasis role="bold">&lt;/example&gt;</emphasis>
+   <emphasis role="bold">&lt;example&gt;</emphasis>
+      .........
+   <emphasis role="bold">&lt;/example&gt;</emphasis>
+   .........
+&lt;/snippets-to-turn-into-real-TAN-examples&gt;
+</programlisting></example></section><section xml:id="element-input"><title><code>&lt;input&gt;</code></title><para>The element <code>input</code> contains example input to be tokenized</para><synopsis><emphasis>Definition:</emphasis>
+   (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
+   <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
+text</synopsis><para>Used by: <code><link linkend="element-example">&lt;example&gt;</link></code> </para><example><title><code>&lt;input&gt;</code></title><programlisting>      &lt;example&gt;
          <emphasis role="bold">&lt;input&gt;</emphasis>I said, "Where is the ping-pong table?"<emphasis role="bold">&lt;/input&gt;</emphasis>
          &lt;output-token&gt;I&lt;/output-token&gt;
-         ...........
+         .........
       &lt;/example&gt;
 </programlisting></example><example><title><code>&lt;input&gt;</code></title><programlisting>      &lt;example&gt;
          <emphasis role="bold">&lt;input&gt;</emphasis>I said, "Where is the ping-pong table?"<emphasis role="bold">&lt;/input&gt;</emphasis>
          &lt;output-token&gt;I&lt;/output-token&gt;
-         ...........
+         .........
       &lt;/example&gt;
 </programlisting></example><example><title><code>&lt;input&gt;</code></title><programlisting>      &lt;example&gt;
          <emphasis role="bold">&lt;input&gt;</emphasis>I said​, "​Where is the ping-pong table​?​"<emphasis role="bold">&lt;/input&gt;</emphasis>
          &lt;output-token&gt;I&lt;/output-token&gt;
-         ...........
+         .........
       &lt;/example&gt;
-</programlisting></example></section><section xml:id="element-output-token"><title><code>&lt;output-token&gt;</code></title><para>The element <code>output-token</code> contains one token that results after the tokenization pattern is applied to the previous <code>&lt;<link linkend="element-input">input</link>&gt;</code></para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, text</code></para><para>Used by: <code><xref linkend="element-example"/></code></para><example><title><code>&lt;output-token&gt;</code></title><programlisting>   &lt;body in-progress="false"&gt;
+</programlisting></example></section><section xml:id="element-output-token"><title><code>&lt;output-token&gt;</code></title><para>The element <code>output-token</code> contains one token that results after the tokenization pattern is applied to the previous <code><link linkend="element-input">&lt;input&gt;</link></code></para><synopsis><emphasis>Definition:</emphasis>
+   (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
+   <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
+text</synopsis><para>Used by: <code><link linkend="element-example">&lt;example&gt;</link></code> </para><example><title><code>&lt;output-token&gt;</code></title><programlisting>   &lt;body in-progress="false"&gt;
       &lt;example&gt;
          &lt;input&gt;I said, "Where is the ping-pong table?"&lt;/input&gt;
          <emphasis role="bold">&lt;output-token&gt;</emphasis>I<emphasis role="bold">&lt;/output-token&gt;</emphasis>
@@ -57,34 +101,40 @@
          <emphasis role="bold">&lt;output-token&gt;</emphasis>,<emphasis role="bold">&lt;/output-token&gt;</emphasis>
          <emphasis role="bold">&lt;output-token&gt;</emphasis>"<emphasis role="bold">&lt;/output-token&gt;</emphasis>
          <emphasis role="bold">&lt;output-token&gt;</emphasis>Where<emphasis role="bold">&lt;/output-token&gt;</emphasis>
-         ...........
-         ...........
+         .........
+         .........
          <emphasis role="bold">&lt;output-token&gt;</emphasis>?<emphasis role="bold">&lt;/output-token&gt;</emphasis>
          <emphasis role="bold">&lt;output-token&gt;</emphasis>"<emphasis role="bold">&lt;/output-token&gt;</emphasis>
       &lt;/example&gt;
    &lt;/body&gt;
-</programlisting></example></section><section xml:id="element-TAN-R-tok"><title><code>&lt;TAN-R-tok&gt;</code></title><para>The element <code>TAN-R-tok</code> specifies that the TAN file contains definitions for tokenization. Root element.</para><para>Definition: <code>(@<link linkend="attribute-id">id</link>, @<link linkend="attribute-TAN-version">TAN-version</link>, (@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, &lt;<link linkend="element-head">head</link>&gt;, &lt;<link linkend="element-body">body</link>&gt;)</code></para><para>Used by: none</para><example><title><code>&lt;TAN-R-tok&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-R-tok TAN-version="1/dev" id="tag:textalign.net,2015:tarn-r-tok:general-1"&gt;</emphasis>
+</programlisting></example></section><section xml:id="element-TAN-R-tok"><title><code>&lt;TAN-R-tok&gt;</code></title><para>The element <code>TAN-R-tok</code> specifies that the TAN file contains definitions for tokenization. Root element.</para><synopsis><emphasis>Definition:</emphasis>
+   <code><link linkend="attribute-id">@id</link></code>,
+   <code><link linkend="attribute-TAN-version">@TAN-version</link></code>,
+   (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
+   <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
+   <code><link linkend="element-head">&lt;head&gt;</link></code>,
+   <code><link linkend="element-body">&lt;body&gt;</link></code></synopsis><para>Used by: none</para><example><title><code>&lt;TAN-R-tok&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-R-tok TAN-version="1/dev" id="tag:textalign.net,2015:tan-r-tok:general-1"&gt;</emphasis>
    &lt;head&gt;
-      ...........
+      .........
    &lt;/head&gt;
    &lt;body in-progress="false"&gt;
-      ...........
+      .........
    &lt;/body&gt;
 <emphasis role="bold">&lt;/TAN-R-tok&gt;</emphasis>
 </programlisting></example><example><title><code>&lt;TAN-R-tok&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-R-tok TAN-version="1/dev" id="tag:textalign.net,2015:tan-r-tok:general-words-only-1"&gt;</emphasis>
    &lt;head&gt;
-      ...........
+      .........
    &lt;/head&gt;
    &lt;body in-progress="false"&gt;
-      ...........
+      .........
    &lt;/body&gt;
 <emphasis role="bold">&lt;/TAN-R-tok&gt;</emphasis>
 </programlisting></example><example><title><code>&lt;TAN-R-tok&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-R-tok TAN-version="1/dev" id="tag:textalign.net,2015:tan-r-tok:precise-1"&gt;</emphasis>
    &lt;head&gt;
-      ...........
+      .........
    &lt;/head&gt;
    &lt;body in-progress="false"&gt;
-      ...........
+      .........
    &lt;/body&gt;
 <emphasis role="bold">&lt;/TAN-R-tok&gt;</emphasis>
 </programlisting></example></section></section>

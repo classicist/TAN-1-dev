@@ -16,9 +16,6 @@
     
     <xsl:include href="TAN-parameters.xsl"/>
 
-    <xsl:variable name="schema-version-major" select="1"/>
-    <xsl:variable name="schema-version-minor" select="'dev'"/>
-    
     <xsl:variable name="root" select="/"/>
     <xsl:variable name="head">
         <!--<xsl:apply-templates mode="include" select="/*/tan:head"/>-->

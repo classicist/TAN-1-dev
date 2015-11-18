@@ -10,8 +10,9 @@
          transcriptions of texts where punctuation is anachronistic or not an object of linguistic
          analysis. This is a core tokenization pattern, so can be invoked by the elements
          tokenization or recommended-tokenization simply by setting @which to the value "precise-1".
-         Or you may use the full IRI + name pattern, provided below for the convenience of those
-         preparing a transcription file. @when-accessed should be updated.
+         Or you may use the full IRI + name pattern.
+         <!-- Full IRI + name pattern provided below for the convenience of those preparing a transcription file. 
+            @when-accessed should be updated. -->
          <!--
             <recommended-tokenization xml:id="general-words-only-1">
                <IRI>tag:textalign.net,2015:tan-r-tok:general-words-only-1</IRI>

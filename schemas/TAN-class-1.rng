@@ -11,12 +11,11 @@
       <a:documentation>No class 1 file may use @src, because there is only one source allowed</a:documentation>
       <empty/>
     </define>
-    <define name="tokenization-ref-text">
-      <a:documentation>Any class 1 file that declares a core TAN tokenization pattern, must use one of the following options</a:documentation>
-      <data type="string">
-        <param name="pattern">(precise|general(-words-only)?)-\d+</param>
-      </data>
-    </define>
+    <!--
+      Commented out 2015-11-05, to move @which to general keyword holder
+      Any class 1 file that declares a core TAN tokenization pattern, must use one of the following options
+      tokenization-ref-text = xsd:string { pattern = "(precise|general(-words-only)?)-\d+" }
+    -->
   </include>
   <define name="decl-class-1">
     <a:documentation>Class 1 files must declare a single work, perhaps one version, one or more divisions, one or more recommended tokenizations, perhaps one filter, and perhaps one </a:documentation>
@@ -45,8 +44,9 @@
   </define>
   <define name="decl-work">
     <element name="work">
-      <a:documentation>indicates which textual work has been transcribed. Must be a conceptual entity, not a physical one.</a:documentation>
+      <a:documentation>indicates the creative work that has been transcribed. Must be a conceptual entity, not a physical one.</a:documentation>
       <a:documentation>The term "work" is only pragmatically defined in TAN. Any unitary text that lends itself in ordinary discourse to reference by means of noun, proper or common. A work may be composed of other works, be a part of other works, or even overlap with other works. E.g., the Lord's Prayer, the Gospel of Luke, the Tetravengelion, the New Testament, and the Bible are all valid works.</a:documentation>
+      <a:documentation>This element akes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -65,6 +65,7 @@
     <element name="version">
       <a:documentation>states the version of the work has been transcribed. Applicable to text-bearing objects that have multiple versions of the same work such as a bilingual edition of a text.</a:documentation>
       <a:documentation>Very few work-versions have their own URN names. It is advisable to assign a tag URN or a UUID. If you have used an IRI for &lt;work&gt; that you are entitled to modify, you may wish to add a suffix that will name the version. If you need to specify exactly where on a text-bearing object a version appears, &lt;desc&gt; or &lt;comment&gt; should be used.</a:documentation>
+      <a:documentation>This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -82,7 +83,8 @@
   <define name="decl-div">
     <element name="div-type">
       <a:documentation>declares a type of textual division (e.g., title, paragraph, stanza). You may have as many &lt;div-types&gt; as you wish, and they need not all be used.</a:documentation>
-      <a:documentation>See iris.xml for suggested IRI + name values for division types. </a:documentation>
+      <a:documentation>For more information, see main.xml#reference_system</a:documentation>
+      <a:documentation>This element akes the IRI + name pattern. For more, see iris.xml for suggested values. </a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -103,15 +105,24 @@
       </choice>
     </element>
   </define>
+  <define name="ns-are-numerals">
+    <!-- moved from core on 2015-11-03; delete by 2016 if everything's ok -->
+    <attribute name="ns-are-numerals">
+      <a:documentation>specifies whether @n values of a particular &lt;div-type&gt; is a numeral. By default the value is true unless values fail to match standard patterns for numeral systems (Arabic, Roman, etc.)</a:documentation>
+      <a:documentation>For more information, see main.xml#reference_system</a:documentation>
+      <data type="boolean"/>
+    </attribute>
+  </define>
   <define name="decl-tok-rec">
     <element name="recommended-tokenization">
       <a:documentation>suggests an ideal TAN-R-tok pattern to be used to segment a text into word tokens. If no thought has been given to tokenization, this element should be left empty. There are two kinds of tokenization patterns.</a:documentation>
       <a:documentation>(1) Core: general-1, general-words-only-1, and precise-1 (values of @which). </a:documentation>
       <a:documentation>(2) Custom: each &lt;recommended-tokenization&gt; must point through an IRI + name pattern a specific TAN-R-tok file, and must take a unique value for @xml:id, to be used by dependent class 2 TAN files.</a:documentation>
       <a:documentation>You may have as many &lt;recommended-tokenization&gt;s as you like, but the order is important: the optimal tokenizing pattern should be placed first.</a:documentation>
+      <a:documentation>For theoretical background and more information, see main.xml#preparing_transcriptions_for_tokenization</a:documentation>
       <choice>
         <empty/>
-        <ref name="tokenization-ref"/>
+        <ref name="keyword-ref"/>
         <ref name="inclusion"/>
         <group>
           <ref name="internal-id"/>
@@ -175,8 +186,10 @@
   <define name="decl-filt-norm">
     <element name="normalization">
       <a:documentation>specifies an alteration made to a source file to bring the text into conformity with standards or common expectations. Typically applies to minor corrections made in the transcription or interpetation of a source (e.g., suppression of discretionary hyphenation). You should declare every change you have made to the source.</a:documentation>
+      <a:documentation>The scope of this element may be specified through optional &lt;for-lang&gt;s.</a:documentation>
       <a:documentation>&lt;normalization&gt; is especially helpful in reference to nondigital sources, but it may be made also for digital sources, to declare global changes that would be cumbersome, difficult, or impossible to describe in &lt;replace&gt;. </a:documentation>
       <a:documentation>See iris.xml for suggested IRI + name values for normalizations. </a:documentation>
+      <a:documentation>For more on this element see main.xml#normalizing_transcriptions </a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -202,7 +215,8 @@
   </define>
   <define name="decl-filt-tlit">
     <element name="transliteration">
-      <a:documentation>indicates a transliteration scheme that has been applied to a source. </a:documentation>
+      <a:documentation>indicates a transliteration scheme that has been applied to a source to convert it from one writing system to another. This element may be useful if it easier to work with a source in the Latin alphabet (for example) rather than a native one. </a:documentation>
+      <a:documentation>The scope of this element may be specified through optional &lt;for-lang&gt;s.</a:documentation>
       <a:documentation>This may be useful for texts easier to handle in a Latin alphabet rather than a native one.  </a:documentation>
       <optional>
         <ref name="ed-stamp"/>

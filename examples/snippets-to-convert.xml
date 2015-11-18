@@ -18,4 +18,604 @@
     <comment> In this example, &lt;change> ascribes an alteration to Cheh, but the edit stamp
         credits Smith with last changing the &lt;change>.</comment>
     
+    <example>
+        <title><code><link linkend="element-recommended-tokenization"
+            >&lt;recommended-tokenization></link></code>: modern English
+            texts</title>
+        <programlisting>      ...........
+   &lt;recommended-tokenization xml:id="penn">
+      &lt;IRI>tag:textalign.net,2015:tokenization:eng.1&lt;/IRI>
+      &lt;name>Tokenization pattern for English, in Penn Treebank style&lt;/name>
+      &lt;location when-accessed="2015-03-17">../TAN-R-tok/tok.eng.1.xml&lt;/location>
+   &lt;/recommended-tokenization>
+   &lt;recommended-tokenization which="general"/>
+      ...........               </programlisting>
+    </example>
+    <example>
+        <title><code><link linkend="element-normalization"
+            >&lt;normalization></link></code> and <code><link
+                linkend="element-replace">&lt;replace></link></code>: remove
+            discretionary hyphenation and line breaks from a TAN-TEI file</title>
+        <programlisting>      ...........
+   &lt;filter>
+      &lt;normalization>
+         &lt;for-lang>grc&lt;/for-lang>
+         &lt;IRI>tag:textalign.net,2015:normalization:hyphens-discretionary-removed&lt;/IRI>
+         &lt;name>Suppression of hyphens&lt;/name>
+      &lt;/normalization>
+      &lt;replace>
+         &lt;pattern>&amp;lt;lb[^/]*\s*break\s*=\s*"no"[^/]*\s*/>&lt;/pattern>
+         &lt;replacement/>
+      &lt;/replace>
+      &lt;replace>
+         &lt;pattern>&amp;lt;lb[^/]*\s*[^/]*/>&lt;/pattern>
+         &lt;replacement> &lt;/replacement>
+      &lt;/replace>
+   &lt;/filter>
+      ...........</programlisting>
+        <caption>
+            <para>The removal of discretionary hyphens is declared with <code><link
+                linkend="element-normalization">&lt;normalization></link></code>
+                and not <code><link linkend="element-replace">&lt;replace></link></code>
+                because the TAN-T editor has realized that some hyphens at line ends are
+                part of the word. A generalized regular expression cannot be constructed
+                to define this change. The first <code><link linkend="element-replace"
+                    >&lt;replace></link></code> declares that all instances of TEI's
+                <code><link linkend="element-lb">&lt;lb></link></code> that are
+                meant to suppress word breaks should be deleted. The regular expression
+                held by <code><link linkend="element-pattern">&lt;pattern></link></code>
+                tells the computer to look for any instance of <code>&lt;lb</code>
+                followed by anything until it reaches <code>break="no"</code> then to
+                keep going until it finds <code>/></code>, even across new lines. Note
+                the use of <code>&amp;lt;</code>, since a literal use of
+                <code>&lt;</code> would render this file as invalid. The second
+                replace replaces all remaining TEI <code><link linkend="element-lb"
+                    >&lt;lb></link></code> with a single space.</para>
+        </caption>
+    </example>
+    <example>
+        <title><code><link linkend="element-declarations">&lt;declarations></link></code>:
+            <code><link linkend="element-suppress-div-types">&lt;suppress-div-types></link></code></title>
+        <para>
+            <programlisting>   ...........
+   &lt;declarations>
+      ...........
+      &lt;suppress-div-types div-type-ref="stanza" src="ps-eng"/>
+      ...........
+   &lt;/declarations>
+   ...........</programlisting>
+        </para>
+        <caption>
+            <para>In this example, Psalm 119 (LXX 118) has been subdivided by one TAN-T
+                source into its traditional 22 stanzas (one for each letter in the Hebrew
+                alphabet) before it has been subdivided into verses. The aligner chooses to
+                suppress them, so that values of <code><link linkend="attribute-ref">@ref</link></code> can be more brief, e.g.,
+                <code>psalm.119:stanza.3:v.46</code> can be rendered simply as
+                <code>psalm.119:v.46</code>).</para>
+        </caption>
+    </example>
+    <example>
+        <title><code><link linkend="element-declarations">&lt;declarations></link></code>: <code><link linkend="element-rename-div-types">&lt;rename-div-types></link></code></title>
+        <para>
+            <programlisting>   ...........
+   &lt;declarations>
+      ...........
+      &lt;rename-div-types src="A-grc">
+         &lt;rename old="βιβ" new="bk"/>
+      &lt;/rename-div-types>
+      ...........
+   &lt;/declarations>
+   ...........</programlisting>
+        </para>
+        <caption>
+            <para>The above <code><link linkend="element-rename-div-types">&lt;rename-div-types></link></code> changes the label for the
+                division type book, from an abbreviation in the Greek alphabet to one in the
+                Roman. </para>
+        </caption>
+    </example>
+    <example>
+        <title><code><link linkend="element-declarations">&lt;declarations></link></code>: <code><link linkend="element-rename-div-ns">&lt;rename-div-ns></link></code></title>
+        <para>
+            <programlisting>   ...........
+   &lt;declarations>
+      ...........
+      &lt;rename-div-ns src="A-grc" div-type-ref="bk">
+         &lt;rename old="γεν" new="Gen"/>
+         &lt;rename old="εξοδ" new="Ex"/>
+         &lt;rename old="λευ" new="Lev"/>
+      &lt;/rename-div-ns>
+      &lt;rename-div-ns src="A-lat" div-type-ref="bk">
+         &lt;rename old="#i" new="#1"/>
+      &lt;/rename-div-ns>
+      ...........
+   &lt;/declarations>
+   ...........   </programlisting>
+        </para>
+        <caption>
+            <para>This example illustrates both label changes and numeration system changes
+                (from Roman numerals to Arabic).</para>
+        </caption>
+    </example>
+    
+    <example>
+        <title><code><link linkend="element-equate-works">&lt;equate-works></link></code>: similar and related works defined
+            differently</title>
+        <para>
+            <programlisting>      ...........
+   &lt;body>
+      &lt;equate-works src="lxx kjv nt"/>
+   &lt;/body>
+      ...........   </programlisting>
+        </para>
+        <caption>
+            <para>The Bible's complex history has produced many different concepts and
+                definitions of how that work should be defined. Take for example the
+                Greek Septuagint (<code>lxx</code>), the New Testament (<code>nt</code>),
+                and the King James Bible (<code>kjv</code>), each one justifiably defined
+                as different works. The <code>nt</code> is contained wholly by the
+                <code>kjv</code>, and has no overlap with the <code>lxx</code>
+                (ignoring for now <code>nt</code> quotations of the <code>lxx</code>).
+                The <code>kjv</code> overlaps with only the majority of the
+                <code>lxx</code> (books or parts of books commonly transmitted in the
+                Septuagint translation never made it into the King James Bible). This
+                example assumes a case where the creators of the TAN-T(EI) files have
+                justifiably assigned a different <code><link linkend="element-IRI">&lt;IRI></link></code> value to each
+                source's <code><link linkend="element-work">&lt;work></link></code>. But for the purposes of this alignment,
+                all three can be productively treated as a common work, declared through
+                <code><link linkend="element-equate-works">&lt;equate-works></link></code>.</para>
+        </caption>
+    </example>
+    
+    <example>
+        <title><code><link linkend="element-equate-works">&lt;equate-works></link></code>: different works</title>
+        <para>
+            <programlisting>      ...........
+   &lt;body>
+      &lt;equate-works src="hamlet lear othello"/>
+   &lt;/body>
+      ...........   </programlisting>
+        </para>
+        <caption>
+            <para>This example illustrates an ad hoc alignment of Shakespeare's plays
+                <emphasis role="italic">Othello</emphasis>, <emphasis role="italic"
+                    >Hamlet</emphasis>, and <emphasis role="italic">King Lear</emphasis>. Any
+                processor of this file will attempt to align the parts of the three plays
+                that share the same reference number. This may be useful for an aligner who
+                wishes to read the three Shakespeare plays in parallel, or compare the
+                distribution of line length. </para>
+        </caption>
+    </example>
+    <example>
+        <title><code><link linkend="element-equate-div-types"
+            >&lt;equate-div-types></link></code>: common divisions defined
+            differently</title>
+        <para>
+            <programlisting>      ...........
+   &lt;equate-div-types>
+      &lt;div-type-ref src="blue" div-type-ref="bill"/>
+      &lt;div-type-ref src="red" div-type-ref="bill"/>
+   &lt;/equate-div-types>
+      ...........   </programlisting>
+        </para>
+        <caption>
+            <para>This example assumes two sources (<code>blue</code> and
+                <code>red</code>) that both use <code>bill</code> as a division type,
+                but have not used the same IRI to define it. Whether the discrepancy is
+                based upon a principled disagreement, an accident, or a typographical
+                error, the above says that the two types of divisions are to be treated
+                as equivalent.</para>
+        </caption>
+    </example>
+    <example>
+        <title><code><link linkend="element-equate-div-types"
+            >&lt;equate-div-types></link></code>: uncommon divisions defined
+            differently</title>
+        <para>
+            <programlisting>      ...........
+   &lt;equate-div-types>
+      &lt;div-type-ref src="summa-eng" div-type-ref="contr"/>
+      &lt;div-type-ref src="summa-lat" div-type-ref="sedcontra"/>
+   &lt;/equate-div-types>
+   &lt;equate-div-types>
+      &lt;div-type-ref src="summa-eng" div-type-ref="resp"/>
+      &lt;div-type-ref src="summa-lat" div-type-ref="respondeo"/>
+   &lt;/equate-div-types>
+   &lt;equate-div-types>
+      &lt;div-type-ref src="summa-eng" div-type-ref="reply"/>
+      &lt;div-type-ref src="summa-lat" div-type-ref="adpraeterea"/>
+   &lt;/equate-div-types>
+      ...........   </programlisting>
+        </para>
+        <caption>
+            <para>Many texts are traditionally segmented into divisions that take
+                specialized names. For example, the <emphasis role="italic">Summa
+                    theologica</emphasis> by Thomas Aquinas contains articles that allow
+                five kinds of subdivision: question, objection, "on the contrary"
+                (<emphasis role="italic">sed contra</emphasis>), "I respond that"
+                (<emphasis role="italic">respondeo</emphasis>), and reply to
+                objection. This example assumes an alignment of two independently
+                transcribed versions of the <emphasis>Summa theologica</emphasis>. Both
+                transcribers found IRIs suitable for the first two subdivisions
+                (<code>http://dbpedia.org/resource/Question</code> and
+                <code>http://dbpedia.org/resource/Objection_(argument)</code>) but
+                they each had to mint their own IRI for the last three, and they do not
+                match. This example says they should be treated as equivalent.</para>
+        </caption>
+    </example>
+    <example>
+        <title><code><link linkend="element-split-leaf-div-at"
+            >&lt;split-leaf-div-at></link></code>: common use</title>
+        <para>
+            <programlisting>      ...........
+   &lt;split-leaf-div-at>
+      &lt;tok src="eng-1790" ref="line 1" ord="1 | 2" val="a"/>
+   &lt;/split-leaf-div-at>
+      ...........   </programlisting>
+        </para>
+        <caption>
+            <para>This example assumes line 1 reads "Ring a ring a Rosie," and that the
+                text has been tokenized based on spaces. This <code><link
+                    linkend="element-tok">&lt;tok></link></code> introduces two splits
+                in the leaf <code><link linkend="element-div">&lt;div></link></code>,
+                starting with the first and second instances of "a" (the second and
+                fourth word-tokens). The overall effect is to create three segments:
+                "Ring" "a ring" "a Rosie". Later in the alignment file file, any
+                reference to <code>line 1</code> will refer to all three segments.
+                <code><link linkend="attribute-seg">@seg</link></code> would be
+                used to point to one or more specific segments (see below).</para>
+        </caption>
+    </example>
+    <example>
+        <title><code><link linkend="element-split-leaf-div-at"
+            >&lt;split-leaf-div-at></link></code>: advanced use</title>
+        <para>
+            <programlisting>      ...........
+   &lt;split-leaf-div-at>
+      &lt;tok src="eng deu heb" ref="bk.Ex.ch.1.v.2 | bk.Ex.ch.1.v.1" ord="2 | 5 - 7 | last-1"/>
+   &lt;/split-leaf-div-at>
+      ...........   </programlisting>
+        </para>
+        <caption>
+            <para>In this example, the <code><link linkend="element-tok"
+                >&lt;tok></link></code> states that in each of the three different
+                sources, each of the divisions corresponding to the two references should
+                be split five times, at the second, fifth, sixth, seventh, and
+                penultimate word-tokens. Note, there must be a valid word token for each
+                ref in each source.</para>
+        </caption>
+    </example>
+    <example>
+        <title><code><link linkend="element-realign">&lt;realign></link></code>:
+            unanchored 1</title>
+        <para>
+            <programlisting>      ...........
+   &lt;realign>
+      &lt;div-ref src="tamil" ref="bk.1:ch.4" seg="2"/>
+   &lt;/realign>
+      ...........   </programlisting>
+        </para>
+        <caption>
+            <para>This example states that the second segment in book 1 chapter 4 of the
+                Tamil version of a work should not be automatically aligned with any
+                other version of that work that shares the same reference. This may be
+                useful for versions that has interpolations missing in other versions.
+            </para>
+        </caption>
+    </example>
+    <example>
+        <title><code><link linkend="element-realign">&lt;realign></link></code>:
+            unanchored 2</title>
+        <para>
+            <programlisting>      ...........
+   &lt;realign>
+      &lt;div-ref src="jones-1884" ref="topic.5:q.4 - topic.5:q.6 , topic.8"/>
+      &lt;div-ref src="denton-1822" ref="discussion.7 - discussion.9"/>
+      &lt;div-ref src="denton-1822" ref="discussion.4"/>
+   &lt;/realign>
+      ...........   </programlisting>
+        </para>
+        <caption>
+            <para>This example assumes two versions of the same work, one published in
+                1822 and the other in 1884. This <code><link linkend="element-realign"
+                    >&lt;realign></link></code> states that the references provided
+                should be exempt from any automatic alignment with other versions of the
+                same work, and that each of three questions from topic 5 should be
+                aligned exclusively with three discussions in the other. It also
+                exclusively aligns topic 8 to discussion 4. This alignment applies also
+                to all descendants. Note that the last two <code><link
+                    linkend="element-div-ref">&lt;div-ref></link></code>s could have
+                been combined: <code>&lt;div-ref src="denton-1822" ref="question.7 -
+                    question.9 , discussion.4"/></code>. Note also that there are four
+                references per source. In an unanchored <code><link
+                    linkend="element-realign">&lt;realign></link></code> with multiple
+                sources, there must be a one-to-one correspondence between atomic
+                references in each source.</para>
+        </caption>
+    </example>
+    <example>
+        <title><code><link linkend="element-realign">&lt;realign></link></code>:
+            unanchored 3</title>
+        <para>
+            <programlisting>      ...........
+   &lt;split-leaf-div-at>
+      &lt;tok src="poem-A" ref="line 46" ord="6"/>
+      &lt;tok src="poem-B" ref="line 47" ord="3"/>
+   &lt;/split-leaf-div-at>
+   &lt;realign>
+      &lt;div-ref src="poem-A" ref="line 46" seg="2"/>
+      &lt;div-ref src="poem-B" ref="line 47" seg="1"/>
+   &lt;/realign>
+   &lt;realign>
+      &lt;div-ref src="poem-A" ref="line 47" seg="1"/>
+      &lt;div-ref src="poem-B" ref="line 47" seg="2"/>
+   &lt;/realign>
+      ...........   </programlisting>
+        </para>
+        <caption>
+            <para>This example realigns two versions of a poem, where one phrase that
+                appears at the end of line 46 in one version is found at line 47 of the
+                other. The aligner declares two splits (one for each version) and then
+                realigns the segments. There is a perhaps less confusing way to approach
+                this task using an anchored <code><link linkend="element-realign"
+                    >&lt;realign></link></code>, illustrated below.</para>
+        </caption>
+    </example>
+    <example>
+        <title><code><link linkend="element-realign">&lt;realign></link></code>:
+            unanchored 4</title>
+        <para>
+            <programlisting>      ...........
+   &lt;realign>
+      &lt;div-ref src="A-1794" ref="para 7 - para 9"/>
+      &lt;div-ref src="A-1885" ref="para 8 - para 9 , para 7"/>
+      &lt;div-ref src="A-1922" ref="para 12 - para 14"/>
+   &lt;/realign>
+      ...........   </programlisting>
+        </para>
+        <caption>
+            <para>This example assumes three versions of a text, where paragraphs seven
+                through nine of one version correspond to eight, nine, and seven of the
+                other and twelve through fourteen of the other. Another version of this
+                example, anchored, is provided below.</para>
+        </caption>
+    </example>
+    <example>
+        <title><code><link linkend="element-realign">&lt;realign></link></code>:
+            anchored 1</title>
+        <para>
+            <programlisting>      ...........
+   &lt;split-leaf-div-at>
+      &lt;tok src="poem-A" ref="line 46" ord="6"/>
+   &lt;/split-leaf-div-at>
+   &lt;realign>
+      &lt;anchor-div-ref src="poem-B" ref="line 47"/>
+      &lt;div-ref src="poem-A" ref="line 46" seg="2"/>
+   &lt;/realign>
+      ...........   </programlisting>
+        </para>
+        <caption>
+            <para>This presents an alternative approach to an unanchored example above,
+                where where a phrase that appears at the end of line 46 in one version of
+                a poem is found at line 47 of the other. The aligner declares one split
+                and then realigns the second segment to the next line. This <code><link
+                    linkend="element-realign">&lt;realign></link></code> forces the
+                <code><link linkend="element-div-ref">&lt;div-ref></link></code> to
+                align with the reference in <code><link linkend="element-anchor-div-ref"
+                    >&lt;anchor-div-ref></link></code>, which is not affected. No
+                reference in an <code><link linkend="element-anchor-div-ref"
+                    >&lt;anchor-div-ref></link></code> may be realigned. </para>
+        </caption>
+    </example>
+    <example>
+        <title><code><link linkend="element-realign">&lt;realign></link></code>:
+            anchored 2</title>
+        <para>
+            <programlisting>      ...........
+   &lt;realign>
+      &lt;anchor-div-ref src="A-1794" ref="para 7 - para 9"/>
+      &lt;div-ref src="A-1885" ref="para 8 - para 9 , para 7"/>
+      &lt;div-ref src="A-1922" ref="para 12 - para 14"/>
+   &lt;/realign>
+      ...........   </programlisting>
+        </para>
+        <caption>
+            <para>This is an anchored variation of a previous example. Three paragraphs
+                of two versions are brought into alignment with three paragraphs of
+                source <code>A-1794</code>. The previous, unanchored example ensured that
+                all three passages were exempt from any other automatic alignments. In
+                this case, anything that aligns with paragraphs 7 through 9 of
+                <code>A-1794</code> will align with the corresponding passages from
+                the other two sources. Note that the number of references in the anchor
+                match precisely the number of references in the other two sources. This
+                match in count is necessary in order for distribution to occur.</para>
+        </caption>
+    </example>
+    <example>
+        <title><code><link linkend="element-realign">&lt;realign></link></code>:
+            anchored 3</title>
+        <para>
+            <programlisting>      ...........
+   &lt;equate-works src="lxx kjv"/>
+   &lt;realign>
+      &lt;anchor-div-ref src="kjv" ref="ps.9:v.1 - ps.10:v.18"/>
+      &lt;div-ref src="lxx" ref="ps.9:v.2 - ps.9:v.39"/>
+   &lt;/realign>
+   &lt;realign>
+      &lt;anchor-div-ref src="kjv" ref="ps.11 - ps.113 | ps.117 - ps.146"/>
+      &lt;div-ref src="lxx" ref="ps.10 - ps.112 | ps.116 - ps.145"/>
+   &lt;/realign>
+   &lt;realign>
+      &lt;anchor-div-ref src="kjv" ref="ps.114:v.1 - ps.115:v.18"/>
+      &lt;div-ref src="lxx" ref="ps.113:1 - ps.113:26"/>
+   &lt;/realign>
+   &lt;realign>
+      &lt;anchor-div-ref src="kjv" ref="ps.116:v.1 - ps.116:v.19"/>
+      &lt;div-ref src="lxx" ref="ps.114:v.1 - ps.115:v.10"/>
+   &lt;/realign>
+   &lt;realign>
+      &lt;anchor-div-ref src="kjv" ref="ps.147:v.1 - ps.147:v.20"/>
+      &lt;div-ref src="lxx" ref="ps.146:v.1 - ps.147:v.9"/>
+   &lt;/realign>
+      ...........   </programlisting>
+        </para>
+        <caption>
+            <para>This example reconciles Psalm numbers in the Septuagint with those in
+                the King James Version, <code>kjv</code>, and consequently to any other
+                version of the Bible that follows the latter's Psalm numeration.</para>
+        </caption>
+    </example>
+    <example>
+        <title><code><link linkend="element-align">&lt;align></link></code>: standard
+            quotation</title>
+        <para>
+            <programlisting>      ...........
+   &lt;align>
+      &lt;div-ref src="lecture-bra" ref="para.4:sent.2"/>
+      &lt;div-ref src="hamlet-jap" ref="act I:scene 1:line 1"/>
+   &lt;/align>
+      ...........   </programlisting>
+        </para>
+        <caption>
+            <para>This example presumes a written lecture, in multiple versions, that
+                sometimes quotes from <emphasis role="italic">Hamlet</emphasis>, also in
+                various versions. <code><link linkend="element-align"
+                    >&lt;align></link></code> states that in the source
+                <code>lecture-bra</code>, paragraph 4 sentence 2, there is a quote
+                from <emphasis role="italic">Hamlet</emphasis>, designated in the source
+                <code>hamlet-jap</code> as act I, scene 1, line 1. Anything that
+                aligns with the first reference will align with anything that aligns with
+                the second.</para>
+        </caption>
+    </example>
+    <example>
+        <title><code><link linkend="element-align">&lt;align></link></code>: standard
+            quotation, <code><link linkend="attribute-distribute">@distribute</link> =
+                true</code></title>
+        <para>
+            <programlisting>      ...........
+   &lt;align distribute="true">
+      &lt;div-ref src="article-A" ref="sect.4:blockquote.2:para.1 - sect.4:blockquote.2:para.4"/>
+      &lt;div-ref src="quran-1" ref="sura.4:verse.3 - sura.4:verse.6"/>
+   &lt;/align>
+      ...........   </programlisting>
+        </para>
+        <caption>
+            <para>This example assumes an article that quotes from the Qur'an, sura 3
+                (The Women), 3-6. If <code><link linkend="attribute-distribute"
+                    >@distribute</link></code> were <code>false</code> or missing, the
+                references in <code>article-A</code> would be taken as aligning en bloc
+                with the references in <code>quran-1</code>. But because <code><link
+                    linkend="attribute-distribute">@distribute</link></code> is
+                <code>true</code>, the effect is to create four separate, more
+                specific, alignments.</para>
+        </caption>
+    </example>
+    <example>
+        <title><code><link linkend="element-align">&lt;align></link></code>: standard
+            quotation, <code><link linkend="attribute-exclusive">@exclusive</link> =
+                true</code></title>
+        <para>
+            <programlisting>      ...........
+   &lt;align exclusive="true">
+      &lt;div-ref src="S2" ref="century VI chapter 88"/>
+      &lt;div-ref src="lxx" ref="bk Judg.ch 5.v 20"/>
+   &lt;/align>
+      ...........   </programlisting>
+        </para>
+        <caption>
+            <para>This example illustrates a situation where one version of a work
+                quotes from Judges 5:20 (Septuagint) but the other does not. Because
+                <code><link linkend="attribute-exclusive">@exclusive</link></code>
+                is set to <code>true</code>, no other versions will be automatically
+                included in the alignment.</para>
+        </caption>
+    </example>
+    <example>
+        <title><code><link linkend="element-align">&lt;align></link></code>: one work
+            self-alignment, three options</title>
+        <para>
+            <programlisting>      ...........
+   &lt;align xml:id="lords-prayer-1">
+      &lt;div-ref src="nt-grc" ref="bk.Matt:ch.6:v.9 - bk.Matt:ch.6:v.13" />
+   &lt;/align>
+   &lt;align xml:id="lords-prayer-2">
+      &lt;div-ref src="nt-grc" ref="bk.Luke:ch.11:v.2 - bk.Luke:ch.11:v.4" />
+   &lt;/align>
+   &lt;align alignments="lords-prayer-1 lords-prayer-2"/>
+      ...........   </programlisting>
+        </para>
+        <para>
+            <programlisting>      ...........
+   &lt;split-leaf-div-at>
+      &lt;tok src="nt-grc" ref="bk.Matt:ch.6:v.9 , bk.Matt:ch.6:v.10" ord="5"/>
+      &lt;tok src="nt-grc" ref="bk.Luke:ch.11:v.2" ord="7, last-3"/>
+      &lt;tok src="nt-grc" ref="bk.Luke:ch.11:v.4" ord="last" val="καὶ"/>
+   &lt;/split-leaf-div-at>
+   &lt;align xml:id="lords-prayer-1">
+      &lt;div-ref src="nt-grc" ref="bk.Matt:ch.6:v.9:seg.2"/>
+      &lt;div-ref src="nt-grc" ref="bk.Matt:ch.6:v.10:seg.1"/>
+      &lt;div-ref src="nt-grc" ref="bk.Matt:ch.6:v.11"/>
+      &lt;div-ref src="nt-grc" ref="bk.Matt:ch.6:v.12"/>
+      &lt;div-ref src="nt-grc" ref="bk.Matt:ch.6:v.13"/>
+   &lt;/align>
+   &lt;align xml:id="lords-prayer-2">
+      &lt;div-ref src="nt-grc" ref="bk.Luke:ch.11:v.2:seg.2"/>
+      &lt;div-ref src="nt-grc" ref="bk.Luke:ch.11:v.2:seg.3"/>
+      &lt;div-ref src="nt-grc" ref="bk.Luke:ch.11:v.3"/>
+      &lt;div-ref src="nt-grc" ref="bk.Luke:ch.11:v.4:seg.1"/>
+      &lt;div-ref src="nt-grc" ref="bk.Luke:ch.11:v.4:seg.2"/>
+   &lt;/align>
+   &lt;align alignments="lords-prayer-1 lords-prayer-2" distribute="true" exclusive="true"/>
+      ...........   </programlisting>
+        </para>
+        <para>
+            <programlisting>      ...........
+   &lt;split-leaf-div-at>
+      &lt;tok src="nt-grc" ref="bk.Matt:ch.6:v.9 , bk.Matt:ch.6:v.10" ord="5"/>
+      &lt;tok src="nt-grc" ref="bk.Luke:ch.11:v.2" ord="7, last-3"/>
+      &lt;tok src="nt-grc" ref="bk.Luke:ch.11:v.4" ord="last" val="καὶ"/>
+   &lt;/split-leaf-div-at>
+   &lt;align xml:id="lords-prayer-1">
+      &lt;div-ref src="nt-grc"
+         ref="bk.Matt:ch.6:v.9:seg.2 , bk.Matt:ch.6:v.10:seg.1 , bk.Matt:ch.6:v.11 - bk.Matt:ch.6:v.13"
+      />
+   &lt;/align>
+   &lt;align xml:id="lords-prayer-2">
+      &lt;div-ref src="nt-grc"
+         ref="bk.Luke:ch.11:v.2:seg.2 , bk.Luke:ch.11:v.2:seg.3 , bk.Luke:ch.11:v.3 ,
+         bk.Luke:ch.11:v.4:seg.1 , bk.Luke:ch.11:v.4:seg.2"
+      />
+   &lt;/align>
+   &lt;align alignments="lords-prayer-1 lords-prayer-2" distribute="true" exclusive="true"/>
+      ...........   </programlisting>
+        </para>
+        <caption>
+            <para>This example shows three ways of self-aligning the the two versions of
+                the Lord's Prayer in a single work, the New Testament.</para>
+            <para>The first method shows a rough alignment, connecting the five verses
+                of Matthew with the three of Luke. This alignment provides only a rough
+                alignment, but it will be applicable to any other version of the New
+                Testament cited in the TAN-A-div file as a source.</para>
+            <para>The second and third alignments are equivalent ways of doing a more
+                refined alignment. The only difference is that the second places each of
+                the five parts of each version in its own <code><link
+                    linkend="element-div-ref">&lt;div-ref></link></code> whereas the
+                third collapses each into a single <code><link linkend="element-div-ref"
+                    >&lt;div-ref></link></code>. Legibility should be the key to
+                deciding which method should be preferred.</para>
+            <para>The refined alignments begin by declaring two splits in the verses in
+                Matthew (both verses 9 and 10 happen to have natural breaks at the fifth
+                word token, excluding punctuation). The Luke version has three splits.
+                Notice that the aligner has chosen not to mention Matthew 6.10b because
+                there is no corresponding phrase in Luke. (Another aligner may have
+                approached this differently.) </para>
+            <para>The refined alignment offers precision, but at the expense of broad
+                applicability. Any other version of the New Testament included in the
+                TAN-A-div file that has not been properly segmented would be misaligned.
+                Therefore <code><link linkend="attribute-exclusive"
+                    >@exclusive</link></code> is declared to be <code>true</code>, to
+                exempt the alignment from being transitively applied to any other New
+                Testament source.</para>
+        </caption>
+    </example>
 </snippets-to-turn-into-real-TAN-examples>

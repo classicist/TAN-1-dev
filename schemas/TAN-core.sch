@@ -326,21 +326,21 @@
       <let name="point-to-which-tan" value="for $i in $first-docs return name($i/*)"/>
       <report
          test="for $i in count($this-resolved) return $must-point-to-external-tan[$i] and not($point-to-which-tan[$i] = $all-root-names)"
-         ><!-- If relationship keyword is $relationship-keywords-for-tan-files then parent element must point to TAN file.-->Must point to TAN file (checked only against first location available). <value-of
+         ><!-- If <relationship> keyword is $relationship-keywords-for-tan-files then parent element must point to TAN file.-->Must point to TAN file (checked only against first location available). <value-of
             select="if (exists($point-to-which-tan)) 
                then concat('root element: ',string-join($point-to-which-tan,', ')) else ()"
          /></report>
       <report
          test="for $i in count($this-resolved) return $these-relationships[$i] = $relationship-keywords-for-tan-editions and 
          $point-to-which-tan[$i] ne name(/*)"
-         ><!-- If relationship keyword is $relationship-keywords-for-tan-editions then parent element must point to a TAN file of the same time as the current file. -->The <value-of select="$these-relationships"/> must be the same TAN format (root element of
+         ><!-- If <relationship> keyword is $relationship-keywords-for-tan-editions then parent element must point to a TAN file of the same type as the current file. -->The <value-of select="$these-relationships"/> must be the same TAN format (root element of
          target = <value-of select="$point-to-which-tan"/>).</report>
       <report
          test="for $i in count($this-resolved) return $these-relationships[$i] = 'dependent' and not($first-docs[$i]/*/tan:head/tan:source[tan:IRI = $doc-id])"
          >If relationship is dependent, then the current document's id must be found in at least one IRI in the dependent file.</report>
       <report
          test="for $i in count($this-resolved) return $these-relationships[$i] = $relationship-keywords-for-tan-editions and $doc-id = $first-docs[$i]/*/@id"
-         ><!-- If relationship keyword is  $relationship-keywords-for-tan-editions then the current file and the see-also file cannot have the same @id value. -->The <value-of select="$these-relationships"/> cannot have the same @id value as this
+         ><!-- If <relationship> keyword is  $relationship-keywords-for-tan-editions then the current file and the see-also file cannot have the same @id value. -->The <value-of select="$these-relationships"/> cannot have the same @id value as this
          file.</report>
 
    </rule>
@@ -410,13 +410,15 @@
       context="@who|@ed-who|@roles|@src|@type[parent::tan:div|parent::tei:div]|@lexicon|@morphology|@reuse-type|@bitext-relation|@feature|@alignments|@include">
       <!-- This rule is intended primarily to make sure that idrefs correspond
       to the correct elements -->
-      <let name="referring-attribute"
-         value="('who','ed-who','roles','src','type','lexicon','morphology','reuse-type','bitext-relation','feature','alignments','include')"/>
-      <let name="referred-element"
-         value="('agent','agent','role','source','div-type','lexicon','morphology','reuse-type','bitext-relation','feature','align','inclusion')"/>
+      <!--<let name="referring-attribute"
+         value="('who','ed-who','roles','src','type','lexicon','morphology','reuse-type','bitext-relation','feature','alignments','include')"/>-->
+      <!--<let name="referred-element"
+         value="('agent','agent','role','source','div-type','lexicon','morphology','reuse-type','bitext-relation','feature','align','inclusion')"/>-->
       <let name="this-attribute-name" value="name(.)"/>
+      <!--<let name="should-refer-to-which-element"
+         value="$referred-element[index-of($referring-attribute,$this-attribute-name)]"/>-->
       <let name="should-refer-to-which-element"
-         value="$referred-element[index-of($referring-attribute,$this-attribute-name)]"/>
+         value="$id-idrefs//tan:id[tan:idrefs/@attribute = $this-attribute-name]/@element"/>
       <let name="valid-values" value="$head//*[name(.)=$should-refer-to-which-element]/@xml:id"/>
       <let name="idrefs" value="tokenize(.,'\s+')"/>
       <let name="idrefs-currently-target-what-element"

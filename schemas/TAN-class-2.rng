@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <grammar xmlns:ns1="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <!--
+    to do: rename @ord > @pos
+    allow @val to take regular expressions
+    allow @src to take * and * - [names] to allow blanket statements, esp. for implict div types
+  -->
   <include href="TAN-core.rng" ns="tag:textalign.net,2015:ns">
     <define name="decl-non-core">
       <interleave>
@@ -47,7 +52,7 @@ Reserved for modification in different types of Class 2 files, to specify how ma
         <group>
           <ref name="source-ref"/>
           <choice>
-            <ref name="tokenization-ref"/>
+            <ref name="keyword-ref"/>
             <ref name="entity-digital-tan-other-ref"/>
           </choice>
         </group>
@@ -62,7 +67,7 @@ Reserved for modification in different types of Class 2 files, to specify how ma
   </define>
   <define name="decl-supp-div-type">
     <element name="suppress-div-types">
-      <a:documentation>marks div types in a source that should be suppressed in references. Any suppression of a div type must preserve the Leaf Div Uniqueness Rule (LDUR).</a:documentation>
+      <a:documentation>marks div types in a source that should be suppressed in references. Any suppression of a div type must preserve the Leaf Div Uniqueness Rule (LDUR). See main.xml#leaf_div_uniqueness_rule</a:documentation>
       <a:documentation>This element will be used seldomly, for cases where a source has a div type that is dispensable in text references. </a:documentation>
       <optional>
         <ref name="ed-stamp"/>
@@ -79,7 +84,9 @@ Reserved for modification in different types of Class 2 files, to specify how ma
   <define name="decl-implicit-div-type-refs-opt">
     <zeroOrMore>
       <element name="implicit-div-type-refs">
-        <a:documentation>indicates that div types will be dropped for one or more sources, so that references to &lt;div&gt;s in that source will be exclusively through @n values.</a:documentation>
+        <a:documentation>indicates references to &lt;div&gt;s in that source will be exclusively through @n values; @type values will be suppressed.</a:documentation>
+        <a:documentation>This element must be explicitly declared for every source, even those that already have a &lt;recommended-div-type-refs&gt; value of implicit.</a:documentation>
+        <a:documentation>Although implicitation is not allowed for sources with any @n that is empty, exceptions are made where &lt;rename-div-ns&gt; is used to convert a numeration system to Arabic numerals; in those cases n="" will be interpreted to mean n="0". </a:documentation>
         <optional>
           <ref name="ed-stamp"/>
         </optional>
@@ -97,8 +104,9 @@ Reserved for modification in different types of Class 2 files, to specify how ma
   </define>
   <define name="decl-rename-div-type">
     <element name="rename-div-types">
-      <a:documentation>reassigns the name of a div-type in one or more sources. This feature is strictly speaking a convenience. It does not change the underlying definiton of the div-type.</a:documentation>
-      <a:documentation>Note for TAN-A-div users: If you wish to change the underlying meaning of the div type, you should use the element &lt;equate-div-types&gt;</a:documentation>
+      <a:documentation>provisionally reassigns @type values for &lt;div&gt;s of a certain type in one or more sources. This feature is strictly speaking a convenience and applies only to the current file. It does not change the underlying definiton of the div-type.</a:documentation>
+      <a:documentation>This element can be especially helpful to synthesize multiple versions that use different abbreviations for the same type of &lt;div&gt;. Changing the div type does not affect the underlying definition, which based on &lt;IRI&gt; values. Equating &lt;div&gt; types that do not have common &lt;IRI&gt; values is effected through &lt;equate-div-types&gt; (TAN-A-div only).</a:documentation>
+      <a:documentation>For more inforrmation see main.xml#class_2_metadata</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -120,10 +128,12 @@ Reserved for modification in different types of Class 2 files, to specify how ma
   </define>
   <define name="decl-rename-div-n">
     <element name="rename-div-ns">
-      <a:documentation>reassigns n values for one or more sources and one or more div types. </a:documentation>
-      <a:documentation>This element is especially useful for converting Roman numerals or letter numerals into Arabic numerals. This feature is strictly speaking a convenience, not a necessity. All TAN-compliant preprocessors are required to automatically detect Roman and alphabetic numbering systems and treat them as Arabic numerals. </a:documentation>
+      <a:documentation>provisionally reassigns @n values for one or more sources and one or more div types. Renaming applies only to the current file. </a:documentation>
+      <a:documentation>This element is especially useful for converting Roman numerals or letter numerals into Arabic numerals. See &lt;rename&gt; for syntax.</a:documentation>
+      <a:documentation>This feature is strictly speaking a convenience, not a necessity. All TAN-compliant preprocessors are required to automatically detect Roman and alphabetic numbering systems and treat them as Arabic numerals. </a:documentation>
       <a:documentation>It is also useful for div types that use descriptive names for @n (such as books of the Bible), particularly for reconciling those names with a system that prevails or is preferred (e.g., "mt" to "Matt"). </a:documentation>
       <a:documentation>Note for TAN-A-div users: Although this element can reconcile simple differences, it should not be used for more complex inconsistencies that affect alignment, best handled in the &lt;body&gt; of a TAN-A-div file.</a:documentation>
+      <a:documentation>For more inforrmation see main.xml#class_2_metadata</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -142,6 +152,9 @@ Reserved for modification in different types of Class 2 files, to specify how ma
   <define name="name-change">
     <element name="rename">
       <a:documentation>indicates the name of a &lt;div&gt; @n or @type that should be changed, and the name to which it should be changed.</a:documentation>
+      <a:documentation>To change Roman numerals or letter numeration to Arabic numerals use this syntax: </a:documentation>
+      <a:documentation>&lt;rename old="#i" new="#1"/&gt; </a:documentation>
+      <a:documentation>&lt;rename old="#a" new="#1"/&gt; </a:documentation>
       <attribute name="old">
         <a:documentation>name of an @n or @type in a source to be renamed</a:documentation>
         <choice>
@@ -170,15 +183,25 @@ Reserved for modification in different types of Class 2 files, to specify how ma
       <ref name="ed-stamp"/>
     </optional>
   </define>
+  <define name="cert-claim">
+    <attribute name="cert">
+      <a:documentation>states how certain an agent is of the data governed by the parent element. High = "is probably"; low = "is probably not"; all other values expressed as a real number from 0 (no certainty) to 1 (completely certainty).</a:documentation>
+      <a:documentation> This attribute is taken into account after other attributes. That is, @cert is to be interpreted to mean: "Assuming the abovementioned inheritable attributes to be true, I have @cert confidence about the following data:...."</a:documentation>
+      <a:documentation>This attribute is inheritable. See main.xml#inheritable_attributes</a:documentation>
+      <data type="string">
+        <param name="pattern">(high)|(low)|(0\.\d+)</param>
+      </data>
+    </attribute>
+  </define>
   <define name="id-option">
     <a:documentation>Option to include an internal id. Not needed in TAN-LM files.</a:documentation>
     <ref name="internal-id"/>
   </define>
   <define name="alignment">
     <element name="align">
-      <a:documentation>declares an ad hoc alignment of words or divs. If in a TAN-A-tok file, &lt;align&gt; governs &lt;tok&gt;s; in TAN-A-div files, &lt;div-ref&gt;</a:documentation>
-      <a:documentation>In TAN-A-tok files, the children are &lt;tok&gt;s, and &lt;align&gt; specifies that all the tokens invoked for one source collectively align with the tokens in the other. This version of &lt;align&gt; allows @cert, @bitext-relation, and @reuse-type, in addition to the editorial stamp. </a:documentation>
-      <a:documentation>In TAN-A-div files, the children are &lt;div-ref&gt;s, and &lt;align&gt; by default specifies that every &lt;div-ref&gt;, taken as a group, is to be aligned with every other &lt;div-ref&gt;. This version of &lt;align&gt; allows @strength, @exclusive, and @distribute, which affect the default behavior of &lt;align&gt; (see documentation on specific attributes for details). </a:documentation>
+      <a:documentation>declares one or more groups of words or divs that should be aligned with each other. If in a TAN-A-tok file, &lt;align&gt; governs &lt;tok&gt;s (words); in TAN-A-div files, &lt;div-ref&gt; (divs and segments)</a:documentation>
+      <a:documentation>In TAN-A-tok files, &lt;align&gt; specifies that all the tokens invoked for one source collectively align with the tokens in the other. This version of &lt;align&gt; allows @cert, @bitext-relation, and @reuse-type, in addition to the editorial stamp. </a:documentation>
+      <a:documentation>In TAN-A-div files, &lt;align&gt; specifies that every group of divs or segments (defined by a child &lt;div-ref&gt;) should be aligned with every other group in the alingment. This alignment is to be taken as adding to any default, automatic alignment. This version of &lt;align&gt; allows @strength, @exclusive, and @distribute, which affect the default behavior of &lt;align&gt;. For more see main.xml#tan-a-div_align</a:documentation>
       <choice>
         <ref name="alignment-inclusion-opt"/>
         <group>
@@ -203,9 +226,15 @@ Reserved for modification in different types of Class 2 files, to specify how ma
   <define name="alignment-inclusion-opt">
     <ref name="inclusion"/>
   </define>
+  <define name="div-type-ref">
+    <!-- Moved from core on 2015-11-03; delete by 2016 if everything's ok. -->
+    <attribute name="div-type-ref">
+      <a:documentation>is used by class-2 files to point to one or more &lt;div-type&gt;s in class-1 files. Permits multiple values separated by spaces.</a:documentation>
+    </attribute>
+  </define>
   <define name="token-list">
     <element name="tok">
-      <a:documentation>identifies one or more words or word fragments, to make assertions. </a:documentation>
+      <a:documentation>identifies one or more words or word fragments. Used by class 2 files to make assertions about specific words. </a:documentation>
       <ref name="certainty-stamp"/>
       <ref name="source-ref"/>
       <ref name="pointer-to-div-range"/>
@@ -216,7 +245,40 @@ Reserved for modification in different types of Class 2 files, to specify how ma
         <ref name="token-value-order-ref"/>
       </optional>
       <ref name="char-ref"/>
+      <optional>
+        <ref name="continuation-opt"/>
+      </optional>
     </element>
+  </define>
+  <define name="pointer-to-div-range">
+    <a:documentation>   Pointer (link) to a div in a TAN-T(EI) file</a:documentation>
+    <!-- Move this to class 2? -->
+    <attribute name="ref">
+      <a:documentation>lists references to one or more &lt;div&gt;s. It consists of one or more atomic references joined with commas or hyphens. An atomic reference is a string value that points to a single &lt;div&gt;</a:documentation>
+      <a:documentation>Examples:  'bk.2:ch.4', '2.4 - 2.7, 2.9', 'poem 5, poem 6:line 6 - poem 7:line 2'</a:documentation>
+      <a:documentation>Any hyphen used as a range should be preceded and followed by at least one space character.</a:documentation>
+      <a:documentation>For more, see main.xml#class_2_body </a:documentation>
+      <ref name="div-range-ref"/>
+    </attribute>
+  </define>
+  <define name="token-value-ref">
+    <!-- This should be enhanced, to allow regular expressions -->
+    <attribute name="val">
+      <a:documentation>specifies a particular word token by means of its string value. In the future this attribute will support regular expressions.  </a:documentation>
+      <a:documentation>For more see main.xml#attr_ord_and_val</a:documentation>
+      <data type="string">
+        <param name="pattern">.+</param>
+      </data>
+    </attribute>
+  </define>
+  <define name="token-value-order-ref">
+    <attribute name="ord">
+      <a:documentation>lists one or more items, specified through Arabic numerals and the keyword 'last' or 'last-X' (where X is a valid number), joined with commas or hyphens.</a:documentation>
+      <a:documentation>Examples: '1', 'last', 'last-3 - last-1', '1, 3, 5, 7 - 11, last-8, last'</a:documentation>
+      <a:documentation>Any hyphen used as a range should be preceded and followed by at least one space character.</a:documentation>
+      <a:documentation>For more see main.xml#attr_ord_and_val</a:documentation>
+      <ref name="seq-picker"/>
+    </attribute>
   </define>
   <define name="char-ref">
     <optional>
@@ -226,5 +288,14 @@ Reserved for modification in different types of Class 2 files, to specify how ma
         <ref name="seq-picker"/>
       </attribute>
     </optional>
+  </define>
+  <define name="continuation-opt">
+    <empty/>
+  </define>
+  <define name="continuation">
+    <attribute name="cont">
+      <a:documentation>indicates whether the current &lt;tok&gt; is continued by the next one and to be treated as a single token.</a:documentation>
+      <a:documentation>This feature is useful for rejoining the portion of a word split across two &lt;div&gt;s, or for uniting as a single linguistic token multiple tokens separated by the tokenization process, e.g., "pom pom". </a:documentation>
+    </attribute>
   </define>
 </grammar>

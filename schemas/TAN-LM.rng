@@ -40,6 +40,9 @@
         <ref name="decl-supp-div-type"/>
       </optional>
     </define>
+    <define name="continuation-opt">
+      <ref name="continuation"/>
+    </define>
   </include>
   <define name="decl-morph">
     <element name="morphology">
@@ -61,7 +64,8 @@
   </define>
   <define name="decl-lexi">
     <element name="lexicon">
-      <a:documentation>names a lexicographical authority used</a:documentation>
+      <a:documentation>names a lexicographical authority.</a:documentation>
+      <a:documentation>If you wish to credit yourself or another editor as a lexical authority, the &lt;agent&gt; element is sufficient; no separate &lt;lexicon&gt; entry need be given.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -83,19 +87,21 @@
   <define name="lexicon-attr">
     <attribute name="lexicon">
       <a:documentation>points to one or more &lt;lexicon&gt; IDs</a:documentation>
+      <a:documentation>This attribute is inheritable. See main.xml#inheritable_attributes</a:documentation>
       <data type="IDREFS"/>
     </attribute>
   </define>
   <define name="grammar-attr">
     <attribute name="morphology">
       <a:documentation>points to one or more &lt;morphology&gt; IDs</a:documentation>
+      <a:documentation>This attribute is inheritable. See main.xml#inheritable_attributes</a:documentation>
       <data type="IDREF"/>
     </attribute>
   </define>
   <define name="TAN-LM-body-core">
     <oneOrMore>
       <element name="ana">
-        <a:documentation>contains a set of one or more lexico-morphological analyses asserted of one or more tokens</a:documentation>
+        <a:documentation>contains a one or more assertions about the lexical or morphological properties of one or more tokens</a:documentation>
         <choice>
           <group>
             <optional>
@@ -114,14 +120,11 @@
               </zeroOrMore>
               <group>
                 <oneOrMore>
-                  <choice>
-                    <ref name="joined-token"/>
-                    <ref name="token-list"/>
-                  </choice>
+                  <ref name="token-list"/>
                 </oneOrMore>
                 <oneOrMore>
                   <element name="lm">
-                    <a:documentation>contains lexical data or morphological data</a:documentation>
+                    <a:documentation>contains lexical or morphological data</a:documentation>
                     <ref name="certainty-stamp"/>
                     <interleave>
                       <zeroOrMore>
@@ -155,21 +158,10 @@
       </element>
     </oneOrMore>
   </define>
-  <define name="joined-token">
-    <element name="joined">
-      <a:documentation>indicates that the enclosed tokens are to be treated as a single token. Useful for cases where a word or lexeme is split across boundaries created by &lt;div&gt; or &lt;tokenization&gt; </a:documentation>
-      <optional>
-        <ref name="internal-id"/>
-      </optional>
-      <ref name="token-list"/>
-      <oneOrMore>
-        <ref name="token-list"/>
-      </oneOrMore>
-    </element>
-  </define>
   <define name="lexeme">
     <element name="l">
-      <a:documentation>names a lexeme</a:documentation>
+      <a:documentation>names a lexeme. Points to the main word entry. Sholud not be used to point to roots, only lexical headwords. </a:documentation>
+      <a:documentation>In many languages, especially those that are lightly inflected, this word will be identical to the word token itself. In those cases, &lt;l&gt; may be left empty, indicating that the value of &lt;tok&gt;</a:documentation>
       <optional>
         <ref name="lexicon-attr"/>
       </optional>
@@ -187,7 +179,8 @@
   </define>
   <define name="morph">
     <element name="m">
-      <a:documentation>carries a morphological code that conforms to the rules or patterns established in the underlying TAN-R-mor file.</a:documentation>
+      <a:documentation>carries a morphological code that conforms to the rules or patterns established in the TAN-R-mor file upon which it depends.</a:documentation>
+      <a:documentation>Codes are space-delimited. If a value of &lt;m&gt; violates the rules established by the TAN-R-mor file, an error will be generated. For more about how codes are built, and how they function, see main.xml#tan-lm.</a:documentation>
       <ref name="certainty-stamp"/>
       <optional>
         <ref name="grammar-attr"/>

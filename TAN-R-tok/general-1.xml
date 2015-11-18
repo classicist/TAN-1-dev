@@ -2,7 +2,7 @@
 <?xml-model href="../schemas/TAN-R-tok.rnc" type="application/relax-ng-compact-syntax"?>
 <?xml-model href="../schemas/TAN-R-tok.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
 <TAN-R-tok xmlns="tag:textalign.net,2015:ns" TAN-version="1/dev"
-   id="tag:textalign.net,2015:tarn-r-tok:general-1">
+   id="tag:textalign.net,2015:tan-r-tok:general-1">
    <head>
       <name>General tokenization pattern for any language</name>
       <desc>This tokenization pattern takes any text in any language, offsets punctuation and other
@@ -12,8 +12,9 @@
          punctuation marks are deemed important objects of linguistic analysis. This is a core
          tokenization pattern, so can be invoked by the elements tokenization or
          recommended-tokenization simply by setting @which to the value "general-1". Or you may use
-         the full IRI + name pattern, provided below for the convenience of those preparing a
-         transcription file. @when-accessed should be updated.
+         the full IRI + name pattern.
+         <!-- Full IRI + name pattern provided below for the convenience of those preparing a transcription file. 
+            @when-accessed should be updated. -->
          <!--
             <recommended-tokenization xml:id="general-1">
                <IRI>tag:textalign.net,2015:tarn-r-tok:general-1</IRI>

@@ -2,6 +2,8 @@
 <!-- To do: 
    ADD rule to <tokenization>: for any tokenization not already recommended by 
    a source, ensure that tokenization on the source text is identical no matter how modifying letters are handled
+   Ensure that <rename-div-ns> does not break the LDUR; document for guidelines
+   Ensure that tan:tok/@cont is used to fuse tokens.
 -->
 
 <pattern xmlns="http://purl.oclc.org/dsdl/schematron" xmlns:tan="tag:textalign.net,2015:ns"
@@ -50,7 +52,7 @@
          value="for $i in (1 to count($this-tokz-per-src)), $j in $this-tokz-per-src[$i] return 
          if ($j/tan:location[. = $tokenization-errors]) then concat($src-ids[$this-src-list[$i]],': ',$j/tan:location) else ()"
       />
-      <report test="$these-tokz-errors" id="tokenization-errors">Error: <value-of select="$these-tokz-errors"/>
+      <report test="$these-tokz-errors"><!-- Common errors in <tokenization>: $tokenization-errors -->Error: <value-of select="$these-tokz-errors"/>
       </report>
    </rule>
    <rule context="tan:suppress-div-types|tan:div-type-ref|tan:rename-div-ns">
@@ -69,7 +71,7 @@
             select="for $i in $this-src-list,
             $j in $src-1st-da-all-div-types/tan:source[$i]//@xml:id return ($rename-div-types/tan:source[$i]/tan:rename[@old = $j]/@new,$j)[1]"
          />).</report>
-      <report test="exists($src-div-type-uses-old)">May not refer to a div type by a name that has been changed elsewhere
+      <report test="exists($src-div-type-uses-old)">May not refer to a div type with a name that has been changed elsewhere
             (<value-of select="$src-div-type-uses-old"/>).</report>
    </rule>
    <rule context="tan:implicit-div-type-refs">
@@ -217,21 +219,24 @@
          />)</report>
       <report
          test="if (exists($this-chars)) then ($this-char-max gt $char-ceiling) or ($this-char-min-last lt 1) 
-         else false()"
+         else false()" tan:applies-to="char"
          >If @chars is used, every character must appear in every token in every ref in every source (tokens
          chosen have <value-of select="$char-ceiling"/> characters max)</report>
       <report test="$src-data-for-this-tok/tan:div[not(@lang)]">@ref must refer to a leaf div in
          every source (<value-of
             select="string-join(for $i in $src-data-for-this-tok/tan:div[not(@lang)] return concat($i/../@id,':',$i/@ref),', ')"
          />)</report>
-      <report test="matches(@ord,'\?')" role="info">
+      <report test="matches(@ord,'\?')" role="info" tan:applies-to="ord">
          <!-- If you insert a question mark anywhere as the value of @ord and then validate the file, you will be given a list of allowed values. -->
          Help: acceptable values 1 through <value-of
             select="$token-ceiling"/></report>
-      <report test="matches(@chars,'\?')" role="info">
+      <report test="matches(@chars,'\?')" role="info" tan:applies-to="chars">
          <!-- If you insert a question mark anywhere as the value of @chars and then validate the file, you will be given a list of allowed values. -->
          Help: acceptable values 1 through <value-of
             select="$char-ceiling"/></report>
+      <report test="@chars and (some $i in $src-data-for-this-tok/tan:div/tan:tok satisfies matches($i,'\p{M}'))" 
+         tan:applies-to="chars">@chars 
+         may not be used of tokens that have combining characters.</report>
       <report
          test="$this-src-qty-with-implicit-div-types gt 0 and 
          $this-src-qty-with-implicit-div-types ne count(tan:src-ids-to-nos(@src))"
@@ -241,7 +246,7 @@
          test="$src-data-for-this-tok//tan:tok[@n = '1'][not(@error)] and parent::tan:split-leaf-div-at and
             not($help-requested)"
          >May not be used to split a leaf div at the first token.</report>
-      <report test="@val and $help-requested" role="info">
+      <report test="@val and $help-requested" role="info" tan:applies-to="val">
          <!-- If you insert a question mark anywhere as the value of @val and then validate the file, you will be given a list of allowed values. -->
          Help: 
          <value-of
@@ -252,6 +257,12 @@
                   return
                      concat($k, '[', count($j/tan:tok[. = $k]), ']'), ', ')), '; ')"
          /></report>
+      <report test="@cont and count($src-data-for-this-tok//tan:tok) gt 1">Any &lt;tok>
+      that is continued via @cont must point to only a single token.</report>
+      <report
+         test="preceding-sibling::tan:tok[1]/@cont and count($src-data-for-this-tok//tan:tok) gt 1"
+         >Any &lt;tok> that continues a previous one (via @cont) must point to only a single
+         token.</report>
    </rule>
 
 </pattern>

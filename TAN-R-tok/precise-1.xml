@@ -12,9 +12,9 @@
          display space). In addition, if a transcriber wishes to suppress a word space, as a point
          of tokenization, one of U+2000..U+200A should be used. This is a core tokenization pattern,
          so can be invoked by the elements tokenization or recommended-tokenization simply by
-         setting @which to the value "precise-1". Or you may use the full IRI + name pattern,
-         provided below for the convenience of those preparing a transcription file. @when-accessed
-         should be updated.
+         setting @which to the value "precise-1". Or you may use the full IRI + name pattern.
+         <!-- Full IRI + name pattern provided below for the convenience of those preparing a transcription file. 
+            @when-accessed should be updated. -->
          <!--
             <recommended-tokenization xml:id="precise-1">
                <IRI>tag:textalign.net,2015:tan-r-tok:precise-1</IRI>

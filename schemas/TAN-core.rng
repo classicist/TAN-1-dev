@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- TAN core schema -->
+<!--
+  TAN core schema
+  TO DO:
+  add @href to <source>, <see-also>, and <include>, to point to a collection or document that should supply metadata for that element; bind SQF to @href to perform the action
+-->
 <grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <!-- PART ONE OF TWO: PATTERNS REPEATEDLY USED ACROSS DIFFERENT TAN FILES -->
   <!--   1A. ATOMIC PATTERNS (alphabetical) -->
   <define name="agent-ref">
     <attribute name="who">
       <a:documentation>names an &lt;agent&gt;</a:documentation>
-    </attribute>
-  </define>
-  <define name="cert-claim">
-    <attribute name="cert">
-      <a:documentation>states how certain an agent is of the data governed by the parent element. High = "is probably"; low = "is probably not"; all other values expressed as a real number from 0 (no certainty) to 1 (completely certainty).</a:documentation>
-      <data type="string">
-        <param name="pattern">(high)|(low)|(0\.\d+)</param>
-      </data>
     </attribute>
   </define>
   <define name="div-ref">
@@ -32,6 +28,7 @@
     <attribute name="ed-who">
       <a:documentation>refers to one or more &lt;agent&gt;s who have edited (added or modified) an element or its content.</a:documentation>
       <a:documentation>Along with @ed-when, this forms the Edit Stamp pattern. See main.xml#edit_stamp</a:documentation>
+      <a:documentation>This attribute is inheritable. See main.xml#inheritable_attributes</a:documentation>
     </attribute>
   </define>
   <define name="ed-time">
@@ -80,19 +77,14 @@
       </data>
     </attribute>
   </define>
-  <define name="tokenization-ref">
+  <define name="keyword-ref">
     <attribute name="which">
-      <a:documentation>is used by class-1 files to specify a reserved tokenization keyword or by class-2 files to specify a &lt;recommended-tokenization&gt; in a class-1 source or a reserved tokenization keyword.</a:documentation>
-      <ref name="tokenization-ref-text"/>
+      <a:documentation>used to point to a reserved keyword, either a reserved tokenization pattern or a relationship.</a:documentation>
     </attribute>
-  </define>
-  <define name="tokenization-ref-text">
-    <a:documentation>Tokenization id text; default (for Class 2 files) is text; narrowed by Class 1 files.</a:documentation>
-    <text/>
   </define>
   <define name="lang-of-content">
     <attribute name="xml:lang">
-      <a:documentation>specifies an ISO (BCP 47) language code that names the language of the text enclosed by the parent element.</a:documentation>
+      <a:documentation>specifies an ISO (BCP 47) language code that names the language of the text enclosed by the parent element. Values are inherited by all descendants except for those that have an @xml:lang and their descendants.  </a:documentation>
       <a:documentation>Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see main.xml#language.</a:documentation>
       <a:documentation>Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin) </a:documentation>
       <data type="language"/>
@@ -109,7 +101,7 @@
   <define name="progress">
     <a:documentation>specifies whether the creation and editing of the data is still in progress. Default value is true.</a:documentation>
     <attribute name="in-progress">
-      <a:documentation>specifies whether the editors of the current file intend to correct or alter the text in the future. </a:documentation>
+      <a:documentation>specifies whether the editors of the current file have not yet finished supplying the data, intend to make important changes, or wish to otherwise reserve the right to make major changes. </a:documentation>
       <a:documentation>This attribute does not claim that the data is perfect or that it will not be changed. Rather, it signals to users, especially those who would use the file the object of a &lt;source&gt;, &lt;see-also&gt;, or &lt;inclusion&gt;, the possibility of major, disruptive work. </a:documentation>
       <data type="boolean"/>
     </attribute>
@@ -135,15 +127,6 @@
     <data type="string">
       <param name="pattern">((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?(\s*,\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*</param>
     </data>
-  </define>
-  <define name="token-value-ref">
-    <!-- This should be enhanced, to allow regular expressions -->
-    <attribute name="val">
-      <a:documentation>specifies a particular word token by means of its string value. In the future this attribute will support regular expressions.  </a:documentation>
-      <data type="string">
-        <param name="pattern">.+</param>
-      </data>
-    </attribute>
   </define>
   <!--
     Unused pattern, restricted to URIs. Kept in case the regular expression is helpful in the future.
@@ -260,7 +243,9 @@
   </define>
   <define name="func-replace">
     <element name="replace">
-      <a:documentation>constructs the equivalent of an the XPath replace() function plus parameters. Used in class 1 and class 3 (TAN-R-tok) files.</a:documentation>
+      <a:documentation>constructs the equivalent of the XPath replace() function plus parameters. Used in class 1 and class 3 (TAN-R-tok) files.</a:documentation>
+      <a:documentation>The conventions of this element and its children accord with the definition of the function and its parameters provided at http://www.w3.org/TR/xpath-functions-30/#func-replace</a:documentation>
+      <a:documentation>Multiple &lt;replace&gt; values are applied according to the order given.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -271,6 +256,7 @@
             <!-- @xpath may be untenable, and is slated for deletion from ver 1, if it cannot be applied consistently or reliably. It seems to be usable only by systems running XPath 3.0, so may not be practical. -->
             <attribute name="xpath">
               <a:documentation>specifies an xpath expression that applies a filter to the &lt;replace&gt; activity</a:documentation>
+              <a:documentation>Using @xpath is not recommended if you wish to serve users who may be relying upon XSLT 2.0 and earlier for transformations. Only from version 3.0 has it been possible to convert a string datatype (the datatype of @xpath) into an XPath expression.</a:documentation>
             </attribute>
           </optional>
           <interleave>
@@ -384,24 +370,6 @@
     seemingly otiose, but commenting out before deleting
     pointer-to-div = attribute ref { div-ref }
   -->
-  <define name="pointer-to-div-range">
-    <a:documentation>   Pointer (link) to a div in a TAN-T(EI) file</a:documentation>
-    <!-- Move this to class 2? -->
-    <attribute name="ref">
-      <a:documentation>lists references to one or more &lt;div&gt;s. It consists of one or more atomic references joined with commas or hyphens. An atomic reference is a string value that points to a single &lt;div&gt;</a:documentation>
-      <a:documentation>Examples:  'bk.2:ch.4', '2.4 - 2.7, 2.9', 'poem 5, poem 6:line 6 - poem 7:line 2'</a:documentation>
-      <a:documentation>Any hyphen used as a range should be preceded and followed by at least one space character.</a:documentation>
-      <ref name="div-range-ref"/>
-    </attribute>
-  </define>
-  <define name="token-value-order-ref">
-    <attribute name="ord">
-      <a:documentation>lists one or more tokens, specified through Arabic numerals and the keyword 'last' or 'last-X' (where X is a valid number), joined with commas or hyphens.</a:documentation>
-      <a:documentation>Examples: '1', 'last', 'last-3 - last-1', '1, 3, 5, 7 - 11, last-8, last'</a:documentation>
-      <a:documentation>Any hyphen used as a range should be preceded and followed by at least one space character.</a:documentation>
-      <ref name="seq-picker"/>
-    </attribute>
-  </define>
   <!--
     Commented out 2015-11-03 as being unused; delete by 2016 if all is ok
     URI-gen-ref = element IRI { ed-stamp?, URI-gen }
@@ -623,6 +591,13 @@
     </element>
   </define>
   <define name="relationship">
+    <!--
+      commented out 2015-11-05 to move @which to general purpose; delete by 2016 if all is well
+      xsd:string {
+                  pattern =
+                     "(new|old) version|(parent|child|ancestor|descendant|cousin) edition|alternatively (divided|normalized) edition|dependent|auxiliary"
+               }
+    -->
     <element name="relationship">
       <a:documentation>specifies the role that the item named by the parent &lt;see-also&gt; played. This may be either a reserved keyword or an IRI + name pattern that identifies a specific kind of relationship.</a:documentation>
       <optional>
@@ -632,9 +607,7 @@
         <ref name="inclusion"/>
         <choice>
           <ref name="entity-nondigital-ref"/>
-          <data type="string">
-            <param name="pattern">(new|old) version|(parent|child|ancestor|descendant|cousin) edition|alternatively (divided|normalized) edition|dependent|auxiliary</param>
-          </data>
+          <ref name="keyword-ref"/>
         </choice>
       </choice>
     </element>

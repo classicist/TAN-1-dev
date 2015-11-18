@@ -7,8 +7,9 @@
    <!-- to do: 
       Check @only-if-has-features to make sure it matches either a @code or feature/@xml:id 
       invalid patterns plus warning from TAN-R-mor file
-      Make sure that <joined> combines two or more tokens
       l may be left empty, indicating that the value of the word tokens must be used. In this case, all values of tok must resolve to the same value, or a validation error will result.
+      If a ? is in <m> return a help-requested message, much like @ref
+      any <m> that has too many codes will return not only an error but the meanings of the valid codes currently placed. For example, <m>rb ?</m> using a TAN-R-mor file with only one <category> might return this error: Too many codes, which currently resolve: adverb.
    -->
    <ns prefix="tan" uri="tag:textalign.net,2015:ns"/>
    <ns prefix="tei" uri="http://www.tei-c.org/ns/1.0"/>
@@ -36,6 +37,11 @@
                   ()"/>
          <report test="$single-tok-test gt 1">Any ana with an @xml:id must point to no more than one
             token.</report>
+      </rule>
+      <rule context="tan:tok">
+         <report test="@cont = 'false'" role="warning">@cont with the value 'false' will still be
+            treated as true. If you do not wish a &lt;tok> to be continued, delete this
+            attribute.</report>
       </rule>
       <rule context="tan:m">
          <let name="this" value="."/>
@@ -118,11 +124,11 @@
                concat('[',string($i),': ',string-join(for $j in $this-mory//tan:category[$i]/tan:option return 
                concat($j/@code,' (',$j/@feature,') '),
                ' '),'] ')"/></report>
-         <report test="exists($all-tests[@cert])" role="warning"><!-- If <m> matches a rule in the underlying TAN-R-mor file that is marked by a degree of certainty, a warning will be returned --><value-of select="for $i in $all-tests[@cert] return
+         <report test="exists($all-tests[@cert])" role="warning"><!-- If <m> matches a rule in the underlying TAN-R-mor file that is qualified by some uncertainty, the element will be marked as valid, but a warning will be returned --><value-of select="for $i in $all-tests[@cert] return
             concat('Confidence ',$i/@cert,' : ',$i/text())"/></report>
          <report test="exists($all-tests[not(@cert)])">All codes must adhere to the rules declared in the underlying TAN-R-mor file (<xsl:value-of select="$all-tests[not(@cert)]/text()"/>)</report>
       </rule>
-      
+
       <!-- FUNCTIONS -->
       <xsl:include href="../functions/TAN-LM-functions.xsl"/>
       

@@ -21,6 +21,10 @@
 
     <xsl:param name="errors" select="doc('TAN-errors.xml')"/>
     <xsl:param name="keywords" select="doc('TAN-keywords.xml')"/>
+    <xsl:param name="id-idrefs" select="doc('TAN-idrefs.xml')"/>
+    
+    <xsl:param name="schema-version-major" select="1"/>
+    <xsl:param name="schema-version-minor" select="'dev'"/>
     
     <xsl:variable name="tokenization-errors"
         select="$errors//tan:group[tokenize(@affects-element, '\s+') = 'tokenization']//tan:error"

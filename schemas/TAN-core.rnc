@@ -1,4 +1,6 @@
 # TAN core schema
+# TO DO:
+# add @href to <source>, <see-also>, and <include>, to point to a collection or document that should supply metadata for that element; bind SQF to @href to perform the action
 
 default namespace = "tag:textalign.net,2015:ns"
 
@@ -8,49 +10,45 @@ datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
 #   1A. ATOMIC PATTERNS (alphabetical)
 agent-ref =
-    
-    ## names an <agent>
-    attribute who { text }
-cert-claim =
-    
-    ## states how certain an agent is of the data governed by the parent element. High = "is probably"; low = "is probably not"; all other values expressed as a real number from 0 (no certainty) to 1 (completely certainty).
-    attribute cert {
-        xsd:string { pattern = "(high)|(low)|(0\.\d+)" }
-    }
+   
+   ## names an <agent>
+   attribute who { text }
 
 ## String that refers to a div either by using single nonword characters to join pairs of @type and optional @n values (themselves joined) by a nonword character) or by using single nonword characters to join only @n values. The first pattern is \w+\W\w*(\W\w+\W\w*)* and the second is \w+(\W\w+)*
 div-ref = xsd:string { pattern = "\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*" }
 
 ## String that specifies a range of divs using the div-ref pattern joined by a hyphen or a comma
 div-range-ref =
-    xsd:string {
-        pattern =
-            "(\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*)((\s*,|\s+-)\s+(\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*))*"
-    }
+   xsd:string {
+      pattern =
+         "(\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*)((\s*,|\s+-)\s+(\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*))*"
+   }
 ed-agent =
-    
-    ## refers to one or more <agent>s who have edited (added or modified) an element or its content.
-    
-    ## Along with @ed-when, this forms the Edit Stamp pattern. See main.xml#edit_stamp
-    attribute ed-who { text }
+   
+   ## refers to one or more <agent>s who have edited (added or modified) an element or its content.
+   
+   ## Along with @ed-when, this forms the Edit Stamp pattern. See main.xml#edit_stamp
+   
+   ## This attribute is inheritable. See main.xml#inheritable_attributes
+   attribute ed-who { text }
 ed-time =
-    
-    ## marks the date or time when an element or its content was edited (added or modified)
-    
-    ## The value of must always conform to an ISO date or dateTime pattern. See main.xml#date_and_datetime.
-    
-    ## Along with @ed-who, this forms the Edit Stamp pattern. See main.xml#edit_stamp
-    attribute ed-when { xsd:dateTime | xsd:date }
+   
+   ## marks the date or time when an element or its content was edited (added or modified)
+   
+   ## The value of must always conform to an ISO date or dateTime pattern. See main.xml#date_and_datetime.
+   
+   ## Along with @ed-who, this forms the Edit Stamp pattern. See main.xml#edit_stamp
+   attribute ed-when { xsd:dateTime | xsd:date }
 inclusion =
-    
-    ## signals that the parent element is to be replaced by all elements of the same name found in the referred <inclusion>.
-    attribute include { d:IDREFS }
+   
+   ## signals that the parent element is to be replaced by all elements of the same name found in the referred <inclusion>.
+   attribute include { d:IDREFS }
 internal-id =
-    
-    ## identifies an entity described within an element. Must be unique within a given file. Must consist only of word characters.
-    attribute xml:id {
-        d:ID { pattern = "\w\S*" }
-    }
+   
+   ## identifies an entity described within an element. Must be unique within a given file. Must consist only of word characters.
+   attribute xml:id {
+      d:ID { pattern = "\w\S*" }
+   }
 
 ## Any generic IRI identifier.
 IRI-gen = xsd:anyURI { pattern = "[a-zA-Z][\-.+a-zA-Z0-9]+:\S+" }
@@ -58,102 +56,95 @@ IRI-gen = xsd:anyURI { pattern = "[a-zA-Z][\-.+a-zA-Z0-9]+:\S+" }
 ## Acceptable values of @n, used by class 1 and class 2 files
 n-val = xsd:string { pattern = "\w*" }
 TAN-ver =
-    
-    ## specifies the version of TAN schemas used (version 1 or 1/dev). 
-    
-    ## Must indicate at least the major version; may include the minor version.
-    attribute TAN-version {
-        xsd:string { pattern = "1(\W+dev)?" }
-    }
+   
+   ## specifies the version of TAN schemas used (version 1 or 1/dev). 
+   
+   ## Must indicate at least the major version; may include the minor version.
+   attribute TAN-version {
+      xsd:string { pattern = "1(\W+dev)?" }
+   }
 keyword-ref =
-    
-    ## used to point to a reserved keyword, either a reserved tokenization pattern or a relationship.
-    attribute which { text }
+   
+   ## used to point to a reserved keyword, either a reserved tokenization pattern or a relationship.
+   attribute which { text }
 lang-of-content =
-    
-    ## specifies an ISO (BCP 47) language code that names the language of the text enclosed by the parent element.
-    
-    ## Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see main.xml#language.
-    
-    ## Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin) 
-    attribute xml:lang { xsd:language }
+   
+   ## specifies an ISO (BCP 47) language code that names the language of the text enclosed by the parent element. Values are inherited by all descendants except for those that have an @xml:lang and their descendants.  
+   
+   ## Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see main.xml#language.
+   
+   ## Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin) 
+   attribute xml:lang { xsd:language }
 lang-outside =
-    
-    ## specifies a language discussed by the TAN file. This element does NOT name the language of the text enclosed by the parent element, which is the province of @xml:lang.
-    
-    ## Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see main.xml#language.
-    
-    ## Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin) 
-    element for-lang { xsd:language }
+   
+   ## specifies a language discussed by the TAN file. This element does NOT name the language of the text enclosed by the parent element, which is the province of @xml:lang.
+   
+   ## Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see main.xml#language.
+   
+   ## Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin) 
+   element for-lang { xsd:language }
 
 ## specifies whether the creation and editing of the data is still in progress. Default value is true.
 progress =
-    
-    ## specifies whether the editors of the current file have not yet finished supplying the data, intend to make important changes, or wish to otherwise reserve the right to make major changes. 
-    
-    ## This attribute does not claim that the data is perfect or that it will not be changed. Rather, it signals to users, especially those who would use the file the object of a <source>, <see-also>, or <inclusion>, the possibility of major, disruptive work. 
-    attribute in-progress { xsd:boolean }
+   
+   ## specifies whether the editors of the current file have not yet finished supplying the data, intend to make important changes, or wish to otherwise reserve the right to make major changes. 
+   
+   ## This attribute does not claim that the data is perfect or that it will not be changed. Rather, it signals to users, especially those who would use the file the object of a <source>, <see-also>, or <inclusion>, the possibility of major, disruptive work. 
+   attribute in-progress { xsd:boolean }
 rights-holder =
-    
-    ## specifies one or more <agent>s who hold the rights over the material specified by the parent element (either the data of the current file, or of the source that forms the basis for the data).
-    
-    ## A missing @rights-holder implies only only silence, not that the rightsholder is unknown or nonexistent. For more, see main.xml#license
-    attribute rights-holder { text }
+   
+   ## specifies one or more <agent>s who hold the rights over the material specified by the parent element (either the data of the current file, or of the source that forms the basis for the data).
+   
+   ## A missing @rights-holder implies only only silence, not that the rightsholder is unknown or nonexistent. For more, see main.xml#license
+   attribute rights-holder { text }
 role-ref =
-    
-    ## refers to the ID of one or more <role>s
-    attribute roles { text }
+   
+   ## refers to the ID of one or more <role>s
+   attribute roles { text }
 source-ref =
-    
-    ## refers to the ID of one or more <source>s 
-    attribute src { text }
+   
+   ## refers to the ID of one or more <source>s 
+   attribute src { text }
 
 ##    String that specifies a range of tokens: digits or "last(-digit)?" joined by space-delimited hyphens or vertical lines (pipe character)
 seq-picker =
-    xsd:string {
-        pattern =
-            "((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?(\s*,\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*"
-    }
-token-value-ref =
-    # This should be enhanced, to allow regular expressions
-    
-    ## specifies a particular word token by means of its string value. In the future this attribute will support regular expressions.  
-    attribute val {
-        xsd:string { pattern = ".+" }
-    }
+   xsd:string {
+      pattern =
+         "((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?(\s*,\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*"
+   }
 # Unused pattern, restricted to URIs. Kept in case the regular expression is helpful in the future.
 # URI-gen =
 #     xsd:anyURI { pattern = "[a-zA-Z][\-.+a-zA-Z0-9]+:[\-._~+:/?#\[\]%@!$&'\(\)*+,;=a-zA-Z0-9]+" }
 
 ## Tag URN, mandatory pattern for the IRI name of every TAN file 
 URI-tag =
-    xsd:anyURI {
-        pattern =
-            "tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-(0\d|1[0-2]))?(-([0-2]\d|3[01]))?:\S+"
-    }
+   xsd:anyURI {
+      pattern =
+         "tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-(0\d|1[0-2]))?(-([0-2]\d|3[01]))?:\S+"
+   }
 when-claim =
-    
-    ## indicates a date or date and time
-    attribute when { xsd:dateTime | xsd:date }
+   
+   ## indicates a date or date and time
+   attribute when { xsd:dateTime | xsd:date }
 # 
 #   1B. NON-ATOMIC PATTERNS (alphabetical)
 checksum =
-    
-    ## specifies some checksum that can be used to confirm the identity of a digital file being referred to. This element contains other elements that define the type and value of the checksum. Must begin with an IRI + name pattern that defines the type of checksum being used (e.g., SHA-1).
-    
-    ## This element is useful when it is imperative to ensure that one is using the identical version of a source file. 
-    
-    ## The checksum will not be generated, checked, or validated by TAN schemas. Validation must be provided by an external tool.
-    element checksum {
-        entity-nondigital-ref,
-        
-        ## states the value of a <checksum>
-        element value { string }
-    }
+   
+   ## specifies some checksum that can be used to confirm the identity of a digital file being referred to. This element contains other elements that define the type and value of the checksum. Must begin with an IRI + name pattern that defines the type of checksum being used (e.g., SHA-1).
+   
+   ## This element is useful when it is imperative to ensure that one is using the identical version of a source file. 
+   
+   ## The checksum will not be generated, checked, or validated by TAN schemas. Validation must be provided by an external tool.
+   element checksum {
+      entity-nondigital-ref,
+      
+      ## states the value of a <checksum>
+      element value { string }
+   }
 comment =
-    
-    ## discusses issues relevant to nearby data. Must credit an <agent>, specified by @who, and a time the comment was made, specified by @when.
-    element comment { when-claim, agent-ref, text }
+   
+   ## discusses issues relevant to nearby data. Must credit an <agent>, specified by @who, and a time the comment was made, specified by @when.
+   element comment { when-claim, agent-ref, text }
 
 ## Editorial stamp: who created or edited the enclosed data and when. 
 ed-stamp = ed-agent, ed-time
@@ -172,109 +163,97 @@ entity-digital-tan-self-ref = metadata-human, loc-self*
 ## Reference to an external non-digital entity (e.g., agents, roles, concepts)
 entity-nondigital-ref = IRI-gen-ref+, metadata-human
 func-param-pattern =
-    
-    ## specifies a regular expression pattern to be searched for or matched
-    element pattern { ed-stamp?, text }
+   
+   ## specifies a regular expression pattern to be searched for or matched
+   element pattern { ed-stamp?, text }
 func-param-flags =
-    
-    ## specifies flags to be applied in an XPath expression using regular expressions.
-    
-    ## s = dot-all mode; m = multi-line mode; i = case-insensitive mode; x = remove whitespace characters from regular expression; q = no metacharacters 
-    
-    ## For more see http://www.w3.org/TR/xpath-functions-30/#flags
-    element flags {
-        ed-stamp?,
-        xsd:string { pattern = "[smixq]+" }
-    }
+   
+   ## specifies flags to be applied in an XPath expression using regular expressions.
+   
+   ## s = dot-all mode; m = multi-line mode; i = case-insensitive mode; x = remove whitespace characters from regular expression; q = no metacharacters 
+   
+   ## For more see http://www.w3.org/TR/xpath-functions-30/#flags
+   element flags {
+      ed-stamp?,
+      xsd:string { pattern = "[smixq]+" }
+   }
 func-replace =
-    
-    ## constructs the equivalent of the XPath replace() function plus parameters. Used in class 1 and class 3 (TAN-R-tok) files.
-    element replace {
-        ed-stamp?,
-        (inclusion
-         | (# @xpath may be untenable, and is slated for deletion from ver 1, if it cannot be applied consistently or reliably. It seems to be usable only by systems running XPath 3.0, so may not be practical.
-            
-            ## specifies an xpath expression that applies a filter to the <replace> activity
-            attribute xpath { text }?,
-            (comment*
-             & (func-param-pattern,
-                element replacement { ed-stamp?, text },
-                func-param-flags?))))
-    }
+   
+   ## constructs the equivalent of the XPath replace() function plus parameters. Used in class 1 and class 3 (TAN-R-tok) files.
+   
+   ## The conventions of this element and its children accord with the definition of the function and its parameters provided at http://www.w3.org/TR/xpath-functions-30/#func-replace
+   
+   ## Multiple <replace> values are applied according to the order given.
+   element replace {
+      ed-stamp?,
+      (inclusion
+       | (# @xpath may be untenable, and is slated for deletion from ver 1, if it cannot be applied consistently or reliably. It seems to be usable only by systems running XPath 3.0, so may not be practical.
+          
+          ## specifies an xpath expression that applies a filter to the <replace> activity
+          
+          ## Using @xpath is not recommended if you wish to serve users who may be relying upon XSLT 2.0 and earlier for transformations. Only from version 3.0 has it been possible to convert a string datatype (the datatype of @xpath) into an XPath expression.
+          attribute xpath { text }?,
+          (comment*
+           & (func-param-pattern,
+              element replacement { ed-stamp?, text },
+              func-param-flags?))))
+   }
 func-tokenize =
-    
-    ## constructs the equivalent of an XPath replace() function plus parameters. Used in class 1 and class 3 (TAN-R-tok) files.
-    element tokenize {
-        ed-stamp?,
-        (inclusion
-         | (comment* & (func-param-pattern, func-param-flags?)))
-    }
+   
+   ## constructs the equivalent of an XPath replace() function plus parameters. Used in class 1 and class 3 (TAN-R-tok) files.
+   element tokenize {
+      ed-stamp?,
+      (inclusion
+       | (comment* & (func-param-pattern, func-param-flags?)))
+   }
 IRI-gen-ref =
-    
-    ## contains an International Resource Identifier that serves as a name for the a concept, person, or thing referred to by the parent element. IRIs are explained at main.xml#IRIs_and_linked_data.
-    
-    ## Any kind of IRIs are allowed: URLs, tag URNs, UUIDs, etc. For names of well-known resources, a URL identifier might be preferred (http://...), to facilitate linked data. If an entity/resource lacks a suitable URL-type name, you may use or coin any other valid IRI, such as a UUID, a tag URN, or an OID. Some concepts may be difficult to find IRIs for. See iris.xml for guidance.
-    
-    ## Sibling <IRI>s are to be treated as names for the same thing, not as names of different things. Nevertheless, they are not synonymous, only poecilonymic. In the terms of Web Ontology Language (http://www.w3.org/TR/owl-ref/), sibling <IRI>s cannot be assumed to share the relationship owl:sameAs, because they will draw from independent vocabularies that may define similar concepts differently. An element defined with multiple <IRI>s is to be understood as being within the intersection of those definitions.
-    
-    ## The element is named IRI instead of URI to encourage internationalization. Alphabets other than the Latin are welcome. 
-    element IRI { ed-stamp?, IRI-gen }
+   
+   ## contains an International Resource Identifier that serves as a name for the a concept, person, or thing referred to by the parent element. IRIs are explained at main.xml#IRIs_and_linked_data.
+   
+   ## Any kind of IRIs are allowed: URLs, tag URNs, UUIDs, etc. For names of well-known resources, a URL identifier might be preferred (http://...), to facilitate linked data. If an entity/resource lacks a suitable URL-type name, you may use or coin any other valid IRI, such as a UUID, a tag URN, or an OID. Some concepts may be difficult to find IRIs for. See iris.xml for guidance.
+   
+   ## Sibling <IRI>s are to be treated as names for the same thing, not as names of different things. Nevertheless, they are not synonymous, only poecilonymic. In the terms of Web Ontology Language (http://www.w3.org/TR/owl-ref/), sibling <IRI>s cannot be assumed to share the relationship owl:sameAs, because they will draw from independent vocabularies that may define similar concepts differently. An element defined with multiple <IRI>s is to be understood as being within the intersection of those definitions.
+   
+   ## The element is named IRI instead of URI to encourage internationalization. Alphabets other than the Latin are welcome. 
+   element IRI { ed-stamp?, IRI-gen }
 loc-self =
-    
-    ## points to a location where a master copy of the file is to be found. When you use <master-location> you commit yourself to updating the TAN file in those locations. Similarly, if you have completed work on a TAN file and signal that through @in-progress, you must commit yourself to a <master-location>.
-    
-    ## The URL may be absolute or relative to the current document. 
-    
-    ## <master-location> does not disallow the file from being published or distributed elsewhere. It merely points to the main locations where an authoritative version of the file is to be found. 
-    element master-location { ed-stamp?, xsd:anyURI }
+   
+   ## points to a location where a master copy of the file is to be found. When you use <master-location> you commit yourself to updating the TAN file in those locations. Similarly, if you have completed work on a TAN file and signal that through @in-progress, you must commit yourself to a <master-location>.
+   
+   ## The URL may be absolute or relative to the current document. 
+   
+   ## <master-location> does not disallow the file from being published or distributed elsewhere. It merely points to the main locations where an authoritative version of the file is to be found. 
+   element master-location { ed-stamp?, xsd:anyURI }
 loc-src =
-    
-    ## declares where an electronic file was found, when. 
-    
-    ## The URL may be absolute or relative to the current document. 
-    element location {
-        ed-stamp?,
-        
-        ## specifies when an electronic file was last examined
-        attribute when-accessed { xsd:date },
-        xsd:anyURI
-    }
+   
+   ## declares where an electronic file was found, when. 
+   
+   ## The URL may be absolute or relative to the current document. 
+   element location {
+      ed-stamp?,
+      
+      ## specifies when an electronic file was last examined
+      attribute when-accessed { xsd:date },
+      xsd:anyURI
+   }
 metadata-desc =
-    ed-stamp?,
-    lang-of-content?,
-    xsd:string { pattern = "(.|\n)+" }
+   ed-stamp?,
+   lang-of-content?,
+   xsd:string { pattern = "(.|\n)+" }
 metadata-human =
-    
-    ## provides a human-readable name of a concept, person, or thing referred to by the parent element (or the current document, if the parent element is <head>)
-    
-    ## Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script.
-    element name { metadata-desc }+,
-    
-    ## provides a human-readable description of a concept, person, or thing referred to by the parent element (or the current document, if the parent element is <head>). <desc> is, in effect, a <comment> about that concept, person, or thing.
-    
-    ## Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script. If you provide a comment in multiple languages, it best to make sure that each version says roughly the same thing.
-    element desc { metadata-desc }*
+   
+   ## provides a human-readable name of a concept, person, or thing referred to by the parent element (or the current document, if the parent element is <head>)
+   
+   ## Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script.
+   element name { metadata-desc }+,
+   
+   ## provides a human-readable description of a concept, person, or thing referred to by the parent element (or the current document, if the parent element is <head>). <desc> is, in effect, a <comment> about that concept, person, or thing.
+   
+   ## Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script. If you provide a comment in multiple languages, it best to make sure that each version says roughly the same thing.
+   element desc { metadata-desc }*
 # seemingly otiose, but commenting out before deleting
 # pointer-to-div = attribute ref { div-ref }
 
-##    Pointer (link) to a div in a TAN-T(EI) file
-pointer-to-div-range =
-    # Move this to class 2?
-    
-    ## lists references to one or more <div>s. It consists of one or more atomic references joined with commas or hyphens. An atomic reference is a string value that points to a single <div>
-    
-    ## Examples:  'bk.2:ch.4', '2.4 - 2.7, 2.9', 'poem 5, poem 6:line 6 - poem 7:line 2'
-    
-    ## Any hyphen used as a range should be preceded and followed by at least one space character.
-    attribute ref { div-range-ref }
-token-value-order-ref =
-    
-    ## lists one or more tokens, specified through Arabic numerals and the keyword 'last' or 'last-X' (where X is a valid number), joined with commas or hyphens.
-    
-    ## Examples: '1', 'last', 'last-3 - last-1', '1, 3, 5, 7 - 11, last-8, last'
-    
-    ## Any hyphen used as a range should be preceded and followed by at least one space character.
-    attribute ord { seq-picker }
 # Commented out 2015-11-03 as being unused; delete by 2016 if all is ok
 # URI-gen-ref = element IRI { ed-stamp?, URI-gen }
 
@@ -285,177 +264,175 @@ token-value-order-ref =
 
 # 1st level of any TAN file.
 TAN-root =
-    
-    ## contains a tag URN that permanently and uniquely names the current file, the so-called IRI Name of the current file. See main.xml#iri_name for discussion.
-    
-    ## For more on the syntax of tag URNs see main.xml#tag_urn
-    attribute id { URI-tag },
-    TAN-ver,
-    ed-stamp?,
-    TAN-head,
-    TAN-body
+   
+   ## contains a tag URN that permanently and uniquely names the current file, the so-called IRI Name of the current file. See main.xml#iri_name for discussion.
+   
+   ## For more on the syntax of tag URNs see main.xml#tag_urn
+   attribute id { URI-tag },
+   TAN-ver,
+   ed-stamp?,
+   TAN-head,
+   TAN-body
 # 2nd level of any TAN file.
 TAN-head =
-    
-    ## contains the metadata (data about the data contained by <body>)
-    
-    ## Indicates at a bare minimum the name of the file, the sources, the most significant parts of the editorial history; the linguistic or scholarly conventions that have been adopted in creating the data; the license, i.e., who holds what rights to the data, and what kind of reuse is allowed; the persons, organizations, or entities that helped create the data, and the roles played by each.
-    element head {
-        ed-stamp?,
-        (comment*
-         & (entity-digital-tan-self-ref,
-            nonsource-rights,
-            inclusion-list,
-            source-list,
-            see-also-list,
-            decl-opt,
-            agent-list+,
-            role-list+,
-            agent-role-list*,
-            # Changes, which must indicate through @who and @when who made the change, when  
-            change-list+))
-    }
+   
+   ## contains the metadata (data about the data contained by <body>)
+   
+   ## Indicates at a bare minimum the name of the file, the sources, the most significant parts of the editorial history; the linguistic or scholarly conventions that have been adopted in creating the data; the license, i.e., who holds what rights to the data, and what kind of reuse is allowed; the persons, organizations, or entities that helped create the data, and the roles played by each.
+   element head {
+      ed-stamp?,
+      (comment*
+       & (entity-digital-tan-self-ref,
+          nonsource-rights,
+          inclusion-list,
+          source-list,
+          see-also-list,
+          decl-opt,
+          agent-list+,
+          role-list+,
+          agent-role-list*,
+          # Changes, which must indicate through @who and @when who made the change, when  
+          change-list+))
+   }
 TAN-body =
-    
-    ## contains the data
-    element body { progress?, ed-stamp?, (comment* & TAN-body-core) }
+   
+   ## contains the data
+   element body { progress?, ed-stamp?, (comment* & TAN-body-core) }
 TAN-body-core = empty
 # 
 # 3rd level of any TAN file, head metadata only (the body, which differs widely across TAN file types, are defined in other schema files)
 nonsource-rights =
-    
-    ## states the license under which the data is distributed and the rights associated with it, EXCLUSIVE of any rights attached to the source.
-    
-    ## If parts of your TAN data fall under two or more licenses, you should (1) split the file (one for each license), (2) find a license that sythesizes the desired licenses, or (3) release the entire file under the most restrictive of the possible licenses.
-    
-    ## Diligently check to ensure that the license you have claimed respects the rights of your sources' rightsholders. It is recommended that you license your data under a license that is similar to or slightly more liberal than the one under which your sources have been released.
-    
-    ## For more discussion, see main.xml#license
-    element rights-excluding-sources {
-        ed-stamp?,
-        (inclusion
-         | (rights-holder, (comment* & entity-nondigital-ref)))
-    }
+   
+   ## states the license under which the data is distributed and the rights associated with it, EXCLUSIVE of any rights attached to the source.
+   
+   ## If parts of your TAN data fall under two or more licenses, you should (1) split the file (one for each license), (2) find a license that sythesizes the desired licenses, or (3) release the entire file under the most restrictive of the possible licenses.
+   
+   ## Diligently check to ensure that the license you have claimed respects the rights of your sources' rightsholders. It is recommended that you license your data under a license that is similar to or slightly more liberal than the one under which your sources have been released.
+   
+   ## For more discussion, see main.xml#license
+   element rights-excluding-sources {
+      ed-stamp?,
+      (inclusion
+       | (rights-holder, (comment* & entity-nondigital-ref)))
+   }
 inclusion-list = inclusion-item*
 inclusion-item =
-    
-    ## specifies a TAN file that is available for inclusion. An inclusion occurs whenever an element X points to this inclusion by means of @include. TAN-compliant validators and processors will fin every X that is found in the included file (checked recursively, against any inclusions adopted by the inclusion) and insert them at that place in the main document.
-    
-    ## Only the elements of that name X will be included, not the entire inclusion file. It is up to you to specify exactly which elements should be included.
-    
-    ## You may include as many <inclusion>s as you wish, and do not have to use them all.
-    
-    ## If you are using an <inclusion> primarily for metadata (<head>) it is recommended to put the value of @xml:id in uppercase. <body> inclusions should be set in lowercase.
-    
-    ## For more on this, see main.xml#inclusions
-    element inclusion { ed-stamp?, internal-id, (comment* & entity-digital-tan-other-ref) }
+   
+   ## specifies a TAN file that is available for inclusion. An inclusion occurs whenever an element X points to this inclusion by means of @include. TAN-compliant validators and processors will fin every X that is found in the included file (checked recursively, against any inclusions adopted by the inclusion) and insert them at that place in the main document.
+   
+   ## Only the elements of that name X will be included, not the entire inclusion file. It is up to you to specify exactly which elements should be included.
+   
+   ## You may include as many <inclusion>s as you wish, and do not have to use them all.
+   
+   ## If you are using an <inclusion> primarily for metadata (<head>) it is recommended to put the value of @xml:id in uppercase. <body> inclusions should be set in lowercase.
+   
+   ## For more on this, see main.xml#inclusions
+   element inclusion { ed-stamp?, internal-id, (comment* & entity-digital-tan-other-ref) }
 source-list = source-item
 source-item =
-    
-    ## identifies the source upon which the data in the <body> of the current file depends.
-    
-    ## TAN-T and TAN-LM allow only one <source>. TAN-A-tok allows exactly two. All other TAN formats require one or more. 
-    element source {
-        ed-stamp?,
-        (inclusion
-         | (source-id-opt,
-            (comment*
-             & ((entity-nondigital-ref | entity-digital-generic-ref | entity-digital-tan-other-ref),
-                source-rights?))))
-    }
+   
+   ## identifies the source upon which the data in the <body> of the current file depends.
+   
+   ## TAN-T and TAN-LM allow only one <source>. TAN-A-tok allows exactly two. All other TAN formats require one or more. 
+   element source {
+      ed-stamp?,
+      (inclusion
+       | (source-id-opt,
+          (comment*
+           & ((entity-nondigital-ref | entity-digital-generic-ref | entity-digital-tan-other-ref),
+              source-rights?))))
+   }
 source-rights =
-    
-    ## states license and rights that are attached to the source of the data.
-    
-    ## For more discussion, see main.xml#license
-    element rights-source-only {
-        ed-stamp?,
-        (inclusion
-         | (comment* & (rights-holder*, entity-nondigital-ref)))
-    }
+   
+   ## states license and rights that are attached to the source of the data.
+   
+   ## For more discussion, see main.xml#license
+   element rights-source-only {
+      ed-stamp?,
+      (inclusion
+       | (comment* & (rights-holder*, entity-nondigital-ref)))
+   }
 
 ## Parameter to indicate whether <source> should be allowed to take xml:id (forbidden for TAN files with only one source; mandated otherwise)
 source-id-opt = empty
 see-also-list = see-also-item*
 see-also-item =
-    
-    ## identifies auxiliary entities that were materially helpful in creating or editing the data, or are helpful in understanding the data.
-    
-    ## This element is especially useful for may be used to credit 3rd parties who provide a set of raw data that you then edit to bring into better conformity with the <source>. 
-    element see-also {
-        ed-stamp?,
-        (inclusion
-         | (comment*
-            & (relationship,
-               (entity-nondigital-ref
-                | entity-digital-generic-ref
-                | entity-digital-tan-other-ref))))
-    }
+   
+   ## identifies auxiliary entities that were materially helpful in creating or editing the data, or are helpful in understanding the data.
+   
+   ## This element is especially useful for may be used to credit 3rd parties who provide a set of raw data that you then edit to bring into better conformity with the <source>. 
+   element see-also {
+      ed-stamp?,
+      (inclusion
+       | (comment*
+          & (relationship,
+             (entity-nondigital-ref | entity-digital-generic-ref | entity-digital-tan-other-ref))))
+   }
 relationship =
-    # commented out 2015-11-05 to move @which to general purpose; delete by 2016 if all is well
-    # xsd:string {
-    #             pattern =
-    #                "(new|old) version|(parent|child|ancestor|descendant|cousin) edition|alternatively (divided|normalized) edition|dependent|auxiliary"
-    #          }
-    
-    ## specifies the role that the item named by the parent <see-also> played. This may be either a reserved keyword or an IRI + name pattern that identifies a specific kind of relationship.
-    element relationship {
-        ed-stamp?,
-        (inclusion | (entity-nondigital-ref | keyword-ref))
-    }
+   # commented out 2015-11-05 to move @which to general purpose; delete by 2016 if all is well
+   # xsd:string {
+   #             pattern =
+   #                "(new|old) version|(parent|child|ancestor|descendant|cousin) edition|alternatively (divided|normalized) edition|dependent|auxiliary"
+   #          }
+   
+   ## specifies the role that the item named by the parent <see-also> played. This may be either a reserved keyword or an IRI + name pattern that identifies a specific kind of relationship.
+   element relationship {
+      ed-stamp?,
+      (inclusion | (entity-nondigital-ref | keyword-ref))
+   }
 decl-opt =
-    
-    ## contains assumptions or decisions made that materially affect the interpretation of the data in <body>
-    element declarations { ed-stamp?, (comment* & decl-list) }
+   
+   ## contains assumptions or decisions made that materially affect the interpretation of the data in <body>
+   element declarations { ed-stamp?, (comment* & decl-list) }
 agent-list =
-    
-    ## specifies a person or organization that played a direct or indirect role in preparing, creating, or editing the data.
-    
-    ## At least one <agent> must have an <IRI> that is a tag URN whose namespace matches that of the IRI name. By default, the first such <agent> is taken to be the person or organization ultimately responsible for the current file. 
-    
-    ## May also be applied to a computer or algorithm that performed a task. This feature is useful for crediting software, e.g., an OCR program used to convert an image, or an algorithm that estimates word-to-word alignments.
-    element agent {
-        ed-stamp?,
-        (inclusion
-         | (role-ref?, internal-id, (comment* & entity-nondigital-ref)))
-    }
+   
+   ## specifies a person or organization that played a direct or indirect role in preparing, creating, or editing the data.
+   
+   ## At least one <agent> must have an <IRI> that is a tag URN whose namespace matches that of the IRI name. By default, the first such <agent> is taken to be the person or organization ultimately responsible for the current file. 
+   
+   ## May also be applied to a computer or algorithm that performed a task. This feature is useful for crediting software, e.g., an OCR program used to convert an image, or an algorithm that estimates word-to-word alignments.
+   element agent {
+      ed-stamp?,
+      (inclusion
+       | (role-ref?, internal-id, (comment* & entity-nondigital-ref)))
+   }
 role-list =
-    
-    ## specifies a role (responsibility, task, or activity) that one or more <agent>s did in creating or editing the data.
-    
-    ## A role may be any activity, e.g., editor, funder, supervisor, data-processor, peer reviewer, patron, defined through the enclosed IRI + name pattern.
-    
-    ## For suggestions on IRI vocabularies for this element, see iris.xml.
-    element role {
-        ed-stamp?,
-        (inclusion
-         | (internal-id, (comment* & entity-nondigital-ref)))
-    }
+   
+   ## specifies a role (responsibility, task, or activity) that one or more <agent>s did in creating or editing the data.
+   
+   ## A role may be any activity, e.g., editor, funder, supervisor, data-processor, peer reviewer, patron, defined through the enclosed IRI + name pattern.
+   
+   ## For suggestions on IRI vocabularies for this element, see iris.xml.
+   element role {
+      ed-stamp?,
+      (inclusion
+       | (internal-id, (comment* & entity-nondigital-ref)))
+   }
 agent-role-list =
-    
-    ## specifies a time period when one or more <agent>s held one or more <role>s.
-    element agentrole {
-        inclusion
-        | (
-           ## specifies the beginning of a span of time
-           attribute when-from { xsd:dateTime | xsd:date },
-           
-           ## specifies the end of a span of time
-           attribute when-to { xsd:dateTime | xsd:date },
-           ed-stamp?,
-           agent-ref,
-           role-ref)
-    }
+   
+   ## specifies a time period when one or more <agent>s held one or more <role>s.
+   element agentrole {
+      inclusion
+      | (
+         ## specifies the beginning of a span of time
+         attribute when-from { xsd:dateTime | xsd:date },
+         
+         ## specifies the end of a span of time
+         attribute when-to { xsd:dateTime | xsd:date },
+         ed-stamp?,
+         agent-ref,
+         role-ref)
+   }
 change-list =
-    
-    ## declares a change made to the current file. Must credit an <agent>, specified by @who, and a time the change was made, specified by @when.
-    
-    ## Collectively, <change> elements form the changelog, the revision history of the document. 
-    
-    ## The editor has discretion as to how long or detailed a <change> should be, or how many should be retained in a changelog. Ideally, <change>s documenting every published version should be retained.
-    
-    ## <change> elements may appear in any order, but it is good practice to put the most recent at the top.
-    element change { ed-stamp?, when-claim, agent-ref, text }
+   
+   ## declares a change made to the current file. Must credit an <agent>, specified by @who, and a time the change was made, specified by @when.
+   
+   ## Collectively, <change> elements form the changelog, the revision history of the document. 
+   
+   ## The editor has discretion as to how long or detailed a <change> should be, or how many should be retained in a changelog. Ideally, <change>s documenting every published version should be retained.
+   
+   ## <change> elements may appear in any order, but it is good practice to put the most recent at the top.
+   element change { ed-stamp?, when-claim, agent-ref, text }
 # 4th level of any TAN file, specifically the /*/head/declarations element
 
 ## Empty declaration element. See other TAN schemas for redefinitions appropriate to a particular type of TAN file. 

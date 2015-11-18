@@ -1,4 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-T elements and attributes summarized</title><section xml:id="element-div"><title><code>&lt;div&gt;</code></title><para>The element <code>div</code> marks a textual unit. Contains other <code>&lt;<link linkend="element-div">div</link>&gt;</code>s or text, but not both (no mixed content).</para><para>Definition: <code>(@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, (@<link linkend="attribute-include">include</link> | (@<link linkend="attribute-type">type</link>, @<link linkend="attribute-n">n</link>, @<link linkend="attribute-xmllang">xml:lang</link>?, (&lt;<link linkend="element-div">div</link>&gt;+ | text)))</code></para><para>Used by: <code><xref linkend="element-body"/></code><code><xref linkend="element-div"/></code></para><caution><itemizedlist><listitem><para>Leaf div references must be unique.</para></listitem><listitem><para>Every leaf div must have at least some non-space text.</para></listitem></itemizedlist></caution><example><title><code>&lt;div&gt;</code></title><programlisting>   &lt;body xml:lang="grc"&gt;
+<?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-T elements and attributes summarized</title><section xml:id="element-div"><title><code>&lt;div&gt;</code></title><para>The element <code>div</code> marks a textual unit. Contains other <code><link linkend="element-div">&lt;div&gt;</link></code>s or text, but not both (no mixed content).</para><synopsis><emphasis>Definition:</emphasis>
+   (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
+   <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
+   <code><link linkend="attribute-include">@include</link></code> |
+      (<code><link linkend="attribute-type">@type</link></code>,
+      <code><link linkend="attribute-n">@n</link></code>,
+      <code><link linkend="attribute-xmllang">@xml:lang</link></code>?,
+         (<code><link linkend="element-div">&lt;div&gt;</link></code>+ |
+text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-div">&lt;div&gt;</link></code> </para><caution><itemizedlist><listitem><para>Leaf div references must be unique.</para></listitem><listitem><para>Every leaf div must have at least some non-space text.</para></listitem></itemizedlist></caution><example><title><code>&lt;div&gt;</code></title><programlisting>   &lt;body xml:lang="grc"&gt;
       <emphasis role="bold">&lt;div type="p" n="1"&gt;</emphasis>
          <emphasis role="bold">&lt;div type="c" n="a"&gt;</emphasis>
             <emphasis role="bold">&lt;div type="l" n="1"&gt;</emphasis>Ὁμώνυμα λέγεται ὧν ὄνομα μόνον κοινόν, ὁ δὲ κατὰ<emphasis role="bold">&lt;/div&gt;</emphasis>
@@ -6,47 +14,94 @@
                     ἄνθρω<emphasis role="bold">&lt;/div&gt;</emphasis>
             <emphasis role="bold">&lt;div type="l" n="3"&gt;</emphasis>πος καὶ τὸ γεγραμμένον· τούτων γὰρ ὄνομα
                     μόνον κοινόν,<emphasis role="bold">&lt;/div&gt;</emphasis>
-            ...........
+            .........
          <emphasis role="bold">&lt;/div&gt;</emphasis>
          <emphasis role="bold">&lt;div type="c" n="b"&gt;</emphasis>
-            ...........
+            .........
          <emphasis role="bold">&lt;/div&gt;</emphasis>
       <emphasis role="bold">&lt;/div&gt;</emphasis>
       <emphasis role="bold">&lt;div type="p" n="2"&gt;</emphasis>
-         ...........
+         .........
       <emphasis role="bold">&lt;/div&gt;</emphasis>
-      ...........
+      .........
    &lt;/body&gt;
-</programlisting></example></section><section xml:id="element-TAN-T"><title><code>&lt;TAN-T&gt;</code></title><para>The element <code>TAN-T</code> specifies that the TAN file contains a transcription. Root element.</para><para>Definition: <code>(@<link linkend="attribute-id">id</link>, @<link linkend="attribute-TAN-version">TAN-version</link>, (@<link linkend="attribute-ed-who">ed-who</link>, @<link linkend="attribute-ed-when">ed-when</link>)?, &lt;<link linkend="element-head">head</link>&gt;, &lt;<link linkend="element-body">body</link>&gt;)</code></para><para>Used by: none</para><example><title><code>&lt;TAN-T&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:object-refs" TAN-version="1"&gt;</emphasis>
+</programlisting></example></section><section xml:id="element-TAN-T"><title><code>&lt;TAN-T&gt;</code></title><para>The element <code>TAN-T</code> specifies that the TAN file contains a transcription. Root element.</para><synopsis><emphasis>Definition:</emphasis>
+   <code><link linkend="attribute-id">@id</link></code>,
+   <code><link linkend="attribute-TAN-version">@TAN-version</link></code>,
+   (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
+   <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
+   <code><link linkend="element-head">&lt;head&gt;</link></code>,
+   <code><link linkend="element-body">&lt;body&gt;</link></code></synopsis><para>Used by: none</para><example><title><code>&lt;TAN-T&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:object-refs" TAN-version="1"&gt;</emphasis>
    &lt;head&gt;
-      ...........
+      .........
    &lt;/head&gt;
    &lt;body xml:lang="grc"&gt;
-      ...........
+      .........
    &lt;/body&gt;
 <emphasis role="bold">&lt;/TAN-T&gt;</emphasis>
 </programlisting></example><example><title><code>&lt;TAN-T&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:semantic-refs-dupl" TAN-version="1"&gt;</emphasis>
    &lt;head&gt;
-      ...........
+      .........
    &lt;/head&gt;
    &lt;body xml:lang="grc" ed-who="kalvesmaki" ed-when="2015-08-02T15:31:07.816-04:00"&gt;
-      ...........
+      .........
    &lt;/body&gt;
 <emphasis role="bold">&lt;/TAN-T&gt;</emphasis>
 </programlisting></example><example><title><code>&lt;TAN-T&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:semantic-refs" TAN-version="1"&gt;</emphasis>
    &lt;head&gt;
-      ...........
+      .........
    &lt;/head&gt;
    &lt;body xml:lang="grc" ed-who="kalvesmaki" ed-when="2015-08-02T15:31:07.816-04:00"&gt;
-      ...........
+      .........
    &lt;/body&gt;
 <emphasis role="bold">&lt;/TAN-T&gt;</emphasis>
 </programlisting></example><example><title><code>&lt;TAN-T&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-T TAN-version="1" id="tag:hans@beispiel.com,2014:ringel"&gt;</emphasis>
    &lt;head&gt;
-      ...........
+      .........
    &lt;/head&gt;
    &lt;body xml:lang="deu" in-progress="false"&gt;
-      ...........
+      .........
    &lt;/body&gt;
 <emphasis role="bold">&lt;/TAN-T&gt;</emphasis>
+</programlisting></example></section><section xml:id="attribute-n"><title><code>@n</code></title><para>The attribute <code>n</code> contains the name of the <code><link linkend="element-div">&lt;div&gt;</link></code>. Consists of a string of word characters.</para><para>Examples: '4', '', 'Psalms'</para><synopsis><emphasis>Definition:</emphasis>
+string (pattern \w*)</synopsis><para>Used by: <code><link linkend="element-div">&lt;div&gt;</link></code> </para><example><title><code>@n</code></title><programlisting>   &lt;body xml:lang="grc"&gt;
+      &lt;div type="p"<emphasis role="bold"> n="1"</emphasis>&gt;
+         &lt;div type="c"<emphasis role="bold"> n="a"</emphasis>&gt;
+            &lt;div type="l"<emphasis role="bold"> n="1"</emphasis>&gt;Ὁμώνυμα λέγεται ὧν ὄνομα μόνον κοινόν, ὁ δὲ κατὰ&lt;/div&gt;
+            &lt;div type="l"<emphasis role="bold"> n="2"</emphasis>&gt;τοὔνομα λόγος τῆς οὐσίας ἕτερος, οἷον ζῷον ὅ τε
+                    ἄνθρω&lt;/div&gt;
+            &lt;div type="l"<emphasis role="bold"> n="3"</emphasis>&gt;πος καὶ τὸ γεγραμμένον· τούτων γὰρ ὄνομα
+                    μόνον κοινόν,&lt;/div&gt;
+            .........
+         &lt;/div&gt;
+         &lt;div type="c"<emphasis role="bold"> n="b"</emphasis>&gt;
+            .........
+         &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div type="p"<emphasis role="bold"> n="2"</emphasis>&gt;
+         .........
+      &lt;/div&gt;
+      .........
+   &lt;/body&gt;
+</programlisting></example></section><section xml:id="attribute-type"><title><code>@type</code></title><para>The attribute <code>type</code> indicates what type of textual unit <code><link linkend="element-div">&lt;div&gt;</link></code> marks. Points to a <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> declared in <code><link linkend="element-declarations">&lt;declarations&gt;</link></code>.</para><synopsis><emphasis>Definition:</emphasis>
+IDREFS </synopsis><para>Used by: <code><link linkend="element-div">&lt;div&gt;</link></code> </para><caution><itemizedlist><listitem><para>Must point to <code><link linkend="attribute-xmlid">@xml:id</link></code> value of <code><link linkend="element-div-type">&lt;div-type&gt;</link></code></para></listitem><listitem><para>Must not contain duplicates</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Replace content of attribute with all valid values </emphasis>To see a list of all possible valid values, add any invalid content, then choose
+               this quick fix to replace all content with every possible value.</para></tip><example><title><code>@type</code></title><programlisting>   &lt;body xml:lang="grc"&gt;
+      &lt;div<emphasis role="bold"> type="p"</emphasis> n="1"&gt;
+         &lt;div<emphasis role="bold"> type="c"</emphasis> n="a"&gt;
+            &lt;div<emphasis role="bold"> type="l"</emphasis> n="1"&gt;Ὁμώνυμα λέγεται ὧν ὄνομα μόνον κοινόν, ὁ δὲ κατὰ&lt;/div&gt;
+            &lt;div<emphasis role="bold"> type="l"</emphasis> n="2"&gt;τοὔνομα λόγος τῆς οὐσίας ἕτερος, οἷον ζῷον ὅ τε
+                    ἄνθρω&lt;/div&gt;
+            &lt;div<emphasis role="bold"> type="l"</emphasis> n="3"&gt;πος καὶ τὸ γεγραμμένον· τούτων γὰρ ὄνομα
+                    μόνον κοινόν,&lt;/div&gt;
+            .........
+         &lt;/div&gt;
+         &lt;div<emphasis role="bold"> type="c"</emphasis> n="b"&gt;
+            .........
+         &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div<emphasis role="bold"> type="p"</emphasis> n="2"&gt;
+         .........
+      &lt;/div&gt;
+      .........
+   &lt;/body&gt;
 </programlisting></example></section></section>

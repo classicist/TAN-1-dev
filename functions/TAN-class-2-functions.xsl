@@ -818,16 +818,19 @@
                               $src-1st-da-data[$this-src]/tan:div[@ref = $i])">
                         <xsl:choose>
                            <xsl:when test="matches($this-ref, ' - ')">
+                              <xsl:variable name="this-first-ref" select="tokenize($this-ref, ' - ')[1]"/>
+                              <xsl:variable name="this-second-ref" select="tokenize($this-ref, ' - ')[2]"/>
                               <xsl:copy-of
                                  select="
-                                    $src-1st-da-data[$this-src]/((tan:div[starts-with(@ref,tokenize($this-ref, ' - ')[1])]/(self::node(),
+                                    $src-1st-da-data[$this-src]/((tan:div[matches(@ref,
+                                    concat('^', $this-first-ref, '$|^', $this-first-ref, '\W'))][1]/(self::node(),
                                     following-sibling::tan:div))
-                                    except (tan:div[starts-with(@ref,tokenize($this-ref, ' - ')[2])]/following-sibling::tan:div))"
+                                    except (tan:div[matches(@ref, concat('^', $this-second-ref, '$|^', $this-second-ref, '\W'))][last()]/following-sibling::tan:div))"
                               />
                            </xsl:when>
                            <xsl:otherwise>
                               <xsl:copy-of
-                                 select="$src-1st-da-data[$this-src]/tan:div[starts-with(@ref,$this-ref)]"/>
+                                 select="$src-1st-da-data[$this-src]/tan:div[matches(@ref,concat('^',$this-ref,'$|^',$this-ref,'\W'))]"/>
                            </xsl:otherwise>
                         </xsl:choose>
                      </xsl:when>
@@ -872,7 +875,7 @@
                   <xsl:copy-of select="@*"/>
                   <xsl:if test="exists($this-lang)">
                      <xsl:choose>
-                        <xsl:when test="exists($this-replaces)">
+                        <xsl:when test="exists($this-tokenize)">
                            <xsl:for-each
                               select="tan:tokenize(tan:replace-sequence($this-div/text(), $this-replaces), $this-tokenize)">
                               <xsl:element name="tan:tok">
@@ -996,6 +999,7 @@
                               <xsl:attribute name="n" select="$this-ord-item"/>
                               <xsl:if test="not(exists($this-tok))">
                                  <xsl:attribute name="error" select="$this-ord-item"/>
+                                 <xsl:attribute name="test" select="$this-div/tan:tok"></xsl:attribute>
                               </xsl:if>
                               <xsl:value-of select="$this-tok"/>
                            </xsl:element>

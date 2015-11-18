@@ -146,12 +146,12 @@
       <let name="this-nfc-char-seq" value="tokenize(replace(normalize-unicode(.),'(.)','$1 '),' ')"/>
       <let name="this-non-nfc-seq"
          value="distinct-values($this-raw-char-seq[not(.=$this-nfc-char-seq)])"/>
-      <!--<assert test=". = normalize-unicode(.)" sqf:fix="normalize-unicode">All text needs to be
+      <assert test=". = normalize-unicode(.)" sqf:fix="normalize-unicode">All text needs to be
          normalized (NFC). Errors: <value-of
             select="for $i in $this-non-nfc-seq return concat($i,' (U+',
             tan:dec-to-hex(string-to-codepoints($i)),') at ',
             string-join(for $j in index-of($this-raw-char-seq,$i) return string($j),' ')),' '"
-         /></assert>-->
+         /></assert>
       <sqf:fix id="normalize-unicode">
          <sqf:description>
             <sqf:title>Convert to normalized (NFC) Unicode</sqf:title>
@@ -407,22 +407,14 @@
       <assert test="$when-to gt $when-from">Start date must precede end date.</assert>
    </rule>
    <rule
-      context="@who|@ed-who|@roles|@src|@type[parent::tan:div|parent::tei:div]|@lexicon|@morphology|@reuse-type|@bitext-relation|@feature|@alignments|@include">
-      <!-- This rule is intended primarily to make sure that idrefs correspond
-      to the correct elements -->
-      <!--<let name="referring-attribute"
-         value="('who','ed-who','roles','src','type','lexicon','morphology','reuse-type','bitext-relation','feature','alignments','include')"/>-->
-      <!--<let name="referred-element"
-         value="('agent','agent','role','source','div-type','lexicon','morphology','reuse-type','bitext-relation','feature','align','inclusion')"/>-->
+      context="@who|@ed-who|@roles|@src|@type[parent::tan:div|parent::tei:div]|@lexicon|@morphology|@reuse-type|@bitext-relation|@feature|@include">
       <let name="this-attribute-name" value="name(.)"/>
-      <!--<let name="should-refer-to-which-element"
-         value="$referred-element[index-of($referring-attribute,$this-attribute-name)]"/>-->
       <let name="should-refer-to-which-element"
          value="$id-idrefs//tan:id[tan:idrefs/@attribute = $this-attribute-name]/@element"/>
       <let name="valid-values" value="$head//*[name(.)=$should-refer-to-which-element]/@xml:id"/>
       <let name="idrefs" value="tokenize(.,'\s+')"/>
       <let name="idrefs-currently-target-what-element"
-         value="for $n in $idrefs return name(($head, $body)//*[@xml:id = $n][1])"/>
+         value="for $n in $idrefs return name($head//*[@xml:id = $n][1])"/>
       <assert sqf:fix="get-ids"
          test="every $k in $idrefs-currently-target-what-element satisfies $k = $should-refer-to-which-element"
          id="attr-ids">@<value-of select="$this-attribute-name"/> must refer to <value-of

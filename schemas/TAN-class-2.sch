@@ -215,8 +215,8 @@
             usually goes with the attribute @ord, not @val)' else ()"
          /> (errors: <value-of
             select="for $i in $src-data-for-this-tok/tan:div[tan:tok[@error]] return 
-            concat($i/../@id,':',$i/@ref,' : ',string-join($i/tan:tok/@error,' '))"
-         />)</report>
+            concat($i/../@id,': ',$i/@ref,' tok ',string-join($i/tan:tok/@error,' '))"
+         />) <value-of select="$src-data-for-this-tok//(@error, @test)"/></report>
       <report
          test="if (exists($this-chars)) then ($this-char-max gt $char-ceiling) or ($this-char-min-last lt 1) 
          else false()" tan:applies-to="char"

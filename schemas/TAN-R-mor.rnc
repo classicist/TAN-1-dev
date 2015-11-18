@@ -36,12 +36,9 @@ report =
 
 ## Test pattern attributes for determining whether to return the message provided by text.
 test-pattern =
-    ed-stamp?,
+    certainty-stamp?,
     (inclusion
-     | (cert-claim?,
-        filter?,
-        (code-regex-test | token-regex-test | feature-test | filter-qty-test),
-        text))
+     | (filter?, (code-regex-test | token-regex-test | feature-test | filter-qty-test), text))
 filter =
     
     ## specifies that when a dependent TAN-LM file is validated and the condition for the parent <report> or <assert> is triggered by the value of a given <m>, the message should be returned only if the <m> has at least one of the features mentioned by @feature-filter.
@@ -80,10 +77,14 @@ category =
     }
 options =
     
-    ## indicates a way to refer to a feature, supplementing the assigned @xml:id. Useful for situations where a code requires a value that is otherwise disallowed by @xml:id
+    ## refer to a feature.
+    
+    ## If its parent is <category>, this element indicates a feature that is allowed in that area.
+    
+    ## If its parent is <body> it markes a supplemental way to refer to the feature other than the assigned @xml:id. Useful for situations where a code requires a value that is otherwise disallowed by @xml:id, e.g., colons.
     element option {
         ed-stamp?,
-        (inclusion | (feature-ref, code))
+        (inclusion | (feature-ref, code?))
     }
 feature-ref =
     

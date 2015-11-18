@@ -27,7 +27,7 @@
             <location when-accessed="2015-05-24-04:00">../ring-o-roses.deu.1897.xml</location>
         </source>
         <see-also>
-            <relationship>cousin edition</relationship>
+            <relationship which="cousin edition"/>
             <IRI>tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring03</IRI>
             <name>Edition that keeps source's nomenclature for div types, values</name>
             <location when-accessed="2015-08-04">ringoroses.01+03.token.1.xml</location>

@@ -20,7 +20,7 @@
                 1949 </name>
         </source>
         <see-also>
-            <relationship>alternatively divided edition</relationship>
+            <relationship which="alternatively divided edition"/>
             <IRI>tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:semantic-refs</IRI>
             <name>Categories, Aristotle, Greek text by Minio-Paluello, semantic-based references</name>
             <location when-accessed="2015-09-11-04:00">ar.cat.grc.1949.minio-paluello-sem.xml</location>

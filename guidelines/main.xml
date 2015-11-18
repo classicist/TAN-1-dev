@@ -4405,9 +4405,10 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                files are used extensively by both class 1 and class 2 files, it is important that
                you familiarize yourself with how a TAN-R-tok file will be invoked by them. See <xref
                   linkend="recommended-tokenizations"/> and <xref linkend="tokenization"/>.</para>
-            <para>Tokenization files are either language specific or language agnostic. The latter
-               tend to be rather limited in number and size, so for convenience, TAN provides the
-               following language-agnostic TAN-R-tok files as standard, predefined rules:</para>
+            <para>Tokenization files may be either language specific or language agnostic. The
+               latter are used for patterns that recur throughout languages, and are anticipated to
+               be heavily used and limited in number. So for convenience, TAN provides the following
+               language-agnostic TAN-R-tok files as standard, predefined rules:</para>
             <para>
                <itemizedlist>
                   <listitem>
@@ -4427,10 +4428,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   </listitem>
                </itemizedlist>
             </para>
-            <para>For more about these core tokenization patterns and how they are best used, see
+            <para>For more about these core tokenization patterns and how they should be used, see
                the files themselves.</para>
-            <para>Tokenization patterns devoted to specific to languages may be found in the
-               examples on the TAN website.</para>
             <section>
                <title>Principles and Assumptions</title>
                <para>Certain assumptions and recommendations are made regarding tokenization files,
@@ -4445,524 +4444,57 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   given language and about the questions that motivates someone to tokenize a text.
                   Some linguists prefer to treat punctuation as tokens in their own right. Others,
                   such as those who work with ancient texts (where much punctuation is erratic,
-                  anachronistic, or irrelevant), may wish to suppress them altogether. A poorly
-                  chosen or constructed TAN-R-tok file can produce invalid or undesired results. It
-                  is of paramount importance that you, as a TAN-R-tok editor, clearly indicate the
-                  ideal purposes of the file, both through a description of contents and good
-                  examples (at least one of which is required).</para>
-               <para>Tokenization will be applied to one leaf <code><link linkend="element-div">&lt;div></link></code> at a time, and
-                  not to the concatenation of those <code><link linkend="element-div">&lt;div></link></code>s. So if a word straddles
-                  leaf <code><link linkend="element-div">&lt;div></link></code>s, it will always be broken up into two or more tokens.
-                  There are work-arounds for these situations, but those fixes should be applied in
-                  other TAN formats, not this one.</para>
+                  anachronistic, or irrelevant), may wish to suppress them altogether. </para>
+               <para>A poorly chosen or constructed TAN-R-tok file can produce invalid or undesired
+                  results. You should clearly document the ideal purposes of a TAN-R-tok file, both
+                  through a description of contents and good examples (at least one of which is
+                  required).</para>
+               <para>Tokenization will be applied to one leaf <code><link linkend="element-div"
+                        >&lt;div></link></code> at a time, and not to the concatenation of those
+                        <code><link linkend="element-div">&lt;div></link></code>s. So if a word
+                  straddles leaf <code><link linkend="element-div">&lt;div></link></code>s, it will
+                  always be broken up into two or more tokens. </para>
                <para>TAN-R-tok files do not admit doubt or multiple opinions. </para>
             </section>
             <section>
                <title>Rootmost Element and Header</title>
                <para>The rootmost element of a tokenizing file is
                   <code><link linkend="element-TAN-R-tok">&lt;TAN-R-tok></link></code>.</para>
-               <para>One or more optional <code><link linkend="element-source">&lt;source></link></code> elements may describe previous
-                  works that have been used as sources for the patterning rules. Many TAN-R-tok
-                  files will have no <code><link linkend="element-source">&lt;source></link></code> element.</para>
-               <para><code><link linkend="element-declarations">&lt;declarations></link></code> takes one or more <code><link linkend="element-for-lang">&lt;for-lang></link></code>s
-                  that take a standard language code (see <xref linkend="language"/>). If a
-                  TAN-R-tok file is meant to apply to any language, no <code><link linkend="element-for-lang">&lt;for-lang></link></code>
-                  should be supplied. </para>
-               <para>If another TAN file does not have all the languages specified in a TAN-R-tok
-                  file it is using, a warning will be generated. But the warning will not prevent
-                  the data from being processed.</para>
-               <para>
-                  <example>
-                     <title>TAN-R-tok <code><link linkend="element-head">&lt;head></link></code>, any language</title>
-                     <para>
-                        <programlisting>      ...........
-   &lt;head>
-      &lt;name>Common tokenization pattern no. 1&lt;/name>
-      &lt;desc>This tokenization pattern takes any text in any language, offsets any contiguous string
-         of non-word characters with spaces, then returns a tokenization based on white
-         space.&lt;/desc>
-      &lt;location>tok.common.1.xml&lt;/location>
-      &lt;rights-excluding-sources rights-holder="kalvesmaki">
-         &lt;IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US&lt;/IRI>
-         &lt;name>Creative Commons Attribution 4.0 International License&lt;/name>
-         &lt;desc>This license is granted independent of rights and licenses associated with the
-            source. &lt;/desc>
-      &lt;/rights-excluding-sources>
-      &lt;declarations/>
-      &lt;agent xml:id="park" roles="creator">
-          &lt;IRI>tag:parkj@textalign.net,2015:self&lt;/IRI>
-          &lt;name>Jenny Park&lt;/name>
-      &lt;/agent>
-      &lt;role xml:id="creator">
-         &lt;IRI>http://schema.org/creator&lt;/IRI>
-         &lt;name xml:lang="eng">creator&lt;/name>
-      &lt;/role>
-      &lt;change when="2015-03-16" who="park">Started file&lt;/change>
-   &lt;/head>
-      ...........              </programlisting>
-                     </para>
-                  </example>
-               </para>
-               <example>
-                  <title>TAN-R-tok <code><link linkend="element-head">&lt;head></link></code>, language-specific</title>
-                  <para>
-                     <programlisting>      ...........
-   &lt;head>
-      &lt;name>Tokenization pattern for English, in Penn Treebank style&lt;/name>
-      &lt;desc>This tokenization pattern is designed to imitate the tokenization process followed by
-         the Penn Treebank project on modern English texts. Expected input: raw text, one sentence
-         at a time.&lt;/desc>
-      &lt;location>tok.eng.1.xml&lt;/location>
-      &lt;rights-excluding-sources rights-holder="kalvesmaki">
-         &lt;IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US&lt;/IRI>
-         &lt;name>Creative Commons Attribution 4.0 International License&lt;/name>
-         &lt;desc>This license is granted independent of rights and licenses associated with the
-            source. &lt;/desc>
-      &lt;/rights-excluding-sources>
-      &lt;see-also>
-         &lt;relationship>auxiliary&lt;/relationship>
-         &lt;IRI>tag:parkj@textalign.net,2015:auxiliary:tokenizing-sed-script-1&lt;/IRI>
-         &lt;name>sed tokenizing script, by Robert MacIntyre&lt;/name>
-         &lt;desc>Written ca. 1995 at the University of Pennsylvania&lt;/desc>
-         &lt;location when-accessed="2015-03-17"
-            >http://www.cis.upenn.edu/~treebank/tokenizer.sed&lt;/location>
-      &lt;/see-also>
-      &lt;declarations>
-         &lt;for-lang>en&lt;/for-lang>
-         &lt;for-lang>eng&lt;/for-lang>
-      &lt;/declarations>
-      &lt;agent xml:id="park" roles="creator">
-          &lt;IRI>tag:parkj@textalign.net,2015:self&lt;/IRI>
-          &lt;name>Jenny Park&lt;/name>
-      &lt;/agent>
-      &lt;role xml:id="creator">
-         &lt;IRI>http://schema.org/creator&lt;/IRI>
-         &lt;name xml:lang="eng">creator&lt;/name>
-      &lt;/role>
-      &lt;change when="2015-03-17" who="park">Started file&lt;/change>
-   &lt;/head>
-      ...........              </programlisting>
-                  </para>
-               </example>
+               <para>Many TAN-R-tok files will have no <code><link linkend="element-source"
+                        >&lt;source></link></code> element. Those that do may describe previous
+                  works that have been used as sources for the patterning rules.</para>
+               <para><code><link linkend="element-declarations">&lt;declarations></link></code>
+                  takes one or more <code><link linkend="element-for-lang"
+                     >&lt;for-lang></link></code>s that take a standard language code (see <xref
+                     linkend="language"/>). If a TAN-R-tok file is meant to apply to any language,
+                        <code><link linkend="element-for-lang">&lt;for-lang></link></code> should be
+                  suppressed. </para>
             </section>
             <section>
                <title>Data (<code><link linkend="element-body">&lt;body></link></code>)</title>
-               <para>
-                  <table frame="all">
-                     <title>Synopsis of TAN-R-tok <code><link linkend="element-body">&lt;body></link></code>, <code><link linkend="element-replace">&lt;replace></link></code>,
-                           <code><link linkend="element-tokenize">&lt;tokenize></link></code>, <code><link linkend="element-pattern">&lt;pattern></link></code>,
-                           <code><link linkend="element-replacement">&lt;replacement></link></code>, <code><link linkend="element-flags">&lt;flags></link></code>,
-                           <code><link linkend="element-example">&lt;example></link></code>, <code><link linkend="element-input">&lt;input></link></code>,
-                           <code><link linkend="element-output-token">&lt;output-token></link></code></title>
-                     <tgroup cols="7">
-                        <colspec colname="c1" colnum="1" colwidth="2.15*"/>
-                        <colspec colname="c3" colnum="2" colwidth="1*"/>
-                        <colspec colname="c4" colnum="3" colwidth="1.49*"/>
-                        <colspec colname="c5" colnum="4" colwidth="2.94*"/>
-                        <colspec colname="newCol7" colnum="5" colwidth="4.64*"/>
-                        <colspec colname="newCol6" colnum="6" colwidth="2.52*"/>
-                        <colspec colname="c6" colnum="7" colwidth="3.09*"/>
-                        <thead>
-                           <row>
-                              <entry>name</entry>
-                              <entry>req?</entry>
-                              <entry>qty</entry>
-                              <entry>parent</entry>
-                              <entry>attributes</entry>
-                              <entry>children</entry>
-                              <entry>purpose</entry>
-                           </row>
-                        </thead>
-                        <tbody>
-                           <row>
-                              <entry><code><link linkend="element-body">&lt;body></link></code></entry>
-                              <entry>yes</entry>
-                              <entry>one</entry>
-                              <entry><code><link linkend="element-TAN-R-tok">&lt;TAN-R-tok></link></code></entry>
-                              <entry><xref linkend="in_progress"/>?, <xref linkend="edit_stamp"
-                                 />?</entry>
-                              <entry><code><link linkend="element-replace">&lt;replace></link></code>*, <code><link linkend="element-tokenize">&lt;tokenize></link></code>,
-                                    <code><link linkend="element-example">&lt;example></link></code>+</entry>
-                              <entry>contains data</entry>
-                           </row>
-                           <row>
-                              <entry><code><link linkend="element-replace">&lt;replace></link></code></entry>
-                              <entry>no</entry>
-                              <entry>one or more</entry>
-                              <entry><code><link linkend="element-body">&lt;body></link></code></entry>
-                              <entry><code><link linkend="attribute-xpath">@xpath</link></code>?, <xref linkend="edit_stamp"/>?</entry>
-                              <entry><code><link linkend="element-pattern">&lt;pattern></link></code>, <code><link linkend="element-replacement">&lt;replacement></link></code>,
-                                    <code><link linkend="element-flags">&lt;flags></link></code>?</entry>
-                              <entry>state a pattern to be searched and replaced in a digital
-                                 source</entry>
-                           </row>
-                           <row>
-                              <entry><code><link linkend="element-tokenize">&lt;tokenize></link></code></entry>
-                              <entry>yes</entry>
-                              <entry>one</entry>
-                              <entry><code><link linkend="element-body">&lt;body></link></code></entry>
-                              <entry><xref linkend="edit_stamp"/>?</entry>
-                              <entry><code><link linkend="element-pattern">&lt;pattern></link></code>, <code><link linkend="element-flags">&lt;flags></link></code>? </entry>
-                              <entry>declares tokenization function to be applied to a
-                                 string</entry>
-                           </row>
-                           <row>
-                              <entry><code><link linkend="element-pattern">&lt;pattern></link></code></entry>
-                              <entry>yes</entry>
-                              <entry>one</entry>
-                              <entry><code><link linkend="element-replace">&lt;replace></link></code>, <code><link linkend="element-tokenize">&lt;tokenize></link></code></entry>
-                              <entry><xref linkend="edit_stamp"/>?</entry>
-                              <entry>data (xsd:string)</entry>
-                              <entry>state through a regular expression a pattern to be
-                                 found</entry>
-                           </row>
-                           <row>
-                              <entry><code><link linkend="element-replacement">&lt;replacement></link></code></entry>
-                              <entry>yes</entry>
-                              <entry>one</entry>
-                              <entry><code><link linkend="element-replace">&lt;replace></link></code></entry>
-                              <entry><xref linkend="edit_stamp"/>?</entry>
-                              <entry>data (xsd:string)</entry>
-                              <entry>state through a regular expression a replacement
-                                 pattern</entry>
-                           </row>
-                           <row>
-                              <entry><code><link linkend="element-flags">&lt;flags></link></code></entry>
-                              <entry>no</entry>
-                              <entry>one</entry>
-                              <entry><code><link linkend="element-replace">&lt;replace></link></code>, <code><link linkend="element-tokenize">&lt;tokenize></link></code></entry>
-                              <entry><xref linkend="edit_stamp"/>?</entry>
-                              <entry>data (xsd:string)</entry>
-                              <entry>declare flags to be applied in a replace operation</entry>
-                           </row>
-                           <row>
-                              <entry><code><link linkend="element-example">&lt;example></link></code></entry>
-                              <entry>yes</entry>
-                              <entry>one or more</entry>
-                              <entry><code><link linkend="element-body">&lt;body></link></code></entry>
-                              <entry><xref linkend="edit_stamp"/>?</entry>
-                              <entry><code><link linkend="element-input">&lt;input></link></code>,
-                                 <code><link linkend="element-output-token">&lt;output-token></link></code>+</entry>
-                              <entry>Provide an example of a tokenized string</entry>
-                           </row>
-                           <row>
-                              <entry><code><link linkend="element-input">&lt;input></link></code></entry>
-                              <entry>yes</entry>
-                              <entry>one</entry>
-                              <entry><code><link linkend="element-example">&lt;example></link></code></entry>
-                              <entry><xref linkend="edit_stamp"/>?</entry>
-                              <entry>data (xsd:string)</entry>
-                              <entry>Provide example input</entry>
-                           </row>
-                           <row>
-                              <entry><code><link linkend="element-output-token">&lt;output-token></link></code></entry>
-                              <entry>yes</entry>
-                              <entry>one or more</entry>
-                              <entry><code><link linkend="element-example">&lt;example></link></code></entry>
-                              <entry><xref linkend="edit_stamp"/>?</entry>
-                              <entry>data (xsd:string)</entry>
-                              <entry>Provide example output token</entry>
-                           </row>
-                        </tbody>
-                     </tgroup>
-                  </table>
-               </para>
-               <para>The <code><link linkend="element-body">&lt;body></link></code> of a TAN-R-tok file takes the customary optional
-                  attributes found in other TAN files (see <xref linkend="in_progress"/> and <xref
-                     linkend="edit_stamp"/>). <code><link linkend="element-body">&lt;body></link></code> has only three kinds of
-                  children: zero or more <code><link linkend="element-replace">&lt;replace></link></code>s followed by one
-                     <code><link linkend="element-tokenize">&lt;tokenize></link></code> followed by one or more <code><link linkend="element-example">&lt;example></link></code>s
-                  .</para>
-               <para><code><link linkend="element-replace">&lt;replace></link></code> corresponds to <code>fn:replace</code> as defined in
-                     <link xlink:href="http://www.w3.org/TR/xpath-functions-30/#func-replace">XPath
-                     Functions 3.0</link>. <code><link linkend="element-replace">&lt;replace></link></code> may take an optional
-                     <code><link linkend="attribute-xpath">@xpath</link></code> value, to restrict the scope of the replacement to a
-                  specific place in a valid XML source.<caution>
-                     <para>Using <code><link linkend="attribute-xpath">@xpath</link></code> is not recommended if you anticipate users who
-                        may be relying upon XSLT 2.0 and earlier for transformations. Only from
-                        version 3.0 has XPath been able to convert a string datatype (the datatype
-                        of <code><link linkend="attribute-xpath">@xpath</link></code>) into an XPath expression.</para>
-                  </caution>
-                  <code><link linkend="element-replace">&lt;replace></link></code> must take one <code><link linkend="element-pattern">&lt;pattern></link></code> and one
-                     <code><link linkend="element-replacement">&lt;replacement></link></code>, two regular expressions (see <xref
-                     linkend="regular_expressions"/>) to be fed as parameters into an XPath
-                     <code>fn:replace</code> function. It may take an optional
-                     <code><link linkend="element-flags">&lt;flags></link></code>, which adds parameters to the search, i.e., any
-                  combination of <code><link linkend="element-s">&lt;s></link></code> ("dot-all" mode), <code><link linkend="element-m">&lt;m></link></code>
-                  (multi-line mode), <code><link linkend="element-i">&lt;i></link></code> (case-insensitive mode),
-                     <code><link linkend="element-x">&lt;x></link></code> (strip white spaces from <code><link linkend="element-pattern">&lt;pattern></link></code>), or
-                     <code><link linkend="element-q">&lt;q></link></code> (suppress metacharacters) as values, <link
-                     xlink:href="http://www.w3.org/TR/xpath-functions-30/#flags">explained in
-                     greater detail in the W3C recommendation</link>.</para>
-               <para>Multiple <code><link linkend="element-replace">&lt;replace></link></code> values will be applied according to document
-                  order. It is very important to be careful to anticipate ways an early search might
-                  adversely affect a later one.</para>
-               <para>Each <code><link linkend="element-tokenize">&lt;tokenize></link></code> has exactly one <code><link linkend="element-pattern">&lt;pattern></link></code>
-                  element and an optional <code><link linkend="element-flags">&lt;flags></link></code> element. The values of these two
-                  elements, both strings, represent regular expressions that should be used as
-                  parameters for <code>fn:tokenize</code> as defined in <link
-                     xlink:href="http://www.w3.org/TR/xpath-functions-30/#func-tokenize">XPath
-                     Functions 3.0</link>. The value of <code><link linkend="element-pattern">&lt;pattern></link></code> is a regular
-                  expression that will be used to segment a leaf <code><link linkend="element-div">&lt;div></link></code> into a
-                  sequence of tokens; <code><link linkend="element-flags">&lt;flags></link></code> takes the same options
-                     <code><link linkend="element-replace">&lt;replace></link></code> does.</para>
-               <para>Finally, one or more <code><link linkend="element-example">&lt;example></link></code> elements provide one
-                     <code><link linkend="element-input">&lt;input></link></code> and one or more <code><link linkend="element-output-token">&lt;output-token></link></code>s.
-                     <code><link linkend="element-input">&lt;input></link></code> takes any string, and the resultant sequence of tokens
-                  is supplied in <code><link linkend="element-output-token">&lt;output-token></link></code>. If <code><link linkend="element-input">&lt;input></link></code>, when
-                  fed into the sequence of <code><link linkend="element-replace">&lt;replace></link></code>s and
-                  <code><link linkend="element-tokenize">&lt;tokenize></link></code>, does not produce the sequence declared by the
-                     <code><link linkend="element-output-token">&lt;output-token></link></code>s, an error will be generated.</para>
-               <example>
-                  <title>TAN-R-tok <code><link linkend="element-body">&lt;body></link></code>, treating punctuation clusters as word
-                     tokens</title>
-                  <para>
-                     <programlisting>      ...........
-   &lt;body>
-      &lt;replace>
-         &lt;comment when="2015-03-16" who="park">Pad every cluster of non-word characters with
-            space.&lt;/comment>
-         &lt;pattern>(\W+)&lt;/pattern>
-         &lt;replacement> $1 &lt;/replacement>
-      &lt;/replace>
-      &lt;replace>
-         &lt;comment when="2015-03-16" who="park">Delete end spaces.&lt;/comment>
-         &lt;pattern>^\s+|\s+$&lt;/pattern>
-         &lt;replacement/>
-      &lt;/replace>
-      &lt;tokenize>
-         &lt;pattern>\s+&lt;/pattern>
-      &lt;/tokenize>
-      &lt;example>
-         &lt;input>I said, "Where is the ping-pong table?"&lt;/input>
-         &lt;output-token>I&lt;/output-token>
-         &lt;output-token>said&lt;/output-token>
-         &lt;output-token>,&lt;/output-token>
-         &lt;output-token>"&lt;/output-token>
-         &lt;output-token>Where&lt;/output-token>
-         &lt;output-token>is&lt;/output-token>
-         &lt;output-token>the&lt;/output-token>
-         &lt;output-token>ping&lt;/output-token>
-         &lt;output-token>-&lt;/output-token>
-         &lt;output-token>pong&lt;/output-token>
-         &lt;output-token>table&lt;/output-token>
-         &lt;output-token>?"&lt;/output-token>
-      &lt;/example>
-   &lt;/body>
-      ...........              </programlisting>
-                  </para>
-               </example>
-               <example>
-                  <title>TAN-R-tok <code><link linkend="element-body">&lt;body></link></code>, ignoring punctuation</title>
-                  <para>
-                     <programlisting>      ...........
-   &lt;body>
-      &lt;replace>
-         &lt;comment when="2015-03-16" who="park">Remove end nonword characters&lt;/comment>
-         &lt;pattern>^\W+|\W+$&lt;/pattern>
-         &lt;replacement/>
-      &lt;/replace>
-      &lt;tokenize>
-         &lt;comment when="2015-03-16" who="park">Tokenize on any cluster of nonword
-            characters.&lt;/comment>
-         &lt;pattern>\W+&lt;/pattern>
-      &lt;/tokenize>
-      &lt;example>
-         &lt;input>I said, "Where is the ping-pong table?"&lt;/input>
-         &lt;output-token>I&lt;/output-token>
-         &lt;output-token>said&lt;/output-token>
-         &lt;output-token>Where&lt;/output-token>
-         &lt;output-token>is&lt;/output-token>
-         &lt;output-token>the&lt;/output-token>
-         &lt;output-token>ping&lt;/output-token>
-         &lt;output-token>pong&lt;/output-token>
-         &lt;output-token>table&lt;/output-token>
-      &lt;/example>
-   &lt;/body>
-      ...........              </programlisting>
-                  </para>
-               </example>
-               <example>
-                  <title>TAN-R-tok <code><link linkend="element-body">&lt;body></link></code>, tokenizing English in the manner of the
-                     Penn Treebank project</title>
-                  <para>
-                     <programlisting>      ...........
-   &lt;body>
-      &lt;replace>
-         &lt;comment when="2015-03-17" who="park">get directional quotes&lt;/comment>
-         &lt;pattern>^"&lt;/pattern>
-         &lt;replacement>`` &lt;/replacement>
-      &lt;/replace>
-      &lt;replace>
-         &lt;pattern>([ \(\[{&amp;lt;])"&lt;/pattern>
-         &lt;replacement>$1 `` &lt;/replacement>
-      &lt;/replace>
-      &lt;comment when="2015-03-17" who="park">close quotes at end&lt;/comment>
-      &lt;replace>
-         &lt;pattern>\.\.\.&lt;/pattern>
-         &lt;replacement>...&lt;/replacement>
-      &lt;/replace>
-      &lt;replace>
-         &lt;pattern>([,;:@#$%&amp;amp;])&lt;/pattern>
-         &lt;replacement> $1 &lt;/replacement>
-      &lt;/replace>
-      &lt;replace>
-         &lt;comment when="2015-03-17" who="park">Offset final periods&lt;/comment>
-         &lt;pattern>([^.])([.])([\]\)}>"']*)$&lt;/pattern>
-         &lt;replacement>$1 $2$3&lt;/replacement>
-      &lt;/replace>
-      &lt;replace>
-         &lt;comment when="2015-03-17" who="park">Offset question marks, exclamation marks, other
-            punctuation&lt;/comment>
-         &lt;pattern>([?!\]\[\(\){}&amp;lt;>—–])&lt;/pattern>
-         &lt;replacement> $1 &lt;/replacement>
-      &lt;/replace>
-      &lt;replace>
-         &lt;comment when="2015-03-17" who="park">Offset double hyphens&lt;/comment>
-         &lt;pattern>--&lt;/pattern>
-         &lt;replacement> $1 &lt;/replacement>
-      &lt;/replace>
-      &lt;replace>
-         &lt;comment when="2015-03-17" who="park">Insert opening space, to reduce regex
-            searches.&lt;/comment>
-         &lt;pattern>^(.)&lt;/pattern>
-         &lt;replacement> $1&lt;/replacement>
-      &lt;/replace>
-      &lt;replace>
-         &lt;comment when="2015-03-17" who="park">Insert closing space.&lt;/comment>
-         &lt;pattern>(.)$&lt;/pattern>
-         &lt;replacement>$1 &lt;/replacement>
-      &lt;/replace>
-      &lt;replace>
-         &lt;comment when="2015-03-17" who="park">Offset closing quotation marks&lt;/comment>
-         &lt;pattern>"&lt;/pattern>
-         &lt;replacement> '' &lt;/replacement>
-      &lt;/replace>
-      &lt;replace>
-         &lt;comment when="2015-03-17" who="park">Possessive or close single quote&lt;/comment>
-         &lt;pattern>([^'])' &lt;/pattern>
-         &lt;replacement>$1 ' &lt;/replacement>
-      &lt;/replace>
-      &lt;replace>
-         &lt;comment when="2015-03-17" who="park">Separate contracted enclitics, e.g., it's,
-            I'm&lt;/comment>
-         &lt;pattern>'([sSmMdD]) &lt;/pattern>
-         &lt;replacement> '$1 &lt;/replacement>
-      &lt;/replace>
-      &lt;replace>
-         &lt;comment when="2015-03-17" who="park">'ll, 're, 've&lt;/comment>
-         &lt;pattern>'(ll|re|ve) &lt;/pattern>
-         &lt;replacement> '$1 &lt;/replacement>
-         &lt;flags>i&lt;/flags>
-      &lt;/replace>
-      &lt;replace>
-         &lt;comment when="2015-03-17" who="park">n't&lt;/comment>
-         &lt;pattern>(n't) &lt;/pattern>
-         &lt;replacement> $1 &lt;/replacement>
-         &lt;flags>i&lt;/flags>
-      &lt;/replace>
-      &lt;replace>
-         &lt;pattern> (can)(not) &lt;/pattern>
-         &lt;replacement> $1 $2 &lt;/replacement>
-         &lt;flags>i&lt;/flags>
-      &lt;/replace>
-      &lt;replace>
-         &lt;pattern> (d')(ye) &lt;/pattern>
-         &lt;replacement> $1 $2 &lt;/replacement>
-         &lt;flags>i&lt;/flags>
-      &lt;/replace>
-      &lt;replace>
-         &lt;pattern> (gim)(me) &lt;/pattern>
-         &lt;replacement> $1 $2 &lt;/replacement>
-         &lt;flags>i&lt;/flags>
-      &lt;/replace>
-      &lt;replace>
-         &lt;pattern> (gon)(na) &lt;/pattern>
-         &lt;replacement> $1 $2 &lt;/replacement>
-         &lt;flags>i&lt;/flags>
-      &lt;/replace>
-      &lt;replace>
-         &lt;pattern> (got)(ta) &lt;/pattern>
-         &lt;replacement> $1 $2 &lt;/replacement>
-         &lt;flags>i&lt;/flags>
-      &lt;/replace>
-      &lt;replace>
-         &lt;pattern> (lem)(me) &lt;/pattern>
-         &lt;replacement> $1 $2 &lt;/replacement>
-         &lt;flags>i&lt;/flags>
-      &lt;/replace>
-      &lt;replace>
-         &lt;pattern> (more)('n) &lt;/pattern>
-         &lt;replacement> $1 $2 &lt;/replacement>
-         &lt;flags>i&lt;/flags>
-      &lt;/replace>
-      &lt;replace>
-         &lt;pattern> ('t)(is) &lt;/pattern>
-         &lt;replacement> $1 $2 &lt;/replacement>
-         &lt;flags>i&lt;/flags>
-      &lt;/replace>
-      &lt;replace>
-         &lt;pattern> ('t)(was) &lt;/pattern>
-         &lt;replacement> $1 $2 &lt;/replacement>
-         &lt;flags>i&lt;/flags>
-      &lt;/replace>
-      &lt;replace>
-         &lt;pattern> (wan)(na) &lt;/pattern>
-         &lt;replacement> $1 $2 &lt;/replacement>
-         &lt;flags>i&lt;/flags>
-      &lt;/replace>
-      &lt;replace>
-         &lt;pattern> (whad)(dya) &lt;/pattern>
-         &lt;replacement> $1 $2 &lt;/replacement>
-         &lt;flags>i&lt;/flags>
-      &lt;/replace>
-      &lt;replace>
-         &lt;pattern> (wha)(t)(cha) &lt;/pattern>
-         &lt;replacement> $1 $2 $3 &lt;/replacement>
-         &lt;flags>i&lt;/flags>
-      &lt;/replace>
-      &lt;replace>
-         &lt;comment when="2015-03-17" who="park">Strip opening and closing space.&lt;/comment>
-         &lt;pattern>(^\s+|\s+$)&lt;/pattern>
-         &lt;replacement/>
-      &lt;/replace>
-      &lt;tokenize>
-         &lt;pattern>\s+&lt;/pattern>
-      &lt;/tokenize>
-      &lt;example>
-         &lt;input>"I said, ["Wanna play ping-pong?">&lt;/input>
-         &lt;output-token>``&lt;/output-token>
-         &lt;output-token>I&lt;/output-token>
-         &lt;output-token>said&lt;/output-token>
-         &lt;output-token>,&lt;/output-token>
-         &lt;output-token>[&lt;/output-token>
-         &lt;output-token>``&lt;/output-token>
-         &lt;output-token>Wan&lt;/output-token>
-         &lt;output-token>na&lt;/output-token>
-         &lt;output-token>play&lt;/output-token>
-         &lt;output-token>ping-pong&lt;/output-token>
-         &lt;output-token>?&lt;/output-token>
-         &lt;output-token>''&lt;/output-token>
-         &lt;output-token>>&lt;/output-token>
-      &lt;/example>
-   &lt;/body>
-      ...........              </programlisting>
-                  </para>
-               </example>
+               <para>The <code><link linkend="element-body">&lt;body></link></code> of a TAN-R-tok
+                  file takes the customary optional attributes found in other TAN files (see
+                        <code><link linkend="attribute-in-progress">@in-progress</link></code> and
+                     <xref linkend="edit_stamp"/>). <code><link linkend="element-body"
+                        >&lt;body></link></code> has only three kinds of children: zero or more
+                        <code><link linkend="element-replace">&lt;replace></link></code>s followed
+                  by one <code><link linkend="element-tokenize">&lt;tokenize></link></code> followed
+                  by one or more <code><link linkend="element-example">&lt;example></link></code>s .
+                  See these elements for details and examples.</para>
             </section>
          </section>
          <section xml:id="tan-r-mor">
             <title>Morphological Concepts and Patterns (TAN-R-mor)</title>
-            <para>TAN-R-mor files describe the morphological categories for a given language and the
-               rules allowed in applying them to any given word token. The format allows
-               specificity, flexibility, and responsiveness. Assertions in the format may be
-               doubted, rules may be expressed as contingent upon other coniditons, and warnings and
-               error messages may be sent to users who may have used a pattern incorrectly, or not
-               in with the best practices.</para>
-            <para>The TAN-R-mor format is, in essence, like a Schematron language for languages.
-               That is, you may specify series of reports and assertions to be made, based upon how
-               user of the format tries to combine morphological features. So a user is not only
-               able to see if the rules have been violated, but why, and exactly where.</para>
+            <para>TAN-R-mor files allow you to describe the morphological features of a given
+               language, to assign codes of those features, and to define rules in how those codes
+               may be applied. The format allows specificity, flexibility, and responsiveness.
+               Assertions in the format may be doubted, rules may be expressed as contingent upon
+               other coniditons, and warnings and error messages may be sent to users who may have
+               used a pattern incorrectly, or not in accordance with best practices.</para>
+            <para>The TAN-R-mor format is like a Schematron language for languages. That is, you may
+               specify series of reports and assertions to be made, based upon how user of the
+               format tries to combine morphological features. So a user is not only able to see if
+               the rules have been violated, but why, and exactly where.</para>
             <para>This chapter should be read in close conjunction with that pertaining to TAN-LM
                files, which exclusively depend upon them (<xref linkend="tan-lm"/>).</para>
             <section>
@@ -4977,36 +4509,30 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                <para>The TAN-R-mor format has been designed under the assumption that word formation
                   and inflection, in any given language, can be analyzed in different ways. It is
                   also assumed that patterns of word inflection and formation can be categorized,
-                  classified, named, and described. Even if two views of a single language are in
-                  disagreement, those disagreements should be stated in comparable terms, when
-                  possible.</para>
-               <para>For example, not everyone agrees on the number of major parts of speech in
-                  English. And among those who think there are only eight, some name and define
-                  those eight categories in ways that are at odds the consensus of modern linguists.
-                  The older paradigm held to a major category called <emphasis role="italic"
-                     >conjunctions</emphasis>, whereas most linguists prefer to break this into two
-                  major categories, <emphasis role="italic">subordinators</emphasis> and <emphasis
-                     role="italic">coordinators</emphasis>.</para>
+                  classified, named, and described. Different views on the grammatical features and
+                  tendencies of a language should be declared, not suppressed. For example, not
+                  everyone agrees on the number of major parts of speech in English. And among those
+                  who think there are only eight, some name and define those categories in different
+                  ways. A mid-twentieth-century paradigm held to a major category called <emphasis
+                     role="italic">conjunctions</emphasis>, whereas most linguists now prefer to
+                  break this into two major categories, <emphasis role="italic"
+                     >subordinators</emphasis> and <emphasis role="italic"
+                  >coordinators</emphasis>.</para>
                <para>The TAN-R-mor format has also been designed to cater to two approaches to
                   coding the morphological features of a language: structured or unstructured. </para>
                <para>Structured codes are created with a presumption of a set number of categories
-                  into which various features of morphology should be combined. Structured codes are
-                  of a set length, and usually require gaps in different spots. For example, the
-                  Perseus approach to the morphological categories of Greek, Latin, and other highly
-                  inflected languages dictate ten categories, with the first two being the major and
-                  minor parts of speech, and the subsequent categories devoted to person, number,
-                  tense, and so forth. For each word being analyzed, all ten categories must have a
-                  value, even if null.</para>
+                  into which various features of morphology should be combined. Structured codes
+                  tend to have a set number of code elements, and usually require gaps in different
+                  spots. For example, the Perseus approach to the morphological categories of Greek,
+                  Latin, and other highly inflected languages dictate ten categories, with the first
+                  two being the major and minor parts of speech, and the subsequent categories
+                  devoted to person, number, tense, and so forth. Each word that is analyzed must
+                  have a value, even if null.</para>
                <para>Morphology based on unstructured codes relies upon a single master set of tags
-                  for morphological features. Word tokens in that language can be given one or more
-                  tags drawn from that set. This approach is viable for any language, but it is most
+                  for morphological features, which can be applied in any sequence and combination
+                  (other rules permitting). This approach is viable for any language, but it is most
                   often found in tagging sets for languages that have little inflection, e.g., the
                   Brown and Penn sets for English.</para>
-               <para>Both structured and unstructured approaches begin the same in every TAN-R-mor
-                  file: a set of all possible morphological features, in the
-                     <code><link linkend="element-declarations">&lt;declarations></link></code> part of the header. If one wishes, this set can
-                  then be assigned a series of categories, to turn the unstructured tag set into a
-                  structured one. This process is described below.</para>
             </section>
             <section>
                <title>Rootmost Element and Header</title>
@@ -5017,160 +4543,35 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   based upon any published work, then <code><link linkend="element-source">&lt;source></link></code> may be omitted. Any
                   TAN-R-mor file without a source will assume to be based upon the personal
                   knowledge of the <code><link linkend="element-agent">&lt;agent></link></code>s who edited the file.</para>
-               <para><code><link linkend="element-declarations">&lt;declarations></link></code> takes two types of element, one or more
-                     <code><link linkend="element-for-lang">&lt;for-lang></link></code>s that take a standard language code (see <xref
-                     linkend="language"/>) and one or more <code><link linkend="element-feature">&lt;feature></link></code>s that declare
-                  the morphological features that characterize the languages being described.</para>
-               <para><emphasis role="bold">&lt;I left off at this point. This entire section needs
-                     to be rewritten in light of the new TAN-R-mor schemas.></emphasis></para>
-               <para>
-                  <example>
-                     <title>TAN-R-mor <code><link linkend="element-head">&lt;head></link></code></title>
-                     <para>
-                        <programlisting>      ...........
-   &lt;head>
-      &lt;name>Perseus rules for Greek morphology&lt;/name>
-      &lt;rights-excluding-sources rights-holder="kalvesmaki">
-         &lt;IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US&lt;/IRI>
-         &lt;name>Creative Commons Attribution 4.0 International License&lt;/name>
-         &lt;name>This license is granted independent of rights and licenses associated with the
-            source. &lt;/name>
-      &lt;/rights-excluding-sources>
-      &lt;source>
-         &lt;IRI>urn:uuid:147d8040-4ca9-11e3-848f-0002a5d5c51b:2013-11-18&lt;/IRI>
-         &lt;name>Perseus codes&lt;/name>
-         &lt;desc xml:lang="eng">Perseus's standard code for Greek morphology (a string of 10 chars.),
-            found at http://perseus.uchicago.edu/about.html (accessed 2013-11-18)&lt;/desc>
-      &lt;/source>
-      &lt;declarations>
-         &lt;for-lang>grc&lt;/for-lang>
-      &lt;/declarations>
-      &lt;agent xml:id="kalvesmaki" roles="editor">
-         &lt;IRI>http://viaf.org/viaf/299582703&lt;/IRI>
-         &lt;IRI>tag:kalvesmaki@gmail.com,2014:self&lt;/IRI>
-         &lt;name>Joel Kalvesmaki&lt;/name>
-      &lt;/agent>
-      &lt;role xml:id="editor">
-         &lt;IRI>http://schema.org/editor&lt;/IRI>
-         &lt;name>Editor&lt;/name>
-      &lt;/role>
-      &lt;change who="kalvesmaki" when="2014-02-26">File created&lt;/change>
-      &lt;comment when="2013-11-16" who="kalvesmaki">This was written to codify for the TAN system
-         the 10-character codes developed by Perseus for ancient Greek. &lt;/comment>
-   &lt;/head>
-      ...........              </programlisting>
-                     </para>
-                  </example>
-               </para>
+               <para><code><link linkend="element-declarations">&lt;declarations></link></code>
+                  takes two types of element, one or more <code><link linkend="element-for-lang"
+                        >&lt;for-lang></link></code>s that take a standard language code (see <xref
+                     linkend="language"/>) and one or more <code><link linkend="element-feature"
+                        >&lt;feature></link></code>s that declare the morphological features that
+                  characterize the languages being described. This forms a kind of morphological
+                  alphabet from which both structured and unstructured approaches begin. </para>
             </section>
             <section>
                <title>Data (<code><link linkend="element-body">&lt;body></link></code>)</title>
-               <para>
-                  <table frame="all">
-                     <title>Synopsis of TAN-R-mor <code><link linkend="element-body">&lt;body></link></code>,
-                           <code><link linkend="element-invalid-pattern">&lt;invalid-pattern></link></code>, <code><link linkend="element-category">&lt;category></link></code>,
-                           <code><link linkend="element-option">&lt;option></link></code></title>
-                     <tgroup cols="7">
-                        <colspec colname="c1" colnum="1" colwidth="2.15*"/>
-                        <colspec colname="c3" colnum="2" colwidth="1*"/>
-                        <colspec colname="c4" colnum="3" colwidth="1.49*"/>
-                        <colspec colname="c5" colnum="4" colwidth="2.94*"/>
-                        <colspec colname="newCol7" colnum="5" colwidth="4.64*"/>
-                        <colspec colname="newCol6" colnum="6" colwidth="2.52*"/>
-                        <colspec colname="c6" colnum="7" colwidth="3.09*"/>
-                        <thead>
-                           <row>
-                              <entry>name</entry>
-                              <entry>req?</entry>
-                              <entry>qty</entry>
-                              <entry>parent</entry>
-                              <entry>attributes</entry>
-                              <entry>children</entry>
-                              <entry>purpose</entry>
-                           </row>
-                        </thead>
-                        <tbody>
-                           <row>
-                              <entry><code><link linkend="element-body">&lt;body></link></code></entry>
-                              <entry>yes</entry>
-                              <entry>one</entry>
-                              <entry><code><link linkend="element-TAN-R-mor">&lt;TAN-R-mor></link></code></entry>
-                              <entry><xref linkend="in_progress"/>?, <xref linkend="edit_stamp"
-                                 />?</entry>
-                              <entry><code><link linkend="element-invalid-pattern">&lt;invalid-pattern></link></code>*,
-                                 <code><link linkend="element-category">&lt;category></link></code>+</entry>
-                              <entry>contains data</entry>
-                           </row>
-                           <row>
-                              <entry><code><link linkend="element-invalid-pattern">&lt;invalid-pattern></link></code></entry>
-                              <entry>no</entry>
-                              <entry>one or more</entry>
-                              <entry><code><link linkend="element-body">&lt;body></link></code></entry>
-                              <entry><xref linkend="edit_stamp"/>?, <code><link linkend="attribute-cert">@cert</link></code>?</entry>
-                              <entry>text (xsd:string)</entry>
-                              <entry>declares a pattern of space-delimited codes disallowed</entry>
-                           </row>
-                           <row>
-                              <entry><code><link linkend="element-category">&lt;category></link></code></entry>
-                              <entry>yes</entry>
-                              <entry>one or more</entry>
-                              <entry><code><link linkend="element-body">&lt;body></link></code></entry>
-                              <entry><xref linkend="edit_stamp"/>?</entry>
-                              <entry><xref linkend="pattern-iri_and_name"/>,
-                                 <code><link linkend="element-option">&lt;option></link></code>+</entry>
-                              <entry>collects a group of morphological concepts</entry>
-                           </row>
-                           <row>
-                              <entry><code><link linkend="element-option">&lt;option></link></code></entry>
-                              <entry>yes</entry>
-                              <entry>one or more</entry>
-                              <entry><code><link linkend="element-category">&lt;category></link></code></entry>
-                              <entry><xref linkend="edit_stamp"/>?, <code><link linkend="attribute-code">@code</link></code></entry>
-                              <entry><xref linkend="pattern-iri_and_name"/></entry>
-                              <entry>names a morphological concept that is a viable option for the
-                                 given category</entry>
-                           </row>
-                        </tbody>
-                     </tgroup>
-                  </table>
-               </para>
-               <para>The <code><link linkend="element-body">&lt;body></link></code> of a TAN-R-mor file takes the customary optional
-                  attributes found in other TAN files (see <xref linkend="in_progress"/> and <xref
-                     linkend="edit_stamp"/>). <code><link linkend="element-body">&lt;body></link></code> has only two type of children:
-                  zero or more <code><link linkend="element-invalid-pattern">&lt;invalid-pattern></link></code>s followed by one or more
-                     <code><link linkend="element-category">&lt;category></link></code>s followed by zero or more
-                     <code><link linkend="element-invalid-pattern">&lt;invalid-pattern></link></code>s .</para>
-               <para><code><link linkend="element-invalid-pattern">&lt;invalid-pattern></link></code> takes a regular expression defining patterns
-                  of codes that are disallowed (explained below). Aside from an optional <xref
-                     linkend="edit_stamp"/> and <code><link linkend="attribute-cert">@cert</link></code>?, it takes only text, followed
-                  perhaps by a single <code><link linkend="element-comment">&lt;comment></link></code>. <code><link linkend="attribute-cert">@cert</link></code> takes a numeral
-                  from 0 to 1 or else <code><link linkend="element-high">&lt;high></link></code> or <code><link linkend="element-low">&lt;low></link></code>, which are to
-                  be translated to mean "is probably" and "is probably not" respectively. </para>
-               <para><code><link linkend="element-category">&lt;category></link></code>, in addition to an optional <xref
-                     linkend="edit_stamp"/>, takes the <xref linkend="pattern-iri_and_name"/> to describe a
-                  category of morphological terms, and one or more <code><link linkend="element-option">&lt;option></link></code>s.</para>
-               <para><code><link linkend="element-option">&lt;option></link></code>, which describes a single morphological concept, takes
-                  an <xref linkend="edit_stamp"/> and the <xref linkend="pattern-iri_and_name"/>. It also
-                  takes a mandatory <code><link linkend="attribute-code">@code</link></code>, which must be unique within a given
-                  category. But that value may be used in other <code><link linkend="element-category">&lt;category></link></code>s.
-                     <code><link linkend="attribute-code">@code</link></code> may by anything that is not a space character or a hyphen
-                  (reserved for the concept "not applicable").</para>
-               <para>There is no particular rule as to what concepts are allowed in a
-                     <code><link linkend="element-category">&lt;category></link></code>. In highly inflected languages, it makes sense to
-                  categorize according to part of speech. For languages with little inflection, a
-                  single <code><link linkend="element-category">&lt;category></link></code> might contain all the options available.</para>
-               <para>The TAN-R-mor file will be referred to by TAN-LM files by using one or more
-                     <code><link linkend="attribute-code">@code</link></code> values, space delimited, with each value corresponding in
-                  order to the <code><link linkend="element-category">&lt;category></link></code> order. For example, if a Greek TAN-R-mor
-                  file is assigned ten categories, then any TAN-LM file using that file will have a
-                  value that looks like <code>x x x x x x x x x x</code>, where <code><link linkend="element-x">&lt;x></link></code>
-                  is a code value. If a particular category is not applicable, the hyphen is used.
-                  Anyone using the TAN-R-mor file will not be able to cite more than one
-                     <code><link linkend="element-option">&lt;option></link></code> in a given <code><link linkend="element-category">&lt;category></link></code>.</para>
-               <para><code><link linkend="attribute-code">@code</link></code> values may rendered in any case you wish, but they must not
-                  be treated as case-sensitive. If within any category one <code><link linkend="attribute-code">@code</link></code> is a
-                  case variant of another (e.g., <code><link linkend="element-S">&lt;S></link></code> and <code><link linkend="element-s">&lt;s></link></code>), then
-                  the file will be marked as invalid.</para>
+               <para>The <code><link linkend="element-body">&lt;body></link></code> of a TAN-R-mor
+                  file takes the customary optional attributes found in other TAN files (see
+                        <code><link linkend="attribute-in-progress">@in-progress</link></code> and
+                     <xref linkend="edit_stamp"/>). <code><link linkend="element-body"
+                        >&lt;body></link></code> takes any number of <code><link
+                        linkend="element-assert">&lt;assert></link></code>, <code><link
+                        linkend="element-report">&lt;report></link></code>, <code><link
+                        linkend="element-category">&lt;category></link></code> (if relying upon
+                  structured codes), or <code><link linkend="element-option"
+                     >&lt;options></link></code>. </para>
+               <para>There is no particular rule as to what concepts are allowed in a <code><link
+                        linkend="element-category">&lt;category></link></code>. In highly inflected
+                  languages, it makes sense to categorize according to part of speech. For languages
+                  with little inflection, <code><link linkend="element-category"
+                        >&lt;category></link></code> should be omitted, to allow users to use any of
+                  the features.</para>
+               <para><code><link linkend="attribute-code">@code</link></code> values may rendered in
+                  any case you wish, but they must not be case-sensitive. </para>
+               <para><emphasis role="bold">&lt;I left off here></emphasis></para>
                <para>Every <code><link linkend="element-option">&lt;option></link></code> must refer to a morphological concept that is
                   unique within the entire file. That is, if you wish to allow the concept <emphasis
                      role="italic">adverb</emphasis> as an option, that <code><link linkend="element-option">&lt;option></link></code>

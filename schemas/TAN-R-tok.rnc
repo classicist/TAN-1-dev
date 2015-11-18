@@ -10,7 +10,7 @@ include "TAN-class-3.rnc" {
 }
 exampleAB =
     
-    ## provides an example of a string and its result after the tokenization pattern is applied.
+    ## provides an example of how a TAN-R-tok file will process a string.
     element example {
         ed-stamp?,
         (comment* & (input, output+))

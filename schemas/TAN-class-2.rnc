@@ -106,18 +106,6 @@ name-change =
             | xsd:string { pattern = "#1" }
         }
     }
-certainty-stamp = cert-claim?, ed-stamp?
-cert-claim =
-    
-    ## states how certain an agent is of the data governed by the parent element. High = "is probably"; low = "is probably not"; all other values expressed as a real number from 0 (no certainty) to 1 (completely certainty).
-    
-    ##  This attribute is taken into account after other attributes. That is, @cert is to be interpreted to mean: "Assuming the abovementioned inheritable attributes to be true, I have @cert confidence about the following data:...."
-    
-    ## This attribute is inheritable. See main.xml#inheritable_attributes
-    attribute cert {
-        xsd:string { pattern = "(high)|(low)|(0\.\d+)" }
-    }
-
 ## Option to include an internal id. Not needed in TAN-LM files.
 id-option = internal-id
 alignment =

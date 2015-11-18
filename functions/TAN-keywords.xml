@@ -4,11 +4,6 @@
     <group affects-element="recommended-tokenization tokenization">
         <desc>@which, if present, must take one of the following values</desc>
         <item>
-            <IRI see="../TAN-R-tok/precise-1.xml"/>
-            <desc see="../TAN-R-tok/precise-1.xml"/>
-            <keyword>precise-1</keyword>
-        </item>
-        <item>
             <IRI see="../TAN-R-tok/general-1.xml"/>
             <desc see="../TAN-R-tok/general-1.xml"/>
             <keyword>general-1</keyword>
@@ -17,6 +12,11 @@
             <IRI see="../TAN-R-tok/general-words-only-1.xml"/>
             <desc see="../TAN-R-tok/general-words-only-1.xml"/>
             <keyword>general-words-only-1</keyword>
+        </item>
+        <item>
+            <IRI see="../TAN-R-tok/precise-1.xml"/>
+            <desc see="../TAN-R-tok/precise-1.xml"/>
+            <keyword>precise-1</keyword>
         </item>
     </group>
     <group affects-element="relationship">

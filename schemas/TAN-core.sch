@@ -345,7 +345,7 @@
 
    </rule>
    <rule context="tan:relationship">
-      <report test="not(tan:*) and not(text() = $relationship-keywords-all)">Unless you define a
+      <report test="@which and not(@which = $relationship-keywords-all)">Unless you define a
          relationship through an IRI + name pattern, the value must be: <value-of
             select="string-join($relationship-keywords-all,', ')"/>
       </report>

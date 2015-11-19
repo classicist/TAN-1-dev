@@ -1,6 +1,6 @@
 namespace ns1 = "tag:textalign.net,2015:ns"
 
-# to do: rename @ord > @pos
+# to do: rename @pos > @pos
 # allow @val to take regular expressions
 # allow @src to take * and * - [names] to allow blanket statements, esp. for implict div types
 include "TAN-core.rnc" inherit = ns1 {
@@ -137,7 +137,7 @@ token-list =
         source-ref,
         pointer-to-div-range,
         token-value-ref?,
-        token-value-order-ref?,
+        item-pos-ref?,
         char-ref,
         continuation-opt?
     }
@@ -148,7 +148,7 @@ pointer-to-div-range =
     
     ## lists references to one or more <div>s. It consists of one or more atomic references joined with commas or hyphens. An atomic reference is a string value that points to a single <div>
     
-    ## Examples:  'bk.2:ch.4', '2.4 - 2.7, 2.9', 'poem 5, poem 6:line 6 - poem 7:line 2'
+    ## Examples: 'bk.2:ch.4', '2.4 - 2.7, 2.9', 'poem 5, poem 6:line 6 - poem 7:line 2'
     
     ## Any hyphen used as a range should be preceded and followed by at least one space character.
     
@@ -159,11 +159,11 @@ token-value-ref =
     
     ## specifies a particular word token by means of its string value. In the future this attribute will support regular expressions.  
     
-    ## For more see main.xml#attr_ord_and_val
+    ## For more see main.xml#attr_pos_and_val
     attribute val {
         xsd:string { pattern = ".+" }
     }
-token-value-order-ref =
+item-pos-ref =
     
     ## lists one or more items, specified through Arabic numerals and the keyword 'last' or 'last-X' (where X is a valid number), joined with commas or hyphens.
     
@@ -171,8 +171,8 @@ token-value-order-ref =
     
     ## Any hyphen used as a range should be preceded and followed by at least one space character.
     
-    ## For more see main.xml#attr_ord_and_val
-    attribute ord { seq-picker }
+    ## For more see main.xml#attr_pos_and_val
+    attribute pos { seq-picker }
 char-ref =
     
     ## list of one or more characters, specified through Arabic numerals, the keyword 'last' or 'last-X' (where X is a valid number), joined with commas or hyphens.

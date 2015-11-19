@@ -39,7 +39,8 @@
         <change when="2014-08-13" who="park">Started file</change>
     </head>
     <body xml:lang="eng" in-progress="false">
-        <div type="line" n="1">Rĩng-a-ring-a-roses,</div><div type="line" n="2">A pocket full of posies;</div>
+        <div type="line" n="1">Ring-a-ring-a-roses,</div>
+        <div type="line" n="2">A pocket full of posies;</div>
         <div type="line" n="3">Hush! Hush! Hush! Hush!</div>
         <div type="line" n="4">We're all tumbled down.</div>
     </body>

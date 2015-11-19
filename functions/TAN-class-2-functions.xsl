@@ -576,7 +576,7 @@
       />
    </xsl:function>
    <xsl:function name="tan:sequence-expand" as="xs:integer*">
-      <!-- input: one string of concise TAN selectors (used by @ords, @chars, @segs), 
+      <!-- input: one string of concise TAN selectors (used by @poss, @chars, @segs), 
             and one integer defining the value of 'last'
             output: a sequence of numbers representing the positions selected, unsorted, and retaining
             duplicate values.
@@ -612,7 +612,7 @@
       />
    </xsl:function>
    <xsl:function name="tan:max-integer" as="xs:integer?">
-      <!-- input: string of TAN @ord or @chars selectors 
+      <!-- input: string of TAN @pos or @chars selectors 
         output: largest integer, ignoring value of 'last'
         E.g., "5 - 15, last-20" -> 15 -->
       <xsl:param name="input" as="xs:string"/>
@@ -634,7 +634,7 @@
       />
    </xsl:function>
    <xsl:function name="tan:min-last" as="xs:integer">
-      <!-- input: @ord or @chars selectors, number defining "last" 
+      <!-- input: @pos or @chars selectors, number defining "last" 
         output: smallest reference related to "last"
         E.g., "5 - 15, last-20", 34 -> 14 -->
       <xsl:param name="input" as="xs:string"/>
@@ -656,7 +656,7 @@
       <xsl:param name="element" as="element()"/>
       <xsl:value-of
          select="
-            if (matches($element/@val, ' \?|\? ') or matches($element/@ord, '\?') or matches($element/@ref, '\?')) then
+            if (matches($element/@val, ' \?|\? ') or matches($element/@pos, '\?') or matches($element/@ref, '\?')) then
                true()
             else
                false()"
@@ -914,7 +914,7 @@
       </xsl:for-each>
    </xsl:function>
    <xsl:function name="tan:pick-tokenized-prepped-class-1-data" as="element()*">
-      <!-- Input: tan:tok, complete with @src, @ref, @ord|@val 
+      <!-- Input: tan:tok, complete with @src, @ref, @pos|@val 
          Output: elements, 1 per source, deep copy of appropriate tree generated 
          by tan:tokenize-prepped-class-1-data(), except that <tok> now takes
          @n (digit specifying original token number in the leaf div) -->
@@ -934,8 +934,8 @@
             if ($help-requested) then
                '1 - last'
             else
-               if ($tok-element/@ord) then
-                  normalize-space(replace($tok-element/@ord, '\?', ''))
+               if ($tok-element/@pos) then
+                  normalize-space(replace($tok-element/@pos, '\?', ''))
                else
                   ()"/>
       <xsl:variable name="this-val"

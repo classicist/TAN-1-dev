@@ -32,7 +32,7 @@
          <let name="single-tok-test"
             value="if (@xml:id) then
                   count((tan:tok,
-                  tan:joined)) + count(tan:tok/@ref[matches(., '\s+[,-]\s+')]) + count(tan:tok/@ord[matches(., '\s*[,-]\s+')])
+                  tan:joined)) + count(tan:tok/@ref[matches(., '\s+[,-]\s+')]) + count(tan:tok/@pos[matches(., '\s*[,-]\s+')])
                else
                   ()"/>
          <report test="$single-tok-test gt 1">Any ana with an @xml:id must point to no more than one

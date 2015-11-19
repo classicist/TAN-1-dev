@@ -172,7 +172,7 @@
       </optional>
       <ref name="certainty-stamp"/>
       <optional>
-        <ref name="token-value-order-ref"/>
+        <ref name="item-pos-ref"/>
       </optional>
       <text/>
     </element>

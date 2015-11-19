@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <grammar xmlns:ns1="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <!--
-    to do: rename @ord > @pos
+    to do: rename @pos > @pos
     allow @val to take regular expressions
     allow @src to take * and * - [names] to allow blanket statements, esp. for implict div types
   -->
@@ -242,7 +242,7 @@ Reserved for modification in different types of Class 2 files, to specify how ma
         <ref name="token-value-ref"/>
       </optional>
       <optional>
-        <ref name="token-value-order-ref"/>
+        <ref name="item-pos-ref"/>
       </optional>
       <ref name="char-ref"/>
       <optional>
@@ -265,18 +265,18 @@ Reserved for modification in different types of Class 2 files, to specify how ma
     <!-- This should be enhanced, to allow regular expressions -->
     <attribute name="val">
       <a:documentation>specifies a particular word token by means of its string value. In the future this attribute will support regular expressions.  </a:documentation>
-      <a:documentation>For more see main.xml#attr_ord_and_val</a:documentation>
+      <a:documentation>For more see main.xml#attr_pos_and_val</a:documentation>
       <data type="string">
         <param name="pattern">.+</param>
       </data>
     </attribute>
   </define>
-  <define name="token-value-order-ref">
+  <define name="item-pos-ref">
     <attribute name="ord">
       <a:documentation>lists one or more items, specified through Arabic numerals and the keyword 'last' or 'last-X' (where X is a valid number), joined with commas or hyphens.</a:documentation>
       <a:documentation>Examples: '1', 'last', 'last-3 - last-1', '1, 3, 5, 7 - 11, last-8, last'</a:documentation>
       <a:documentation>Any hyphen used as a range should be preceded and followed by at least one space character.</a:documentation>
-      <a:documentation>For more see main.xml#attr_ord_and_val</a:documentation>
+      <a:documentation>For more see main.xml#attr_pos_and_val</a:documentation>
       <ref name="seq-picker"/>
     </attribute>
   </define>

@@ -29,7 +29,7 @@
          </info>
          <revision>
             <revnumber>1/dev</revnumber>
-            <date>2015-11-02</date>
+            <date>2015-11-18</date>
             <revdescription>
                <para>Prepublication working draft, under construction and for private circulation
                   only. Corrections are actively solicited and should be sent to the author (see
@@ -44,6 +44,7 @@
                      guidelines, and then to the Schematron schemas.</para>
                   <para>Chapters 1-2, 4-7 are relatively accurate. Writing suspended at <xref
                         linkend="element-TAN-R-mor"/>.</para>
+                  <para>To do: incorporate more examples from the snippets.xml file.</para>
                </warning>
             </revdescription>
          </revision>
@@ -71,7 +72,7 @@
                library of functions that definitively interpret the format and pre-process the
                files, thereby assisting developers creating TAN-based tools and applications.</para>
             <para>TAN is meant primarily to support research in linguistics, translation studies,
-               and the humanities—any scholarly field concerned with the interpretation of textual
+               and the humanities&#x2014;any scholarly field concerned with the interpretation of textual
                reuse or versions of texts. The format is designed to handle any text written in a
                Unicode-supported writing system, and from any period, from antiquity to the recent
                past. </para>
@@ -663,11 +664,11 @@
                that points to one of the two transcriptions; we have used <code>ring1881</code> and
                   <code>ring1987</code> but we could have just as easily used anything else such as
                   <code>uk</code> and <code>us</code>. <code><link linkend="attribute-ref">@ref</link></code> has a value that points to
-               a specific <code><link linkend="element-div">&lt;div></link></code> in the source transcription; and <code><link linkend="attribute-ord">@ord</link></code>
+               a specific <code><link linkend="element-div">&lt;div></link></code> in the source transcription; and <code><link linkend="attribute-pos">@pos</link></code>
                or <code><link linkend="attribute-val">@val</link></code> specify which token is intended, either by word number
-                  (<code><link linkend="attribute-ord">@ord</link></code>) or text of the actual word (<code><link linkend="attribute-val">@val</link></code>). Either
+                  (<code><link linkend="attribute-pos">@pos</link></code>) or text of the actual word (<code><link linkend="attribute-val">@val</link></code>). Either
                technique is fine, and can be mixed, as in the example. You may also notice that the
-               comma and hyphen can be used in <code><link linkend="attribute-ord">@ord</link></code> to point to multiple words within
+               comma and hyphen can be used in <code><link linkend="attribute-pos">@pos</link></code> to point to multiple words within
                the same <code><link linkend="element-div">&lt;div></link></code>, and that <code>last</code> and <code>last-X</code>
                (where <code>X</code> is a digit) can be used to point to a word token relative to
                the last one in a <code><link linkend="element-div">&lt;div></link></code>.</para>
@@ -3692,9 +3693,9 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                      >ref</link> = "Act I scene 1"</code>), or they can be provisionally adjusted;
                word tokens can be referred to by position (counting from the beginning or end of a
                      <code><link linkend="element-div">&lt;div></link></code>) or by its actual
-               value (e.g., <code><link linkend="attribute-ord">ord</link> = "1 - 5" <link
+               value (e.g., <code><link linkend="attribute-pos">ord</link> = "1 - 5" <link
                      linkend="attribute-val">val</link> = "hath"</code>; see <xref
-                  linkend="attr_ord_and_val"/>). Characters are always identified by number (e.g.,
+                  linkend="attr_pos_and_val"/>). Characters are always identified by number (e.g.,
                      <code><link linkend="attribute-chars">chars</link> = "2, 7"</code>).</para>
             <para>This approach not only makes the syntax human readable, it also mitigates any
                disruptions that corrections or alterations might incur. For example, if an
@@ -3812,27 +3813,27 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   which <code><link linkend="attribute-distribute">@distribute</link></code> (<xref
                      linkend="attr_distribute"/>) is <code>true</code>.</para>
                <para><code><link linkend="attribute-chars">@chars</link></code> and <code><link
-                        linkend="attribute-ord">@ord</link></code> follow a useful compact syntax,
-                  described below (<xref linkend="attr_ord_and_val"/>).</para>
+                        linkend="attribute-pos">@pos</link></code> follow a useful compact syntax,
+                  described below (<xref linkend="attr_pos_and_val"/>).</para>
                <para>It is helpful to think about these attributes in the context of <code><link
                         linkend="element-tok">&lt;tok></link></code>, which appears in all class 2
                   formats. This element points to individual words in one or more sources, in or
                   more references, calculated distributively. For example, <code>&lt;<link
                         linkend="element-tok">tok</link> src = "a b c" <link linkend="attribute-ref"
-                        >ref</link> = "bk.1:ch.2 - bk.1:ch.4" <link linkend="attribute-ord"
+                        >ref</link> = "bk.1:ch.2 - bk.1:ch.4" <link linkend="attribute-pos"
                         >ord</link> = "1 - 3"/></code>, points to three sources, three, references,
                   and three ordinal positions of words, and so points to twenty-seven words
                   total.</para>
             </section>
-            <section xml:id="attr_ord_and_val">
-               <title><code><link linkend="attribute-ord">@ord</link></code> and <code><link
+            <section xml:id="attr_pos_and_val">
+               <title><code><link linkend="attribute-pos">@pos</link></code> and <code><link
                         linkend="attribute-val">@val</link></code></title>
                <para>To point to a token, one of three methods may be used.</para>
                <para>
                   <orderedlist>
                      <listitem>
-                        <para><emphasis role="italic"><code><link linkend="attribute-ord"
-                                    >@ord</link></code> alone</emphasis>. Under this method, one or
+                        <para><emphasis role="italic"><code><link linkend="attribute-pos"
+                                    >@pos</link></code> alone</emphasis>. Under this method, one or
                            more digits, or the phrase <code>last</code> or <code>last-</code> plus a
                            digit, joined by hyphens or commas indicate one or more token numbers.
                            For example, <code>2, 4 - 6, last-2 - last</code> refers to the second,
@@ -3848,18 +3849,18 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                               <code>bird</code>.</para>
                      </listitem>
                      <listitem>
-                        <para><emphasis role="italic"><code><link linkend="attribute-ord"
-                                    >@ord</link></code> and <emphasis role="italic"><code><link
+                        <para><emphasis role="italic"><code><link linkend="attribute-pos"
+                                    >@pos</link></code> and <emphasis role="italic"><code><link
                                        linkend="attribute-val">@val</link></code></emphasis>
                               together.</emphasis> Under this method, specific occurences of a token
                            are picked. For example, <code><link linkend="attribute-val"
-                              >@val</link>="bird" <link linkend="attribute-ord">@ord</link>="2,
+                              >@val</link>="bird" <link linkend="attribute-pos">@pos</link>="2,
                               4"</code> picks the second and fourth occurences of the token
                               <code>bird</code>.</para>
                      </listitem>
                   </orderedlist>
                </para>
-               <para>If <code><link linkend="attribute-ord">@ord</link></code> points to an ordinal
+               <para>If <code><link linkend="attribute-pos">@pos</link></code> points to an ordinal
                   value of a word token or token value beyond the acceptable range for every
                         <code><link linkend="attribute-src">@src</link></code> and <code><link
                         linkend="attribute-ref">@ref</link></code>, an error will be generated. This
@@ -4066,7 +4067,7 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                         linkend="element-split-leaf-div-at">&lt;split-leaf-div-at></link>,
                      containing one ore more <code><link linkend="element-tok"
                         >&lt;tok></link></code>s pointing to individual words (see <xref
-                        linkend="attr_ord_and_val"/>) that should begin a new segment in each
+                        linkend="attr_pos_and_val"/>) that should begin a new segment in each
                      reference in each source. Hence the first token in a leaf <code><link
                            linkend="element-div">&lt;div></link></code> may never be picked as the
                      start of a new segment.</para>
@@ -4349,22 +4350,22 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   continues and should be concatenated with the next one and treated as a single
                   linguistic token. </para>
                <para>If <code><link linkend="attribute-ref">@ref</link></code> or <code><link
-                        linkend="attribute-ord">@ord</link></code> have multiple values then the
+                        linkend="attribute-pos">@pos</link></code> have multiple values then the
                         <code><link linkend="element-tok">&lt;tok></link></code> is assumed to be
                   referring to multiple tokens. But if <code><link linkend="attribute-chars"
                         >@chars</link></code> has multiple values, these are to be treated as
                   constituent parts of each word picked by <code><link linkend="attribute-ref"
-                        >@ref</link></code> or <code><link linkend="attribute-ord"
-                     >@ord</link></code>.</para>
+                        >@ref</link></code> or <code><link linkend="attribute-pos"
+                     >@pos</link></code>.</para>
                <para><code><link linkend="element-tok">&lt;tok></link></code> may take an
                         <code><link linkend="attribute-xmlid">@xml:id</link></code> value, reserved
                   for use by a future class-2 format, to relate words to their larger syntactical
                   context. </para>
                <para>If a lexicon has more than one entry for a given <code><link
                         linkend="element-l">&lt;l></link></code>, <code><link
-                        linkend="attribute-ord">@ord</link></code> may be used to specify which
-                  entry or entries are meant (<xref linkend="attr_ord_and_val"/>). If <code><link
-                        linkend="attribute-ord">@ord</link></code> is absent, the value is assumed
+                        linkend="attribute-pos">@pos</link></code> may be used to specify which
+                  entry or entries are meant (<xref linkend="attr_pos_and_val"/>). If <code><link
+                        linkend="attribute-pos">@pos</link></code> is absent, the value is assumed
                   to be 1.</para>
                <para>The content of <code><link linkend="element-m">&lt;m></link></code> consists of
                   one or more codes, space-delimited and defined in the chosen TAN-R-mor file. For

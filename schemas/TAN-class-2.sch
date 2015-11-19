@@ -203,7 +203,7 @@
          tan:does-not-apply-to="tok">Tokenization error (<value-of
             select="for $i in $src-data-for-this-tok/tan:div[. = $tokenization-errors] return concat($i/@ref,': ',$i/@lang)"
          />)</report>
-      <report test="not(@ord or @val)">Must point to a string value via @val, a sequence via @ord, or
+      <report test="not(@pos or @val)">Must point to a string value via @val, a sequence via @pos, or
          both.</report>
       <report test="$src-data-for-this-tok/tan:div/@error">Every value of @ref must be found in
          every source (<value-of
@@ -212,7 +212,7 @@
       <report test="$src-data-for-this-tok/tan:div/tan:tok[@error]">Every token picked must appear
          in every ref in every source<value-of
             select="if (tokenize(@val,'\s+') = 'last') then ' (&quot;last&quot; 
-            usually goes with the attribute @ord, not @val)' else ()"
+            usually goes with the attribute @pos, not @val)' else ()"
          /> (errors: <value-of
             select="for $i in $src-data-for-this-tok/tan:div[tan:tok[@error]] return 
             concat($i/../@id,': ',$i/@ref,' tok ',string-join($i/tan:tok/@error,' '))"
@@ -226,8 +226,8 @@
          every source (<value-of
             select="string-join(for $i in $src-data-for-this-tok/tan:div[not(@lang)] return concat($i/../@id,':',$i/@ref),', ')"
          />)</report>
-      <report test="matches(@ord,'\?')" role="info" tan:applies-to="ord">
-         <!-- If you insert a question mark anywhere as the value of @ord and then validate the file, you will be given a list of allowed values. -->
+      <report test="matches(@pos,'\?')" role="info" tan:applies-to="ord">
+         <!-- If you insert a question mark anywhere as the value of @pos and then validate the file, you will be given a list of allowed values. -->
          Help: acceptable values 1 through <value-of
             select="$token-ceiling"/></report>
       <report test="matches(@chars,'\?')" role="info" tan:applies-to="chars">

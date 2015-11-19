@@ -60,7 +60,7 @@
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?
 ,
-   <code><link linkend="attribute-ord">@ord</link></code>?,
+   <code><link linkend="attribute-pos">@pos</link></code>?,
 text</synopsis><para>Used by: <code><link linkend="element-lm">&lt;lm&gt;</link></code> </para><example><title><code>&lt;l&gt;</code></title><programlisting>&lt;TAN-LM TAN-version="1" id="tag:parkj@textalign.net,2015:ring01-lm"&gt;
    &lt;body lexicon="test" morphology="penn" in-progress="false"&gt;
       &lt;ana&gt;

@@ -20,7 +20,7 @@ include "TAN-class-2.rnc" {
     
     ## TAN-A-div files do not require a tokenization choice within a filter (choice enforced by Schematron)
     decl-token-opt = decl-token*
-    TAN-body-core = work-equiv*, div-type-equiv*, split?, realignment*, alignment*
+    TAN-body-core = work-equiv*, div-type-equiv*, split*, realignment*, alignment*
     
     ## alignments may take either an id with no supplementary variables or else no id and optional variables indicating strength, exclusivity, distribution, and auto-alignment
     alignment-attributes-non-class-2 = strength-claim?, exclusive-claim?, distribute-claim?

@@ -73,7 +73,7 @@ category =
     element category {
         ed-stamp?,
         (inclusion
-         | (comment* & (entity-nondigital-ref, options+)))
+         | (comment* & (feature-ref, options+)))
     }
 options =
     

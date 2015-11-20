@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <grammar xmlns:ns1="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
-  <!--
-    to do: rename @pos > @pos
-    allow @val to take regular expressions
-    allow @src to take * and * - [names] to allow blanket statements, esp. for implict div types
-  -->
+  <!-- to do: allow @src to take * and * - [names] to allow blanket statements, esp. for implict div types -->
   <include href="TAN-core.rng" ns="tag:textalign.net,2015:ns">
     <define name="decl-non-core">
       <interleave>
@@ -175,24 +171,6 @@ Reserved for modification in different types of Class 2 files, to specify how ma
       </attribute>
     </element>
   </define>
-  <define name="certainty-stamp">
-    <optional>
-      <ref name="cert-claim"/>
-    </optional>
-    <optional>
-      <ref name="ed-stamp"/>
-    </optional>
-  </define>
-  <define name="cert-claim">
-    <attribute name="cert">
-      <a:documentation>states how certain an agent is of the data governed by the parent element. High = "is probably"; low = "is probably not"; all other values expressed as a real number from 0 (no certainty) to 1 (completely certainty).</a:documentation>
-      <a:documentation> This attribute is taken into account after other attributes. That is, @cert is to be interpreted to mean: "Assuming the abovementioned inheritable attributes to be true, I have @cert confidence about the following data:...."</a:documentation>
-      <a:documentation>This attribute is inheritable. See main.xml#inheritable_attributes</a:documentation>
-      <data type="string">
-        <param name="pattern">(high)|(low)|(0\.\d+)</param>
-      </data>
-    </attribute>
-  </define>
   <define name="id-option">
     <a:documentation>Option to include an internal id. Not needed in TAN-LM files.</a:documentation>
     <ref name="internal-id"/>
@@ -255,16 +233,15 @@ Reserved for modification in different types of Class 2 files, to specify how ma
     <!-- Move this to class 2? -->
     <attribute name="ref">
       <a:documentation>lists references to one or more &lt;div&gt;s. It consists of one or more atomic references joined with commas or hyphens. An atomic reference is a string value that points to a single &lt;div&gt;</a:documentation>
-      <a:documentation>Examples:  'bk.2:ch.4', '2.4 - 2.7, 2.9', 'poem 5, poem 6:line 6 - poem 7:line 2'</a:documentation>
+      <a:documentation>Examples: 'bk.2:ch.4', '2.4 - 2.7, 2.9', 'poem 5, poem 6:line 6 - poem 7:line 2'</a:documentation>
       <a:documentation>Any hyphen used as a range should be preceded and followed by at least one space character.</a:documentation>
       <a:documentation>For more, see main.xml#class_2_body </a:documentation>
       <ref name="div-range-ref"/>
     </attribute>
   </define>
   <define name="token-value-ref">
-    <!-- This should be enhanced, to allow regular expressions -->
     <attribute name="val">
-      <a:documentation>specifies a particular word token by means of its string value. In the future this attribute will support regular expressions.  </a:documentation>
+      <a:documentation>specifies a particular word token by means of its string value. Permits regular expressions. Therefore a request for help should consist of a space before or after a question mark.</a:documentation>
       <a:documentation>For more see main.xml#attr_pos_and_val</a:documentation>
       <data type="string">
         <param name="pattern">.+</param>
@@ -272,7 +249,7 @@ Reserved for modification in different types of Class 2 files, to specify how ma
     </attribute>
   </define>
   <define name="item-pos-ref">
-    <attribute name="ord">
+    <attribute name="pos">
       <a:documentation>lists one or more items, specified through Arabic numerals and the keyword 'last' or 'last-X' (where X is a valid number), joined with commas or hyphens.</a:documentation>
       <a:documentation>Examples: '1', 'last', 'last-3 - last-1', '1, 3, 5, 7 - 11, last-8, last'</a:documentation>
       <a:documentation>Any hyphen used as a range should be preceded and followed by at least one space character.</a:documentation>

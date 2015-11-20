@@ -174,10 +174,10 @@
    <rule context="tan:tok">
       <let name="src-data-for-this-tok" value="tan:pick-tokenized-prepped-class-1-data(.)"/>
       <let name="help-requested" value="tan:help-requested(.)"/>
-      <let name="val-without-help" value="replace(@val,'\s+\?|\?\s+','')"/>
+      <let name="val-without-help" value="normalize-space(replace(@val,'\s+\?|\?\s+',''))"/>
       <let name="token-ceiling"
          value="min(for $i in $src-data-for-this-tok/tan:div return if($val-without-help) 
-         then count($i/tan:tok[. = $val-without-help]) else number($i/@max-toks))"/>
+         then count($i/tan:tok[matches(.,$val-without-help)]) else number($i/@max-toks))"/>
       <let name="char-ceiling"
          value="min(for $i in $src-data-for-this-tok//tan:tok return string-length($i))"/>
       <let name="this-chars"

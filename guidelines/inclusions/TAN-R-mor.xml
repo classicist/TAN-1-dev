@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-R-mor elements and attributes summarized</title><section xml:id="element-assert"><title><code>&lt;assert&gt;</code></title><para>The element <code>assert</code> names a pattern that, if found to be false in any <code><link linkend="element-m">&lt;m&gt;</link></code> in a dependent TAN-LM file, will return the enclosed message upon validation of the dependent file, along with an error or warning. Modeled loosely on Schematron <code><link linkend="element-report">&lt;report&gt;</link></code>.</para><synopsis><emphasis>Definition:</emphasis>
-   (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
-<code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
+   
+<emphasis>TAN-A-div.rng:</emphasis>
+(<code><link linkend="attribute-ed-who">@ed-who</link></code>,
+<code><link linkend="attribute-ed-when">@ed-when</link></code>)?
+<emphasis>  ~OR~</emphasis>
+<emphasis>TAN-core.rng:</emphasis>
+(<code><link linkend="attribute-cert">@cert</link></code>?,
+(<code><link linkend="attribute-ed-who">@ed-who</link></code>,
+<code><link linkend="attribute-ed-when">@ed-when</link></code>)?)
+?,
       (<code><link linkend="attribute-include">@include</link></code> |
-         (<code><link linkend="attribute-cert">@cert</link></code>?,
-         <code><link linkend="attribute-feature-filter">@feature-filter</link></code>?,
+         (<code><link linkend="attribute-feature-filter">@feature-filter</link></code>?,
             (<code><link linkend="attribute-code-regex-test">@code-regex-test</link></code> |
             <code><link linkend="attribute-token-regex-test">@token-regex-test</link></code> |
             <code><link linkend="attribute-feature-test">@feature-test</link></code> |
@@ -53,12 +60,12 @@ text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;<
          .........
       &lt;/declarations&gt;
    &lt;/head&gt;
-</programlisting></example></section><section xml:id="element-option"><title><code>&lt;option&gt;</code></title><para>The element <code>option</code> indicates a way to refer to a feature, supplementing the assigned <code><link linkend="attribute-xmlid">@xml:id</link></code>. Useful for situations where a code requires a value that is otherwise disallowed by <code><link linkend="attribute-xmlid">@xml:id</link></code></para><synopsis><emphasis>Definition:</emphasis>
+</programlisting></example></section><section xml:id="element-option"><title><code>&lt;option&gt;</code></title><para>The element <code>option</code> refer to a feature.</para><para>If its parent is <code><link linkend="element-category">&lt;category&gt;</link></code>, this element indicates a feature that is allowed in that area.</para><para>If its parent is <code><link linkend="element-body">&lt;body&gt;</link></code> it markes a supplemental way to refer to the feature other than the assigned <code><link linkend="attribute-xmlid">@xml:id</link></code>. Useful for situations where a code requires a value that is otherwise disallowed by <code><link linkend="attribute-xmlid">@xml:id</link></code>, e.g., colons.</para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
    <code><link linkend="attribute-include">@include</link></code> |
       (<code><link linkend="attribute-feature">@feature</link></code>,
-      <code><link linkend="attribute-code">@code</link></code>)</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-category">&lt;category&gt;</link></code> </para><example><title><code>&lt;option&gt;</code></title><programlisting>&lt;TAN-R-mor TAN-version="1" id="tag:kalvesmaki.com,2014:tan-r-mor:eng:penn"&gt;
+      <code><link linkend="attribute-code">@code</link></code>?)</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-category">&lt;category&gt;</link></code> </para><example><title><code>&lt;option&gt;</code></title><programlisting>&lt;TAN-R-mor TAN-version="1" id="tag:kalvesmaki.com,2014:tan-r-mor:eng:penn"&gt;
    &lt;body&gt;
       <emphasis role="bold">&lt;option feature="quote-cl" code="''"/&gt;</emphasis>
       <emphasis role="bold">&lt;option feature="dash" code="--"/&gt;</emphasis>
@@ -74,11 +81,18 @@ text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;<
    &lt;/body&gt;
 &lt;/TAN-R-mor&gt;
 </programlisting></example></section><section xml:id="element-report"><title><code>&lt;report&gt;</code></title><para>The element <code>report</code> names a pattern that, if found to be true in any <code><link linkend="element-m">&lt;m&gt;</link></code> in a dependent TAN-LM file, will return the enclosed message upon validation of the dependent file, along with an error or warning. Modeled loosely on Schematron <code><link linkend="element-report">&lt;report&gt;</link></code>.</para><synopsis><emphasis>Definition:</emphasis>
-   (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
-<code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
+   
+<emphasis>TAN-A-div.rng:</emphasis>
+(<code><link linkend="attribute-ed-who">@ed-who</link></code>,
+<code><link linkend="attribute-ed-when">@ed-when</link></code>)?
+<emphasis>  ~OR~</emphasis>
+<emphasis>TAN-core.rng:</emphasis>
+(<code><link linkend="attribute-cert">@cert</link></code>?,
+(<code><link linkend="attribute-ed-who">@ed-who</link></code>,
+<code><link linkend="attribute-ed-when">@ed-when</link></code>)?)
+?,
       (<code><link linkend="attribute-include">@include</link></code> |
-         (<code><link linkend="attribute-cert">@cert</link></code>?,
-         <code><link linkend="attribute-feature-filter">@feature-filter</link></code>?,
+         (<code><link linkend="attribute-feature-filter">@feature-filter</link></code>?,
             (<code><link linkend="attribute-code-regex-test">@code-regex-test</link></code> |
             <code><link linkend="attribute-token-regex-test">@token-regex-test</link></code> |
             <code><link linkend="attribute-feature-test">@feature-test</link></code> |

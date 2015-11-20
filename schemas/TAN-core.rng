@@ -42,6 +42,24 @@
       </choice>
     </attribute>
   </define>
+  <define name="certainty-stamp">
+    <optional>
+      <ref name="cert-claim"/>
+    </optional>
+    <optional>
+      <ref name="ed-stamp"/>
+    </optional>
+  </define>
+  <define name="cert-claim">
+    <attribute name="cert">
+      <a:documentation>states how certain an agent is of the data governed by the parent element. High = "is probably"; low = "is probably not"; all other values expressed as a real number from 0 (no certainty) to 1 (completely certainty).</a:documentation>
+      <a:documentation> This attribute is taken into account after other attributes. That is, @cert is to be interpreted to mean: "Assuming the abovementioned inheritable attributes to be true, I have @cert confidence about the following data:...."</a:documentation>
+      <a:documentation>This attribute is inheritable. See main.xml#inheritable_attributes</a:documentation>
+      <data type="string">
+        <param name="pattern">(high)|(low)|(0\.\d+)</param>
+      </data>
+    </attribute>
+  </define>
   <define name="inclusion">
     <attribute name="include">
       <a:documentation>signals that the parent element is to be replaced by all elements of the same name found in the referred &lt;inclusion&gt;.</a:documentation>
@@ -243,7 +261,8 @@
   </define>
   <define name="func-replace">
     <element name="replace">
-      <a:documentation>constructs the equivalent of the XPath replace() function plus parameters. Used in class 1 and class 3 (TAN-R-tok) files.</a:documentation>
+      <a:documentation>contains the equivalent of the XPath replace() function plus parameters, indicating a replacement operation that should be, or has been, applied to a digital file. Used in class 1 and class 3 (TAN-R-tok) files.</a:documentation>
+      <a:documentation>Multiple &lt;replace&gt;s will be implemented in document order.</a:documentation>
       <a:documentation>The conventions of this element and its children accord with the definition of the function and its parameters provided at http://www.w3.org/TR/xpath-functions-30/#func-replace</a:documentation>
       <a:documentation>Multiple &lt;replace&gt; values are applied according to the order given.</a:documentation>
       <optional>
@@ -251,38 +270,30 @@
       </optional>
       <choice>
         <ref name="inclusion"/>
-        <group>
-          <optional>
-            <!-- @xpath may be untenable, and is slated for deletion from ver 1, if it cannot be applied consistently or reliably. It seems to be usable only by systems running XPath 3.0, so may not be practical. -->
-            <attribute name="xpath">
-              <a:documentation>specifies an xpath expression that applies a filter to the &lt;replace&gt; activity</a:documentation>
-              <a:documentation>Using @xpath is not recommended if you wish to serve users who may be relying upon XSLT 2.0 and earlier for transformations. Only from version 3.0 has it been possible to convert a string datatype (the datatype of @xpath) into an XPath expression.</a:documentation>
-            </attribute>
-          </optional>
-          <interleave>
-            <zeroOrMore>
-              <ref name="comment"/>
-            </zeroOrMore>
-            <group>
-              <ref name="func-param-pattern"/>
-              <element name="replacement">
-                <optional>
-                  <ref name="ed-stamp"/>
-                </optional>
-                <text/>
-              </element>
+        <interleave>
+          <zeroOrMore>
+            <ref name="comment"/>
+          </zeroOrMore>
+          <group>
+            <ref name="func-param-pattern"/>
+            <element name="replacement">
+              <a:documentation>contains a string used to replace any occurrence of &lt;pattern&gt; </a:documentation>
               <optional>
-                <ref name="func-param-flags"/>
+                <ref name="ed-stamp"/>
               </optional>
-            </group>
-          </interleave>
-        </group>
+              <text/>
+            </element>
+            <optional>
+              <ref name="func-param-flags"/>
+            </optional>
+          </group>
+        </interleave>
       </choice>
     </element>
   </define>
   <define name="func-tokenize">
     <element name="tokenize">
-      <a:documentation>constructs the equivalent of an XPath replace() function plus parameters. Used in class 1 and class 3 (TAN-R-tok) files.</a:documentation>
+      <a:documentation>constructs the equivalent of an XPath tokenize() function plus parameters. Used in class 1 and class 3 (TAN-R-tok) files.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>

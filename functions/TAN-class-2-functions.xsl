@@ -967,7 +967,7 @@
                      select="
                         if (exists($this-val))
                         then
-                           count(tan:tok[. = $this-val])
+                           count(tan:tok[matches(.,$this-val)])
                         else
                            count(tan:tok)"/>
                   <xsl:variable name="this-ord-seq"
@@ -982,7 +982,7 @@
                      <xsl:choose>
                         <xsl:when test="exists($this-val)">
                            <xsl:variable name="this-tok"
-                              select="$this-div/tan:tok[. = $this-val][$this-ord-item]"/>
+                              select="$this-div/tan:tok[matches(.,$this-val)][$this-ord-item]"/>
                            <xsl:element name="tan:tok">
                               <xsl:attribute name="n"
                                  select="count($this-tok/preceding-sibling::tan:tok) + 1"/>

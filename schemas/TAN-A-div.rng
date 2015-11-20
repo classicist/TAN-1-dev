@@ -40,9 +40,9 @@
       <zeroOrMore>
         <ref name="div-type-equiv"/>
       </zeroOrMore>
-      <optional>
+      <zeroOrMore>
         <ref name="split"/>
-      </optional>
+      </zeroOrMore>
       <zeroOrMore>
         <ref name="realignment"/>
       </zeroOrMore>
@@ -79,6 +79,9 @@
   <define name="div-ref-pattern">
     <optional>
       <ref name="ed-stamp"/>
+    </optional>
+    <optional>
+      <ref name="strength-claim"/>
     </optional>
     <ref name="source-ref"/>
     <ref name="pointer-to-div-range"/>

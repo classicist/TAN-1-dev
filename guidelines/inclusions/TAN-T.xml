@@ -39,14 +39,6 @@ text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;<
       .........
    &lt;/body&gt;
 <emphasis role="bold">&lt;/TAN-T&gt;</emphasis>
-</programlisting></example><example><title><code>&lt;TAN-T&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:semantic-refs-dupl" TAN-version="1"&gt;</emphasis>
-   &lt;head&gt;
-      .........
-   &lt;/head&gt;
-   &lt;body xml:lang="grc" ed-who="kalvesmaki" ed-when="2015-08-02T15:31:07.816-04:00"&gt;
-      .........
-   &lt;/body&gt;
-<emphasis role="bold">&lt;/TAN-T&gt;</emphasis>
 </programlisting></example><example><title><code>&lt;TAN-T&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:semantic-refs" TAN-version="1"&gt;</emphasis>
    &lt;head&gt;
       .........
@@ -60,6 +52,14 @@ text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;<
       .........
    &lt;/head&gt;
    &lt;body xml:lang="deu" in-progress="false"&gt;
+      .........
+   &lt;/body&gt;
+<emphasis role="bold">&lt;/TAN-T&gt;</emphasis>
+</programlisting></example><example><title><code>&lt;TAN-T&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-T TAN-version="1" id="tag:parkj@textalign.net,2015:ring01"&gt;</emphasis>
+   &lt;head&gt;
+      .........
+   &lt;/head&gt;
+   &lt;body xml:lang="eng" in-progress="false"&gt;
       .........
    &lt;/body&gt;
 <emphasis role="bold">&lt;/TAN-T&gt;</emphasis>

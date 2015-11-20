@@ -29,10 +29,16 @@
       &lt;/declarations&gt;
    &lt;/head&gt;
 </programlisting></example><example><title><code>&lt;div-type&gt;</code></title><programlisting>      &lt;declarations&gt;
-         &lt;work include="master"/&gt;
-         <emphasis role="bold">&lt;div-type include="master"/&gt;</emphasis>
-         &lt;recommended-tokenization which="general-words-only-1"/&gt;
-         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
+         &lt;work&gt;
+            .........
+         &lt;/work&gt;
+         <emphasis role="bold">&lt;div-type xml:id="ch"&gt;</emphasis>
+            &lt;IRI&gt;http://dbpedia.org/resource/Chapter_(books)&lt;/IRI&gt;
+            &lt;name&gt;chapter&lt;/name&gt;
+         <emphasis role="bold">&lt;/div-type&gt;</emphasis>
+         <emphasis role="bold">&lt;div-type xml:id="par"&gt;</emphasis>
+            .........
+         <emphasis role="bold">&lt;/div-type&gt;</emphasis>
          .........
       &lt;/declarations&gt;
 </programlisting></example></section><section xml:id="element-filter"><title><code>&lt;filter&gt;</code></title><para>The element <code>filter</code> declares alterations that have been made to the source.</para><synopsis><emphasis>Definition:</emphasis>
@@ -61,8 +67,11 @@
       &lt;/declarations&gt;
 </programlisting></example><example><title><code>&lt;filter&gt;</code></title><programlisting>      &lt;declarations&gt;
          .........
-         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
+         &lt;recommended-tokenization which="general-1"/&gt;
          <emphasis role="bold">&lt;filter&gt;</emphasis>
+            &lt;normalization&gt;
+               .........
+            &lt;/normalization&gt;
             &lt;normalization&gt;
                .........
             &lt;/normalization&gt;
@@ -72,9 +81,6 @@
          .........
          &lt;recommended-tokenization which="general-1"/&gt;
          <emphasis role="bold">&lt;filter&gt;</emphasis>
-            &lt;normalization&gt;
-               .........
-            &lt;/normalization&gt;
             &lt;normalization&gt;
                .........
             &lt;/normalization&gt;
@@ -100,21 +106,18 @@
                &lt;name&gt;discretionary hyphens suppressed&lt;/name&gt;
             <emphasis role="bold">&lt;/normalization&gt;</emphasis>
          &lt;/filter&gt;
-</programlisting></example><example><title><code>&lt;normalization&gt;</code></title><programlisting>         &lt;filter&gt;
-            <emphasis role="bold">&lt;normalization&gt;</emphasis>
-               &lt;IRI&gt;tag:textalign.net,2015:normalization:hyphens-discretionary-removed&lt;/IRI&gt;
-               &lt;name&gt;discretionary hyphens suppressed&lt;/name&gt;
-            <emphasis role="bold">&lt;/normalization&gt;</emphasis>
-         &lt;/filter&gt;
-</programlisting></example><example><title><code>&lt;normalization&gt;</code></title><programlisting>         &lt;filter&gt;
+</programlisting></example><example><title><code>&lt;normalization&gt;</code></title><programlisting>      &lt;declarations&gt;
+         &lt;filter&gt;
             <emphasis role="bold">&lt;normalization&gt;</emphasis>
                &lt;IRI&gt;tag:textalign.net,2015:normalization:music-printed-removed&lt;/IRI&gt;
                &lt;name&gt;Printed music has been removed.&lt;/name&gt;
             <emphasis role="bold">&lt;/normalization&gt;</emphasis>
             <emphasis role="bold">&lt;normalization&gt;</emphasis>
-               .........
+               &lt;IRI&gt;tag:textalign.net,2015:normalization:hyphens-discretionary-removed&lt;/IRI&gt;
+               &lt;name&gt;Suppression of hyphens&lt;/name&gt;
             <emphasis role="bold">&lt;/normalization&gt;</emphasis>
          &lt;/filter&gt;
+      &lt;/declarations&gt;
 </programlisting></example></section><section xml:id="element-recommended-div-type-refs"><title><code>&lt;recommended-div-type-refs&gt;</code></title><para>The element <code>recommended-div-type-refs</code> suggests whether div types in references to the transcription should be explicit (e.g., book.John:chapter.3:verse.16) or implicit (e.g., John 3:16). If not present, explicit is assumed.</para><para>Anyone using your file need not adhere to your recommendation. If you mark the value as implicit, someone who prefers the verbose syntax is welcome to do so. But the converse is not true: explicit means only the verbose form may be used.</para><para>Although this element is optional, it is suggested especially for long files, because it will reduce the time to validate any dependent files.</para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
@@ -136,25 +139,7 @@
             .........
          &lt;/filter&gt;
       &lt;/declarations&gt;
-</programlisting></example><example><title><code>&lt;recommended-div-type-refs&gt;</code></title><programlisting>      &lt;declarations&gt;
-         .........
-         &lt;recommended-tokenization which="general-words-only-1"/&gt;
-         <emphasis role="bold">&lt;recommended-div-type-refs&gt;</emphasis>implicit<emphasis role="bold">&lt;/recommended-div-type-refs&gt;</emphasis>
-         &lt;filter&gt;
-            .........
-         &lt;/filter&gt;
-      &lt;/declarations&gt;
-</programlisting></example></section><section xml:id="element-recommended-tokenization"><title><code>&lt;recommended-tokenization&gt;</code></title><para>The element <code>recommended-tokenization</code> suggests an ideal TAN-R-tok pattern to be used to segment a text into word tokens. If no thought has been given to tokenization, this element should be left empty. There are two kinds of tokenization patterns.</para><para>(1) Core: general-1, general-words-only-1, and precise-1 (values of <code><link linkend="attribute-which">@which</link></code>). </para><para>(2) Custom: each <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code> must point through an IRI + name pattern a specific TAN-R-tok file, and must take a unique value for <code><link linkend="attribute-xmlid">@xml:id</link></code>, to be used by dependent class 2 TAN files.</para><para>You may have as many <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code>s as you like, but the order is important: the optimal tokenizing pattern should be placed first.</para><para>For theoretical background and more information, see <xref linkend="preparing_transcriptions_for_tokenization"/></para><para><emphasis><code><link linkend="attribute-which">@which</link></code>, if present, must take one of the following values</emphasis><itemizedlist><listitem><para><emphasis role="bold">precise-1</emphasis></para><para><link xlink:href="../../TAN-R-tok/precise-1.xml">Master file</link></para><para>IRI: <code> tag:textalign.net,2015:tan-r-tok:precise-1</code></para><para>This tokenization pattern takes any text in any language and after space normalization
-         returns a tokenization based only on white space and U+200B (ZERO-WIDTH SPACE). The
-         zero-width spaces are intended to allow transcribers to mark word or morpheme morpheme
-         boundaries where ordinarily no space would be provided (and where one would wish not to
-         display space). In addition, if a transcriber wishes to suppress a word space, as a point
-         of tokenization, one of U+2000..U+200A should be used. This is a core tokenization pattern,
-         so can be invoked by the elements tokenization or recommended-tokenization simply by
-         setting <code><link linkend="attribute-which">@which</link></code> to the value "precise-1". Or you may use the full IRI + name pattern.
-         
-         
-      </para></listitem><listitem><para><emphasis role="bold">general-1</emphasis></para><para><link xlink:href="../../TAN-R-tok/general-1.xml">Master file</link></para><para>IRI: <code> tag:textalign.net,2015:tan-r-tok:general-1</code></para><para>This tokenization pattern takes any text in any language, offsets punctuation and other
+</programlisting></example></section><section xml:id="element-recommended-tokenization"><title><code>&lt;recommended-tokenization&gt;</code></title><para>The element <code>recommended-tokenization</code> suggests an ideal TAN-R-tok pattern to be used to segment a text into word tokens. If no thought has been given to tokenization, this element should be left empty. There are two kinds of tokenization patterns.</para><para>(1) Core: general-1, general-words-only-1, and precise-1 (values of <code><link linkend="attribute-which">@which</link></code>). </para><para>(2) Custom: each <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code> must point through an IRI + name pattern a specific TAN-R-tok file, and must take a unique value for <code><link linkend="attribute-xmlid">@xml:id</link></code>, to be used by dependent class 2 TAN files.</para><para>You may have as many <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code>s as you like, but the order is important: the optimal tokenizing pattern should be placed first.</para><para>For theoretical background and more information, see <xref linkend="preparing_transcriptions_for_tokenization"/></para><para><emphasis><code><link linkend="attribute-which">@which</link></code>, if present, must take one of the following values</emphasis><itemizedlist><listitem><para><emphasis role="bold">general-1</emphasis></para><para><link xlink:href="../../TAN-R-tok/general-1.xml">Master file</link></para><para>IRI: <code> tag:textalign.net,2015:tan-r-tok:general-1</code></para><para>This tokenization pattern takes any text in any language, offsets punctuation and other
          non-word characters with spaces, then returns a sequence of strings tokenized by white
          space. It is meant to be applied to transcriptions prepared by agents who have given little
          or no thought to tokenization, and to be suitable for languages and texts where individual
@@ -170,6 +155,16 @@
          analysis. This is a core tokenization pattern, so can be invoked by the elements
          tokenization or recommended-tokenization simply by setting <code><link linkend="attribute-which">@which</link></code> to the value "precise-1".
          Or you may use the full IRI + name pattern.
+         
+         
+      </para></listitem><listitem><para><emphasis role="bold">precise-1</emphasis></para><para><link xlink:href="../../TAN-R-tok/precise-1.xml">Master file</link></para><para>IRI: <code> tag:textalign.net,2015:tan-r-tok:precise-1</code></para><para>This tokenization pattern takes any text in any language and after space normalization
+         returns a tokenization based only on white space and U+200B (ZERO-WIDTH SPACE). The
+         zero-width spaces are intended to allow transcribers to mark word or morpheme morpheme
+         boundaries where ordinarily no space would be provided (and where one would wish not to
+         display space). In addition, if a transcriber wishes to suppress a word space, as a point
+         of tokenization, one of U+2000..U+200A should be used. This is a core tokenization pattern,
+         so can be invoked by the elements tokenization or recommended-tokenization simply by
+         setting <code><link linkend="attribute-which">@which</link></code> to the value "precise-1". Or you may use the full IRI + name pattern.
          
          
       </para></listitem></itemizedlist></para><synopsis><emphasis>Definition:</emphasis>
@@ -192,13 +187,6 @@
          &lt;/filter&gt;
       &lt;/declarations&gt;
 </programlisting></example><example><title><code>&lt;recommended-tokenization&gt;</code></title><programlisting>      &lt;declarations&gt;
-         &lt;work include="master"/&gt;
-         &lt;div-type include="master"/&gt;
-         <emphasis role="bold">&lt;recommended-tokenization which="general-words-only-1"/&gt;</emphasis>
-         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
-         .........
-      &lt;/declarations&gt;
-</programlisting></example><example><title><code>&lt;recommended-tokenization&gt;</code></title><programlisting>      &lt;declarations&gt;
          .........
          &lt;div-type xml:id="ic"&gt;
             .........
@@ -210,6 +198,16 @@
 </programlisting></example><example><title><code>&lt;recommended-tokenization&gt;</code></title><programlisting>      &lt;declarations&gt;
          .........
          &lt;div-type xml:id="para"&gt;
+            .........
+         &lt;/div-type&gt;
+         <emphasis role="bold">&lt;recommended-tokenization which="general-1"/&gt;</emphasis>
+         &lt;filter&gt;
+            .........
+         &lt;/filter&gt;
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;recommended-tokenization&gt;</code></title><programlisting>      &lt;declarations&gt;
+         .........
+         &lt;div-type xml:id="Zeile"&gt;
             .........
          &lt;/div-type&gt;
          <emphasis role="bold">&lt;recommended-tokenization which="general-1"/&gt;</emphasis>
@@ -263,13 +261,6 @@
          .........
       &lt;/declarations&gt;
 </programlisting></example><example><title><code>&lt;work&gt;</code></title><programlisting>      &lt;declarations&gt;
-         <emphasis role="bold">&lt;work include="master"/&gt;</emphasis>
-         &lt;div-type include="master"/&gt;
-         &lt;recommended-tokenization which="general-words-only-1"/&gt;
-         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
-         .........
-      &lt;/declarations&gt;
-</programlisting></example><example><title><code>&lt;work&gt;</code></title><programlisting>      &lt;declarations&gt;
          <emphasis role="bold">&lt;work&gt;</emphasis>
             &lt;IRI&gt;http://dbpedia.org/resource/Categories_(Aristotle)&lt;/IRI&gt;
             &lt;name&gt;Aristotle, Categories&lt;/name&gt;
@@ -287,6 +278,16 @@
          &lt;div-type xml:id="sect"&gt;
             .........
          &lt;/div-type&gt;
+         .........
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;work&gt;</code></title><programlisting>      &lt;declarations&gt;
+         <emphasis role="bold">&lt;work&gt;</emphasis>
+            &lt;IRI&gt;tag:beispiel.com,2014:texte:holderbusch&lt;/IRI&gt;
+            &lt;name&gt;"Die Kinder auf dem Holderbusch"&lt;/name&gt;
+         <emphasis role="bold">&lt;/work&gt;</emphasis>
+         &lt;version&gt;
+            .........
+         &lt;/version&gt;
          .........
       &lt;/declarations&gt;
 </programlisting></example></section><section xml:id="attribute-ns-are-numerals"><title><code>@ns-are-numerals</code></title><para>The attribute <code>ns-are-numerals</code> specifies whether <code><link linkend="attribute-n">@n</link></code> values of a particular <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> is a numeral. By default the value is true unless values fail to match standard patterns for numeral systems (Arabic, Roman, etc.)</para><para>For more information, see <xref linkend="reference_system"/></para><synopsis><emphasis>Definition:</emphasis>

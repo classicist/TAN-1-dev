@@ -7,7 +7,7 @@
 (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
 <code><link linkend="attribute-ed-when">@ed-when</link></code>)?
 <emphasis>  ~OR~</emphasis>
-<emphasis>TAN-class-2.rng:</emphasis>
+<emphasis>TAN-core.rng:</emphasis>
 <code><link linkend="attribute-cert">@cert</link></code>?,
 (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
 <code><link linkend="attribute-ed-when">@ed-when</link></code>)?
@@ -55,7 +55,7 @@
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?
 <emphasis>  ~OR~</emphasis>
-<emphasis>TAN-class-2.rng:</emphasis>
+<emphasis>TAN-core.rng:</emphasis>
    <code><link linkend="attribute-cert">@cert</link></code>?,
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?
@@ -106,7 +106,7 @@ text</synopsis><para>Used by: <code><link linkend="element-lm">&lt;lm&gt;</link>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?
 <emphasis>  ~OR~</emphasis>
-<emphasis>TAN-class-2.rng:</emphasis>
+<emphasis>TAN-core.rng:</emphasis>
    <code><link linkend="attribute-cert">@cert</link></code>?,
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?
@@ -150,7 +150,7 @@ text</synopsis><para>Used by: <code><link linkend="element-lm">&lt;lm&gt;</link>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?
 <emphasis>  ~OR~</emphasis>
-<emphasis>TAN-class-2.rng:</emphasis>
+<emphasis>TAN-core.rng:</emphasis>
    <code><link linkend="attribute-cert">@cert</link></code>?,
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?

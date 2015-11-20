@@ -24,7 +24,7 @@
   </include>
   <define name="exampleAB">
     <element name="example">
-      <a:documentation>provides an example of a string and its result after the tokenization pattern is applied.</a:documentation>
+      <a:documentation>provides an example of how a TAN-R-tok file will process a string.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>

@@ -75,14 +75,11 @@
   <define name="test-pattern">
     <a:documentation>Test pattern attributes for determining whether to return the message provided by text.</a:documentation>
     <optional>
-      <ref name="ed-stamp"/>
+      <ref name="certainty-stamp"/>
     </optional>
     <choice>
       <ref name="inclusion"/>
       <group>
-        <optional>
-          <ref name="cert-claim"/>
-        </optional>
         <optional>
           <ref name="filter"/>
         </optional>
@@ -150,7 +147,9 @@
   </define>
   <define name="options">
     <element name="option">
-      <a:documentation>indicates a way to refer to a feature, supplementing the assigned @xml:id. Useful for situations where a code requires a value that is otherwise disallowed by @xml:id</a:documentation>
+      <a:documentation>refer to a feature.</a:documentation>
+      <a:documentation>If its parent is &lt;category&gt;, this element indicates a feature that is allowed in that area.</a:documentation>
+      <a:documentation>If its parent is &lt;body&gt; it markes a supplemental way to refer to the feature other than the assigned @xml:id. Useful for situations where a code requires a value that is otherwise disallowed by @xml:id, e.g., colons.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -158,7 +157,9 @@
         <ref name="inclusion"/>
         <group>
           <ref name="feature-ref"/>
-          <ref name="code"/>
+          <optional>
+            <ref name="code"/>
+          </optional>
         </group>
       </choice>
     </element>

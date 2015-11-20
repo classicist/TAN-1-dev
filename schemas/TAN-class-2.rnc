@@ -1,8 +1,6 @@
 namespace ns1 = "tag:textalign.net,2015:ns"
 
-# to do: rename @pos > @pos
-# allow @val to take regular expressions
-# allow @src to take * and * - [names] to allow blanket statements, esp. for implict div types
+# to do: allow @src to take * and * - [names] to allow blanket statements, esp. for implict div types
 include "TAN-core.rnc" inherit = ns1 {
     decl-non-core = decl-class-2 & decl-non-class-2
     
@@ -106,6 +104,7 @@ name-change =
             | xsd:string { pattern = "#1" }
         }
     }
+
 ## Option to include an internal id. Not needed in TAN-LM files.
 id-option = internal-id
 alignment =
@@ -155,9 +154,8 @@ pointer-to-div-range =
     ## For more, see main.xml#class_2_body 
     attribute ref { div-range-ref }
 token-value-ref =
-    # This should be enhanced, to allow regular expressions
     
-    ## specifies a particular word token by means of its string value. In the future this attribute will support regular expressions.  
+    ## specifies a particular word token by means of its string value. Permits regular expressions. Therefore a request for help should consist of a space before or after a question mark.
     
     ## For more see main.xml#attr_pos_and_val
     attribute val {

@@ -40,7 +40,7 @@
         </source>
         <declarations>
             <implicit-div-type-refs src="eng-uk eng-us ger eng-1790"/>
-            <tokenization src="eng-us" which="general-1"></tokenization>
+            <tokenization src="eng-us" which="general-1"/>
         </declarations>
         <agent xml:id="park" roles="creator">
             <IRI>tag:parkj@textalign.net,2015:self</IRI>
@@ -60,7 +60,7 @@
             <div-type-ref src="eng-uk" div-type-ref="line"/>
         </equate-div-types>
         <split-leaf-div-at>
-            <tok src="eng-us" ref="2" ord="last"></tok>
+            <tok src="eng-us" ref="2" pos="last"/>
         </split-leaf-div-at>
         <realign>
             <anchor-div-ref src="eng-us" ref="4"/>

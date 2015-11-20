@@ -51,24 +51,24 @@
     <body bitext-relation="B-descends-from-A" reuse-type="adaptation" in-progress="false">
         <!-- Examples of picking tokens by number -->
         <align>
-            <tok src="ring1881" ref="line 1" ord="1"/>
-            <tok src="ring1987" ref="l 1" ord="1"/>
+            <tok src="ring1881" ref="line 1" pos="1"/>
+            <tok src="ring1987" ref="l 1" pos="1"/>
         </align>
         <align>
-            <tok src="ring1881" ref="line 1" ord="2"/>
-            <tok src="ring1987" ref="l 1" ord="2"/>
+            <tok src="ring1881" ref="line 1" pos="2"/>
+            <tok src="ring1987" ref="l 1" pos="2"/>
         </align>
         <align>
-            <tok src="ring1881" ref="line 1" ord="3"/>
-            <tok src="ring1987" ref="l 1" ord="3"/>
+            <tok src="ring1881" ref="line 1" pos="3"/>
+            <tok src="ring1987" ref="l 1" pos="3"/>
         </align>
         <align>
-            <tok src="ring1881" ref="line 1" ord="4"/>
-            <tok src="ring1987" ref="l 1" ord="4"/>
+            <tok src="ring1881" ref="line 1" pos="4"/>
+            <tok src="ring1987" ref="l 1" pos="4"/>
         </align>
         <align>
-            <tok src="ring1881" ref="line 1" ord="5"/>
-            <tok src="ring1987" ref="l 1" ord="5"/>
+            <tok src="ring1881" ref="line 1" pos="5"/>
+            <tok src="ring1987" ref="l 1" pos="5"/>
         </align>
         <!-- Examples of picking tokens by value -->
         <align>
@@ -93,31 +93,31 @@
         </align>
         <!-- Examples of picking tokens by number with commas, hyphens, and 'last' -->
         <align>
-            <tok src="ring1881" ref="line 3" ord="1, 2"/>
-            <tok src="ring1987" ref="l 3" ord="1"/>
+            <tok src="ring1881" ref="line 3" pos="1, 2"/>
+            <tok src="ring1987" ref="l 3" pos="1"/>
         </align>
         <align>
-            <tok src="ring1881" ref="line 3" ord="3 - 4"/>
-            <tok src="ring1987" ref="l 3" ord="2"/>
+            <tok src="ring1881" ref="line 3" pos="3 - 4"/>
+            <tok src="ring1987" ref="l 3" pos="2"/>
         </align>
         <align>
-            <tok src="ring1881" ref="line 4" ord="1"/>
-            <tok src="ring1987" ref="l 4" ord="1"/>
+            <tok src="ring1881" ref="line 4" pos="1"/>
+            <tok src="ring1987" ref="l 4" pos="1"/>
         </align>
         <align>
-            <tok src="ring1881" ref="line 4" ord="2"/>
+            <tok src="ring1881" ref="line 4" pos="2"/>
         </align>
         <align>
-            <tok src="ring1881" ref="line 4" ord="3"/>
-            <tok src="ring1987" ref="l 4" ord="2"/>
+            <tok src="ring1881" ref="line 4" pos="3"/>
+            <tok src="ring1987" ref="l 4" pos="2"/>
         </align>
         <align>
-            <tok src="ring1881" ref="line 4" ord="last-1"/>
-            <tok src="ring1987" ref="l 4" ord="last-1"/>
+            <tok src="ring1881" ref="line 4" pos="last-1"/>
+            <tok src="ring1987" ref="l 4" pos="last-1"/>
         </align>
         <align>
-            <tok src="ring1881" ref="line 4" ord="last"/>
-            <tok src="ring1987" ref="l 4" ord="last"/>
+            <tok src="ring1881" ref="line 4" pos="last"/>
+            <tok src="ring1987" ref="l 4" pos="last"/>
         </align>
     </body>
 </TAN-A-tok>

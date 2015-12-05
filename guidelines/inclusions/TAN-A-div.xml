@@ -29,7 +29,7 @@
          <emphasis role="bold">&lt;div-type-ref src="eng-uk" div-type-ref="line"/&gt;</emphasis>
       &lt;/equate-div-types&gt;
       &lt;split-leaf-div-at&gt;
-         &lt;tok src="eng-us" ref="2" ord="last"/&gt;
+         &lt;tok src="eng-us" ref="2" pos="last"/&gt;
       &lt;/split-leaf-div-at&gt;
       &lt;realign&gt;
          &lt;anchor-div-ref src="eng-us" ref="4"/&gt;
@@ -66,7 +66,7 @@
          &lt;div-type-ref src="eng-uk" div-type-ref="line"/&gt;
       &lt;/equate-div-types&gt;
       &lt;split-leaf-div-at&gt;
-         &lt;tok src="eng-us" ref="2" ord="last"/&gt;
+         &lt;tok src="eng-us" ref="2" pos="last"/&gt;
       &lt;/split-leaf-div-at&gt;
       &lt;realign&gt;
          &lt;anchor-div-ref src="eng-us" ref="4"/&gt;
@@ -104,7 +104,7 @@
          .........
       &lt;/equate-div-types&gt;
       <emphasis role="bold">&lt;split-leaf-div-at&gt;</emphasis>
-         &lt;tok src="eng-us" ref="2" ord="last"/&gt;
+         &lt;tok src="eng-us" ref="2" pos="last"/&gt;
       <emphasis role="bold">&lt;/split-leaf-div-at&gt;</emphasis>
       &lt;realign&gt;
          .........

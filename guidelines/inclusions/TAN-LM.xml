@@ -18,25 +18,25 @@
             <code><link linkend="element-lm">&lt;lm&gt;</link></code>+)))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> </para><caution><itemizedlist><listitem><para>Any ana with an <code><link linkend="attribute-xmlid">@xml:id</link></code> must point to no more than one token.</para></listitem></itemizedlist></caution><example><title><code>&lt;ana&gt;</code></title><programlisting>&lt;TAN-LM TAN-version="1" id="tag:parkj@textalign.net,2015:ring01-lm"&gt;
    &lt;body lexicon="test" morphology="penn" in-progress="false"&gt;
       <emphasis role="bold">&lt;ana&gt;</emphasis>
-         &lt;tok ref="line 1" ord="1 - last-1"/&gt;
+         &lt;tok ref="line 1" pos="1 - last-1"/&gt;
          &lt;lm&gt;
             .........
          &lt;/lm&gt;
       <emphasis role="bold">&lt;/ana&gt;</emphasis>
       <emphasis role="bold">&lt;ana&gt;</emphasis>
-         &lt;tok ref="line 1" ord="last"/&gt;
+         &lt;tok ref="line 1" pos="last"/&gt;
          &lt;lm&gt;
             .........
          &lt;/lm&gt;
       <emphasis role="bold">&lt;/ana&gt;</emphasis>
       <emphasis role="bold">&lt;ana xml:id="anatest"&gt;</emphasis>
-         &lt;tok ref="line 2" ord="1"/&gt;
+         &lt;tok ref="line 2" pos="1"/&gt;
          &lt;lm&gt;
             .........
          &lt;/lm&gt;
       <emphasis role="bold">&lt;/ana&gt;</emphasis>
       <emphasis role="bold">&lt;ana&gt;</emphasis>
-         &lt;tok ref="line 2" ord="2"/&gt;
+         &lt;tok ref="line 2" pos="2"/&gt;
          &lt;lm&gt;
             .........
          &lt;/lm&gt;
@@ -118,26 +118,26 @@ text</synopsis><para>Used by: <code><link linkend="element-lm">&lt;lm&gt;</link>
          <code><link linkend="element-m">&lt;m&gt;</link></code>+))</synopsis><para>Used by: <code><link linkend="element-ana">&lt;ana&gt;</link></code> </para><example><title><code>&lt;lm&gt;</code></title><programlisting>&lt;TAN-LM TAN-version="1" id="tag:parkj@textalign.net,2015:ring01-lm"&gt;
    &lt;body lexicon="test" morphology="penn" in-progress="false"&gt;
       &lt;ana&gt;
-         &lt;tok ref="line 1" ord="1 - last-1"/&gt;
+         &lt;tok ref="line 1" pos="1 - last-1"/&gt;
          <emphasis role="bold">&lt;lm&gt;</emphasis>
             &lt;l lexicon="test"&gt;ring-a-ring-a-rose&lt;/l&gt;
             &lt;m&gt;NNS ;&lt;/m&gt;
          <emphasis role="bold">&lt;/lm&gt;</emphasis>
       &lt;/ana&gt;
       &lt;ana&gt;
-         &lt;tok ref="line 1" ord="last"/&gt;
+         &lt;tok ref="line 1" pos="last"/&gt;
          <emphasis role="bold">&lt;lm&gt;</emphasis>
             &lt;m&gt;; .&lt;/m&gt;
          <emphasis role="bold">&lt;/lm&gt;</emphasis>
       &lt;/ana&gt;
       &lt;ana xml:id="anatest"&gt;
-         &lt;tok ref="line 2" ord="1"/&gt;
+         &lt;tok ref="line 2" pos="1"/&gt;
          <emphasis role="bold">&lt;lm&gt;</emphasis>
             &lt;m&gt;; NN&lt;/m&gt;
          <emphasis role="bold">&lt;/lm&gt;</emphasis>
       &lt;/ana&gt;
       &lt;ana&gt;
-         &lt;tok ref="line 2" ord="2"/&gt;
+         &lt;tok ref="line 2" pos="2"/&gt;
          <emphasis role="bold">&lt;lm&gt;</emphasis>
             &lt;m&gt;NN&lt;/m&gt;
          <emphasis role="bold">&lt;/lm&gt;</emphasis>

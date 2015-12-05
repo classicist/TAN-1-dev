@@ -38,7 +38,7 @@ report =
 test-pattern =
     certainty-stamp?,
     (inclusion
-     | (filter?, (code-regex-test | token-regex-test | feature-test | filter-qty-test), text))
+     | (filter?, (code-regex-test | token-regex-test | feature-test | feature-qty-test), text))
 filter =
     
     ## specifies that when a dependent TAN-LM file is validated and the condition for the parent <report> or <assert> is triggered by the value of a given <m>, the message should be returned only if the <m> has at least one of the features mentioned by @feature-filter.
@@ -61,12 +61,12 @@ feature-test =
     
     ## One of four tests for determining the truth value that will trigger the message in a <report> or <assert> 
     attribute feature-test { text }
-filter-qty-test =
+feature-qty-test =
     
     ## specifies a number greater than one indicating how many of the features in @feature-filter must be present for the condition to be true. This is useful for situations where it is desired to flag values of <m> that try to combine incompatible features.
     
     ## One of four tests for determining the truth value that will trigger the message in a <report> or <assert> 
-    attribute filter-qty-test { xsd:integer }
+    attribute feature-qty-test { xsd:integer }
 category =
     
     ## creates a set of features that share a common grammatical trait such as gender, number, etc.

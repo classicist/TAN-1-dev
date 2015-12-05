@@ -87,7 +87,7 @@
           <ref name="code-regex-test"/>
           <ref name="token-regex-test"/>
           <ref name="feature-test"/>
-          <ref name="filter-qty-test"/>
+          <ref name="feature-qty-test"/>
         </choice>
         <text/>
       </group>
@@ -116,8 +116,8 @@
       <a:documentation>One of four tests for determining the truth value that will trigger the message in a &lt;report&gt; or &lt;assert&gt; </a:documentation>
     </attribute>
   </define>
-  <define name="filter-qty-test">
-    <attribute name="filter-qty-test">
+  <define name="feature-qty-test">
+    <attribute name="feature-qty-test">
       <a:documentation>specifies a number greater than one indicating how many of the features in @feature-filter must be present for the condition to be true. This is useful for situations where it is desired to flag values of &lt;m&gt; that try to combine incompatible features.</a:documentation>
       <a:documentation>One of four tests for determining the truth value that will trigger the message in a &lt;report&gt; or &lt;assert&gt; </a:documentation>
       <data type="integer"/>

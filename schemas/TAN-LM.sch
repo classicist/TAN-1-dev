@@ -79,11 +79,11 @@
                         $i"/>
          <let name="reports" value="$this-mory//tan:report[$this-val = tokenize(lower-case(@feature-filter),'\s+')], $this-mory//tan:report[not(@feature-filter)]"/>
          <let name="asserts" value="$this-mory//tan:assert[$this-val = tokenize(lower-case(@feature-filter),'\s+')], $this-mory//tan:assert[not(@feature-filter)]"/>
-         <let name="filter-qty-test" value="for $i in $reports[@filter-qty-test] return
-            if (count($this-val[. = (tan:all-morph-codes($this-mory,tokenize($i/@feature-filter,'\s+')))]) ge number($i/@filter-qty-test))
+         <let name="feature-qty-test" value="for $i in $reports[@feature-qty-test] return
+            if (count($this-val[. = (tan:all-morph-codes($this-mory,tokenize($i/@feature-filter,'\s+')))]) ge number($i/@feature-qty-test))
             then $i
-            else (), for $i in $asserts[@filter-qty-test] return
-            if (not(count($this-val[. = (tan:all-morph-codes($this-mory,tokenize($i/@feature-filter,'\s+')))]) ge number($i/@filter-qty-test)))
+            else (), for $i in $asserts[@feature-qty-test] return
+            if (not(count($this-val[. = (tan:all-morph-codes($this-mory,tokenize($i/@feature-filter,'\s+')))]) ge number($i/@feature-qty-test)))
             then $i
             else ()"></let>
          <let name="code-regex-test" value="for $i in $reports[@code-regex-test] return 
@@ -100,7 +100,7 @@
             if(not(tan:feature-test-check($this,$i/@feature-test,$this-mory)))
             then $i
             else ()"/>
-         <let name="all-tests" value="$filter-qty-test, $code-regex-test, $feature-test"/>
+         <let name="all-tests" value="$feature-qty-test, $code-regex-test, $feature-test"/>
          <!-- START TESTING BLOCK -->
          <let name="test1" value="index-of($morphologies/@xml:id, ($this/ancestor-or-self::node()/@morphology)[1])"/>
          <let name="test2" value="($this/ancestor-or-self::node()/@morphology)[last()]"/>

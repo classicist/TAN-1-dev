@@ -145,13 +145,13 @@
 &lt;/TAN-T&gt;
 </programlisting></example><example><title><code>&lt;body&gt;</code></title><programlisting>   &lt;text&gt;
       <emphasis role="bold">&lt;body xml:lang="eng"&gt;</emphasis>
-         &lt;div type="sect" n="a"&gt;
+         &lt;div type="sect" n="a" part="N" org="uniform" sample="complete"&gt;
             .........
          &lt;/div&gt;
-         &lt;div type="sect" n="b"&gt;
+         &lt;div type="sect" n="b" part="N" org="uniform" sample="complete"&gt;
             .........
          &lt;/div&gt;
-         &lt;div type="sect" n="c"&gt;
+         &lt;div type="sect" n="c" part="N" org="uniform" sample="complete"&gt;
             .........
          &lt;/div&gt;
       <emphasis role="bold">&lt;/body&gt;</emphasis>
@@ -494,7 +494,7 @@ language </synopsis><para>Used by: <code><link linkend="element-declarations">&l
    &lt;/body&gt;
 &lt;/TAN-T&gt;
 </programlisting></example><example><title><code>&lt;head&gt;</code></title><programlisting>&lt;TEI TAN-version="1" id="tag:parkj@textalign.net,2015:gomme.1898.ring-o-roses"&gt;
-   &lt;teiHeader&gt;
+   &lt;teiHeader type="text"&gt;
       .........
    &lt;/teiHeader&gt;
    <emphasis role="bold">&lt;head&gt;</emphasis>
@@ -1175,28 +1175,28 @@ string (pattern (high)|(low)|(0\.\d+))</synopsis><para>Used by: <code><link link
          &lt;tok src="ger" ref="Zeile e" val="alle"/&gt;
       &lt;/align&gt;
       &lt;align&gt;
-         &lt;tok src="eng" ref="line 3" ord="1"/&gt;
-         &lt;tok src="ger" ref="Zeile e" ord="3"/&gt;
+         &lt;tok src="eng" ref="line 3" pos="1"/&gt;
+         &lt;tok src="ger" ref="Zeile e" pos="3"/&gt;
       &lt;/align&gt;
       &lt;align&gt;
-         &lt;tok src="eng" ref="line 3" ord="2"/&gt;
-         &lt;tok src="ger" ref="Zeile e" ord="4"/&gt;
+         &lt;tok src="eng" ref="line 3" pos="2"/&gt;
+         &lt;tok src="ger" ref="Zeile e" pos="4"/&gt;
       &lt;/align&gt;
       &lt;align&gt;
-         &lt;tok src="eng" ref="line 3" ord="3"/&gt;
-         &lt;tok src="ger" ref="Zeile e" ord="5"/&gt;
+         &lt;tok src="eng" ref="line 3" pos="3"/&gt;
+         &lt;tok src="ger" ref="Zeile e" pos="5"/&gt;
       &lt;/align&gt;
       &lt;align&gt;
-         &lt;tok src="eng" ref="line 1" ord="1, 2"/&gt;
-         &lt;tok src="ger" ref="Zeile a" ord="1"/&gt;
+         &lt;tok src="eng" ref="line 1" pos="1, 2"/&gt;
+         &lt;tok src="ger" ref="Zeile a" pos="1"/&gt;
       &lt;/align&gt;
       &lt;align&gt;
-         &lt;tok src="eng" ref="line 1" ord="3, 4"/&gt;
-         &lt;tok src="ger" ref="Zeile a" ord="2"/&gt;
+         &lt;tok src="eng" ref="line 1" pos="3, 4"/&gt;
+         &lt;tok src="ger" ref="Zeile a" pos="2"/&gt;
       &lt;/align&gt;
       &lt;align&gt;
-         &lt;tok src="eng" ref="line 1" ord="5"<emphasis role="bold"> cert="low"</emphasis>/&gt;
-         &lt;tok src="ger" ref="Zeile a" ord="3"<emphasis role="bold"> cert="low"</emphasis>/&gt;
+         &lt;tok src="eng" ref="line 1" pos="5"<emphasis role="bold"> cert="low"</emphasis>/&gt;
+         &lt;tok src="ger" ref="Zeile a" pos="3"<emphasis role="bold"> cert="low"</emphasis>/&gt;
       &lt;/align&gt;
    &lt;/body&gt;
 </programlisting></example><example><title><code>@cert</code></title><programlisting>   &lt;body reuse-type="correlationGeneral" bitext-relation="unclear"&gt;
@@ -1205,28 +1205,28 @@ string (pattern (high)|(low)|(0\.\d+))</synopsis><para>Used by: <code><link link
          &lt;tok src="ger" ref="4" val="alle"/&gt;
       &lt;/align&gt;
       &lt;align&gt;
-         &lt;tok src="eng" ref="3" ord="1"/&gt;
-         &lt;tok src="ger" ref="4" ord="3"/&gt;
+         &lt;tok src="eng" ref="3" pos="1"/&gt;
+         &lt;tok src="ger" ref="4" pos="3"/&gt;
       &lt;/align&gt;
       &lt;align&gt;
-         &lt;tok src="eng" ref="3" ord="2"/&gt;
-         &lt;tok src="ger" ref="4" ord="4"/&gt;
+         &lt;tok src="eng" ref="3" pos="2"/&gt;
+         &lt;tok src="ger" ref="4" pos="4"/&gt;
       &lt;/align&gt;
       &lt;align&gt;
-         &lt;tok src="eng" ref="3" ord="3"/&gt;
-         &lt;tok src="ger" ref="4" ord="5"/&gt;
+         &lt;tok src="eng" ref="3" pos="3"/&gt;
+         &lt;tok src="ger" ref="4" pos="5"/&gt;
       &lt;/align&gt;
       &lt;align&gt;
-         &lt;tok src="eng" ref="1" ord="1, 2"/&gt;
-         &lt;tok src="ger" ref="1" ord="1"/&gt;
+         &lt;tok src="eng" ref="1" pos="1, 2"/&gt;
+         &lt;tok src="ger" ref="1" pos="1"/&gt;
       &lt;/align&gt;
       &lt;align&gt;
-         &lt;tok src="eng" ref="1" ord="3, 4"/&gt;
-         &lt;tok src="ger" ref="1" ord="2"/&gt;
+         &lt;tok src="eng" ref="1" pos="3, 4"/&gt;
+         &lt;tok src="ger" ref="1" pos="2"/&gt;
       &lt;/align&gt;
       &lt;align&gt;
-         &lt;tok src="eng" ref="1" ord="5"<emphasis role="bold"> cert="low"</emphasis>/&gt;
-         &lt;tok src="ger" ref="1" ord="3"<emphasis role="bold"> cert="low"</emphasis>/&gt;
+         &lt;tok src="eng" ref="1" pos="5"<emphasis role="bold"> cert="low"</emphasis>/&gt;
+         &lt;tok src="ger" ref="1" pos="3"<emphasis role="bold"> cert="low"</emphasis>/&gt;
       &lt;/align&gt;
    &lt;/body&gt;
 </programlisting></example></section><section xml:id="attribute-ed-when"><title><code>@ed-when</code></title><para>The attribute <code>ed-when</code> marks the date or time when an element or its content was edited (added or modified)</para><para>The value of must always conform to an ISO date or dateTime pattern. See <xref linkend="date_and_datetime"/>.</para><para>Along with <code><link linkend="attribute-ed-who">@ed-who</link></code>, this forms the Edit Stamp pattern. See <xref linkend="edit_stamp"/></para><synopsis><emphasis>Definition:</emphasis>
@@ -1367,7 +1367,7 @@ anyURI (pattern tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-
    &lt;/body&gt;
 &lt;/TAN-T&gt;
 </programlisting></example><example><title><code>@id</code></title><programlisting>&lt;TEI TAN-version="1"<emphasis role="bold"> id="tag:parkj@textalign.net,2015:gomme.1898.ring-o-roses"</emphasis>&gt;
-   &lt;teiHeader&gt;
+   &lt;teiHeader type="text"&gt;
       .........
    &lt;/teiHeader&gt;
    &lt;head&gt;
@@ -1410,13 +1410,13 @@ boolean </synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt
 &lt;/TAN-T&gt;
 </programlisting></example><example><title><code>@in-progress</code></title><programlisting>   &lt;text&gt;
       &lt;body xml:lang="eng"<emphasis role="bold"> in-progress="false"</emphasis>&gt;
-         &lt;div type="l" n="1"&gt;
+         &lt;div type="l" n="1" part="N" org="uniform" sample="complete"&gt;
             .........
          &lt;/div&gt;
-         &lt;div type="l" n="2"&gt;
+         &lt;div type="l" n="2" part="N" org="uniform" sample="complete"&gt;
             .........
          &lt;/div&gt;
-         &lt;div type="l" n="3"&gt;
+         &lt;div type="l" n="3" part="N" org="uniform" sample="complete"&gt;
             .........
          &lt;/div&gt;
          .........
@@ -1569,7 +1569,7 @@ text</synopsis><para>Used by: <code><link linkend="element-anchor-div-ref">&lt;a
          &lt;div-type-ref<emphasis role="bold"> src="eng-uk"</emphasis> div-type-ref="line"/&gt;
       &lt;/equate-div-types&gt;
       &lt;split-leaf-div-at&gt;
-         &lt;tok<emphasis role="bold"> src="eng-us"</emphasis> ref="2" ord="last"/&gt;
+         &lt;tok<emphasis role="bold"> src="eng-us"</emphasis> ref="2" pos="last"/&gt;
       &lt;/split-leaf-div-at&gt;
       &lt;realign&gt;
          &lt;anchor-div-ref<emphasis role="bold"> src="eng-us"</emphasis> ref="4"/&gt;
@@ -1595,7 +1595,7 @@ string (pattern 1(\W+dev)?)</synopsis><para>Used by: <code><link linkend="elemen
    &lt;/body&gt;
 &lt;/TAN-T&gt;
 </programlisting></example><example><title><code>@TAN-version</code></title><programlisting>&lt;TEI<emphasis role="bold"> TAN-version="1"</emphasis> id="tag:parkj@textalign.net,2015:gomme.1898.ring-o-roses"&gt;
-   &lt;teiHeader&gt;
+   &lt;teiHeader type="text"&gt;
       .........
    &lt;/teiHeader&gt;
    &lt;head&gt;

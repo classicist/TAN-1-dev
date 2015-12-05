@@ -94,11 +94,11 @@
          <report test="exists($invalid-features)"><!-- Must refer to <feature>s in the <declarations> -->The feature(s) <value-of
                select="string-join($invalid-features, ', ')"/> have not been declared.</report>
       </rule>
-      <rule context="@filter-qty-test">
+      <rule context="@feature-qty-test">
          <let name="ff" value="../@feature-filter"/>
          <let name="this" value="number(.)"/>
-         <assert test="exists($ff)">@filter-qty-test requires @feature-filter.</assert>
-         <report test="($this lt 2) or ($this gt count(tokenize($ff,'\s+')))">@filter-qty-test must
+         <assert test="exists($ff)">@feature-qty-test requires @feature-filter.</assert>
+         <report test="($this lt 2) or ($this gt count(tokenize($ff,'\s+')))">@feature-qty-test must
             neither be less than two nor greater than the number of features in
             @feature-filter.</report>
       </rule>

@@ -1,6 +1,5 @@
 namespace ns1 = "tag:textalign.net,2015:ns"
 
-# to do: allow @src to take * and * - [names] to allow blanket statements, esp. for implict div types
 include "TAN-core.rnc" inherit = ns1 {
     decl-non-core = decl-class-2 & decl-non-class-2
     
@@ -81,6 +80,11 @@ decl-rename-div-n =
         ed-stamp?,
         (inclusion | (source-ref, div-type-ref, name-change+))
     }
+source-ref =
+    
+    ## refers to the ID of one or more <source>s 
+    attribute src { text }
+
 name-change =
     
     ## indicates the name of a <div> @n or @type that should be changed, and the name to which it should be changed.

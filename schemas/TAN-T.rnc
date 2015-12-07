@@ -18,8 +18,6 @@ text-div =
          | (type, n, lang-of-content?, (text-div+ | text)))
     }
 type =
-    # altered definition from xsd:string { pattern = "\w*" } 
-    
     ## indicates what type of textual unit <div> marks. Points to a <div-type> declared in <declarations>.
     attribute type { d:IDREFS }
 n =

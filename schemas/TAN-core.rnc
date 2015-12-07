@@ -1,6 +1,6 @@
-# TAN core schema
 # TO DO:
 # add @href to <source>, <see-also>, and <include>, to point to a collection or document that should supply metadata for that element; bind SQF to @href to perform the action
+# allow @src to take * and * - [names] to allow blanket statements, esp. for implict div types
 
 default namespace = "tag:textalign.net,2015:ns"
 
@@ -114,10 +114,6 @@ role-ref =
     
     ## refers to the ID of one or more <role>s
     attribute roles { text }
-source-ref =
-    
-    ## refers to the ID of one or more <source>s 
-    attribute src { text }
 
 ##    String that specifies a range of tokens: digits or "last(-digit)?" joined by space-delimited hyphens or vertical lines (pipe character)
 seq-picker =
@@ -125,9 +121,6 @@ seq-picker =
         pattern =
             "((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?(\s*,\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*"
     }
-# Unused pattern, restricted to URIs. Kept in case the regular expression is helpful in the future.
-# URI-gen =
-#     xsd:anyURI { pattern = "[a-zA-Z][\-.+a-zA-Z0-9]+:[\-._~+:/?#\[\]%@!$&'\(\)*+,;=a-zA-Z0-9]+" }
 
 ## Tag URN, mandatory pattern for the IRI name of every TAN file 
 URI-tag =

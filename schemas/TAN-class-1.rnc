@@ -2,13 +2,6 @@ default namespace local = "tag:textalign.net,2015:ns"
 
 include "TAN-core.rnc" {
     decl-non-core = decl-class-1 & decl-non-class-1
-    
-    ## No class 1 file may use @src, because there is only one source allowed
-    source-ref = empty
-    # Commented out 2015-11-05, to move @which to general keyword holder
-    # Any class 1 file that declares a core TAN tokenization pattern, must use one of the following options
-    # tokenization-ref-text = xsd:string { pattern = "(precise|general(-words-only)?)-\d+" }
-    
 }
 
 ## Class 1 files must declare a single work, perhaps one version, one or more divisions, one or more recommended tokenizations, perhaps one filter, and perhaps one 
@@ -51,9 +44,8 @@ decl-div =
          | (ns-are-numerals?, internal-id, (comment* & entity-nondigital-ref)))
     }
 ns-are-numerals =
-    # moved from core on 2015-11-03; delete by 2016 if everything's ok
     
-    ## specifies whether @n values of a particular <div-type> is a numeral. By default the value is true unless values fail to match standard patterns for numeral systems (Arabic, Roman, etc.)
+    ## specifies whether @n values of a particular <div-type> are numerals. If this attribute is not present, then if the set of @n values match patterns for Arabic, Roman, or letter-based (e.g., a, b, c, ... z, aa, bb, ....) numeral systems then the value will be treated as true, otherwise as false.
     
     ## For more information, see main.xml#reference_system
     attribute ns-are-numerals { xsd:boolean }
@@ -86,8 +78,6 @@ decl-ref-rec =
         (inclusion
          | xsd:string { pattern = "implicit|explicit" })
     }
-
-##
 decl-filt =
     
     ## declares alterations that have been made to the source.

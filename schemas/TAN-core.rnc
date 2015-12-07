@@ -1,6 +1,5 @@
 # TO DO:
-# add @href to <source>, <see-also>, and <include>, to point to a collection or document that should supply metadata for that element; bind SQF to @href to perform the action
-# allow @src to take * and * - [names] to allow blanket statements, esp. for implict div types
+# [priority low] add @href to <source>, <see-also>, and <include>, to point to a collection or document that should supply metadata for that element; bind SQF to @href to perform the action
 
 default namespace = "tag:textalign.net,2015:ns"
 

@@ -225,6 +225,8 @@
             test="(parent::tan:align[not(@exclusive) or @exclusive = false()]) and count($this-src-list) gt 1"
             tan:applies-to="align">Any &lt;align> where @exclusive is false may not cite more than
             one source.</report>
+         <report test="@cont and not(following-sibling::tan:div-ref)" tan:applies-to="cont">Any &lt;div-ref> taking 
+            @cont must be followed by at least one other &lt;dvi-ref>.</report>
       </rule>
 
    </pattern>

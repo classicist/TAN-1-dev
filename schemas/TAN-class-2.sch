@@ -263,6 +263,8 @@
          test="preceding-sibling::tan:tok[1]/@cont and count($src-data-for-this-tok//tan:tok) gt 1"
          >Any &lt;tok> that continues a previous one (via @cont) must point to only a single
          token.</report>
+      <report test="@cont and not(following-sibling::tan:tok)" tan:applies-to="cont">Any &lt;tok> taking 
+         @cont must be followed by at least one other &lt;tok>.</report>
    </rule>
 
 </pattern>

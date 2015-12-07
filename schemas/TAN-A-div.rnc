@@ -33,7 +33,7 @@ div-ref-list =
     
     ## points to one or more <div>s (or segments of <div>s) in one or more sources
     element div-ref { div-ref-pattern }
-div-ref-pattern = ed-stamp?, strength-claim?, source-ref, pointer-to-div-range, seg-ref?
+div-ref-pattern = ed-stamp?, strength-claim?, source-ref, pointer-to-div-range, seg-ref?, continuation?
 # TAN-A-div structure
 work-equiv =
     

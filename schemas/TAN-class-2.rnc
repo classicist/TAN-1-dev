@@ -1,3 +1,6 @@
+# TO DO:
+# [priority low] allow @src to take * and * - [names] to allow blanket statements, esp. for implict div types
+
 namespace ns1 = "tag:textalign.net,2015:ns"
 
 include "TAN-core.rnc" inherit = ns1 {
@@ -184,7 +187,9 @@ char-ref =
 continuation-opt = empty
 continuation =
     
-    ## indicates whether the current <tok> is continued by the next one and to be treated as a single token.
+    ## indicates whether the current element is continued by the next one and to be treated as a single one. Content must be empty since its value is always true.
     
-    ## This feature is useful for rejoining the portion of a word split across two <div>s, or for uniting as a single linguistic token multiple tokens separated by the tokenization process, e.g., "pom pom". 
-    attribute cont { text }
+    ## This feature is useful in <tok> for rejoining the portion of a word split across two <div>s, or for uniting into a single linguistic token multiple tokens separated by the tokenization process, e.g., "pom pom". 
+    
+    ## This feature is useful in <div-ref> for creating groups of references that cannot be expressed in a single <div-ref>  
+    attribute cont { xsd:string { pattern = "" } }

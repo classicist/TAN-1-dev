@@ -353,24 +353,24 @@
       @exclusive claims (which are therefore dropped). It has no effect on empty tan:align elements that 
       merely point to other alignments. The result follows this pattern:
       <tan:align [+ANY ATTRIBUTES]> [IF DISTRIBUTE, ONE PER ATOMIC REF]
-         <tan:group [IF (@exclusive = true()) THEN] src="[SOURCE NUMBER]" [ELSE] work="[WORK NUMBER]"
+         <tan:group [IF (@exclusive) THEN] src="[SOURCE NUMBER]" [ELSE] work="[WORK NUMBER]"
          orig-ref="[THE ORIGINAL REFERENCES FOR THIS WORK OR SOURCE, STRING-JOINED BY COMMAS]">
             <tan:div-ref src="[SOURCE NUMBER]" ref="[SINGLE REF]" seg="[SINGLE SEGMENT NUMBER; IF NO SEGMENTATION, 
             THIS ATTRIBUTE IS MISSING]">
       tan:div-refs will be sorted by document order 
       NB, <tan:align error="true"> collects div-refs that cannot be allocated in one-to-one matches demanded by
-      @distribute = true
+      the presence of @distribute
       -->
       <xsl:param name="align-element" as="element()?"/>
       <xsl:variable name="is-exclusive"
          select="
-            if ($align-element/@exclusive = true()) then
+            if ($align-element/@exclusive) then
                true()
             else
                false()"/>
       <xsl:variable name="is-distributed"
          select="
-            if ($align-element/@distribute = true()) then
+            if ($align-element/@distribute) then
                true()
             else
                false()"/>

@@ -123,7 +123,7 @@
          <let name="this-src-list" value="tan:src-ids-to-nos(tan:div-ref/@src)"/>
          <let name="this-work-list" value="for $i in $this-src-list return $equate-works[$i]"/>
          <let name="this-align-normalized" value="tan:normalize-align(.)"/>
-         <report test="@distribute = true() and count(tan:div-ref) eq 1">@distribute
+         <report test="@distribute and count(tan:div-ref) eq 1">@distribute
             has no effect on an align that has only one &lt;div-ref>.</report>
          <report test="$this-align-normalized/@error">@distribute requires one-to-one correlation
             between each atomic ref in each work / source (uncorrelated: <value-of
@@ -222,8 +222,8 @@
          <report test="not($is-anchor) and $is-being-realigned and (some $i in ($div-ref-is-anchored) satisfies $i)" tan:does-not-apply-to="anchor-div-ref">An
             anchor may not be realigned by a div ref.</report>
          <report
-            test="(parent::tan:align[not(@exclusive) or @exclusive = false()]) and count($this-src-list) gt 1"
-            tan:applies-to="align">Any &lt;align> where @exclusive is false may not cite more than
+            test="(parent::tan:align[not(@exclusive)]) and count($this-src-list) gt 1"
+            tan:applies-to="align">Any @src of a child of an &lt;align> with no @exclusive may cite no more than
             one source.</report>
          <report test="@cont and not(following-sibling::tan:div-ref)" tan:applies-to="cont">Any &lt;div-ref> taking 
             @cont must be followed by at least one other &lt;dvi-ref>.</report>

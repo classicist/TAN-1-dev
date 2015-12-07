@@ -187,9 +187,9 @@ char-ref =
 continuation-opt = empty
 continuation =
     
-    ## indicates whether the current element is continued by the next one and to be treated as a single one. Content must be empty since its value is always true.
+    ## indicates whether the current element is continued by the next one and to be treated as a single one. Value must be 1 or true, implied by the very presence of the attribute. If you wish to decare it to be false, delete the attribute altogether.
     
     ## This feature is useful in <tok> for rejoining the portion of a word split across two <div>s, or for uniting into a single linguistic token multiple tokens separated by the tokenization process, e.g., "pom pom". 
     
     ## This feature is useful in <div-ref> for creating groups of references that cannot be expressed in a single <div-ref>  
-    attribute cont { xsd:string { pattern = "" } }
+    attribute cont { xsd:boolean { pattern = "true|1" } }

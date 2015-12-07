@@ -157,7 +157,7 @@
       <let name="possible-refs" value="if ($this-src-list = $src-impl-div-types) then $possible-divs/@impl-ref
          else $possible-divs/@ref"/>
       <let name="ref-range-must-join-siblings"
-         value="if (../parent::tan:realign or ../..[@distribute = true()] or ../..[@xml:id]) then true() else false()"/>
+         value="if (../parent::tan:realign or ../..[@distribute] or ../..[@xml:id]) then true() else false()"/>
       <!-- START TESTING BLOCK -->
       <let name="test1" value="$this-src-list"/>
       <let name="test2" value="for $i in $this-refs-norm return count(tokenize($i,' [-,] '))"/>

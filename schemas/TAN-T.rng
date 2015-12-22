@@ -39,7 +39,6 @@
     </element>
   </define>
   <define name="type">
-    <!-- altered definition from xsd:string { pattern = "\w*" } -->
     <attribute name="type">
       <a:documentation>indicates what type of textual unit &lt;div&gt; marks. Points to a &lt;div-type&gt; declared in &lt;declarations&gt;.</a:documentation>
       <data type="IDREFS"/>

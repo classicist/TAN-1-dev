@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  TAN core schema
   TO DO:
-  add @href to <source>, <see-also>, and <include>, to point to a collection or document that should supply metadata for that element; bind SQF to @href to perform the action
+  [priority low] add @href to <source>, <see-also>, and <include>, to point to a collection or document that should supply metadata for that element; bind SQF to @href to perform the action
 -->
 <grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <!-- PART ONE OF TWO: PATTERNS REPEATEDLY USED ACROSS DIFFERENT TAN FILES -->
@@ -135,22 +134,12 @@
       <a:documentation>refers to the ID of one or more &lt;role&gt;s</a:documentation>
     </attribute>
   </define>
-  <define name="source-ref">
-    <attribute name="src">
-      <a:documentation>refers to the ID of one or more &lt;source&gt;s </a:documentation>
-    </attribute>
-  </define>
   <define name="seq-picker">
     <a:documentation>   String that specifies a range of tokens: digits or "last(-digit)?" joined by space-delimited hyphens or vertical lines (pipe character)</a:documentation>
     <data type="string">
       <param name="pattern">((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?(\s*,\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*</param>
     </data>
   </define>
-  <!--
-    Unused pattern, restricted to URIs. Kept in case the regular expression is helpful in the future.
-    URI-gen =
-        xsd:anyURI { pattern = "[a-zA-Z][\-.+a-zA-Z0-9]+:[\-._~+:/?#\[\]%@!$&'\(\)*+,;=a-zA-Z0-9]+" }
-  -->
   <define name="URI-tag">
     <a:documentation>Tag URN, mandatory pattern for the IRI name of every TAN file </a:documentation>
     <data type="anyURI">

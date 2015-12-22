@@ -7,15 +7,6 @@
         <ref name="decl-non-class-1"/>
       </interleave>
     </define>
-    <define name="source-ref">
-      <a:documentation>No class 1 file may use @src, because there is only one source allowed</a:documentation>
-      <empty/>
-    </define>
-    <!--
-      Commented out 2015-11-05, to move @which to general keyword holder
-      Any class 1 file that declares a core TAN tokenization pattern, must use one of the following options
-      tokenization-ref-text = xsd:string { pattern = "(precise|general(-words-only)?)-\d+" }
-    -->
   </include>
   <define name="decl-class-1">
     <a:documentation>Class 1 files must declare a single work, perhaps one version, one or more divisions, one or more recommended tokenizations, perhaps one filter, and perhaps one </a:documentation>
@@ -106,9 +97,8 @@
     </element>
   </define>
   <define name="ns-are-numerals">
-    <!-- moved from core on 2015-11-03; delete by 2016 if everything's ok -->
     <attribute name="ns-are-numerals">
-      <a:documentation>specifies whether @n values of a particular &lt;div-type&gt; is a numeral. By default the value is true unless values fail to match standard patterns for numeral systems (Arabic, Roman, etc.)</a:documentation>
+      <a:documentation>specifies whether @n values of a particular &lt;div-type&gt; are numerals. If this attribute is not present, then if the set of @n values match patterns for Arabic, Roman, or letter-based (e.g., a, b, c, ... z, aa, bb, ....) numeral systems then the value will be treated as true, otherwise as false.</a:documentation>
       <a:documentation>For more information, see main.xml#reference_system</a:documentation>
       <data type="boolean"/>
     </attribute>
@@ -156,7 +146,6 @@
     </element>
   </define>
   <define name="decl-filt">
-    <a:documentation/>
     <element name="filter">
       <a:documentation>declares alterations that have been made to the source.</a:documentation>
       <optional>

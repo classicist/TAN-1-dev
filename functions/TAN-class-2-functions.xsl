@@ -720,12 +720,13 @@
 
    <xsl:function name="tan:prep-class-1-data" as="element()*">
       <!-- one-parameter function for the next, two-parameter function; the one-parameter
-      function assumes that there is a one-to-one correspondence between documents and source numbers -->
+      function assumes that every document should be prepared -->
       <xsl:param name="class-1-documents" as="document-node()*"/>
-      <xsl:sequence select="tan:prep-class-1-data($class-1-documents, $src-count)"/>
+      <xsl:sequence select="tan:prep-class-1-data($class-1-documents, (1 to count($class-1-documents)))"/>
    </xsl:function>
    <xsl:function name="tan:prep-class-1-data" as="element()*">
-      <!-- Input: sequence of URLs for class 1 TAN sources, one per source
+      <!-- Input: sequence of class 1 TAN documents, sequence of integers pointing to source numbers, to specify
+         which of the documents should be handled
          Output: sequence of one node/tree per source flattening the data into this form:
          <div @old-ref="[NORMALIZED, FLATTENED REF]" @ref="[NORMALIZED, FLATTENED 
          REF WITH TYPE AND N SUBSTITUTIONS AND SUPPRESSIONS]" @impl-ref="[AS @ref BUT 

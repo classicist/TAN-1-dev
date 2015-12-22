@@ -87,7 +87,6 @@ source-ref =
     
     ## refers to the ID of one or more <source>s 
     attribute src { text }
-
 name-change =
     
     ## indicates the name of a <div> @n or @type that should be changed, and the name to which it should be changed.
@@ -125,8 +124,10 @@ alignment =
         alignment-inclusion-opt
         | (alignment-attributes-non-class-2,
            certainty-stamp,
+           non-class-2-opt,
            (comment* & alignment-content-non-class-2))
     }
+non-class-2-opt = empty
 alignment-attributes-non-class-2 = empty
 alignment-content-non-class-2 = empty
 alignment-inclusion-opt = inclusion
@@ -192,4 +193,6 @@ continuation =
     ## This feature is useful in <tok> for rejoining the portion of a word split across two <div>s, or for uniting into a single linguistic token multiple tokens separated by the tokenization process, e.g., "pom pom". 
     
     ## This feature is useful in <div-ref> for creating groups of references that cannot be expressed in a single <div-ref>  
-    attribute cont { xsd:boolean { pattern = "true|1" } }
+    attribute cont {
+        xsd:boolean { pattern = "true|1" }
+    }

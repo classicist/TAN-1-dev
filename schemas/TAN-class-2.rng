@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<grammar xmlns:ns1="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
-  <!-- to do: allow @src to take * and * - [names] to allow blanket statements, esp. for implict div types -->
+<!--
+  TO DO:
+  [priority low] allow @src to take * and * - [names] to allow blanket statements, esp. for implict div types
+-->
+<grammar xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:ns1="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <include href="TAN-core.rng" ns="tag:textalign.net,2015:ns">
     <define name="decl-non-core">
       <interleave>
@@ -145,6 +148,11 @@ Reserved for modification in different types of Class 2 files, to specify how ma
       </choice>
     </element>
   </define>
+  <define name="source-ref">
+    <attribute name="src">
+      <a:documentation>refers to the ID of one or more &lt;source&gt;s </a:documentation>
+    </attribute>
+  </define>
   <define name="name-change">
     <element name="rename">
       <a:documentation>indicates the name of a &lt;div&gt; @n or @type that should be changed, and the name to which it should be changed.</a:documentation>
@@ -271,8 +279,12 @@ Reserved for modification in different types of Class 2 files, to specify how ma
   </define>
   <define name="continuation">
     <attribute name="cont">
-      <a:documentation>indicates whether the current &lt;tok&gt; is continued by the next one and to be treated as a single token.</a:documentation>
-      <a:documentation>This feature is useful for rejoining the portion of a word split across two &lt;div&gt;s, or for uniting as a single linguistic token multiple tokens separated by the tokenization process, e.g., "pom pom". </a:documentation>
+      <a:documentation>indicates whether the current element is continued by the next one and to be treated as a single one. Value must be 1 or true, implied by the very presence of the attribute. If you wish to decare it to be false, delete the attribute altogether.</a:documentation>
+      <a:documentation>This feature is useful in &lt;tok&gt; for rejoining the portion of a word split across two &lt;div&gt;s, or for uniting into a single linguistic token multiple tokens separated by the tokenization process, e.g., "pom pom". </a:documentation>
+      <a:documentation>This feature is useful in &lt;div-ref&gt; for creating groups of references that cannot be expressed in a single &lt;div-ref&gt;  </a:documentation>
+      <data type="boolean">
+        <param name="pattern">true|1</param>
+      </data>
     </attribute>
   </define>
 </grammar>

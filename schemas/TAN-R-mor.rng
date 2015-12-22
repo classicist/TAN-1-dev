@@ -136,7 +136,7 @@
             <ref name="comment"/>
           </zeroOrMore>
           <group>
-            <ref name="entity-nondigital-ref"/>
+            <ref name="feature-ref"/>
             <oneOrMore>
               <ref name="options"/>
             </oneOrMore>

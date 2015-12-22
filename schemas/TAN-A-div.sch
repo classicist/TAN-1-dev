@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- to do: make sure that shift from @xml:id + @aligments to <div-ref> as a grouping device
-   is correctly reflected de minimis in the global variables
--->
 <schema xmlns="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2"
    xmlns:sqf="http://www.schematron-quickfix.com/validator/process" xmlns:tan="tag:textalign.net,2015:ns"
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">

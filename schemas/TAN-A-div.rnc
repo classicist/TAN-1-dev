@@ -20,20 +20,36 @@ include "TAN-class-2.rnc" {
     
     ## TAN-A-div files do not require a tokenization choice within a filter (choice enforced by Schematron)
     decl-token-opt = decl-token*
-    TAN-body-core = work-equiv*, div-type-equiv*, split*, realignment*, alignment*
+    TAN-body-core = work-equiv*, work-notes*, div-type-equiv*, split*, realignment*, alignment*
     
     ## alignments may take either an id with no supplementary variables or else no id and optional variables indicating strength, exclusivity, distribution, and auto-alignment
     alignment-attributes-non-class-2 = strength-claim?, exclusive-claim?, distribute-claim?
     
     ## alignments must contain either one or more div-refs or a list of IDREFS to other alignments
     alignment-content-non-class-2 = align-div-list+
+    decl-non-class-2 = decl-topics*
+    non-class-2-opt = topic-opt
 }
-# Common patterns
+decl-topics =
+    
+    ## declares one or more topics, to be used in conjunction with @topic under <align> to associate alignments with specific topics instead of verbatim parallels.  
+    element topic {
+        ed-stamp?,
+        (inclusion
+         | (internal-id, lang-outside*, (entity-digital-generic-ref | entity-nondigital-ref)))
+    }
+topic-opt =
+    
+    ## points to one or more topics to which an alignment should be associated. If this attribute is not present, it is assumed that the alignment links different versions of roughly the same text.
+    
+    ## TAN does not stipluate what can be inferred via @topic. If ref A is aligned with B via topic x, and B with C via topic y, no guarantee is made as to what relationship A has to C. 
+    attribute topic { text }
 div-ref-list =
     
     ## points to one or more <div>s (or segments of <div>s) in one or more sources
     element div-ref { div-ref-pattern }
-div-ref-pattern = ed-stamp?, strength-claim?, source-ref, pointer-to-div-range, seg-ref?, continuation?
+div-ref-pattern =
+    ed-stamp?, strength-claim?, source-ref, pointer-to-div-range, seg-ref?, continuation?
 # TAN-A-div structure
 work-equiv =
     
@@ -45,6 +61,19 @@ work-equiv =
     
     ## This element does not imply that the two works are, in reality, one and the same. It merely states that, for the purposes of this alignment, they should be treated as equivalent.
     element equate-works { ed-stamp?, (inclusion | source-ref) }
+work-notes =
+    
+    ## indicates one or more sources that are comments, notes, or glosses of another work. @src takes the names of the sources that are commentaries or notes, and @commented points (via a single source) to a work that is being annotated, glossed, or interpreted.
+    
+    ## This feature assumes that the annotations follow the same <div> structure followed by the glossed work.
+    element associate-comments {
+        ed-stamp?,
+        (inclusion | (source-ref, commented-source))
+    }
+commented-source =
+    
+    ## indicates by means of a single @src id a work that is being commented on.
+    attribute commented { text }
 div-type-equiv =
     
     ## declares an ad hoc equivalence between div types that are not defined by their sources as being identical.
@@ -115,11 +144,15 @@ realign-div-list = div-ref-list
 exclusive-claim =
     
     ## indicates whether an alignment should be treated as non-transitive or transitive. If there is no @exclusive, then if X is aligned with Y, then anything that aligns with X will align with anything that aligns with Y. If @exclusive is present then the alignment holds only between the specified references. The latter is useful, e.g., for specifying cases where one version of a work uniquely quotes from another. Value must be 1 or true, implied by the very presence of the attribute. If you wish to decare it to be false, delete the attribute altogether.
-    attribute exclusive { xsd:boolean { pattern = "true|1" } }
+    attribute exclusive {
+        xsd:boolean { pattern = "true|1" }
+    }
 distribute-claim =
     
     ## indicates whether values should be matched one-to-one, or grouped. If this attribute is not present, then each set of references in a single <div-ref> will be treated as a set and aligned against every other <div-ref> set. If @distribute is present, then every nth ref in every set (defined by a single <div-ref>, taking into account any continuations defined by @cont) will be aligned with the nth ref in every other set. Therefore the number of references derived from @refs must be identical. Value must be 1 or true, implied by the very presence of the attribute. If you wish to decare it to be false, delete the attribute altogether.
-    attribute distribute { xsd:string { pattern = "true|1" } }
+    attribute distribute {
+        xsd:boolean { pattern = "true|1" }
+    }
 align-div-list = div-ref-list
 seg-ref =
     

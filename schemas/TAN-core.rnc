@@ -1,6 +1,3 @@
-# TO DO:
-# [priority low] add @href to <source>, <see-also>, and <include>, to point to a collection or document that should supply metadata for that element; bind SQF to @href to perform the action
-
 default namespace = "tag:textalign.net,2015:ns"
 
 datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
@@ -102,13 +99,13 @@ lang-outside =
 period-filter =
     
     ## constrains an event to a period of time
-    element period {
+    element when {
         
         ## specifies the beginning of a period of time
-        attribute when-from { xsd:dateTime | xsd:date },
+        attribute from { xsd:dateTime | xsd:date },
         
         ## specifies the end of a period of time
-        attribute when-to { xsd:dateTime | xsd:date }
+        attribute to { xsd:dateTime | xsd:date }
     }
 
 ## specifies whether the creation and editing of the data is still in progress. Default value is true.
@@ -251,7 +248,7 @@ loc-src =
         ed-stamp?,
         
         ## specifies when an electronic file was last examined
-        attribute when-accessed { xsd:date },
+        attribute when-accessed { xsd:date | xsd:dateTime },
         xsd:anyURI
     }
 metadata-desc =

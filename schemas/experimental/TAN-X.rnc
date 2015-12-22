@@ -1,0 +1,69 @@
+default namespace = "tag:textalign.net,2015:ns"
+
+datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
+
+start =
+    
+    ## specifies that the TAN file makes assertions subject a conceptual work. Root element.
+    element TAN-X { TAN-root }
+include "../TAN-core.rnc" {
+    decl-non-core = TAN-X-decl
+    TAN-body-core = TAN-X-body
+}
+standard-decl-pattern =
+    ed-stamp?,
+    (inclusion | (comment* & entity-nondigital-ref))
+TAN-X-decl = decl-work* & decl-place* & decl-verb* & decl-unit*
+decl-work =
+    
+    ## contains an IRI + name pattern identifying a textual work
+    element work { standard-decl-pattern }
+decl-place =
+    
+    ## contains an IRI + name pattern identifying a spatial location, usually somewhere on earth
+    element place { standard-decl-pattern }
+decl-verb =
+    
+    ## contains an IRI + name pattern identifying a property, relationship, action, or something else that is used to say something about something. 
+    
+    ## The preferred term "verb" is equivalent to RDF "predicate." The latter term is avoided as being misleading -- most who use TAN will understand "predicate," grammatically speaking, to refer to everything in a sentence that is not the subject,
+    element verb { standard-decl-pattern }
+decl-unit =
+    
+    ## contains an IRI + name pattern identifying a unit type (e.g., millimeters, seconds, Euros), to be used in conjunction with <object> to specify the meaning of a value
+    element unit { standard-decl-pattern }
+TAN-X-body = claimant, subject, claim+
+claim =
+    element claim {
+        inclusion | (ed-stamp?, claimant?, subject?, verb, object, period-filter+, place-filter?)
+    }
+claimant =
+    
+    ## points to an <agent> who makes a claim. @claimant within <body> indicates the default persons to be credited or blamed for an assertion.
+    
+    ## Claimants are not to be confused with the editor of a TAN file. If an editor X writes a TAN-X file that says that person Y makes such-and-such a claim, then the implication is that X claims that Y claims that....  
+    attribute claimant { d:IDREFS }
+subject =
+    
+    ## points to one or more ID refs of entities defined in <head> that serve as the grammatical subject of a claim. @subject within <body> indicates the default subject(s) for <claim>s. 
+    attribute subject { d:IDREFS }
+
+## points to one or more <verb>s that serve to assert something of the @subject.
+verb =
+    
+    ## The preferred term "verb" is equivalent to RDF "predicate." The latter term is avoided as being misleading -- most who use TAN will understand "predicate," grammatically speaking, to refer to everything in a sentence that is not the subject,
+    attribute verb { d:IDREFS }
+object = simple-object | complex-object
+simple-object =
+    
+    ## points to one or more ID refs of entities defined in <head> that serve as the grammatical object of a claim. For example, if you wish to say that work A is a commentary on work B, then the object would have the ID ref for work B. If you wish to make more complex assertions, use <object>
+    attribute object { text }
+complex-object = element object { (lang-of-content | units)?, text }
+units =
+    
+    ## points to the ID ref of a <unit>, defining the type of units.
+    attribute units { d:IDREF }
+place-filter =
+    
+    ## restricts the <claim> to a specific <place> 
+    attribute where { d:IDREFS }

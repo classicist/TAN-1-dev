@@ -20,7 +20,7 @@ include "TAN-class-2.rnc" {
     
     ## TAN-A-div files do not require a tokenization choice within a filter (choice enforced by Schematron)
     decl-token-opt = decl-token*
-    TAN-body-core = work-equiv*, work-notes*, div-type-equiv*, split*, realignment*, alignment*
+    TAN-body-core = work-equiv*, div-type-equiv*, split*, realignment*, alignment*
     
     ## alignments may take either an id with no supplementary variables or else no id and optional variables indicating strength, exclusivity, distribution, and auto-alignment
     alignment-attributes-non-class-2 = strength-claim?, exclusive-claim?, distribute-claim?
@@ -28,7 +28,7 @@ include "TAN-class-2.rnc" {
     ## alignments must contain either one or more div-refs or a list of IDREFS to other alignments
     alignment-content-non-class-2 = align-div-list+
     decl-non-class-2 = decl-topics*
-    non-class-2-opt = topic-opt
+    non-class-2-opt = topic-opt?
 }
 decl-topics =
     
@@ -61,19 +61,6 @@ work-equiv =
     
     ## This element does not imply that the two works are, in reality, one and the same. It merely states that, for the purposes of this alignment, they should be treated as equivalent.
     element equate-works { ed-stamp?, (inclusion | source-ref) }
-work-notes =
-    
-    ## indicates one or more sources that are comments, notes, or glosses of another work. @src takes the names of the sources that are commentaries or notes, and @commented points (via a single source) to a work that is being annotated, glossed, or interpreted.
-    
-    ## This feature assumes that the annotations follow the same <div> structure followed by the glossed work.
-    element associate-comments {
-        ed-stamp?,
-        (inclusion | (source-ref, commented-source))
-    }
-commented-source =
-    
-    ## indicates by means of a single @src id a work that is being commented on.
-    attribute commented { text }
 div-type-equiv =
     
     ## declares an ad hoc equivalence between div types that are not defined by their sources as being identical.

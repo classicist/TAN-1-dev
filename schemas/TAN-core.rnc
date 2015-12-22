@@ -38,7 +38,6 @@ ed-time =
     
     ## Along with @ed-who, this forms the Edit Stamp pattern. See main.xml#edit_stamp
     attribute ed-when { xsd:dateTime | xsd:date }
-
 certainty-stamp = cert-claim?, ed-stamp?
 cert-claim =
     
@@ -50,7 +49,12 @@ cert-claim =
     attribute cert {
         xsd:string { pattern = "(high)|(low)|(0\.\d+)" }
     }
-
+href-opt =
+    
+    ## points to the location of a TAN file that should be used to populate the <IRI> and <location> child elements.
+    
+    ## This attribute is entirely pragmatic, used only as a convenience to TAN users who wish to include the metadata of another TAN file without leaving the current file. It is associated with a warning message that is linked to a Schematron Quick Fix that will supply the correct metadata and remove the attribute.
+    attribute href { text }
 inclusion =
     
     ## signals that the parent element is to be replaced by all elements of the same name found in the referred <inclusion>.
@@ -95,6 +99,17 @@ lang-outside =
     
     ## Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin) 
     element for-lang { xsd:language }
+period-filter =
+    
+    ## constrains an event to a period of time
+    element period {
+        
+        ## specifies the beginning of a period of time
+        attribute when-from { xsd:dateTime | xsd:date },
+        
+        ## specifies the end of a period of time
+        attribute when-to { xsd:dateTime | xsd:date }
+    }
 
 ## specifies whether the creation and editing of the data is still in progress. Default value is true.
 progress =
@@ -157,7 +172,7 @@ ed-stamp = ed-agent, ed-time
 #    FOUR TYPES OF ENTITIES THAT CAN BE REFERENCED USING THE IRI+NAME PATTERN
 
 ## Reference to an external digital entity that is a TAN file
-entity-digital-tan-other-ref = IRI-gen-ref, metadata-human, checksum*, loc-src+
+entity-digital-tan-other-ref = href-opt?, IRI-gen-ref, metadata-human, checksum*, loc-src+
 
 ## Reference to an external digital entity that is not a TAN file
 entity-digital-generic-ref = IRI-gen-ref+, metadata-human, checksum*, loc-src+
@@ -165,7 +180,7 @@ entity-digital-generic-ref = IRI-gen-ref+, metadata-human, checksum*, loc-src+
 ## Reference to self as digital entity (i.e., TAN file)
 entity-digital-tan-self-ref = metadata-human, loc-self*
 
-## Reference to an external non-digital entity (e.g., agents, roles, concepts)
+## Reference to an external non-digital entity (e.g., agents, roles, works, topics)
 entity-nondigital-ref = IRI-gen-ref+, metadata-human
 func-param-pattern =
     
@@ -241,8 +256,9 @@ loc-src =
     }
 metadata-desc =
     ed-stamp?,
-    lang-of-content?,
-    xsd:string { pattern = "(.|\n)+" }
+    ((lang-of-content?,
+      xsd:string { pattern = "(.|\n)+" })
+     | entity-digital-tan-other-ref)
 metadata-human =
     
     ## provides a human-readable name of a concept, person, or thing referred to by the parent element (or the current document, if the parent element is <head>)
@@ -254,15 +270,6 @@ metadata-human =
     
     ## Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script. If you provide a comment in multiple languages, it best to make sure that each version says roughly the same thing.
     element desc { metadata-desc }*
-# seemingly otiose, but commenting out before deleting
-# pointer-to-div = attribute ref { div-ref }
-
-# Commented out 2015-11-03 as being unused; delete by 2016 if all is ok
-# URI-gen-ref = element IRI { ed-stamp?, URI-gen }
-
-# Commented out 2015-11-03, to move tag URN validation to Schematron; delete by 2016 if all is ok
-# URI-tag-ref = element IRI { ed-stamp?, URI-tag }
-
 # PART TWO OF TWO: COMMON TAN STRUCTURE OF ALL TAN FILES (rootmost nodes first)
 
 # 1st level of any TAN file.
@@ -416,18 +423,7 @@ role-list =
 agent-role-list =
     
     ## specifies a time period when one or more <agent>s held one or more <role>s.
-    element agentrole {
-        inclusion
-        | (
-           ## specifies the beginning of a span of time
-           attribute when-from { xsd:dateTime | xsd:date },
-           
-           ## specifies the end of a span of time
-           attribute when-to { xsd:dateTime | xsd:date },
-           ed-stamp?,
-           agent-ref,
-           role-ref)
-    }
+    element agentrole { inclusion | (ed-stamp?, agent-ref, role-ref, period-filter+) }
 change-list =
     
     ## declares a change made to the current file. Must credit an <agent>, specified by @who, and a time the change was made, specified by @when.

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-X elements and attributes summarized</title><section xml:id="element-X-claim"><title><code>&lt;claim&gt;</code></title><synopsis><emphasis>Definition:</emphasis>
+   <code><link linkend="attribute-include">@include</link></code> |
+      ((<code><link linkend="attribute-ed-who">@ed-who</link></code>,
+<code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
+      <code><link linkend="attribute-claimant">@claimant</link></code>?,
+      <code><link linkend="attribute-subject">@subject</link></code>?,
+      <code><link linkend="attribute-verb">@verb</link></code>,
+         (<code><link linkend="attribute-object">@object</link></code> |
+         <code><link linkend="element-object">&lt;object&gt;</link></code>),
+      <code><link linkend="element-when">&lt;when&gt;</link></code>*,
+      <code><link linkend="attribute-where">@where</link></code>?)</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> </para></section><section xml:id="element-X-object"><title><code>&lt;object&gt;</code></title><synopsis><emphasis>Definition:</emphasis>
+      (<code><link linkend="attribute-xmllang">@xml:lang</link></code> |
+      <code><link linkend="attribute-units">@units</link></code>)?,
+text</synopsis><para>Used by: <code><link linkend="element-claim">&lt;claim&gt;</link></code> </para></section><section xml:id="element-X-place"><title><code>&lt;place&gt;</code></title><para>The element <code>place</code> contains an IRI + name pattern identifying a spatial location, usually somewhere on earth</para><synopsis><emphasis>Definition:</emphasis>
+   (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
+<code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
+      (<code><link linkend="attribute-include">@include</link></code> |
+         (
+<emphasis>TAN-X.rng:</emphasis>
+<code><link linkend="attribute-xmlid">@xml:id</link></code>
+<emphasis>  ~OR~</emphasis>
+<emphasis>TAN-A-tok.rng:</emphasis>
+<code><link linkend="attribute-xmlid">@xml:id</link></code>
+<emphasis>  ~OR~</emphasis>
+<emphasis>TAN-R-mor.rng:</emphasis>
+<code><link linkend="attribute-xmlid">@xml:id</link></code>
+,
+            (<code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
+            <code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
+            <code><link linkend="element-name">&lt;name&gt;</link></code>+,
+            <code><link linkend="element-desc">&lt;desc&gt;</link></code>*)))</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para></section><section xml:id="element-X-TAN-X"><title><code>&lt;TAN-X&gt;</code></title><para>The element <code>TAN-X</code> specifies that the TAN file makes assertions subject a conceptual work. Root element.</para><synopsis><emphasis>Definition:</emphasis>
+   <code><link linkend="attribute-id">@id</link></code>,
+   <code><link linkend="attribute-TAN-version">@TAN-version</link></code>,
+   (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
+   <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
+   <code><link linkend="element-head">&lt;head&gt;</link></code>,
+   <code><link linkend="element-body">&lt;body&gt;</link></code></synopsis><para>Used by: none</para></section><section xml:id="element-X-unit"><title><code>&lt;unit&gt;</code></title><para>The element <code>unit</code> contains an IRI + name pattern identifying a unit type (e.g., millimeters, seconds, Euros), to be used in conjunction with <code><link linkend="element-object">&lt;object&gt;</link></code> to specify the meaning of a value</para><synopsis><emphasis>Definition:</emphasis>
+   (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
+<code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
+      (<code><link linkend="attribute-include">@include</link></code> |
+         (
+<emphasis>TAN-X.rng:</emphasis>
+<code><link linkend="attribute-xmlid">@xml:id</link></code>
+<emphasis>  ~OR~</emphasis>
+<emphasis>TAN-A-tok.rng:</emphasis>
+<code><link linkend="attribute-xmlid">@xml:id</link></code>
+<emphasis>  ~OR~</emphasis>
+<emphasis>TAN-R-mor.rng:</emphasis>
+<code><link linkend="attribute-xmlid">@xml:id</link></code>
+,
+            (<code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
+            <code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
+            <code><link linkend="element-name">&lt;name&gt;</link></code>+,
+            <code><link linkend="element-desc">&lt;desc&gt;</link></code>*)))</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para></section><section xml:id="element-X-verb"><title><code>&lt;verb&gt;</code></title><para>The element <code>verb</code> contains an IRI + name pattern identifying a property, relationship, action, or something else that is used to say something about something. </para><para>The preferred term "verb" is equivalent to RDF "predicate." The latter term is avoided as being misleading -- most who use TAN will understand "predicate," grammatically speaking, to refer to everything in a sentence that is not the subject,</para><synopsis><emphasis>Definition:</emphasis>
+   (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
+<code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
+      (<code><link linkend="attribute-include">@include</link></code> |
+         (
+<emphasis>TAN-X.rng:</emphasis>
+<code><link linkend="attribute-xmlid">@xml:id</link></code>
+<emphasis>  ~OR~</emphasis>
+<emphasis>TAN-A-tok.rng:</emphasis>
+<code><link linkend="attribute-xmlid">@xml:id</link></code>
+<emphasis>  ~OR~</emphasis>
+<emphasis>TAN-R-mor.rng:</emphasis>
+<code><link linkend="attribute-xmlid">@xml:id</link></code>
+,
+            (<code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
+            <code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
+            <code><link linkend="element-name">&lt;name&gt;</link></code>+,
+            <code><link linkend="element-desc">&lt;desc&gt;</link></code>*)))</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para></section><section xml:id="attribute-X-claimant"><title><code>@claimant</code></title><para>The attribute <code>claimant</code> points to an <code><link linkend="element-agent">&lt;agent&gt;</link></code> who makes a claim. <code><link linkend="attribute-claimant">@claimant</link></code> within <code><link linkend="element-body">&lt;body&gt;</link></code> indicates the default persons to be credited or blamed for an assertion.</para><para>Claimants are not to be confused with the editor of a TAN file. If an editor X writes a TAN-X file that says that person Y makes such-and-such a claim, then the implication is that X claims that Y claims that....  </para><synopsis><emphasis>Definition:</emphasis>
+IDREFS </synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-claim">&lt;claim&gt;</link></code> </para></section><section xml:id="attribute-X-object"><title><code>@object</code></title><para>The attribute <code>object</code> points to one or more ID refs of entities defined in <code><link linkend="element-head">&lt;head&gt;</link></code> that serve as the grammatical object of a claim. For example, if you wish to say that work A is a commentary on work B, then the object would have the ID ref for work B. If you wish to make more complex assertions, use <code><link linkend="element-object">&lt;object&gt;</link></code></para><synopsis><emphasis>Definition:</emphasis>
+text</synopsis><para>Used by: <code><link linkend="element-claim">&lt;claim&gt;</link></code> </para></section><section xml:id="attribute-X-subject"><title><code>@subject</code></title><para>The attribute <code>subject</code> points to one or more ID refs of entities defined in <code><link linkend="element-head">&lt;head&gt;</link></code> that serve as the grammatical subject of a claim. <code><link linkend="attribute-subject">@subject</link></code> within <code><link linkend="element-body">&lt;body&gt;</link></code> indicates the default subject(s) for <code><link linkend="element-claim">&lt;claim&gt;</link></code>s. </para><synopsis><emphasis>Definition:</emphasis>
+IDREFS </synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-claim">&lt;claim&gt;</link></code> </para></section><section xml:id="attribute-X-units"><title><code>@units</code></title><para>The attribute <code>units</code> points to the ID ref of a <code><link linkend="element-unit">&lt;unit&gt;</link></code>, defining the type of units.</para><synopsis><emphasis>Definition:</emphasis>
+IDREF </synopsis><para>Used by: <code><link linkend="element-object">&lt;object&gt;</link></code> </para></section><section xml:id="attribute-X-verb"><title><code>@verb</code></title><para>The attribute <code>verb</code> The preferred term "verb" is equivalent to RDF "predicate." The latter term is avoided as being misleading -- most who use TAN will understand "predicate," grammatically speaking, to refer to everything in a sentence that is not the subject,</para><synopsis><emphasis>Definition:</emphasis>
+IDREFS </synopsis><para>Used by: <code><link linkend="element-claim">&lt;claim&gt;</link></code> </para></section><section xml:id="attribute-X-where"><title><code>@where</code></title><para>The attribute <code>where</code> restricts the <code><link linkend="element-claim">&lt;claim&gt;</link></code> to a specific <code><link linkend="element-place">&lt;place&gt;</link></code> </para><synopsis><emphasis>Definition:</emphasis>
+IDREFS </synopsis><para>Used by: <code><link linkend="element-claim">&lt;claim&gt;</link></code> </para></section></section>

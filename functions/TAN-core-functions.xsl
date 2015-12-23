@@ -18,10 +18,6 @@
 
     <xsl:variable name="root" select="/"/>
     <xsl:variable name="head">
-        <!--<xsl:apply-templates mode="include" select="/*/tan:head"/>-->
-        <!--<xsl:for-each select="/*/tan:head">
-            <xsl:apply-templates mode="include"/>
-        </xsl:for-each>-->
         <xsl:variable name="head-pass-1">
             <xsl:for-each select="/*/tan:head">
                 <xsl:apply-templates mode="include"/>
@@ -32,7 +28,6 @@
                 <xsl:apply-templates mode="strip-duplicates"/>
             </xsl:for-each>
         </xsl:variable>
-        <!--<xsl:for-each select="$head-pass-1"><xsl:apply-templates mode="strip-duplicates"/></xsl:for-each>-->
         <xsl:sequence select="$head-pass-2"/>
     </xsl:variable>
     <xsl:variable name="body">

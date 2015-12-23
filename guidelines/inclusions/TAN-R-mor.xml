@@ -20,18 +20,25 @@ text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;<
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
    <code><link linkend="attribute-include">@include</link></code> |
       (<code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
-         (<code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
-<code><link linkend="element-name">&lt;name&gt;</link></code>+,
-<code><link linkend="element-desc">&lt;desc&gt;</link></code>*,
+         (<code><link linkend="attribute-feature">@feature</link></code>,
          <code><link linkend="element-option">&lt;option&gt;</link></code>+))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> </para></section><section xml:id="element-feature"><title><code>&lt;feature&gt;</code></title><para>The element <code>feature</code> names, through its IRI + name pattern, a grammatical concept (e.g., plural, subjunctive, 1st person) that characterizes a language.</para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
-   <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-   <code><link linkend="attribute-include">@include</link></code> |
-      (<code><link linkend="attribute-xmlid">@xml:id</link></code>,
-         (<code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
-         <code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
-         <code><link linkend="element-name">&lt;name&gt;</link></code>+,
-         <code><link linkend="element-desc">&lt;desc&gt;</link></code>*))</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><caution><itemizedlist><listitem><para>Included features must be written for every language declared by the current file.</para></listitem></itemizedlist></caution><example><title><code>&lt;feature&gt;</code></title><programlisting>   &lt;head&gt;
+<code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
+      (<code><link linkend="attribute-include">@include</link></code> |
+         (
+<emphasis>TAN-X.rng:</emphasis>
+<code><link linkend="attribute-xmlid">@xml:id</link></code>
+<emphasis>  ~OR~</emphasis>
+<emphasis>TAN-A-tok.rng:</emphasis>
+<code><link linkend="attribute-xmlid">@xml:id</link></code>
+<emphasis>  ~OR~</emphasis>
+<emphasis>TAN-R-mor.rng:</emphasis>
+<code><link linkend="attribute-xmlid">@xml:id</link></code>
+,
+            (<code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
+            <code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
+            <code><link linkend="element-name">&lt;name&gt;</link></code>+,
+            <code><link linkend="element-desc">&lt;desc&gt;</link></code>*)))</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><caution><itemizedlist><listitem><para>Included features must be written for every language declared by the current file.</para></listitem></itemizedlist></caution><example><title><code>&lt;feature&gt;</code></title><programlisting>   &lt;head&gt;
       &lt;declarations ed-when="2015-03-03" ed-who="kalvesmaki"&gt;
          &lt;for-lang&gt;eng&lt;/for-lang&gt;
          <emphasis role="bold">&lt;feature xml:id="quote-cl"&gt;</emphasis>
@@ -129,7 +136,8 @@ string (pattern [^\-\(\),|\s]|[^\(\),|\s]+)</synopsis><para>Used by: <code><link
 &lt;/TAN-R-mor&gt;
 </programlisting></example></section><section xml:id="attribute-code-regex-test"><title><code>@code-regex-test</code></title><para>The attribute <code>code-regex-test</code> asserts a pattern in the form of a regular expression that is to be used to check matches in codes in <code><link linkend="element-m">&lt;m&gt;</link></code>s in a dependent TAN-LM file.</para><para>One of four tests for determining the truth value that will trigger the message in a <code><link linkend="element-report">&lt;report&gt;</link></code> or <code><link linkend="element-assert">&lt;assert&gt;</link></code> </para><synopsis><emphasis>Definition:</emphasis>
 text</synopsis><para>Used by: <code><link linkend="element-assert">&lt;assert&gt;</link></code> <code><link linkend="element-report">&lt;report&gt;</link></code> </para></section><section xml:id="attribute-feature"><title><code>@feature</code></title><para>The attribute <code>feature</code> refers to a feature by means of its <code><link linkend="attribute-xmlid">@xml:id</link></code></para><synopsis><emphasis>Definition:</emphasis>
-IDREF </synopsis><para>Used by: <code><link linkend="element-option">&lt;option&gt;</link></code> </para><example><title><code>@feature</code></title><programlisting>&lt;TAN-R-mor TAN-version="1" id="tag:kalvesmaki.com,2014:tan-r-mor:eng:penn"&gt;
+IDREF </synopsis><para>Used by: <code><link linkend="element-category">&lt;category&gt;</link></code> <code><link linkend="element-option">&lt;option&gt;</link></code> </para><caution><itemizedlist><listitem><para>Must point to <code><link linkend="attribute-xmlid">@xml:id</link></code> value of <code><link linkend="element-feature">&lt;feature&gt;</link></code></para></listitem><listitem><para>Must not contain duplicates</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Replace content of attribute with all valid values </emphasis>To see a list of all possible valid values, add any invalid content, then choose
+               this quick fix to replace all content with every possible value.</para></tip><example><title><code>@feature</code></title><programlisting>&lt;TAN-R-mor TAN-version="1" id="tag:kalvesmaki.com,2014:tan-r-mor:eng:penn"&gt;
    &lt;body&gt;
       &lt;option<emphasis role="bold"> feature="quote-cl"</emphasis> code="''"/&gt;
       &lt;option<emphasis role="bold"> feature="dash"</emphasis> code="--"/&gt;

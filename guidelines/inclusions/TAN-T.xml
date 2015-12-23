@@ -6,7 +6,8 @@
       <code><link linkend="attribute-n">@n</link></code>,
       <code><link linkend="attribute-xmllang">@xml:lang</link></code>?,
          (<code><link linkend="element-div">&lt;div&gt;</link></code>+ |
-text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-div">&lt;div&gt;</link></code> </para><caution><itemizedlist><listitem><para>Leaf div references must be unique.</para></listitem><listitem><para>Every leaf div must have at least some non-space text.</para></listitem></itemizedlist></caution><example><title><code>&lt;div&gt;</code></title><programlisting>   &lt;body xml:lang="grc"&gt;
+text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-div">&lt;div&gt;</link></code> </para><caution><itemizedlist><listitem><para>Leaf div references must be unique.</para></listitem><listitem><para>Every leaf div must have at least some non-space text.</para></listitem><listitem><para>Must point to <code><link linkend="attribute-xmlid">@xml:id</link></code> value of &lt;&gt;</para></listitem><listitem><para>Must not contain duplicates</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Replace content of attribute with all valid values </emphasis>To see a list of all possible valid values, add any invalid content, then choose
+               this quick fix to replace all content with every possible value.</para></tip><example><title><code>&lt;div&gt;</code></title><programlisting>   &lt;body xml:lang="grc"&gt;
       <emphasis role="bold">&lt;div type="p" n="1"&gt;</emphasis>
          <emphasis role="bold">&lt;div type="c" n="a"&gt;</emphasis>
             <emphasis role="bold">&lt;div type="l" n="1"&gt;</emphasis>Ὁμώνυμα λέγεται ὧν ὄνομα μόνον κοινόν, ὁ δὲ κατὰ<emphasis role="bold">&lt;/div&gt;</emphasis>

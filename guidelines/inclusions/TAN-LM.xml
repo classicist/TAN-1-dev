@@ -187,11 +187,12 @@ string (pattern [^\s\(\),|]+(\s+[^\s\(\),|]+)*)</synopsis><para>Used by: <code><
    <code><link linkend="attribute-include">@include</link></code> |
       (<code><link linkend="attribute-xmlid">@xml:id</link></code>,
       <code><link linkend="element-for-lang">&lt;for-lang&gt;</link></code>*,
-      <code><link linkend="element-IRI">&lt;IRI&gt;</link></code>,
-      <code><link linkend="element-name">&lt;name&gt;</link></code>+,
-      <code><link linkend="element-desc">&lt;desc&gt;</link></code>*,
-      <code><link linkend="element-checksum">&lt;checksum&gt;</link></code>*,
-      <code><link linkend="element-location">&lt;location&gt;</link></code>+)</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><example><title><code>&lt;morphology&gt;</code></title><programlisting>      &lt;declarations&gt;
+         (<code><link linkend="attribute-href">@href</link></code> |
+            (<code><link linkend="element-IRI">&lt;IRI&gt;</link></code>,
+            <code><link linkend="element-name">&lt;name&gt;</link></code>+,
+            <code><link linkend="element-desc">&lt;desc&gt;</link></code>*,
+            <code><link linkend="element-checksum">&lt;checksum&gt;</link></code>*,
+            <code><link linkend="element-location">&lt;location&gt;</link></code>+)))</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><example><title><code>&lt;morphology&gt;</code></title><programlisting>      &lt;declarations&gt;
          <emphasis role="bold">&lt;morphology xml:id="penn" ed-when="2015-08-20-04:00" ed-who="park"&gt;</emphasis>
             &lt;IRI&gt;tag:kalvesmaki.com,2014:tan-r-mor:eng:penn&lt;/IRI&gt;
             &lt;name&gt;Penn Treebank tag set&lt;/name&gt;
@@ -219,7 +220,8 @@ string (pattern [^\s\(\),|]+(\s+[^\s\(\),|]+)*)</synopsis><para>Used by: <code><
 <emphasis role="bold">&lt;/TAN-LM&gt;</emphasis>
 </programlisting></example></section><section xml:id="attribute-def-ref"><title><code>@def-ref</code></title><para>The attribute <code>def-ref</code> identifies which definition is meant. Essential in cases where a lexicon has multiple entries for lexemes that are  orthographically indistinguishable.</para><synopsis><emphasis>Definition:</emphasis>
 text</synopsis><para>Used by: <code><link linkend="element-l">&lt;l&gt;</link></code> </para></section><section xml:id="attribute-lexicon"><title><code>@lexicon</code></title><para>The attribute <code>lexicon</code> points to one or more <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> IDs</para><para>This attribute is inheritable. See <xref linkend="inheritable_attributes"/></para><synopsis><emphasis>Definition:</emphasis>
-IDREFS </synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-l">&lt;l&gt;</link></code> </para><example><title><code>@lexicon</code></title><programlisting>&lt;TAN-LM TAN-version="1" id="tag:parkj@textalign.net,2015:ring01-lm"&gt;
+IDREFS </synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-l">&lt;l&gt;</link></code> </para><caution><itemizedlist><listitem><para>Must point to <code><link linkend="attribute-xmlid">@xml:id</link></code> value of <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code></para></listitem><listitem><para>Must not contain duplicates</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Replace content of attribute with all valid values </emphasis>To see a list of all possible valid values, add any invalid content, then choose
+               this quick fix to replace all content with every possible value.</para></tip><example><title><code>@lexicon</code></title><programlisting>&lt;TAN-LM TAN-version="1" id="tag:parkj@textalign.net,2015:ring01-lm"&gt;
    &lt;head&gt;
       .........
    &lt;/head&gt;
@@ -240,7 +242,8 @@ IDREFS </synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;
    &lt;/body&gt;
 &lt;/TAN-LM&gt;
 </programlisting></example></section><section xml:id="attribute-morphology"><title><code>@morphology</code></title><para>The attribute <code>morphology</code> points to one or more <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> IDs</para><para>This attribute is inheritable. See <xref linkend="inheritable_attributes"/></para><synopsis><emphasis>Definition:</emphasis>
-IDREF </synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-m">&lt;m&gt;</link></code> </para><example><title><code>@morphology</code></title><programlisting>&lt;TAN-LM TAN-version="1" id="tag:parkj@textalign.net,2015:ring01-lm"&gt;
+IDREF </synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-m">&lt;m&gt;</link></code> </para><caution><itemizedlist><listitem><para>Must point to <code><link linkend="attribute-xmlid">@xml:id</link></code> value of <code><link linkend="element-morphology">&lt;morphology&gt;</link></code></para></listitem><listitem><para>Must not contain duplicates</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Replace content of attribute with all valid values </emphasis>To see a list of all possible valid values, add any invalid content, then choose
+               this quick fix to replace all content with every possible value.</para></tip><example><title><code>@morphology</code></title><programlisting>&lt;TAN-LM TAN-version="1" id="tag:parkj@textalign.net,2015:ring01-lm"&gt;
    &lt;head&gt;
       .........
    &lt;/head&gt;

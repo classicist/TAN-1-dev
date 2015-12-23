@@ -34,8 +34,14 @@
                 <desc>Points to a TAN file that uses the current file as a source.</desc>
                 <keyword>dependent</keyword>
             </item>
+            <group class="experimental">
+                <desc>Keywords that must point exclusively to the TAN-X format.</desc>
+                <IRI>tag:textalign.net,2015:relationship:context</IRI>
+                <desc>Background information about one or more concepts mentioned in a TAN file.</desc>
+                <keyword>context</keyword>
+            </group>
             <group class="edition">
-                <desc>Keywords that must point to TAN editions. </desc>
+                <desc>Keywords that must point to TAN editions.</desc>
                 <desc>Two TAN files are different editions if they are genetically related to each
                     other, but neither one supersedes the other. They share a common editorial
                     history and treats the same basic material but with a different approach.

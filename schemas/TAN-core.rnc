@@ -169,7 +169,7 @@ ed-stamp = ed-agent, ed-time
 #    FOUR TYPES OF ENTITIES THAT CAN BE REFERENCED USING THE IRI+NAME PATTERN
 
 ## Reference to an external digital entity that is a TAN file
-entity-digital-tan-other-ref = href-opt?, IRI-gen-ref, metadata-human, checksum*, loc-src+
+entity-digital-tan-other-ref = href-opt | (IRI-gen-ref, metadata-human, checksum*, loc-src+)
 
 ## Reference to an external digital entity that is not a TAN file
 entity-digital-generic-ref = IRI-gen-ref+, metadata-human, checksum*, loc-src+
@@ -253,9 +253,8 @@ loc-src =
     }
 metadata-desc =
     ed-stamp?,
-    ((lang-of-content?,
-      xsd:string { pattern = "(.|\n)+" })
-     | entity-digital-tan-other-ref)
+    (lang-of-content?,
+     xsd:string { pattern = "(.|\n)+" })
 metadata-human =
     
     ## provides a human-readable name of a concept, person, or thing referred to by the parent element (or the current document, if the parent element is <head>)
@@ -263,10 +262,12 @@ metadata-human =
     ## Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script.
     element name { metadata-desc }+,
     
-    ## provides a human-readable description of a concept, person, or thing referred to by the parent element (or the current document, if the parent element is <head>). <desc> is, in effect, a <comment> about that concept, person, or thing.
+    ## provides a description of a concept, person, or thing referred to by the parent element (or the current document, if the parent element is <head>). <desc> is, in effect, a <comment> about that concept, person, or thing. It has two possible structures, one human-readable and the other computer-readable.
     
-    ## Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script. If you provide a comment in multiple languages, it best to make sure that each version says roughly the same thing.
-    element desc { metadata-desc }*
+    ## The first, human-readable approach defines <desc> as taking merely a string that comments on the entity. Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script. If you provide a comment in multiple languages, it best to make sure that each version says roughly the same thing.
+    
+    ## The second, computer-readable approach has <desc> take an IRI + name pattern plus <location> pointing to some XML resource that provides more information about the concept, person, or thing. This is the method preferred to point to a <TAN-X> file. 
+    element desc { metadata-desc | entity-digital-tan-other-ref }*
 # PART TWO OF TWO: COMMON TAN STRUCTURE OF ALL TAN FILES (rootmost nodes first)
 
 # 1st level of any TAN file.

@@ -7,6 +7,10 @@
     </element>
   </start>
   <include href="TAN-class-3.rng">
+    <define name="decl-id-ref-opt">
+      <a:documentation>all declarations must have ids</a:documentation>
+      <ref name="internal-id"/>
+    </define>
     <define name="decl-non-class-3">
       <a:documentation>every TAN-R-mor file has one or more src-lang and feature elements</a:documentation>
       <interleave>
@@ -14,7 +18,7 @@
           <ref name="lang-outside"/>
         </oneOrMore>
         <oneOrMore>
-          <ref name="morph-feature"/>
+          <ref name="decl-morph-feature"/>
         </oneOrMore>
       </interleave>
     </define>
@@ -22,25 +26,11 @@
       <ref name="TAN-R-mor-body"/>
     </define>
   </include>
-  <define name="morph-feature">
+  <define name="decl-morph-feature">
     <a:documentation>TAN-R-mor files declare the morphological features that are allowed for a given language</a:documentation>
     <element name="feature">
       <a:documentation>names, through its IRI + name pattern, a grammatical concept (e.g., plural, subjunctive, 1st person) that characterizes a language.</a:documentation>
-      <optional>
-        <ref name="ed-stamp"/>
-      </optional>
-      <choice>
-        <ref name="inclusion"/>
-        <group>
-          <ref name="internal-id"/>
-          <interleave>
-            <zeroOrMore>
-              <ref name="comment"/>
-            </zeroOrMore>
-            <ref name="entity-nondigital-ref"/>
-          </interleave>
-        </group>
-      </choice>
+      <ref name="decl-pattern-default"/>
     </element>
   </define>
   <define name="TAN-R-mor-body">

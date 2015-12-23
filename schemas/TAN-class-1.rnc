@@ -9,17 +9,6 @@ decl-class-1 = decl-work & decl-vers? & decl-div+ & decl-tok-rec+ & decl-ref-rec
 
 ## Reserved for declarations specific to individual types of class 1 files
 decl-non-class-1 = empty
-decl-work =
-    
-    ## indicates the creative work that has been transcribed. Must be a conceptual entity, not a physical one.
-    
-    ## The term "work" is only pragmatically defined in TAN. Any unitary text that lends itself in ordinary discourse to reference by means of noun, proper or common. A work may be composed of other works, be a part of other works, or even overlap with other works. E.g., the Lord's Prayer, the Gospel of Luke, the Tetravengelion, the New Testament, and the Bible are all valid works.
-    
-    ## This element akes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works
-    element work {
-        ed-stamp?,
-        (inclusion | (comment* & entity-nondigital-ref))
-    }
 decl-vers =
     
     ## states the version of the work has been transcribed. Applicable to text-bearing objects that have multiple versions of the same work such as a bilingual edition of a text.
@@ -27,10 +16,7 @@ decl-vers =
     ## Very few work-versions have their own URN names. It is advisable to assign a tag URN or a UUID. If you have used an IRI for <work> that you are entitled to modify, you may wish to add a suffix that will name the version. If you need to specify exactly where on a text-bearing object a version appears, <desc> or <comment> should be used.
     
     ## This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works
-    element version {
-        ed-stamp?,
-        (inclusion | (comment* & entity-nondigital-ref))
-    }
+    element version { decl-pattern-default }
 decl-div =
     
     ## declares a type of textual division (e.g., title, paragraph, stanza). You may have as many <div-types> as you wish, and they need not all be used.
@@ -94,11 +80,7 @@ decl-filt-norm =
     ## See iris.xml for suggested IRI + name values for normalizations. 
     
     ## For more on this element see main.xml#normalizing_transcriptions 
-    element normalization {
-        ed-stamp?,
-        (inclusion
-         | (comment* & (lang-outside*, entity-nondigital-ref)))
-    }
+    element normalization { decl-pattern-language }
 
 ## Replacements that have been made to an XML source file. 
 decl-filt-repl = func-replace
@@ -109,8 +91,4 @@ decl-filt-tlit =
     ## The scope of this element may be specified through optional <for-lang>s.
     
     ## This may be useful for texts easier to handle in a Latin alphabet rather than a native one.  
-    element transliteration {
-        ed-stamp?,
-        (inclusion
-         | (comment* & (lang-outside*, entity-nondigital-ref)))
-    }
+    element transliteration { decl-pattern-language }

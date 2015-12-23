@@ -9,6 +9,7 @@ agent-ref =
     
     ## names an <agent>
     attribute who { text }
+decl-id-ref-opt = empty
 
 ## String that refers to a div either by using single nonword characters to join pairs of @type and optional @n values (themselves joined) by a nonword character) or by using single nonword characters to join only @n values. The first pattern is \w+\W\w*(\W\w+\W\w*)* and the second is \w+(\W\w+)*
 div-ref = xsd:string { pattern = "\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*" }
@@ -162,6 +163,15 @@ comment =
     
     ## discusses issues relevant to nearby data. Must credit an <agent>, specified by @who, and a time the comment was made, specified by @when.
     element comment { when-claim, agent-ref, text }
+decl-pattern-default =
+    ed-stamp?,
+    (inclusion
+     | (decl-id-ref-opt, (comment* & entity-nondigital-ref)))
+decl-pattern-language =
+    ed-stamp?,
+    (inclusion
+     | (decl-id-ref-opt,
+        (comment* & (lang-outside*, entity-nondigital-ref))))
 
 ## Editorial stamp: who created or edited the enclosed data and when. 
 ed-stamp = ed-agent, ed-time
@@ -442,3 +452,12 @@ decl-core = empty
 
 ## decl-non-core to be filled out by each TAN-class-X.rnc file
 decl-non-core = empty
+# Declaration patterns that are shared across formats
+decl-work =
+    
+    ## indicates a creative work. Must be a conceptual entity, not a physical one.
+    
+    ## The term "work" is only pragmatically defined in TAN. Any text that has enough unity to be referred to in ordinary conversation as a single entity may be defined as a work. A work may be composed of other works, be a part of other works, or even overlap with other works. E.g., the Lord's Prayer, the Gospel of Luke, the Tetravengelion, the New Testament, and the Bible are all valid works, despite the complex relationship between each of these concepts.
+    
+    ## This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works
+    element work { decl-pattern-default }

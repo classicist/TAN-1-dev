@@ -193,6 +193,7 @@ Reserved for modification in different types of Class 2 files, to specify how ma
         <group>
           <ref name="alignment-attributes-non-class-2"/>
           <ref name="certainty-stamp"/>
+          <ref name="non-class-2-opt"/>
           <interleave>
             <zeroOrMore>
               <ref name="comment"/>
@@ -202,6 +203,9 @@ Reserved for modification in different types of Class 2 files, to specify how ma
         </group>
       </choice>
     </element>
+  </define>
+  <define name="non-class-2-opt">
+    <empty/>
   </define>
   <define name="alignment-attributes-non-class-2">
     <empty/>

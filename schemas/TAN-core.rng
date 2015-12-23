@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  TO DO:
-  [priority low] add @href to <source>, <see-also>, and <include>, to point to a collection or document that should supply metadata for that element; bind SQF to @href to perform the action
--->
 <grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <!-- PART ONE OF TWO: PATTERNS REPEATEDLY USED ACROSS DIFFERENT TAN FILES -->
   <!--   1A. ATOMIC PATTERNS (alphabetical) -->
@@ -10,6 +6,9 @@
     <attribute name="who">
       <a:documentation>names an &lt;agent&gt;</a:documentation>
     </attribute>
+  </define>
+  <define name="decl-id-ref-opt">
+    <empty/>
   </define>
   <define name="div-ref">
     <a:documentation>String that refers to a div either by using single nonword characters to join pairs of @type and optional @n values (themselves joined) by a nonword character) or by using single nonword characters to join only @n values. The first pattern is \w+\W\w*(\W\w+\W\w*)* and the second is \w+(\W\w+)*</a:documentation>
@@ -57,6 +56,12 @@
       <data type="string">
         <param name="pattern">(high)|(low)|(0\.\d+)</param>
       </data>
+    </attribute>
+  </define>
+  <define name="href-opt">
+    <attribute name="href">
+      <a:documentation>points to the location of a TAN file that should be used to populate the &lt;IRI&gt; and &lt;location&gt; child elements.</a:documentation>
+      <a:documentation>This attribute is entirely pragmatic, used only as a convenience to TAN users who wish to include the metadata of another TAN file without leaving the current file. It is associated with a warning message that is linked to a Schematron Quick Fix that will supply the correct metadata and remove the attribute.</a:documentation>
     </attribute>
   </define>
   <define name="inclusion">
@@ -113,6 +118,25 @@
       <a:documentation>Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see main.xml#language.</a:documentation>
       <a:documentation>Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin) </a:documentation>
       <data type="language"/>
+    </element>
+  </define>
+  <define name="period-filter">
+    <element name="when">
+      <a:documentation>constrains an event to a period of time</a:documentation>
+      <attribute name="from">
+        <a:documentation>specifies the beginning of a period of time</a:documentation>
+        <choice>
+          <data type="dateTime"/>
+          <data type="date"/>
+        </choice>
+      </attribute>
+      <attribute name="to">
+        <a:documentation>specifies the end of a period of time</a:documentation>
+        <choice>
+          <data type="dateTime"/>
+          <data type="date"/>
+        </choice>
+      </attribute>
     </element>
   </define>
   <define name="progress">
@@ -179,6 +203,45 @@
       <text/>
     </element>
   </define>
+  <define name="decl-pattern-default">
+    <optional>
+      <ref name="ed-stamp"/>
+    </optional>
+    <choice>
+      <ref name="inclusion"/>
+      <group>
+        <ref name="decl-id-ref-opt"/>
+        <interleave>
+          <zeroOrMore>
+            <ref name="comment"/>
+          </zeroOrMore>
+          <ref name="entity-nondigital-ref"/>
+        </interleave>
+      </group>
+    </choice>
+  </define>
+  <define name="decl-pattern-language">
+    <optional>
+      <ref name="ed-stamp"/>
+    </optional>
+    <choice>
+      <ref name="inclusion"/>
+      <group>
+        <ref name="decl-id-ref-opt"/>
+        <interleave>
+          <zeroOrMore>
+            <ref name="comment"/>
+          </zeroOrMore>
+          <group>
+            <zeroOrMore>
+              <ref name="lang-outside"/>
+            </zeroOrMore>
+            <ref name="entity-nondigital-ref"/>
+          </group>
+        </interleave>
+      </group>
+    </choice>
+  </define>
   <define name="ed-stamp">
     <a:documentation>Editorial stamp: who created or edited the enclosed data and when. </a:documentation>
     <ref name="ed-agent"/>
@@ -190,14 +253,19 @@
   -->
   <define name="entity-digital-tan-other-ref">
     <a:documentation>Reference to an external digital entity that is a TAN file</a:documentation>
-    <ref name="IRI-gen-ref"/>
-    <ref name="metadata-human"/>
-    <zeroOrMore>
-      <ref name="checksum"/>
-    </zeroOrMore>
-    <oneOrMore>
-      <ref name="loc-src"/>
-    </oneOrMore>
+    <choice>
+      <ref name="href-opt"/>
+      <group>
+        <ref name="IRI-gen-ref"/>
+        <ref name="metadata-human"/>
+        <zeroOrMore>
+          <ref name="checksum"/>
+        </zeroOrMore>
+        <oneOrMore>
+          <ref name="loc-src"/>
+        </oneOrMore>
+      </group>
+    </choice>
   </define>
   <define name="entity-digital-generic-ref">
     <a:documentation>Reference to an external digital entity that is not a TAN file</a:documentation>
@@ -220,7 +288,7 @@
     </zeroOrMore>
   </define>
   <define name="entity-nondigital-ref">
-    <a:documentation>Reference to an external non-digital entity (e.g., agents, roles, concepts)</a:documentation>
+    <a:documentation>Reference to an external non-digital entity (e.g., agents, roles, works, topics)</a:documentation>
     <oneOrMore>
       <ref name="IRI-gen-ref"/>
     </oneOrMore>
@@ -334,7 +402,10 @@
       </optional>
       <attribute name="when-accessed">
         <a:documentation>specifies when an electronic file was last examined</a:documentation>
-        <data type="date"/>
+        <choice>
+          <data type="date"/>
+          <data type="dateTime"/>
+        </choice>
       </attribute>
       <data type="anyURI"/>
     </element>
@@ -343,12 +414,14 @@
     <optional>
       <ref name="ed-stamp"/>
     </optional>
-    <optional>
-      <ref name="lang-of-content"/>
-    </optional>
-    <data type="string">
-      <param name="pattern">(.|\n)+</param>
-    </data>
+    <group>
+      <optional>
+        <ref name="lang-of-content"/>
+      </optional>
+      <data type="string">
+        <param name="pattern">(.|\n)+</param>
+      </data>
+    </group>
   </define>
   <define name="metadata-human">
     <oneOrMore>
@@ -360,24 +433,16 @@
     </oneOrMore>
     <zeroOrMore>
       <element name="desc">
-        <a:documentation>provides a human-readable description of a concept, person, or thing referred to by the parent element (or the current document, if the parent element is &lt;head&gt;). &lt;desc&gt; is, in effect, a &lt;comment&gt; about that concept, person, or thing.</a:documentation>
-        <a:documentation>Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script. If you provide a comment in multiple languages, it best to make sure that each version says roughly the same thing.</a:documentation>
-        <ref name="metadata-desc"/>
+        <a:documentation>provides a description of a concept, person, or thing referred to by the parent element (or the current document, if the parent element is &lt;head&gt;). &lt;desc&gt; is, in effect, a &lt;comment&gt; about that concept, person, or thing. It has two possible structures, one human-readable and the other computer-readable.</a:documentation>
+        <a:documentation>The first, human-readable approach defines &lt;desc&gt; as taking merely a string that comments on the entity. Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script. If you provide a comment in multiple languages, it best to make sure that each version says roughly the same thing.</a:documentation>
+        <a:documentation>The second, computer-readable approach has &lt;desc&gt; take an IRI + name pattern plus &lt;location&gt; pointing to some XML resource that provides more information about the concept, person, or thing. This is the method preferred to point to a &lt;TAN-X&gt; file. </a:documentation>
+        <choice>
+          <ref name="metadata-desc"/>
+          <ref name="entity-digital-tan-other-ref"/>
+        </choice>
       </element>
     </zeroOrMore>
   </define>
-  <!--
-    seemingly otiose, but commenting out before deleting
-    pointer-to-div = attribute ref { div-ref }
-  -->
-  <!--
-    Commented out 2015-11-03 as being unused; delete by 2016 if all is ok
-    URI-gen-ref = element IRI { ed-stamp?, URI-gen }
-  -->
-  <!--
-    Commented out 2015-11-03, to move tag URN validation to Schematron; delete by 2016 if all is ok
-    URI-tag-ref = element IRI { ed-stamp?, URI-tag }
-  -->
   <!-- PART TWO OF TWO: COMMON TAN STRUCTURE OF ALL TAN FILES (rootmost nodes first) -->
   <!-- 1st level of any TAN file. -->
   <define name="TAN-root">
@@ -679,25 +744,14 @@
       <choice>
         <ref name="inclusion"/>
         <group>
-          <attribute name="when-from">
-            <a:documentation>specifies the beginning of a span of time</a:documentation>
-            <choice>
-              <data type="dateTime"/>
-              <data type="date"/>
-            </choice>
-          </attribute>
-          <attribute name="when-to">
-            <a:documentation>specifies the end of a span of time</a:documentation>
-            <choice>
-              <data type="dateTime"/>
-              <data type="date"/>
-            </choice>
-          </attribute>
           <optional>
             <ref name="ed-stamp"/>
           </optional>
           <ref name="agent-ref"/>
           <ref name="role-ref"/>
+          <oneOrMore>
+            <ref name="period-filter"/>
+          </oneOrMore>
         </group>
       </choice>
     </element>
@@ -731,5 +785,14 @@
   <define name="decl-non-core">
     <a:documentation>decl-non-core to be filled out by each TAN-class-X.rnc file</a:documentation>
     <empty/>
+  </define>
+  <!-- Declaration patterns that are shared across formats -->
+  <define name="decl-work">
+    <element name="work">
+      <a:documentation>indicates a creative work. Must be a conceptual entity, not a physical one.</a:documentation>
+      <a:documentation>The term "work" is only pragmatically defined in TAN. Any text that has enough unity to be referred to in ordinary conversation as a single entity may be defined as a work. A work may be composed of other works, be a part of other works, or even overlap with other works. E.g., the Lord's Prayer, the Gospel of Luke, the Tetravengelion, the New Testament, and the Bible are all valid works, despite the complex relationship between each of these concepts.</a:documentation>
+      <a:documentation>This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works</a:documentation>
+      <ref name="decl-pattern-default"/>
+    </element>
   </define>
 </grammar>

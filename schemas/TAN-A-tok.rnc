@@ -11,6 +11,9 @@ include "TAN-class-2.rnc" {
     ## TAN-A-tok files take exactly two sources
     source-list = source-item, source-item
     
+    ## all declarations must have ids
+    decl-id-ref-opt = internal-id
+    
     ## TAN-A-tok sources must be named
     source-id-opt = internal-id
     decl-non-class-2 = decl-brel+, decl-reus+
@@ -21,7 +24,6 @@ include "TAN-class-2.rnc" {
     
     ## alignments must contain one or more toks
     alignment-content-non-class-2 = token-list+
-    
     continuation-opt = continuation
 }
 decl-brel =
@@ -33,21 +35,13 @@ decl-brel =
     ## This element should not be used to describe any activities (e.g., translation, copying), reserved for <reuse-type>. 
     
     ## For examples see iris.xml 
-    element bitext-relation {
-        ed-stamp?,
-        (inclusion
-         | (internal-id, (comment* & entity-nondigital-ref)))
-    }
+    element bitext-relation { decl-pattern-default }
 decl-reus =
     
     ## identifies a category of text reuse (e.g., translation, mistranslation, paraphrase, ridicule). See main.xml#tan-a-tok for theoretical background.
     
     ## For examples see iris.xml 
-    element reuse-type {
-        ed-stamp?,
-        (inclusion
-         | (internal-id, (comment* & entity-nondigital-ref)))
-    }+
+    element reuse-type { decl-pattern-default }+
 bitext-relation-attr =
     
     ## points to one or more <bitext-relation> @xml:id values that qualify the type of relation that holds. Multiple values assume inclusive or (A or B or A and B)

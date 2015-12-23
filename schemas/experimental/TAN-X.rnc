@@ -7,35 +7,32 @@ start =
     ## specifies that the TAN file makes assertions subject a conceptual work. Root element.
     element TAN-X { TAN-root }
 include "../TAN-core.rnc" {
+    
+    ## all declarations must have ids
+    decl-id-ref-opt = internal-id
+    source-list = source-item*
     decl-non-core = TAN-X-decl
     TAN-body-core = TAN-X-body
 }
-standard-decl-pattern =
-    ed-stamp?,
-    (inclusion | (comment* & entity-nondigital-ref))
-TAN-X-decl = decl-work* & decl-place* & decl-verb* & decl-unit*
-decl-work =
-    
-    ## contains an IRI + name pattern identifying a textual work
-    element work { standard-decl-pattern }
+TAN-X-decl = decl-work* & decl-place* & decl-verb+ & decl-unit*
 decl-place =
     
     ## contains an IRI + name pattern identifying a spatial location, usually somewhere on earth
-    element place { standard-decl-pattern }
+    element place { decl-pattern-default }
 decl-verb =
     
     ## contains an IRI + name pattern identifying a property, relationship, action, or something else that is used to say something about something. 
     
     ## The preferred term "verb" is equivalent to RDF "predicate." The latter term is avoided as being misleading -- most who use TAN will understand "predicate," grammatically speaking, to refer to everything in a sentence that is not the subject,
-    element verb { standard-decl-pattern }
+    element verb { decl-pattern-default }
 decl-unit =
     
     ## contains an IRI + name pattern identifying a unit type (e.g., millimeters, seconds, Euros), to be used in conjunction with <object> to specify the meaning of a value
-    element unit { standard-decl-pattern }
+    element unit { decl-pattern-default }
 TAN-X-body = claimant, subject, claim+
 claim =
     element claim {
-        inclusion | (ed-stamp?, claimant?, subject?, verb, object, period-filter+, place-filter?)
+        inclusion | (ed-stamp?, claimant?, subject?, verb, object, period-filter*, place-filter?)
     }
 claimant =
     

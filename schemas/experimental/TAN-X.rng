@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0">
+  <start>
+    <element name="TAN-X">
+      <a:documentation>specifies that the TAN file makes assertions subject a conceptual work. Root element.</a:documentation>
+      <ref name="TAN-root"/>
+    </element>
+  </start>
+  <include href="TAN-core.rng">
+    <define name="decl-id-ref-opt">
+      <a:documentation>all declarations must have ids</a:documentation>
+      <ref name="internal-id"/>
+    </define>
+    <define name="source-list">
+      <zeroOrMore>
+        <ref name="source-item"/>
+      </zeroOrMore>
+    </define>
+    <define name="decl-non-core">
+      <ref name="TAN-X-decl"/>
+    </define>
+    <define name="TAN-body-core">
+      <ref name="TAN-X-body"/>
+    </define>
+  </include>
+  <define name="TAN-X-decl">
+    <interleave>
+      <zeroOrMore>
+        <ref name="decl-work"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="decl-place"/>
+      </zeroOrMore>
+      <oneOrMore>
+        <ref name="decl-verb"/>
+      </oneOrMore>
+      <zeroOrMore>
+        <ref name="decl-unit"/>
+      </zeroOrMore>
+    </interleave>
+  </define>
+  <define name="decl-place">
+    <element name="place">
+      <a:documentation>contains an IRI + name pattern identifying a spatial location, usually somewhere on earth</a:documentation>
+      <ref name="decl-pattern-default"/>
+    </element>
+  </define>
+  <define name="decl-verb">
+    <element name="verb">
+      <a:documentation>contains an IRI + name pattern identifying a property, relationship, action, or something else that is used to say something about something. </a:documentation>
+      <a:documentation>The preferred term "verb" is equivalent to RDF "predicate." The latter term is avoided as being misleading -- most who use TAN will understand "predicate," grammatically speaking, to refer to everything in a sentence that is not the subject,</a:documentation>
+      <ref name="decl-pattern-default"/>
+    </element>
+  </define>
+  <define name="decl-unit">
+    <element name="unit">
+      <a:documentation>contains an IRI + name pattern identifying a unit type (e.g., millimeters, seconds, Euros), to be used in conjunction with &lt;object&gt; to specify the meaning of a value</a:documentation>
+      <ref name="decl-pattern-default"/>
+    </element>
+  </define>
+  <define name="TAN-X-body">
+    <ref name="claimant"/>
+    <ref name="subject"/>
+    <oneOrMore>
+      <ref name="claim"/>
+    </oneOrMore>
+  </define>
+  <define name="claim">
+    <element name="claim">
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <optional>
+            <ref name="ed-stamp"/>
+          </optional>
+          <optional>
+            <ref name="claimant"/>
+          </optional>
+          <optional>
+            <ref name="subject"/>
+          </optional>
+          <ref name="verb"/>
+          <ref name="object"/>
+          <zeroOrMore>
+            <ref name="period-filter"/>
+          </zeroOrMore>
+          <optional>
+            <ref name="place-filter"/>
+          </optional>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="claimant">
+    <attribute name="claimant">
+      <a:documentation>points to an &lt;agent&gt; who makes a claim. @claimant within &lt;body&gt; indicates the default persons to be credited or blamed for an assertion.</a:documentation>
+      <a:documentation>Claimants are not to be confused with the editor of a TAN file. If an editor X writes a TAN-X file that says that person Y makes such-and-such a claim, then the implication is that X claims that Y claims that....  </a:documentation>
+      <data type="IDREFS"/>
+    </attribute>
+  </define>
+  <define name="subject">
+    <attribute name="subject">
+      <a:documentation>points to one or more ID refs of entities defined in &lt;head&gt; that serve as the grammatical subject of a claim. @subject within &lt;body&gt; indicates the default subject(s) for &lt;claim&gt;s. </a:documentation>
+      <data type="IDREFS"/>
+    </attribute>
+  </define>
+  <define name="verb">
+    <a:documentation>points to one or more &lt;verb&gt;s that serve to assert something of the @subject.</a:documentation>
+    <attribute name="verb">
+      <a:documentation>The preferred term "verb" is equivalent to RDF "predicate." The latter term is avoided as being misleading -- most who use TAN will understand "predicate," grammatically speaking, to refer to everything in a sentence that is not the subject,</a:documentation>
+      <data type="IDREFS"/>
+    </attribute>
+  </define>
+  <define name="object">
+    <choice>
+      <ref name="simple-object"/>
+      <ref name="complex-object"/>
+    </choice>
+  </define>
+  <define name="simple-object">
+    <attribute name="object">
+      <a:documentation>points to one or more ID refs of entities defined in &lt;head&gt; that serve as the grammatical object of a claim. For example, if you wish to say that work A is a commentary on work B, then the object would have the ID ref for work B. If you wish to make more complex assertions, use &lt;object&gt;</a:documentation>
+    </attribute>
+  </define>
+  <define name="complex-object">
+    <element name="object">
+      <optional>
+        <choice>
+          <ref name="lang-of-content"/>
+          <ref name="units"/>
+        </choice>
+      </optional>
+      <text/>
+    </element>
+  </define>
+  <define name="units">
+    <attribute name="units">
+      <a:documentation>points to the ID ref of a &lt;unit&gt;, defining the type of units.</a:documentation>
+      <data type="IDREF"/>
+    </attribute>
+  </define>
+  <define name="place-filter">
+    <attribute name="where">
+      <a:documentation>restricts the &lt;claim&gt; to a specific &lt;place&gt; </a:documentation>
+      <data type="IDREFS"/>
+    </attribute>
+  </define>
+</grammar>

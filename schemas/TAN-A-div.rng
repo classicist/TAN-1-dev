@@ -68,8 +68,29 @@
         <ref name="align-div-list"/>
       </oneOrMore>
     </define>
+    <define name="decl-non-class-2">
+      <zeroOrMore>
+        <ref name="decl-topics"/>
+      </zeroOrMore>
+    </define>
+    <define name="non-class-2-opt">
+      <optional>
+        <ref name="topic-opt"/>
+      </optional>
+    </define>
   </include>
-  <!-- Common patterns -->
+  <define name="decl-topics">
+    <element name="topic">
+      <a:documentation>declares one or more topics, to be used in conjunction with @topic under &lt;align&gt; to associate alignments with specific topics instead of verbatim parallels.  </a:documentation>
+      <ref name="decl-pattern-default"/>
+    </element>
+  </define>
+  <define name="topic-opt">
+    <attribute name="topic">
+      <a:documentation>points to one or more topics to which an alignment should be associated. If this attribute is not present, it is assumed that the alignment links different versions of roughly the same text.</a:documentation>
+      <a:documentation>TAN does not stipluate what can be inferred via @topic. If ref A is aligned with B via topic x, and B with C via topic y, no guarantee is made as to what relationship A has to C. </a:documentation>
+    </attribute>
+  </define>
   <define name="div-ref-list">
     <element name="div-ref">
       <a:documentation>points to one or more &lt;div&gt;s (or segments of &lt;div&gt;s) in one or more sources</a:documentation>

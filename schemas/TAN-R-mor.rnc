@@ -8,20 +8,19 @@ start =
     element TAN-R-mor { TAN-root }
 include "TAN-class-3.rnc" {
     
+    ## all declarations must have ids
+    decl-id-ref-opt = internal-id
+    
     ## every TAN-R-mor file has one or more src-lang and feature elements
-    decl-non-class-3 = lang-outside+ & morph-feature+
+    decl-non-class-3 = lang-outside+ & decl-morph-feature+
     TAN-body-core = TAN-R-mor-body
 }
 
 ## TAN-R-mor files declare the morphological features that are allowed for a given language
-morph-feature =
+decl-morph-feature =
     
     ## names, through its IRI + name pattern, a grammatical concept (e.g., plural, subjunctive, 1st person) that characterizes a language.
-    element feature {
-        ed-stamp?,
-        (inclusion
-         | (internal-id, (comment* & entity-nondigital-ref)))
-    }
+    element feature { decl-pattern-default }
 
 ## TAN-R-mor body consists of zero or more assert, report, category, or options
 TAN-R-mor-body = assert* & report* & category* & options*

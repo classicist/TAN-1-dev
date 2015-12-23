@@ -33,11 +33,7 @@ include "TAN-class-2.rnc" {
 decl-topics =
     
     ## declares one or more topics, to be used in conjunction with @topic under <align> to associate alignments with specific topics instead of verbatim parallels.  
-    element topic {
-        ed-stamp?,
-        (inclusion
-         | (internal-id, lang-outside*, (entity-digital-generic-ref | entity-nondigital-ref)))
-    }
+    element topic { decl-pattern-default }
 topic-opt =
     
     ## points to one or more topics to which an alignment should be associated. If this attribute is not present, it is assumed that the alignment links different versions of roughly the same text.

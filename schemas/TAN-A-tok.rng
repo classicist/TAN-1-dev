@@ -12,6 +12,10 @@
       <ref name="source-item"/>
       <ref name="source-item"/>
     </define>
+    <define name="decl-id-ref-opt">
+      <a:documentation>all declarations must have ids</a:documentation>
+      <ref name="internal-id"/>
+    </define>
     <define name="source-id-opt">
       <a:documentation>TAN-A-tok sources must be named</a:documentation>
       <ref name="internal-id"/>
@@ -59,21 +63,7 @@
       <a:documentation>In most cases, there will be need for only one of these elements. But multiple values may be helpful for cases where a bitext has a complex history, for example, a textual object that was created over time, and in different phases.</a:documentation>
       <a:documentation>This element should not be used to describe any activities (e.g., translation, copying), reserved for &lt;reuse-type&gt;. </a:documentation>
       <a:documentation>For examples see iris.xml </a:documentation>
-      <optional>
-        <ref name="ed-stamp"/>
-      </optional>
-      <choice>
-        <ref name="inclusion"/>
-        <group>
-          <ref name="internal-id"/>
-          <interleave>
-            <zeroOrMore>
-              <ref name="comment"/>
-            </zeroOrMore>
-            <ref name="entity-nondigital-ref"/>
-          </interleave>
-        </group>
-      </choice>
+      <ref name="decl-pattern-default"/>
     </element>
   </define>
   <define name="decl-reus">
@@ -81,21 +71,7 @@
       <element name="reuse-type">
         <a:documentation>identifies a category of text reuse (e.g., translation, mistranslation, paraphrase, ridicule). See main.xml#tan-a-tok for theoretical background.</a:documentation>
         <a:documentation>For examples see iris.xml </a:documentation>
-        <optional>
-          <ref name="ed-stamp"/>
-        </optional>
-        <choice>
-          <ref name="inclusion"/>
-          <group>
-            <ref name="internal-id"/>
-            <interleave>
-              <zeroOrMore>
-                <ref name="comment"/>
-              </zeroOrMore>
-              <ref name="entity-nondigital-ref"/>
-            </interleave>
-          </group>
-        </choice>
+        <ref name="decl-pattern-default"/>
       </element>
     </oneOrMore>
   </define>

@@ -102,11 +102,10 @@
         select="
             ('TAN-R-tok',
             'TAN-R-mor')"/>
+    <xsl:variable name="experimental-root-names" select="'TAN-X'"/>
     <xsl:variable name="all-root-names"
-        select="
-            $class-1-root-names,
-            $class-2-root-names,
-            $class-3-root-names"/>
+        select="$class-1-root-names, $class-2-root-names, $class-3-root-names, $experimental-root-names"
+    />
     
     <!--<xsl:variable name="inclusion-errors"
         select="$errors//tan:group[@affects-attribute = 'include']/tan:error" as="xs:string*"/>

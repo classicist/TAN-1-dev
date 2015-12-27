@@ -16,6 +16,7 @@
    <xsl:variable name="src-1st-da-data-segmented"
       select="tan:segment-tokenized-prepped-class-1-data(tan:tokenize-prepped-class-1-data($src-1st-da-data))"/>
    <xsl:variable name="equate-works" as="xs:integer+">
+      <!-- this variable retains a list of integers, one per source, indicating groups of works -->
       <xsl:for-each select="$src-count">
          <xsl:variable name="this-src" select="."/>
          <xsl:variable name="this-src-work-iris"
@@ -36,6 +37,27 @@
                         ())))"
          />
       </xsl:for-each>
+   </xsl:variable>
+   <xsl:variable name="work-iris" as="element()*">
+      <tan:work-iris>
+         <xsl:for-each-group select="$src-count" group-by="$equate-works[current()]">
+            <xsl:variable name="these-iris" as="element()*">
+               <xsl:for-each select="current-group()">
+                  <xsl:variable name="this-src" select="."/>
+                  <xsl:sequence
+                     select="$src-1st-da-heads[$this-src]/tan:declarations/tan:work/tan:IRI"/>
+               </xsl:for-each>
+            </xsl:variable>
+            <xsl:variable name="distinct-iris" select="distinct-values($these-iris)"/>
+            <tan:work n="{current-grouping-key()}">
+               <xsl:for-each select="$distinct-iris">
+                  <tan:IRI>
+                     <xsl:value-of select="."/>
+                  </tan:IRI>
+               </xsl:for-each>
+            </tan:work>
+         </xsl:for-each-group>
+      </tan:work-iris>
    </xsl:variable>
    <xsl:variable name="equate-div-types-sorted" as="element()*">
       <xsl:for-each select="$body/tan:equate-div-types">

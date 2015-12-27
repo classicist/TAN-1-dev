@@ -37,20 +37,7 @@
             '1'
          else
             $sources/@xml:id"/>
-   <xsl:variable name="src-1st-da-locations"
-      select="
-         for $i in $sources
-         return
-            if (exists(tan:first-loc-available($i))) then
-               resolve-uri(tan:first-loc-available($i), $doc-uri)
-            else
-               ''"
-   />
-   <xsl:variable name="empty-doc" as="document-node()">
-      <xsl:for-each select="/">
-         <xsl:copy/>
-      </xsl:for-each>
-   </xsl:variable>
+   <xsl:variable name="src-1st-da-locations" select="tan:get-1st-da-locations($sources)"/>
    <xsl:variable name="src-1st-da"
       select="
          for $i in $src-1st-da-locations

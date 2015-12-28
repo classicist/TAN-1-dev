@@ -96,21 +96,24 @@
                   select="
                      ($this-div-type-alias,
                      $this-div-type-orig)[1]"/>
-               <xsl:variable name="edts" select="$equate-div-types-sorted[tan:div-type-ref[@src-no = $this-src][@div-type-ref = $this-div-type-id]]/tan:div-type-ref/@eq-id" as="xs:integer*"/>
+               <xsl:variable name="edts"
+                  select="$equate-div-types-sorted[tan:div-type-ref[@src-no = $this-src][@div-type-ref = $this-div-type-id]]/tan:div-type-ref/@eq-id"
+                  as="xs:integer*"/>
                <xsl:variable name="this-div-eq-id"
                   select="
                      if (exists($edts)) then
-                        string(min(for $i in $edts return number($i)))
+                        string(min(for $i in $edts
+                        return
+                           number($i)))
                      else
-                        $this-div-type/@eq-id"
-               />
+                        $this-div-type/@eq-id"/>
                <tan:replace>
                   <tan:pattern>
                      <xsl:value-of
                         select="concat('^', $this-div-type-id, '\.|:', $this-div-type-id, '\.')"/>
                   </tan:pattern>
                   <tan:replacement>
-                     <xsl:value-of select="concat(':',$this-div-eq-id,'.')"/>
+                     <xsl:value-of select="concat(':', $this-div-eq-id, '.')"/>
                   </tan:replacement>
                </tan:replace>
             </xsl:for-each>
@@ -138,7 +141,8 @@
       </xsl:for-each>
    </xsl:variable>
    <xsl:variable name="leaf-div-splits-grouped" as="element()*">
-      <xsl:for-each-group select="$leaf-div-splits-raw/tan:source/tan:div/tan:tok" group-by="../../@id">
+      <xsl:for-each-group select="$leaf-div-splits-raw/tan:source/tan:div/tan:tok"
+         group-by="../../@id">
          <xsl:sort select="index-of($src-ids, current-grouping-key())"/>
          <tan:source id="{current-grouping-key()}">
             <xsl:for-each-group select="current-group()" group-by="../@ref">
@@ -146,18 +150,18 @@
                   <xsl:copy-of select="current-group()/../@*"/>
                   <xsl:for-each select="current-group()">
                      <xsl:sort select="number(@n)"/>
-                     <xsl:copy-of select="."/></xsl:for-each>
+                     <xsl:copy-of select="."/>
+                  </xsl:for-each>
                </tan:div>
-            </xsl:for-each-group> 
+            </xsl:for-each-group>
          </tan:source>
-      </xsl:for-each-group> 
+      </xsl:for-each-group>
    </xsl:variable>
    <xsl:variable name="realigns-normalized"
       select="
          for $i in $body/tan:realign
          return
-            tan:normalize-realign($i)"
-   />
+            tan:normalize-realign($i)"/>
 
    <!-- CONTEXT DEPENDENT FUNCTIONS -->
 
@@ -218,7 +222,8 @@
                      </xsl:copy>
                   </xsl:when>
                   <xsl:otherwise>
-                     <xsl:copy><xsl:copy-of select="@*"/>
+                     <xsl:copy>
+                        <xsl:copy-of select="@*"/>
                         <xsl:attribute name="pos" select="$div-pos"/>
                      </xsl:copy>
                   </xsl:otherwise>
@@ -370,171 +375,117 @@
          </tan:realign>
       </xsl:if>
    </xsl:function>
-   <xsl:function name="tan:normalize-align" as="item()*">
-      <!-- Takes one tan:align element and returns a normalized version, taking into account @distribute and
-      @exclusive claims (which are therefore dropped). It has no effect on empty tan:align elements that 
-      merely point to other alignments. The result follows this pattern:
-      <tan:align [+ANY ATTRIBUTES]> [IF DISTRIBUTE, ONE PER ATOMIC REF]
+   <xsl:function name="tan:normalize-align" as="element()*">
+      <!-- Takes one or more tan:align elements and returns a normalized version, taking into account @distribute and
+      @exclusive claims. The result of each resolved tan:align follows this pattern:
+      <tan:align [+ANY ATTRIBUTES]> [IF DISTRIBUTED, ONE tan:align PER ATOMIC REF PER tan:div-ref; IF A DISTRIBUTION DOES NOT
+      MATCH EVERYTHING ONE-TO-ONE, THEN ATTRIBUTE @error="true" IS PROVIDED]
          <tan:group [IF (@exclusive) THEN] src="[SOURCE NUMBER]" [ELSE] work="[WORK NUMBER]"
          orig-ref="[THE ORIGINAL REFERENCES FOR THIS WORK OR SOURCE, STRING-JOINED BY COMMAS]">
-            <tan:div-ref src="[SOURCE NUMBER]" ref="[SINGLE REF]" seg="[SINGLE SEGMENT NUMBER; IF NO SEGMENTATION, 
-            THIS ATTRIBUTE IS MISSING]">
+            <tan:div-ref work="[WORK NUMBER]" src="[SOURCE NUMBER]" ref="[SINGLE REF]" seg="[SINGLE SEGMENT NUMBER; IF NO SEGMENTATION, 
+            THIS ATTRIBUTE IS MISSING] orig-ref="[THE ORIGINAL REFERENCES FOR THIS WORK OR SOURCE, STRING-JOINED BY COMMAS]
+            eq-ref="[CONVERSION OF REFERENCE TO A NORMALIZED REFERENCE SYSTEM, TO BE USED TO COMPARE AND MATCH OTHER DIVS]">
       tan:div-refs will be sorted by document order 
       NB, <tan:align error="true"> collects div-refs that cannot be allocated in one-to-one matches demanded by
       the presence of @distribute
       -->
-      <xsl:param name="align-element" as="element()?"/>
+      <xsl:param name="align-element" as="element()*"/>
       <xsl:variable name="is-exclusive"
          select="
             if ($align-element/@exclusive) then
                true()
             else
                false()"/>
-      <xsl:variable name="is-distributed"
-         select="
-            if ($align-element/@distribute) then
-               true()
-            else
-               false()"/>
-      <xsl:variable name="these-srcs"
-         select="distinct-values(tan:src-ids-to-nos($align-element/tan:div-ref/@src))"/>
-      <xsl:variable name="these-works"
-         select="
-            for $i in $these-srcs
-            return
-               $equate-works[$i]"/>
-      <xsl:variable name="these-keys"
-         select="
-            if ($is-exclusive) then
-               $these-srcs
-            else
-               distinct-values($these-works)"/>
-      <xsl:variable name="expand-aligns" as="element()">
-         <tan:align>
-            <xsl:copy-of
-               select="
-                  $align-element/(@ed-when,
-                  @ed-who,
-                  @strength,
-                  @xml:id,
-                  @alignment)"/>
-            <xsl:for-each select="$align-element/tan:div-ref">
-               <xsl:copy-of select="tan:expand-div-ref(., not($is-exclusive))"/>
-            </xsl:for-each>
-         </tan:align>
-      </xsl:variable>
-      <xsl:variable name="align-count"
-         select="
-            for $i in $these-keys
-            return
-               count($expand-aligns/tan:div-ref[(if ($is-exclusive) then
-                  @src
-               else
-                  @work) = $i])"/>
-      <xsl:variable name="group-div-refs" as="element()*">
-         <xsl:choose>
-            <xsl:when test="$is-distributed">
-               <xsl:for-each select="1 to min($align-count)">
-                  <xsl:variable name="this-align-no" select="."/>
-                  <tan:align>
-                     <xsl:copy-of select="$expand-aligns/@*"/>
-                     <xsl:for-each select="distinct-values($these-keys)">
-                        <xsl:variable name="this-key" select="."/>
-                        <xsl:variable name="this-div-ref"
-                           select="
-                              $expand-aligns/tan:div-ref[(if ($is-exclusive) then
-                                 @src
-                              else
-                                 @work) = $this-key][$this-align-no]"/>
-                        <tan:group orig-ref="{string-join(distinct-values($this-div-ref/@orig-ref),', ')}">
-                           <xsl:copy-of select="$this-div-ref/../@strength"/>
-                           <xsl:choose>
-                              <xsl:when test="$is-exclusive">
-                                 <xsl:attribute name="src" select="$this-div-ref/@src"/>
-                              </xsl:when>
-                              <xsl:otherwise>
-                                 <xsl:attribute name="work" select="$this-div-ref/@work"/>
-                              </xsl:otherwise>
-                           </xsl:choose>
-                           <xsl:for-each select="$this-div-ref">
-                              <xsl:copy>
-                                 <xsl:copy-of select="@src | @ref | @seg | @strength"/>
-                                 <xsl:attribute name="eq-ref"
-                                    select="tan:equate-ref(@src, @ref, @seg)[1]"/>
-                              </xsl:copy>
-                           </xsl:for-each>
-                        </tan:group>
-                     </xsl:for-each>
-                  </tan:align>
-               </xsl:for-each>
-               <xsl:if test="not(max($align-count) = min($align-count))">
-                  <tan:align error="{true()}">
-                     <xsl:for-each select="1 to count($align-count)">
-                        <xsl:variable name="n" select="."/>
-                        <xsl:variable name="this-key" select="$these-keys[$n]"/>
-                        <xsl:variable name="this-count" select="$align-count[$n]"/>
-                        <xsl:for-each select="(min($align-count) + 1) to max($align-count)">
-                           <xsl:variable name="this-align-no" select="."/>
-                           <xsl:copy-of
+      <xsl:variable name="group-div-refs-pass-1" as="element()*">
+         <xsl:for-each select="$align-element">
+            <xsl:copy>
+               <xsl:copy-of select="@*"/>
+               <xsl:for-each-group select="tan:div-ref"
+                  group-by="count(preceding-sibling::*[not(@cont)])">
+                  <xsl:variable name="these-srcs"
+                     select="
+                        distinct-values(for $i in current-group()/@src
+                        return
+                           index-of($src-ids, $i))"/>
+                  <xsl:variable name="expanded-div-refs" as="element()*"
+                     select="
+                        for $i in current-group()
+                        return
+                           tan:expand-div-ref($i, not($is-exclusive))"/>
+                  <tan:group>
+                     <xsl:copy-of select="(current-group()//@strength)[1]"/>
+                     <xsl:choose>
+                        <xsl:when test="$is-exclusive">
+                           <xsl:attribute name="src" select="$these-srcs"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                           <xsl:attribute name="work"
                               select="
-                                 $expand-aligns/tan:div-ref[(if ($is-exclusive) then
-                                    @src
-                                 else
-                                    @work) = $this-key][$this-align-no]"
+                                 distinct-values(for $i in $these-srcs
+                                 return
+                                    $equate-works[$i])"
                            />
-                        </xsl:for-each>
+                        </xsl:otherwise>
+                     </xsl:choose>
+                     <xsl:attribute name="orig-ref">
+                        <xsl:value-of
+                           select="string-join(distinct-values($expanded-div-refs//@orig-ref), ', ')"
+                        />
+                     </xsl:attribute>
+                     <xsl:for-each select="$expanded-div-refs">
+                        <xsl:sort
+                           select="number($src-1st-da-data-segmented[number(current()/@src)]/tan:div[@ref = current()/@ref]/@pos)"/>
+                        <xsl:copy>
+                           <xsl:copy-of select="@*"/>
+                           <xsl:attribute name="eq-ref" select="tan:equate-ref(@src, @ref, @seg)[1]"
+                           />
+                        </xsl:copy>
                      </xsl:for-each>
-                  </tan:align>
-               </xsl:if>
-            </xsl:when>
-            <xsl:otherwise>
-               <tan:align>
-                  <xsl:copy-of select="$expand-aligns/@*"/>
-                  <xsl:for-each-group select="$expand-aligns/tan:div-ref"
-                     group-by="
-                        if ($is-exclusive) then
-                           @src
-                        else
-                           @work">
-                     <tan:group>
-                        <xsl:copy-of select="current-group()/../@strength"/>
-                        <xsl:choose>
-                           <xsl:when test="$is-exclusive">
-                              <xsl:attribute name="src" select="current-group()[1]/@src"/>
-                           </xsl:when>
-                           <xsl:otherwise>
-                              <xsl:attribute name="work" select="current-group()[1]/@work"/>
-                           </xsl:otherwise>
-                        </xsl:choose>
-                        <xsl:attribute name="orig-ref">
-                           <xsl:variable name="orig-refs" as="xs:string*">
-                              <xsl:for-each select="current-group()">
-                                 <xsl:sort
-                                    select="number($src-1st-da-data-segmented[number(current()/@src)]/tan:div[@ref = current()/@ref]/@pos)"
-                                 />
-                                 <xsl:value-of select="@orig-ref"/>
-                              </xsl:for-each>
-                           </xsl:variable>
-                           <xsl:value-of select="string-join(distinct-values($orig-refs),', ')"/>
-                        </xsl:attribute>
-                           <!--select="string-join(distinct-values(current-group()/@orig-ref), ', ')"-->
-                        <xsl:for-each select="current-group()">
-                           <xsl:sort
-                              select="number($src-1st-da-data-segmented[number(current()/@src)]/tan:div[@ref = current()/@ref]/@pos)"
-                           />
+                  </tan:group>
+               </xsl:for-each-group>
+            </xsl:copy>
+         </xsl:for-each>
+      </xsl:variable>
+      <xsl:variable name="group-div-refs-pass-2" as="element()*">
+         <xsl:for-each select="$group-div-refs-pass-1">
+            <xsl:variable name="this-align" select="."/>
+            <xsl:variable name="is-distributed"
+               select="
+                  if (@distribute) then
+                     true()
+                  else
+                     false()"/>
+            <xsl:choose>
+               <xsl:when test="$is-distributed">
+                  <xsl:variable name="items-per-group"
+                     select="
+                        for $i in tan:group
+                        return
+                           count($i/*)"/>
+                  <xsl:variable name="min-items-per-group" select="min($items-per-group)"/>
+                  <xsl:for-each select="1 to max($items-per-group)">
+                     <xsl:variable name="this-align-no" select="."/>
+                     <tan:align>
+                        <xsl:copy-of select="$this-align/@*"/>
+                        <xsl:if test="$this-align-no gt $min-items-per-group">
+                           <xsl:attribute name="error" select="true()"/>
+                        </xsl:if>
+                        <xsl:for-each select="$this-align/tan:group[tan:div-ref[$this-align-no]]">
                            <xsl:copy>
-                              <xsl:copy-of select="@src | @ref | @seg | @strength"/>
-                              <xsl:attribute name="eq-ref"
-                                 select="tan:equate-ref(@src, @ref, @seg)[1]"/>
+                              <xsl:copy-of select="@*"/>
+                              <xsl:copy-of select="tan:div-ref[$this-align-no]"/>
                            </xsl:copy>
                         </xsl:for-each>
-                     </tan:group>
-                  </xsl:for-each-group>
-               </tan:align>
-            </xsl:otherwise>
-         </xsl:choose>
+                     </tan:align>
+                  </xsl:for-each>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:sequence select="."/>
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:for-each>
       </xsl:variable>
-      <xsl:copy-of select="$group-div-refs"/>
+      <xsl:copy-of select="$group-div-refs-pass-2"/>
    </xsl:function>
 
    <xsl:function name="tan:convert-ns-to-numerals" as="xs:string">
@@ -631,9 +582,9 @@
       <xsl:param name="norm-ref" as="xs:string?"/>
       <xsl:param name="seg-no" as="xs:integer?"/>
       <xsl:variable name="first-realignment"
-         select="($realigns-normalized[not(@error)]/tan:div-ref[@src = $src-no][@ref = $norm-ref][not(@seg) or @seg = $seg-no])[1]"
-      />
-      <xsl:variable name="realignment-anchor" select="$first-realignment/preceding-sibling::tan:anchor-div-ref"/>
+         select="($realigns-normalized[not(@error)]/tan:div-ref[@src = $src-no][@ref = $norm-ref][not(@seg) or @seg = $seg-no])[1]"/>
+      <xsl:variable name="realignment-anchor"
+         select="$first-realignment/preceding-sibling::tan:anchor-div-ref"/>
       <xsl:variable name="realigned-eq-ref-and-seg" as="item()*">
          <xsl:choose>
             <xsl:when test="exists($realignment-anchor)">
@@ -651,17 +602,20 @@
             </xsl:when>
             <xsl:otherwise>
                <!-- Otherwise assume that it just is exempt from any realignment, and prepend a value to norm-ref that exempts it from auto-alignment -->
-               <xsl:copy-of select="(concat('s',$src-no,'_',$norm-ref),$seg-no)"/>
+               <xsl:copy-of select="(concat('s', $src-no, '_', $norm-ref), $seg-no)"/>
             </xsl:otherwise>
          </xsl:choose>
       </xsl:variable>
-      <xsl:choose><xsl:when test="exists($first-realignment)">
+      <xsl:choose>
+         <xsl:when test="exists($first-realignment)">
             <xsl:sequence select="$realigned-eq-ref-and-seg"/>
-      </xsl:when>
-         <xsl:otherwise><xsl:sequence
-            select="tan:replace-sequence(tan:convert-ns-to-numerals($norm-ref, $src-no), $src-1st-da-div-types-equiv-replace[$src-no]/tan:replace)"
-         />
-            <xsl:sequence select="$seg-no"/></xsl:otherwise></xsl:choose>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:sequence
+               select="tan:replace-sequence(tan:convert-ns-to-numerals($norm-ref, $src-no), $src-1st-da-div-types-equiv-replace[$src-no]/tan:replace)"/>
+            <xsl:sequence select="$seg-no"/>
+         </xsl:otherwise>
+      </xsl:choose>
    </xsl:function>
 
 </xsl:stylesheet>

@@ -738,6 +738,7 @@
             <xsl:attribute name="id" select="$src-ids[$this-src]"/>
             <xsl:for-each select="$this-class-1-body-resolved//(tei:div | tan:div)">
                <xsl:variable name="this-div" select="."/>
+               <xsl:variable name="this-pos" select="position()"/>
                <xsl:variable name="is-leaf-div"
                   select="
                      if (child::tan:div | child::tei:div) then
@@ -761,6 +762,7 @@
                      <xsl:attribute name="lang"
                         select="$this-div/ancestor-or-self::*[attribute::xml:lang][1]/@xml:lang"/>
                   </xsl:if>
+                  <xsl:attribute name="pos" select="$this-pos"/>
                   <!-- raw text -->
                   <xsl:copy-of
                      select="

@@ -158,13 +158,6 @@
          else $possible-divs/@ref"/>
       <let name="ref-range-must-join-siblings"
          value="if (../parent::tan:realign or ../..[@distribute] or ../..[@xml:id]) then true() else false()"/>
-      <!-- START TESTING BLOCK -->
-      <let name="test1" value="$this-src-list"/>
-      <let name="test2" value="for $i in $this-refs-norm return count(tokenize($i,' [-,] '))"/>
-      <let name="test3" value="for $i in $this-refs-norm return tokenize($i,' [-,] ')"/>
-      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
-         select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
-      <!-- END TESTING BLOCK -->
       <report
          test="$ref-range-must-join-siblings and (some $i in tan:ref-range-check(.) satisfies $i = false())"
          >In any @ref whose values might be distributed, every range (references joined by a hyphen)
@@ -266,5 +259,17 @@
       <report test="@cont and not(following-sibling::tan:tok)" tan:applies-to="cont">Any &lt;tok> taking 
          @cont must be followed by at least one other &lt;tok>.</report>
    </rule>
-
+   <rule context="@strength|@conf">
+      <let name="pos" value="count(../preceding-sibling::*[not(@cont)])"/>
+      <let name="joined-siblings" value="../../(tan:div-ref,tan:tok)[count(preceding-sibling::*[not(@cont)]) = $pos]"/>
+      <!-- START TESTING BLOCK -->
+      <let name="test1" value="$pos"/>
+      <let name="test2" value="$joined-siblings"/>
+      <let name="test3" value="count($joined-siblings//(@strength | @conf))"/>
+      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
+         select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
+      <!-- END TESTING BLOCK -->
+      <report test="count($joined-siblings//(@strength | @conf)) gt 1">Neither @strength nor @conf
+         may be repeated by siblings joined by @cont.</report>
+   </rule>
 </pattern>

@@ -225,7 +225,14 @@
          <report test="@cont and not(following-sibling::tan:div-ref)" tan:applies-to="cont">Any &lt;div-ref> taking 
             @cont must be followed by at least one other &lt;dvi-ref>.</report>
       </rule>
-
+      <rule context="@cont">
+         <let name="pos" value="count(../preceding-sibling::*[not(@cont)])"/>
+         <let name="joined-siblings" value="../../(tan:div-ref,tan:tok)[count(preceding-sibling::*[not(@cont)]) = $pos]"/>
+         <let name="this-src-list" value="for $i in $joined-siblings return tan:src-ids-to-nos($i/@src)"/>
+         <let name="this-work-list" value="for $i in $this-src-list return $equate-works[$i]"/>
+         <report test="count(distinct-values($this-work-list)) gt 1">@cont may not be used to join sources
+            that belong to more than one work.</report>
+      </rule>
    </pattern>
 
    <!-- FUNCTIONS -->

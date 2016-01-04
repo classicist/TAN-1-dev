@@ -11,10 +11,9 @@ agent-ref =
     attribute who { text }
 decl-id-ref-opt = empty
 
-## String that refers to a div either by using single nonword characters to join pairs of @type and optional @n values (themselves joined) by a nonword character) or by using single nonword characters to join only @n values. The first pattern is \w+\W\w*(\W\w+\W\w*)* and the second is \w+(\W\w+)*
-div-ref = xsd:string { pattern = "\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*" }
+## String that specifies a range of divs using the div-ref pattern joined by a hyphen or a comma.
 
-## String that specifies a range of divs using the div-ref pattern joined by a hyphen or a comma
+## For more see main.xml#leaf_div_uniqueness_rule
 div-range-ref =
     xsd:string {
         pattern =
@@ -83,7 +82,7 @@ keyword-ref =
     attribute which { text }
 lang-of-content =
     
-    ## specifies an ISO (BCP 47) language code that names the language of the text enclosed by the parent element. Values are inherited by all descendants except for those that have an @xml:lang and their descendants.  
+    ## specifies a language code that names the language of the text enclosed by the parent element. Values are inherited by all descendants except for those that have an @xml:lang and their descendants.  
     
     ## Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see main.xml#language.
     
@@ -91,11 +90,11 @@ lang-of-content =
     attribute xml:lang { xsd:language }
 lang-outside =
     
-    ## specifies a language discussed by the TAN file. This element does NOT name the language of the text enclosed by the parent element, which is the province of @xml:lang.
+    ## specifies a language that is being discussed. This element does NOT name the language of the text enclosed by the parent element, which is the province of @xml:lang.
     
     ## Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see main.xml#language.
     
-    ## Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin) 
+    ## Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin). For more see main.xml#language
     element for-lang { xsd:language }
 period-filter =
     
@@ -278,7 +277,7 @@ metadata-human =
     
     ## The second, computer-readable approach has <desc> take an IRI + name pattern plus <location> pointing to some XML resource that provides more information about the concept, person, or thing. This is the method preferred to point to a <TAN-X> file. 
     element desc { metadata-desc | entity-digital-tan-other-ref }*
-# PART TWO OF TWO: COMMON TAN STRUCTURE OF ALL TAN FILES (rootmost nodes first)
+# PART TWO OF TWO: STRUCTURE COMMON TO ALL TAN FILES (rootmost nodes first)
 
 # 1st level of any TAN file.
 TAN-root =
@@ -389,11 +388,6 @@ see-also-item =
                 | entity-digital-tan-other-ref))))
     }
 relationship =
-    # commented out 2015-11-05 to move @which to general purpose; delete by 2016 if all is well
-    # xsd:string {
-    #             pattern =
-    #                "(new|old) version|(parent|child|ancestor|descendant|cousin) edition|alternatively (divided|normalized) edition|dependent|auxiliary"
-    #          }
     
     ## specifies the role that the item named by the parent <see-also> played. This may be either a reserved keyword or an IRI + name pattern that identifies a specific kind of relationship.
     element relationship {
@@ -452,6 +446,7 @@ decl-core = empty
 
 ## decl-non-core to be filled out by each TAN-class-X.rnc file
 decl-non-core = empty
+#
 # Declaration patterns that are shared across formats
 decl-work =
     

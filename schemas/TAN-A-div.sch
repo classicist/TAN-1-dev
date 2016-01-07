@@ -223,7 +223,24 @@
             tan:applies-to="align">Any @src of a child of an &lt;align> with no @exclusive may cite no more than
             one source.</report>
          <report test="@cont and not(following-sibling::tan:div-ref)" tan:applies-to="cont">Any &lt;div-ref> taking 
-            @cont must be followed by at least one other &lt;dvi-ref>.</report>
+            @cont must be followed by at least one other &lt;div-ref>.</report>
+         <report test="text()" role="warning" sqf:fix="fetch-content">Adding any text content to this element triggers a
+            Schematron Quick Fix to allow the content of div refs to be retrieved.</report>
+         <sqf:fix id="fetch-content">
+            <sqf:description>
+               <sqf:title>Append text content of the divs being referred to</sqf:title>
+               <sqf:p>Selecting this option will insert for every reference in every source a
+                  tan:comment element as a following sibling with the textual content.</sqf:p>
+            </sqf:description>
+            <sqf:delete match="text()"/>
+            <sqf:add match="." position="after">
+               <xsl:for-each select="$src-segmented-data-for-this-div-ref/tan:div/tan:seg">
+                  <xsl:text>&#xA;</xsl:text>
+                  <tan:comment when="{current-date()}" who="{$head/tan:agent[1]/@xml:id}">
+                     <xsl:value-of select="."/></tan:comment>
+               </xsl:for-each>
+            </sqf:add>
+         </sqf:fix>
       </rule>
       <rule context="@cont">
          <let name="pos" value="count(../preceding-sibling::*[not(@cont)])"/>

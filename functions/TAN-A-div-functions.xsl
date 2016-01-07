@@ -404,9 +404,11 @@
                   group-by="count(preceding-sibling::*[not(@cont)])">
                   <xsl:variable name="these-srcs"
                      select="
-                        distinct-values(for $i in current-group()/@src
+                        distinct-values(for $i in current-group()/@src,
+                           $j in tokenize($i, '\s+')
                         return
-                           index-of($src-ids, $i))"/>
+                           index-of($src-ids, $j))"
+                  />
                   <xsl:variable name="expanded-div-refs" as="element()*"
                      select="
                         for $i in current-group()

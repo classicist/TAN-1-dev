@@ -221,6 +221,17 @@
                   $src-1st-da-all-div-types/tan:source[$i]//@xml:id)"/>
          <let name="qty-of-srcs-with-implicit-div-types"
             value="count($this-src-list[. = $src-impl-div-types])"/>
+         <let name="these-sources-div-refs"
+            value="
+               for $i in $these-sources-resolved//(tan:div,
+               tei:div)[not((tan:div,
+               tei:div))]
+               return
+                  if ($qty-of-srcs-with-implicit-div-types = 0) then
+                     tan:flatref($i)
+                  else
+                     replace(tan:flatref($i), concat('\w+', $separator-type-and-n-regex), '')"
+         />
          <let name="src-data-for-this-div-ref"
             value="tan:pick-prepped-class-1-data($this-src-list, $this-refs-norm)"/>
          <let name="src-segmented-data-for-this-div-ref"
@@ -291,12 +302,14 @@
                select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
          <!-- END TESTING BLOCK -->
          <report test="$ref-has-errors" sqf:fix="search-for-div-refs-and-replace search-only-for-div-refs">Every ref
-            cited must be found in every source (<value-of
+            cited must be found in every source (
+            <value-of
                select="
-                  if (exists($div-type-mismatches)) then
+                  if (exists($div-type-mismatches) and count($qty-of-srcs-with-implicit-div-types) = 0) then
                      concat('faulty div types:', string-join($div-type-mismatches, ' '), '; acceptable values: ', string-join($valid-div-types, ' '))
                   else
-                     ()"
+                     distinct-values($these-sources-div-refs[count(index-of($these-sources-div-refs,.)) ge count($this-src-list)])
+                  "
             />).</report>
          <report
             test="$qty-of-srcs-with-implicit-div-types gt 0 and $qty-of-srcs-with-implicit-div-types ne count($this-src-list)"
@@ -415,15 +428,6 @@
                </xsl:for-each>
             </sqf:add>
          </sqf:fix>
-
-
-         <!--<sqf:fix id="search-for-div-refs-and-fetch-content">
-            <sqf:description>
-               <sqf:title>Search and fetch</sqf:title>
-            </sqf:description>
-            <sqf:call-fix ref="search-and-fetch"/>
-            <!-\-<sqf:call-fix ref="fetch-content"/>-\->
-         </sqf:fix>-->
       </rule>
       <rule context="@cont">
          <let name="pos" value="count(../preceding-sibling::*[not(@cont)])"/>

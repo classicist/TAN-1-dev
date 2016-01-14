@@ -16,7 +16,7 @@
     
     <xsl:include href="TAN-parameters.xsl"/>
 
-    <xsl:variable name="root" select="/"/>
+    <xsl:variable name="root" select="/" xml:id="test"/>
     <xsl:variable name="head">
         <xsl:variable name="head-pass-1">
             <xsl:for-each select="/*/tan:head">

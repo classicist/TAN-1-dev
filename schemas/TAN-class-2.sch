@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- To do: 
    ADD rule to <tokenization>: for any tokenization not already recommended by 
-   a source, ensure that tokenization on the source text is identical no matter how modifying letters are handled
+   a source, ensure that tokenization on the source text is identical no matter how modifying letters are handled (probably time consuming)
    Ensure that <rename-div-ns> does not break the LDUR; document for guidelines
    Ensure that tan:tok/@cont is used to fuse tokens.
 -->

@@ -447,6 +447,14 @@
             sources that belong to more than one work.</report>
       </rule>
    </pattern>
+   <!--<pattern id="test">
+      <let name="test-var" value="count($src-1st-da-data//*)"/>
+      <rule context="/">
+         <report test="true()">
+            <xsl:value-of select="$test-var"/>
+         </report>
+      </rule>
+   </pattern>-->
 
    <!-- FUNCTIONS -->
    <xsl:include href="../functions/TAN-A-div-functions.xsl"/>

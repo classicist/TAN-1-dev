@@ -372,7 +372,11 @@
         i.e., with reserved characters escaped out. -->
         <xsl:param name="strings" as="xs:string*"/>
         <xsl:copy-of
-            select="for $i in $strings return replace($i, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))', '\\$1')"/>
+            select="
+                for $i in $strings
+                return
+                    replace($i, concat('(', $regex-escaping-characters, ')'), '\\$1')"
+        />
     </xsl:function>
 
     <!-- CONTEXT DEPENDENT FUNCTIONS -->

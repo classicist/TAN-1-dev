@@ -7,12 +7,14 @@
     version="3.0">
     <xd:doc scope="stylesheet">
         <xd:desc>
-            <xd:p><xd:b>Updated </xd:b>Aug 31, 2015</xd:p>
-            <xd:p>Functions and variables for core TAN files (i.e., applicable to TAN file types of
-                more than one class). Used by Schematron validation, but suitable for general use in
-                other contexts.</xd:p>
+            <xd:p><xd:b>Updated </xd:b>January 14, 2015</xd:p>
+            <xd:p>Parameters for core TAN files (i.e., applicable to TAN file types of
+                more than one class), and variables that extrapolate values from parameters.</xd:p>
         </xd:desc>
     </xd:doc>
+    
+    <xsl:param name="regex-escaping-characters" as="xs:string"
+        select="'[\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\)]'"/>
 
     <xsl:param name="separator-type-and-n" select="'.'" as="xs:string"/>
     <xsl:param name="separator-type-and-n-regex" select="'\.'" as="xs:string"/>

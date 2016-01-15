@@ -32,7 +32,7 @@
                else
                   false()"/>
 
-         <!-- Reference lookup only -->
+         <!-- EDITING HELP ON REFERENCE SYSTEM SYNTAX -->
          <let name="help-asked-on-what-ref" value="normalize-space(replace(@ref, '\?\?\?', ''))"/>
          <let name="this-ref-normalized"
             value="
@@ -53,7 +53,7 @@
          <assert test="$help-asked-on-what-ref = @ref" sqf:fix="get-div-refs-from-hints">Help:
                <xsl:value-of select="$possible-common-refs"/></assert>
 
-         <!-- Regex search for text patterns held by @ref -->
+         <!-- EDITING HELP FOR DIVS THAT MATCH REGEX PATTERN HELD BY @ref -->
          <let name="this-refs-norm"
             value="
                for $i in $this-src-list
@@ -74,34 +74,32 @@
                   false()
                else
                   true()"/>
-         <let name="search-ignores-accents" value="true()"/>
-         <let name="search-is-case-sensitive" value="false()"/>
          <let name="search-report"
             value="
-               concat('(case ', if ($search-is-case-sensitive = true()) then
+               concat('(case ', if ($searches-are-case-sensitive = true()) then
                   ()
                else
-                  'in', 'sensitive, accent ', if ($search-ignores-accents = true()) then
+                  'in', 'sensitive, accent ', if ($searches-ignore-accents = true()) then
                   'in'
                else
                   (), 'sensitive)')"
          />
          <let name="this-ref-as-regex-search"
             value="
-               if ($search-ignores-accents = true()) then
+               if ($searches-ignore-accents = true()) then
                   tan:expand-search($this-ref)
                else
                   $this-ref"
          />
-         <let name="search-flags"
+         <!--<let name="search-flags"
             value="
-               if ($search-is-case-sensitive = false()) then
+               if ($searches-are-case-sensitive = false()) then
                   'i'
                else
                   ()"
-         />
+         />-->
          <let name="matched-refs"
-            value="$these-sources-resolved/tan:div[matches(., $this-ref-as-regex-search, $search-flags)]"
+            value="$these-sources-resolved/tan:div[matches(., $this-ref-as-regex-search, $match-flags)]"
          />
          <report test="$ref-is-search-pattern = true()" sqf:fix="get-div-text-from-search"
                ><xsl:value-of select="$this-ref"/> 
@@ -154,7 +152,7 @@
          </sqf:fix>
 
          <!-- Testing -->
-         <let name="test-var" value="$this-ref-as-regex-search"/>
+         <let name="test-var" value="tan:string-base('ἀνθρὠρους')"/>
          <report test="false()"><xsl:value-of select="$test-var"/></report>
 
       </rule>

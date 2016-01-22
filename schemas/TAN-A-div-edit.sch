@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://purl.oclc.org/dsdl/schematron" queryBinding="xslt2"
    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
-   xmlns:tan="tag:textalign.net,2015:ns" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+   xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:tan="tag:textalign.net,2015:ns"
+   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
    <title>Schematron tests for TAN-A-div files.</title>
    <ns prefix="tan" uri="tag:textalign.net,2015:ns"/>
    <ns prefix="tei" uri="http://www.tei-c.org/ns/1.0"/>
@@ -9,10 +10,30 @@
    <ns prefix="xsl" uri="http://www.w3.org/1999/XSL/Transform"/>
 
    <pattern>
-      <!--<rule context="/*">
-         <let name="test-var" value="$src-1st-da-data-prepped-for-search[position() = (2, 5)]/*[position() = (1 to 5)]"/>
-         <!-\-<let name="test-var" value="$src-1st-da-data-prepped-for-search[5]"/>-\->
-         <report test="true()" sqf:fix="get-copy-of-test-var"><xsl:value-of
+      <rule context="/*">
+         <let name="this-schematron-pi"
+            value="/processing-instruction()[matches(., 'TAN-A-div-edit\.sch')]"/>
+         <let name="this-schematron-cited-url"
+            value="
+               replace($this-schematron-pi,
+               concat('.*href=', $quot, '([^', $quot, ']+).+'),
+               '$1')"/>
+         <let name="this-schematron-resolved-url"
+            value="resolve-uri($this-schematron-cited-url, $doc-parent-directory)"/>
+         <let name="this-schematron" value="doc($this-schematron-resolved-url)"/>
+         <report test="true()" role="warning">Editing help available on <xsl:value-of
+               select="
+                  for $i in $this-schematron//sch:rule,
+                     $j in $i/@context,
+                     $k in $i/(sch:assert, sch:report)/comment()
+                  return
+                     concat($j, ': ', $k)"
+            />
+         </report>
+         <let name="test-var"
+            value="$src-1st-da-data-prepped-for-search[position() = (2, 5)]/*[position() = (1 to 5)]"/>
+         <!--<let name="test-var" value="$src-1st-da-data-prepped-for-search[5]"/>-->
+         <report test="false()" sqf:fix="get-copy-of-test-var"><xsl:value-of
                select="count($test-var)"/></report>
          <sqf:fix id="get-copy-of-test-var">
             <sqf:description>
@@ -20,7 +41,7 @@
             </sqf:description>
             <sqf:add match="/*" select="$test-var" position="after"/>
          </sqf:fix>
-      </rule>-->
+      </rule>
       <rule context="tan:div-ref | tan:anchor-div-ref">
          <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
          <let name="this-ref" value="@ref"/>
@@ -50,7 +71,8 @@
                   $these-sources-resolved/tan:div[matches(@ref, concat('^', $this-ref-normalized, '\w*', $separator-type-and-n-regex, '\?\w*', $separator-hierarchy-regex, '?\w+$'))]/@ref"/>
          <let name="possible-common-refs"
             value="distinct-values($possible-refs[count(index-of($possible-refs, .)) ge count($this-src-list)])"/>
-         <assert test="$help-asked-on-what-ref = @ref" sqf:fix="get-div-refs-from-hints">Help:
+         <assert test="$help-asked-on-what-ref = @ref" sqf:fix="get-div-refs-from-hints"
+            ><!-- Putting three question marks in a row in @ref will request help on the div ref syntax of the sources -->Help:
                <xsl:value-of select="$possible-common-refs"/></assert>
 
          <!-- EDITING HELP FOR DIVS THAT MATCH REGEX PATTERN HELD BY @ref -->
@@ -67,9 +89,10 @@
                distinct-values(for $i in $this-refs-norm
                return
                   tokenize($i, ' [-,] '))"/>
+         <let name="ref-identifies-what-divs" value="$these-sources-resolved/tan:div[@ref = $these-atomic-refs]"/>
          <let name="ref-is-search-pattern"
             value="
-               if ($these-sources-resolved/tan:div[@ref = $these-atomic-refs] or
+               if (exists($ref-identifies-what-divs) or
                not($help-asked-on-what-ref = @ref)) then
                   false()
                else
@@ -82,15 +105,13 @@
                   'in', 'sensitive, accent ', if ($searches-ignore-accents = true()) then
                   'in'
                else
-                  (), 'sensitive)')"
-         />
+                  (), 'sensitive)')"/>
          <let name="this-ref-as-regex-search"
             value="
                if ($searches-ignore-accents = true()) then
                   tan:expand-search($this-ref)
                else
-                  $this-ref"
-         />
+                  $this-ref"/>
          <!--<let name="search-flags"
             value="
                if ($searches-are-case-sensitive = false()) then
@@ -99,12 +120,11 @@
                   ()"
          />-->
          <let name="matched-refs"
-            value="$these-sources-resolved/tan:div[matches(., $this-ref-as-regex-search, $match-flags)]"
-         />
+            value="$these-sources-resolved/tan:div[matches(., $this-ref-as-regex-search, $match-flags)]"/>
          <report test="$ref-is-search-pattern = true()" sqf:fix="get-div-text-from-search"
-               ><xsl:value-of select="$this-ref"/> 
-            <xsl:value-of select="$search-report"/> found in: 
-            <xsl:value-of
+               ><!-- Any bad value in @ref without three question marks will be treated as a request to search for divs that match the value of @ref (treated as a regular expression) --><xsl:value-of
+               select="$this-ref"/>
+            <xsl:value-of select="$search-report"/> found in: <xsl:value-of
                select="
                   for $i in $src-ids[position() = $this-src-list]
                   return
@@ -115,6 +135,27 @@
                      ' (', $i, ') ')"
             /></report>
 
+         <!-- EDITING HELP: REVIEW CONTENT OF THE DIVS REFERRED TO -->
+         <report test="text() or exists($ref-identifies-what-divs)" role="warning" sqf:fix="fetch-content">Adding any text content to
+            this element triggers a Schematron Quick Fix to allow the content of div refs to be
+            retrieved.</report>
+
+         <!-- SCHEMATRON QUICK FIXES -->
+         <sqf:fix id="fetch-content">
+            <sqf:description>
+               <sqf:title>Append text content of the divs being referred to</sqf:title>
+               <sqf:p>Selecting this option will insert for every reference in every source a
+                  tan:comment element as a following sibling with the textual content.</sqf:p>
+            </sqf:description>
+            <sqf:delete match="text()"/>
+            <sqf:add match="." position="after">
+               <xsl:for-each select="$ref-identifies-what-divs">
+                  <xsl:text>&#xA;</xsl:text>
+                  <tan:comment when="{current-date()}" who="{$head/tan:agent[1]/@xml:id}"
+                        ><xsl:value-of select="./text()"/></tan:comment>
+               </xsl:for-each>
+            </sqf:add>
+         </sqf:fix>
          <sqf:fix id="get-div-refs-from-hints">
             <sqf:description>
                <sqf:title>Replace @ref with suggested help values</sqf:title>
@@ -142,8 +183,7 @@
                      ref="{if ($is-implicit = true()) then
                      @impl-ref
                      else
-                     @ref}"
-                  />
+                     @ref}"/>
                   <xsl:text>&#xA;</xsl:text>
                   <tan:comment when="{current-date()}" who="{$head/tan:agent[1]/@xml:id}"
                         ><xsl:value-of select="./text()"/></tan:comment>

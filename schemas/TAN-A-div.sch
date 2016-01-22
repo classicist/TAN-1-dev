@@ -230,8 +230,7 @@
                   if ($qty-of-srcs-with-implicit-div-types = 0) then
                      tan:flatref($i)
                   else
-                     replace(tan:flatref($i), concat('\w+', $separator-type-and-n-regex), '')"
-         />
+                     replace(tan:flatref($i), concat('\w+', $separator-type-and-n-regex), '')"/>
          <let name="src-data-for-this-div-ref"
             value="tan:pick-prepped-class-1-data($this-src-list, $this-refs-norm)"/>
          <let name="src-segmented-data-for-this-div-ref"
@@ -301,14 +300,12 @@
          <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
                select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
          <!-- END TESTING BLOCK -->
-         <report test="$ref-has-errors" sqf:fix="search-for-div-refs-and-replace search-only-for-div-refs">Every ref
-            cited must be found in every source (
-            <value-of
+         <report test="$ref-has-errors">Every ref cited must be found in every source ( <value-of
                select="
                   if (exists($div-type-mismatches) and count($qty-of-srcs-with-implicit-div-types) = 0) then
                      concat('faulty div types:', string-join($div-type-mismatches, ' '), '; acceptable values: ', string-join($valid-div-types, ' '))
                   else
-                     distinct-values($these-sources-div-refs[count(index-of($these-sources-div-refs,.)) ge count($this-src-list)])
+                     distinct-values($these-sources-div-refs[count(index-of($these-sources-div-refs, .)) ge count($this-src-list)])
                   "
             />).</report>
          <report
@@ -357,77 +354,6 @@
             no more than one source.</report>
          <report test="@cont and not(following-sibling::tan:div-ref)" tan:applies-to="cont">Any
             &lt;div-ref> taking @cont must be followed by at least one other &lt;div-ref>.</report>
-         <report test="text()" role="warning" sqf:fix="fetch-content">Adding any text content to
-            this element triggers a Schematron Quick Fix to allow the content of div refs to be
-            retrieved.</report>
-
-         <sqf:fix id="search-for-div-refs-and-replace">
-            <sqf:description>
-               <sqf:title>Treat content of @ref as search pattern and replace with matching div
-                  refs</sqf:title>
-               <sqf:p>Suppose you are looking for a particular div ref that has a certain keyword.
-                  By making the content of @ref a regular expression pattern, this quick fix will
-                  allow you to search for that pattern across the sources mentioned in @src and
-                  replace the content of @ref with the proper reference.</sqf:p>
-            </sqf:description>
-            <sqf:replace match="@ref" node-type="attribute" target="ref">
-               <xsl:for-each
-                  select="
-                     $these-sources-resolved//(tan:div,
-                     tei:div)[not((tan:div,
-                     tei:div))][matches(., $this-ref)]">
-                  <xsl:text>&#xA;</xsl:text>
-                  <xsl:copy-of
-                     select="
-                        if ($qty-of-srcs-with-implicit-div-types = 0) then
-                           tan:flatref(.)
-                        else
-                           replace(tan:flatref(.), concat('\w+', $separator-type-and-n-regex), '')"
-                  />
-               </xsl:for-each>
-            </sqf:replace>
-         </sqf:fix>
-         <sqf:fix id="search-only-for-div-refs">
-            <sqf:description>
-               <sqf:title>Treat content of @ref as search pattern and append text content of divs that match</sqf:title>
-               <sqf:p>Suppose you are looking for a particular div ref that has a certain keyword.
-                  By making the content of @ref a regular expression pattern, this quick fix will
-                  allow you to search for that pattern across the sources mentioned in @src and
-                  append matching divs as tan:comments.</sqf:p>
-            </sqf:description>
-            <sqf:add match="." position="after">
-               <xsl:for-each
-                  select="
-                     $these-sources-resolved//(tan:div,
-                     tei:div)[not((tan:div,
-                     tei:div))][matches(., $this-ref)]">
-                  <xsl:text>&#xA;</xsl:text>
-                  <tan:div-ref src="{$this/@src}" ref="{if ($qty-of-srcs-with-implicit-div-types = 0) then
-                              tan:flatref(.)
-                           else
-                              replace(tan:flatref(.), concat('\w+', $separator-type-and-n-regex), '')}"></tan:div-ref>
-                  <xsl:text>&#xA;</xsl:text>
-                  <tan:comment when="{current-date()}" who="{$head/tan:agent[1]/@xml:id}"
-                        ><xsl:value-of select="."/></tan:comment>
-                  
-               </xsl:for-each>
-            </sqf:add>
-         </sqf:fix>
-         <sqf:fix id="fetch-content">
-            <sqf:description>
-               <sqf:title>Append text content of the divs being referred to</sqf:title>
-               <sqf:p>Selecting this option will insert for every reference in every source a
-                  tan:comment element as a following sibling with the textual content.</sqf:p>
-            </sqf:description>
-            <sqf:delete match="text()"/>
-            <sqf:add match="." position="after">
-               <xsl:for-each select="$src-segmented-data-for-this-div-ref/tan:div/tan:seg">
-                  <xsl:text>&#xA;</xsl:text>
-                  <tan:comment when="{current-date()}" who="{$head/tan:agent[1]/@xml:id}">
-                     <xsl:value-of select="."/></tan:comment>
-               </xsl:for-each>
-            </sqf:add>
-         </sqf:fix>
       </rule>
       <rule context="@cont">
          <let name="pos" value="count(../preceding-sibling::*[not(@cont)])"/>

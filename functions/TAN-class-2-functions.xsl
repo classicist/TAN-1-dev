@@ -591,7 +591,9 @@
         -->
       <xsl:param name="selector" as="xs:string?"/>
       <xsl:param name="max" as="xs:integer?"/>
-      <xsl:variable name="selector-norm" select="replace($selector, 'last', string($max))"/>
+      <xsl:variable name="pass-1" select="replace($selector,'(\d)\s*-\s*(last|\d)','$1 - $2')"/>
+      <xsl:variable name="pass-2" select="replace($pass-1,'(\d)\s+(\d)','$1, $2')"/>
+      <xsl:variable name="selector-norm" select="replace($pass-2, 'last', string($max))"/>
       <xsl:variable name="seq-a" select="tokenize(normalize-space($selector-norm), '\s*,\s+')"/>
       <xsl:copy-of
          select="

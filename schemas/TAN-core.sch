@@ -673,14 +673,15 @@
       <!-- If TAN ever permits inclusions to themselves be included, the filter below will need to change -->
       <let name="included-elements-with-ids"
          value="$first-doc-resolved//*[@xml:id][not(self::tan:inclusion)]"/>
-      <let name="duplicate-ids"
+      <!--<let name="duplicate-ids"
          value="
             for $i in $included-elements-with-ids
             return
                if ($root//*[@xml:id = $i/@xml:id and not(deep-equal(., $i))]) then
                   $i/@xml:id
                else
-                  ()"/>
+                  ()"/>-->
+      <let name="duplicate-ids" value="$all-ids[index-of($all-ids, .)[2]]"/>
       <!-- START TESTING BLOCK -->
       <let name="test1" value="$duplicate-ids"/>
       <let name="test2" value="true()"/>
@@ -688,7 +689,7 @@
       <report test="false()">Testing. var1: <value-of select="$test1"/> var2: <value-of
             select="$test2"/> var3: <value-of select="$test3"/></report>
       <!-- END TESTING BLOCK -->
-      <report test="exists($duplicate-ids)">No inclusion may introduce a duplicate @xml:id
+      <report test="$duplicate-ids = $included-elements-with-ids/@xml:id">No inclusion may introduce a duplicate @xml:id
             (<value-of select="$duplicate-ids"/>)</report>
       <assert test="exists($first-loc-avail)" role="fatal">Every inclusion must have at least one
          location that leads to an available document.</assert>

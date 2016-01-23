@@ -227,9 +227,13 @@
          <!-- If you insert a question mark anywhere as the value of @chars and then validate the file, you will be given a list of allowed values. -->
          Help: acceptable values 1 through <value-of
             select="$char-ceiling"/></report>
-      <report test="@chars and (some $i in $src-data-for-this-tok/tan:div/tan:tok satisfies matches($i,'\p{M}'))" 
-         tan:applies-to="chars">@chars 
-         may not be used of tokens that have combining characters.</report>
+      <report
+         test="
+            @chars and (some $i in $src-data-for-this-tok/tan:div/tan:tok
+               satisfies matches($i, '\p{M}'))"
+         tan:applies-to="chars" role="warning">Any @chars applied to a token that has combining
+         characters will identify only base characters, grouped with any immediately following
+         combining characters.</report>
       <report
          test="$this-src-qty-with-implicit-div-types gt 0 and 
          $this-src-qty-with-implicit-div-types ne count(tan:src-ids-to-nos(@src))"

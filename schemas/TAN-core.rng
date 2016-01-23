@@ -10,14 +10,9 @@
   <define name="decl-id-ref-opt">
     <empty/>
   </define>
-  <define name="div-ref">
-    <a:documentation>String that refers to a div either by using single nonword characters to join pairs of @type and optional @n values (themselves joined) by a nonword character) or by using single nonword characters to join only @n values. The first pattern is \w+\W\w*(\W\w+\W\w*)* and the second is \w+(\W\w+)*</a:documentation>
-    <data type="string">
-      <param name="pattern">\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*</param>
-    </data>
-  </define>
   <define name="div-range-ref">
-    <a:documentation>String that specifies a range of divs using the div-ref pattern joined by a hyphen or a comma</a:documentation>
+    <a:documentation>String that specifies a range of divs using the div-ref pattern joined by a hyphen or a comma.</a:documentation>
+    <a:documentation>For more see main.xml#leaf_div_uniqueness_rule</a:documentation>
     <data type="string">
       <param name="pattern">(\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*)((\s*,|\s+-)\s+(\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*))*</param>
     </data>
@@ -106,7 +101,7 @@
   </define>
   <define name="lang-of-content">
     <attribute name="xml:lang">
-      <a:documentation>specifies an ISO (BCP 47) language code that names the language of the text enclosed by the parent element. Values are inherited by all descendants except for those that have an @xml:lang and their descendants.  </a:documentation>
+      <a:documentation>specifies a language code that names the language of the text enclosed by the parent element. Values are inherited by all descendants except for those that have an @xml:lang and their descendants.  </a:documentation>
       <a:documentation>Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see main.xml#language.</a:documentation>
       <a:documentation>Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin) </a:documentation>
       <data type="language"/>
@@ -114,9 +109,9 @@
   </define>
   <define name="lang-outside">
     <element name="for-lang">
-      <a:documentation>specifies a language discussed by the TAN file. This element does NOT name the language of the text enclosed by the parent element, which is the province of @xml:lang.</a:documentation>
+      <a:documentation>specifies a language that is being discussed. This element does NOT name the language of the text enclosed by the parent element, which is the province of @xml:lang.</a:documentation>
       <a:documentation>Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see main.xml#language.</a:documentation>
-      <a:documentation>Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin) </a:documentation>
+      <a:documentation>Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin). For more see main.xml#language</a:documentation>
       <data type="language"/>
     </element>
   </define>
@@ -161,7 +156,7 @@
   <define name="seq-picker">
     <a:documentation>   String that specifies a range of tokens: digits or "last(-digit)?" joined by space-delimited hyphens or vertical lines (pipe character)</a:documentation>
     <data type="string">
-      <param name="pattern">((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?(\s*,\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*</param>
+      <param name="pattern">((last)|(last-\d+)|(\d+))(\s*-\s*((last)|(last-\d+)|(\d+)))?(\s*,?\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*</param>
     </data>
   </define>
   <define name="URI-tag">
@@ -443,7 +438,7 @@
       </element>
     </zeroOrMore>
   </define>
-  <!-- PART TWO OF TWO: COMMON TAN STRUCTURE OF ALL TAN FILES (rootmost nodes first) -->
+  <!-- PART TWO OF TWO: STRUCTURE COMMON TO ALL TAN FILES (rootmost nodes first) -->
   <!-- 1st level of any TAN file. -->
   <define name="TAN-root">
     <attribute name="id">
@@ -656,13 +651,6 @@
     </element>
   </define>
   <define name="relationship">
-    <!--
-      commented out 2015-11-05 to move @which to general purpose; delete by 2016 if all is well
-      xsd:string {
-                  pattern =
-                     "(new|old) version|(parent|child|ancestor|descendant|cousin) edition|alternatively (divided|normalized) edition|dependent|auxiliary"
-               }
-    -->
     <element name="relationship">
       <a:documentation>specifies the role that the item named by the parent &lt;see-also&gt; played. This may be either a reserved keyword or an IRI + name pattern that identifies a specific kind of relationship.</a:documentation>
       <optional>
@@ -786,7 +774,10 @@
     <a:documentation>decl-non-core to be filled out by each TAN-class-X.rnc file</a:documentation>
     <empty/>
   </define>
-  <!-- Declaration patterns that are shared across formats -->
+  <!--
+    
+    Declaration patterns that are shared across formats
+  -->
   <define name="decl-work">
     <element name="work">
       <a:documentation>indicates a creative work. Must be a conceptual entity, not a physical one.</a:documentation>

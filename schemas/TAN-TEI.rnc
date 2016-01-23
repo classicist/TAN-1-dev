@@ -10,7 +10,7 @@ namespace xlink = "http://www.w3.org/1999/xlink"
 
 datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
-# Schema generated from ODD source 2015-12-23T13:12:41Z. .
+# Schema generated from ODD source 2016-01-23T14:07:11Z. .
 # TEI Edition: Version 2.8.0. Last updated on
 #	6th April 2015, revision 13197
 # TEI Edition Location: http://www.tei-c.org/Vault/P5/Version 2.8.0/
@@ -65,7 +65,7 @@ div {
       attribute which { text }
     lang-of-content =
       
-      ## specifies an ISO (BCP 47) language code that names the language of the text enclosed by the parent element. Values are inherited by all descendants except for those that have an @xml:lang and their descendants.  
+      ## specifies a language code that names the language of the text enclosed by the parent element. Values are inherited by all descendants except for those that have an @xml:lang and their descendants.  
       
       ## Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see main.xml#language.
       
@@ -73,11 +73,11 @@ div {
       attribute xml:lang { xsd:language }
     lang-outside =
       
-      ## specifies a language discussed by the TAN file. This element does NOT name the language of the text enclosed by the parent element, which is the province of @xml:lang.
+      ## specifies a language that is being discussed. This element does NOT name the language of the text enclosed by the parent element, which is the province of @xml:lang.
       
       ## Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see main.xml#language.
       
-      ## Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin) 
+      ## Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin). For more see main.xml#language
       element for-lang { xsd:language }
     period-filter =
       

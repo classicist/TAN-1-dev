@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- This file consists of examples Kalvesmaki put together in 2015 for the guidelines, 
+    before the guidelines shifted to automatically pulling from the TAN files already
+    in the examples subdirectory. Current examples should be augmented to include these
+    snippets, or new examples developed instead.
+-->
 <snippets-to-turn-into-real-TAN-examples>
     <!-- digital entity pattern for non-TAN file -->
     <source>

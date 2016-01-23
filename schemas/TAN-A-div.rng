@@ -82,7 +82,21 @@
   <define name="decl-topics">
     <element name="topic">
       <a:documentation>declares one or more topics, to be used in conjunction with @topic under &lt;align&gt; to associate alignments with specific topics instead of verbatim parallels.  </a:documentation>
-      <ref name="decl-pattern-default"/>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <ref name="internal-id"/>
+          <interleave>
+            <zeroOrMore>
+              <ref name="comment"/>
+            </zeroOrMore>
+            <ref name="entity-nondigital-ref"/>
+          </interleave>
+        </group>
+      </choice>
     </element>
   </define>
   <define name="topic-opt">

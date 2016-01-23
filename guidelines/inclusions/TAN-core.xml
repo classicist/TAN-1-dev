@@ -149,13 +149,13 @@
 &lt;/TAN-T&gt;
 </programlisting></example><example><title><code>&lt;body&gt;</code></title><programlisting>   &lt;text&gt;
       <emphasis role="bold">&lt;body xml:lang="eng"&gt;</emphasis>
-         &lt;div type="sect" n="a"&gt;
+         &lt;div type="sect" n="a" part="N" org="uniform" sample="complete"&gt;
             .........
          &lt;/div&gt;
-         &lt;div type="sect" n="b"&gt;
+         &lt;div type="sect" n="b" part="N" org="uniform" sample="complete"&gt;
             .........
          &lt;/div&gt;
-         &lt;div type="sect" n="c"&gt;
+         &lt;div type="sect" n="c" part="N" org="uniform" sample="complete"&gt;
             .........
          &lt;/div&gt;
       <emphasis role="bold">&lt;/body&gt;</emphasis>
@@ -443,7 +443,7 @@ text</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;<
 </programlisting></example></section><section xml:id="element-flags"><title><code>&lt;flags&gt;</code></title><para>The element <code>flags</code> specifies flags to be applied in an XPath expression using regular expressions.</para><para>s = dot-all mode; m = multi-line mode; i = case-insensitive mode; x = remove whitespace characters from regular expression; q = no metacharacters </para><para>For more see http://www.w3.org/TR/xpath-functions-30/#flags</para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-string (pattern [smixq]+)</synopsis><para>Used by: <code><link linkend="element-replace">&lt;replace&gt;</link></code> <code><link linkend="element-tokenize">&lt;tokenize&gt;</link></code> </para></section><section xml:id="element-for-lang"><title><code>&lt;for-lang&gt;</code></title><para>The element <code>for-lang</code> specifies a language discussed by the TAN file. This element does NOT name the language of the text enclosed by the parent element, which is the province of <code><link linkend="attribute-xmllang">@xml:lang</link></code>.</para><para>Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see <xref linkend="language"/>.</para><para>Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin) </para><synopsis><emphasis>Definition:</emphasis>
+string (pattern [smixq]+)</synopsis><para>Used by: <code><link linkend="element-replace">&lt;replace&gt;</link></code> <code><link linkend="element-tokenize">&lt;tokenize&gt;</link></code> </para></section><section xml:id="element-for-lang"><title><code>&lt;for-lang&gt;</code></title><para>The element <code>for-lang</code> specifies a language that is being discussed. This element does NOT name the language of the text enclosed by the parent element, which is the province of <code><link linkend="attribute-xmllang">@xml:lang</link></code>.</para><para>Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see <xref linkend="language"/>.</para><para>Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin). For more see <xref linkend="language"/></para><synopsis><emphasis>Definition:</emphasis>
 language </synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> </para><example><title><code>&lt;for-lang&gt;</code></title><programlisting>      &lt;declarations ed-when="2015-03-03" ed-who="kalvesmaki"&gt;
          <emphasis role="bold">&lt;for-lang&gt;</emphasis>eng<emphasis role="bold">&lt;/for-lang&gt;</emphasis>
          &lt;feature xml:id="quote-cl"&gt;
@@ -518,7 +518,7 @@ language </synopsis><para>Used by: <code><link linkend="element-declarations">&l
    &lt;/body&gt;
 &lt;/TAN-T&gt;
 </programlisting></example><example><title><code>&lt;head&gt;</code></title><programlisting>&lt;TEI TAN-version="1" id="tag:parkj@textalign.net,2015:gomme.1898.ring-o-roses"&gt;
-   &lt;teiHeader&gt;
+   &lt;teiHeader type="text"&gt;
       .........
    &lt;/teiHeader&gt;
    <emphasis role="bold">&lt;head&gt;</emphasis>
@@ -1471,7 +1471,7 @@ anyURI (pattern tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-
    &lt;/body&gt;
 &lt;/TAN-T&gt;
 </programlisting></example><example><title><code>@id</code></title><programlisting>&lt;TEI TAN-version="1"<emphasis role="bold"> id="tag:parkj@textalign.net,2015:gomme.1898.ring-o-roses"</emphasis>&gt;
-   &lt;teiHeader&gt;
+   &lt;teiHeader type="text"&gt;
       .........
    &lt;/teiHeader&gt;
    &lt;head&gt;
@@ -1514,13 +1514,13 @@ boolean </synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt
 &lt;/TAN-T&gt;
 </programlisting></example><example><title><code>@in-progress</code></title><programlisting>   &lt;text&gt;
       &lt;body xml:lang="eng"<emphasis role="bold"> in-progress="false"</emphasis>&gt;
-         &lt;div type="l" n="1"&gt;
+         &lt;div type="l" n="1" part="N" org="uniform" sample="complete"&gt;
             .........
          &lt;/div&gt;
-         &lt;div type="l" n="2"&gt;
+         &lt;div type="l" n="2" part="N" org="uniform" sample="complete"&gt;
             .........
          &lt;/div&gt;
-         &lt;div type="l" n="3"&gt;
+         &lt;div type="l" n="3" part="N" org="uniform" sample="complete"&gt;
             .........
          &lt;/div&gt;
          .........
@@ -1682,7 +1682,7 @@ string (pattern 1(\W+dev)?)</synopsis><para>Used by: <code><link linkend="elemen
    &lt;/body&gt;
 &lt;/TAN-T&gt;
 </programlisting></example><example><title><code>@TAN-version</code></title><programlisting>&lt;TEI<emphasis role="bold"> TAN-version="1"</emphasis> id="tag:parkj@textalign.net,2015:gomme.1898.ring-o-roses"&gt;
-   &lt;teiHeader&gt;
+   &lt;teiHeader type="text"&gt;
       .........
    &lt;/teiHeader&gt;
    &lt;head&gt;
@@ -1852,7 +1852,7 @@ ID (pattern \w\S*)</synopsis><para>Used by: <code><link linkend="element-agent">
       .........
    &lt;/head&gt;
 &lt;/TAN-T&gt;
-</programlisting></example></section><section xml:id="attribute-xmllang"><title><code>@xml:lang</code></title><para>The attribute <code>xml:lang</code> specifies an ISO (BCP 47) language code that names the language of the text enclosed by the parent element. Values are inherited by all descendants except for those that have an <code><link linkend="attribute-xmllang">@xml:lang</link></code> and their descendants.  </para><para>Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see <xref linkend="language"/>.</para><para>Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin) </para><synopsis><emphasis>Definition:</emphasis>
+</programlisting></example></section><section xml:id="attribute-xmllang"><title><code>@xml:lang</code></title><para>The attribute <code>xml:lang</code> specifies a language code that names the language of the text enclosed by the parent element. Values are inherited by all descendants except for those that have an <code><link linkend="attribute-xmllang">@xml:lang</link></code> and their descendants.  </para><para>Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see <xref linkend="language"/>.</para><para>Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin) </para><synopsis><emphasis>Definition:</emphasis>
 language </synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-div">&lt;div&gt;</link></code> <code><link linkend="element-name">&lt;name&gt;</link></code> <code><link linkend="element-object">&lt;object&gt;</link></code> </para><example><title><code>@xml:lang</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:object-refs" TAN-version="1"&gt;
    &lt;head&gt;
       &lt;agent xml:id="kalvesmaki" roles="editor"&gt;

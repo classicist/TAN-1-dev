@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-model href="TAN-keywords.rnc" type="application/relax-ng-compact-syntax"?>
-<?xml-model href="TAN-keywords.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
-<!-- master list of TAN keywords, used by validation schemas, functions, and documentation -->
+<?xml version="1.0" encoding="UTF-8"?><?xml-model href="TAN-keywords.rnc" type="application/relax-ng-compact-syntax"?><?xml-model href="TAN-keywords.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?><!-- master list of TAN keywords, used by validation schemas, functions, and documentation -->
 <reserved-keywords xmlns="tag:textalign.net,2015:ns" href="../../testing/">
     <group affects-element="recommended-tokenization tokenization">
         <desc>@which, if present, must take one of the following values</desc>
@@ -27,7 +24,7 @@
             <keyword>auxiliary</keyword>
             <IRI>tag:textalign.net,2015:relationship:auxiliary</IRI>
             <desc>Digital or nondigital entity that was helpful in creating or editing the present
-                file. This may be useful for crediting a helpful starting point. </desc>
+                file. This may be useful for crediting a helpful starting point.</desc>
         </item>
         <group class="tan">
             <desc>Keywords that must point exclusively to TAN files:</desc>
@@ -132,10 +129,115 @@
                     <desc>TAN file that supersedes the present file, and part of the same editorial
                         stream. The alterations have not been significant enough to warrant a new
                         @id in the rootmost element. This is useful for officially deprecating a TAN
-                        file without deleting it. </desc>
+                        file without deleting it.</desc>
                 </item>
             </group>
         </group>
+    </group>
+    <group affects-element="normalization">
+        <item>
+            <keyword>no hyphens</keyword>
+            <IRI>tag:textalign.net,2015:normalization:hyphens-discretionary-removed</IRI>
+            <desc>Discretionary word-break line-end hyphens have been deleted.</desc>
+        </item>
+        <item>
+            <keyword>norm space</keyword>
+            <IRI>tag:textalign.net,2015:normalization:space-typographer-converted</IRI>
+            <desc>General Punctuation spaces (U+2000..U+200B) to regular space have been replaced
+                with regular space. Equivalent to fn:replace('[\x{2000} \x{2001} \x{2002} \x{2003}
+                \x{2004} \x{2005} \x{2006} \x{2007} \x{2008} \x{2009} \x{200A} \x{200B}]','
+                ')</desc>
+        </item>
+        <item>
+            <keyword>no note callouts</keyword>
+            <IRI>tag:textalign.net,2015:normalization:annotation-signals-removed</IRI>
+            <desc>Footnote or endnote signals (frequently superscript numbers or letters) have been
+                deleted.</desc>
+        </item>
+        <item>
+            <keyword>no notes</keyword>
+            <IRI>tag:textalign.net,2015:normalization:annotation-content-removed</IRI>
+            <desc>Footnotes or endnotes have been deleted.</desc>
+        </item>
+        <item>
+            <keyword>no comments</keyword>
+            <IRI>tag:textalign.net,2015:normalization:comments-editorial-removed</IRI>
+            <desc>Editorial comments have been deleted.</desc>
+        </item>
+        <item>
+            <keyword>no pointers</keyword>
+            <IRI>tag:textalign.net,2015:normalization:pointers-reference-removed</IRI>
+            <desc>Reference pointers to other texts, both internal (cross-references) and external
+                (citations of primary or secondary sources) have been deleted.</desc>
+        </item>
+        <item>
+            <keyword>no milestones</keyword>
+            <IRI>tag:textalign.net,2015:normalization:milestones-reference-removed</IRI>
+            <desc>Reference milestones such as page numbers and section numbers have been
+                deleted.</desc>
+        </item>
+        <item>
+            <keyword>no ligatures</keyword>
+            <IRI>tag:textalign.net,2015:normalization:ligatures-converted</IRI>
+            <desc>All ligatures have been converted into constituent letters.</desc>
+        </item>
+        <item>
+            <keyword>no combining chars</keyword>
+            <IRI>tag:textalign.net,2015:normalization:letters-combining-converted</IRI>
+            <desc>All combining letters (U+0363..U+036F) have been converted to their corresponding
+                ASCII counterpart.</desc>
+        </item>
+        <item>
+            <keyword>corrected spelling</keyword>
+            <IRI>tag:textalign.net,2015:normalization:orthography-corrected</IRI>
+            <desc>All orthography (spelling) has been tacitly corrected to standard forms.</desc>
+        </item>
+        <item>
+            <keyword>corrected punctuation</keyword>
+            <IRI>tag:textalign.net,2015:normalization:punctuation-corrected</IRI>
+            <desc>All punctuation has been tacitly corrected to standard forms.</desc>
+        </item>
+        <item>
+            <keyword>no punctuation</keyword>
+            <IRI>tag:textalign.net,2015:normalization:punctuation-removed</IRI>
+            <desc>All punctuation has been removed.</desc>
+        </item>
+        <item>
+            <keyword>corrected capitalization</keyword>
+            <IRI>tag:textalign.net,2015:normalization:capitalization-corrected</IRI>
+            <desc>All letters have been tacitly capitalized according to standard forms.</desc>
+        </item>
+        <item>
+            <keyword>changed to lowercase</keyword>
+            <IRI>tag:textalign.net,2015:normalization:case-upper-to-lower</IRI>
+            <desc>All uppercase letters converted to lowercase.</desc>
+        </item>
+        <item>
+            <keyword>changed to uppercase</keyword>
+            <IRI>tag:textalign.net,2015:normalization:case-lower-to-upper</IRI>
+            <desc>All lowercase letters converted to uppercase.</desc>
+        </item>
+        <item>
+            <keyword>no music</keyword>
+            <IRI>tag:textalign.net,2015:normalization:music-printed-removed</IRI>
+            <desc>Printed music has been removed.</desc>
+        </item>
+        <item>
+            <keyword>no prepunctuation space</keyword>
+            <IRI>tag:textalign.net,2015:normalization:space-prepunctuation-corrected</IRI>
+            <desc>All prepunctuation space has been corrected according to standard forms.</desc>
+        </item>
+        <item>
+            <keyword>normalized unicode</keyword>
+            <IRI>tag:textalign.net,2015:normalization:nfc</IRI>
+            <desc>All non-NFC-compliant Unicode converted to normalized Unicode. Same effect as if
+                applying normalize-unicode().</desc>
+        </item>
+        <item>
+            <keyword>converted html to tan</keyword>
+            <IRI>tag:textalign.net,2015:normalization:html-to-tan-t</IRI>
+            <desc>HTML converted to TAN-T format</desc>
+        </item>
     </group>
     <group affects-element="div-type">
         <item>

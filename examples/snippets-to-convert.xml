@@ -5,25 +5,6 @@
     snippets, or new examples developed instead.
 -->
 <snippets-to-turn-into-real-TAN-examples>
-    <!-- important for @ed-when, to distinguish it from @when -->
-    <change when="2015-02-04" who="cheh" ed-when="2015-02-28" ed-who="smith">Cheh corrected all
-        xml:lang values</change>
-    <comment> In this example, &lt;change> ascribes an alteration to Cheh, but the edit stamp
-        credits Smith with last changing the &lt;change>.</comment>
-    
-    <example>
-        <title><code><link linkend="element-recommended-tokenization"
-            >&lt;recommended-tokenization></link></code>: modern English
-            texts</title>
-        <programlisting>      ...........
-   &lt;recommended-tokenization xml:id="penn">
-      &lt;IRI>tag:textalign.net,2015:tokenization:eng.1&lt;/IRI>
-      &lt;name>Tokenization pattern for English, in Penn Treebank style&lt;/name>
-      &lt;location when-accessed="2015-03-17">../TAN-R-tok/tok.eng.1.xml&lt;/location>
-   &lt;/recommended-tokenization>
-   &lt;recommended-tokenization which="general"/>
-      ...........               </programlisting>
-    </example>
     <example>
         <title><code><link linkend="element-normalization"
             >&lt;normalization></link></code> and <code><link

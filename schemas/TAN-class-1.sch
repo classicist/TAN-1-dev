@@ -121,7 +121,7 @@
       <report test="some $i in $this-count satisfies $this-resolved[$i]/@xml:id = $tokenization-which-reserved">@xml:id values may not use a reserved
          tokenization name</report>
       <assert test="every $i in $rec-tokz-1st-da satisfies name($i/*) = 'TAN-R-tok'">Recommended
-         tokenization must point to a TAN-R-tok file.</assert>
+         tokenization must point to a TAN-R-tok file. <xsl:value-of select='$recommended-tokenizations'></xsl:value-of></assert>
       <report role="warning" test="exists($tokz-mismatch-1)">If pointing to a TAN-R-tok file meant for specific
          languages, at least one of them must be used in the body of the transcription (tokenization languages: 
          <value-of select="$tokz-mismatch-1/tan:for-lang"/>; languages used: <value-of select="$languages-used"/>).</report>

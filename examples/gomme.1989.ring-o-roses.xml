@@ -60,6 +60,12 @@
         <name>paragraph</name>
       </div-type>
       <recommended-tokenization which="general-1"/>
+      <recommended-tokenization xml:id="penn">
+        <IRI>tag:kalvesmaki.com,2015:tokenization:eng.1</IRI>
+        <name>Tokenization pattern for English, in Penn Treebank style</name>
+        <location href="../../../../../library/class-3/TAN-R-tok/tok.eng.1.xml"
+          when-accessed="2016-01-26T16:00:08.229-05:00"/>
+      </recommended-tokenization>
       <filter>
         <normalization>
           <IRI>tag:textalign.net,2015:normalization:music-printed-removed</IRI>

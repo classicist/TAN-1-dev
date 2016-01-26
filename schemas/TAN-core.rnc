@@ -258,7 +258,7 @@ loc-src =
         
         ## specifies when an electronic file was last examined
         attribute when-accessed { xsd:date | xsd:dateTime },
-        xsd:anyURI
+        href-opt
     }
 metadata-desc =
     ed-stamp?,

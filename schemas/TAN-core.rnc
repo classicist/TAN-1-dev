@@ -48,9 +48,11 @@ cert-claim =
     }
 href-opt =
     
-    ## points to the location of a TAN file that should be used to populate the <IRI> and <location> child elements.
+    ## points to the location of a file, either as part of <location> or in elements that refer to TAN files, to be used to invoke a schematron quick fix to populate the <IRI> and <location> child elements.
     
-    ## This attribute is entirely pragmatic, used only as a convenience to TAN users who wish to include the metadata of another TAN file without leaving the current file. It is associated with a warning message that is linked to a Schematron Quick Fix that will supply the correct metadata and remove the attribute.
+    ## The first use is a convenience for XML editors that autocomplete filenames or allow users to open the referred file (oftentimes with control+click)
+    
+    ## The second use of this attribute is pragmatic, used only as a convenience to TAN users who wish to include the metadata of another TAN file without leaving the current file. It is associated with a warning message that is linked to a Schematron Quick Fix that will supply the correct metadata and remove the attribute.
     attribute href { text }
 inclusion =
     
@@ -247,7 +249,7 @@ loc-self =
     ## The URL may be absolute or relative to the current document. 
     
     ## <master-location> does not disallow the file from being published or distributed elsewhere. It merely points to the main locations where an authoritative version of the file is to be found. 
-    element master-location { ed-stamp?, xsd:anyURI }
+    element master-location { ed-stamp?, href-opt }
 loc-src =
     
     ## declares where an electronic file was found, when. 
@@ -275,7 +277,7 @@ metadata-human =
     
     ## The first, human-readable approach defines <desc> as taking merely a string that comments on the entity. Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script. If you provide a comment in multiple languages, it best to make sure that each version says roughly the same thing.
     
-    ## The second, computer-readable approach has <desc> take an IRI + name pattern plus <location> pointing to some XML resource that provides more information about the concept, person, or thing. This is the method preferred to point to a <TAN-X> file. 
+    ## The second, computer-readable approach has <desc> take an IRI + name pattern plus @href in <location> pointing to some XML resource that provides more information about the concept, person, or thing. This is the method preferred to point to a <TAN-X> file. 
     element desc { metadata-desc | entity-digital-tan-other-ref }*
 # PART TWO OF TWO: STRUCTURE COMMON TO ALL TAN FILES (rootmost nodes first)
 

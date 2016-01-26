@@ -37,7 +37,7 @@
       <!-- Sequence of one element per recommended tokenizations, their first
          document-available location, and the languages covered:
          <recommended-tokenization>
-            <location>[URL or ERROR MESSAGE]</location>
+            <location href="[URL or ERROR MESSAGE]"/>
             <for-lang>[LANG1 or *]<lang>
             <for-lang>[LANG2]<lang>
             ...
@@ -49,7 +49,7 @@
                $tokenization-which-reserved-url[index-of($tokenization-which-reserved,current()/@which)] else ()"/>
             <!--<xsl:variable name="this-tok-1st-la"
                select="
-                  (for $i in tan:location,
+                  (for $i in tan:location/@href,
                      $j in resolve-uri($i, $doc-uri)
                   return
                      if (doc-available($j)) then
@@ -57,7 +57,7 @@
                      else
                         ())[1]"
             />-->
-            <xsl:variable name="this-tok-1st-la" select="tan:first-loc-available(.)"/>
+            <xsl:variable name="this-tok-1st-la" select="tan:first-loc-available(.)/@href"/>
             <xsl:variable name="this-tokz-loc" select="($this-tok-reserved-loc,$this-tok-1st-la)[1]"/>
             <xsl:element name="location" namespace="tag:textalign.net,2015:ns">
                <xsl:if test="not(exists($this-tokz-loc))">
@@ -69,7 +69,9 @@
                            3"
                   />
                </xsl:if>
-               <xsl:value-of select="$this-tokz-loc"/>
+               <xsl:attribute name="href">
+                  <xsl:value-of select="$this-tokz-loc"/>
+               </xsl:attribute>
             </xsl:element>
             <!--<xsl:variable name="this-tok-loc" select="if (exists($this-tok-reserved-loc)) then $this-tok-reserved-loc else
                $this-tok-1st-la"/>
@@ -89,7 +91,7 @@
          </xsl:copy>
       </xsl:for-each>
    </xsl:variable>
-   <xsl:variable name="rec-tokz-1st-da" select="for $i in $recommended-tokenizations/tan:location return doc(resolve-uri($i,$doc-uri))"/>
+   <xsl:variable name="rec-tokz-1st-da" select="for $i in $recommended-tokenizations/tan:location/@href return doc(resolve-uri($i,$doc-uri))"/>
    <xsl:variable name="rec-tokz-1st-da-resolved" select="for $i in $rec-tokz-1st-da return tan:resolve-doc($i)"/>
 
    <xsl:function name="tan:locate-modifiers" as="element()?">

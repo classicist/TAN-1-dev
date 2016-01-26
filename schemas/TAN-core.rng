@@ -55,8 +55,9 @@
   </define>
   <define name="href-opt">
     <attribute name="href">
-      <a:documentation>points to the location of a TAN file that should be used to populate the &lt;IRI&gt; and &lt;location&gt; child elements.</a:documentation>
-      <a:documentation>This attribute is entirely pragmatic, used only as a convenience to TAN users who wish to include the metadata of another TAN file without leaving the current file. It is associated with a warning message that is linked to a Schematron Quick Fix that will supply the correct metadata and remove the attribute.</a:documentation>
+      <a:documentation>points to the location of a file, either as part of &lt;location&gt; or in elements that refer to TAN files, to be used to invoke a schematron quick fix to populate the &lt;IRI&gt; and &lt;location&gt; child elements.</a:documentation>
+      <a:documentation>The first use is a convenience for XML editors that autocomplete filenames or allow users to open the referred file (oftentimes with control+click)</a:documentation>
+      <a:documentation>The second use of this attribute is pragmatic, used only as a convenience to TAN users who wish to include the metadata of another TAN file without leaving the current file. It is associated with a warning message that is linked to a Schematron Quick Fix that will supply the correct metadata and remove the attribute.</a:documentation>
     </attribute>
   </define>
   <define name="inclusion">
@@ -385,7 +386,7 @@
       <optional>
         <ref name="ed-stamp"/>
       </optional>
-      <data type="anyURI"/>
+      <ref name="href-opt"/>
     </element>
   </define>
   <define name="loc-src">
@@ -402,7 +403,7 @@
           <data type="dateTime"/>
         </choice>
       </attribute>
-      <data type="anyURI"/>
+      <ref name="href-opt"/>
     </element>
   </define>
   <define name="metadata-desc">
@@ -430,7 +431,7 @@
       <element name="desc">
         <a:documentation>provides a description of a concept, person, or thing referred to by the parent element (or the current document, if the parent element is &lt;head&gt;). &lt;desc&gt; is, in effect, a &lt;comment&gt; about that concept, person, or thing. It has two possible structures, one human-readable and the other computer-readable.</a:documentation>
         <a:documentation>The first, human-readable approach defines &lt;desc&gt; as taking merely a string that comments on the entity. Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script. If you provide a comment in multiple languages, it best to make sure that each version says roughly the same thing.</a:documentation>
-        <a:documentation>The second, computer-readable approach has &lt;desc&gt; take an IRI + name pattern plus &lt;location&gt; pointing to some XML resource that provides more information about the concept, person, or thing. This is the method preferred to point to a &lt;TAN-X&gt; file. </a:documentation>
+        <a:documentation>The second, computer-readable approach has &lt;desc&gt; take an IRI + name pattern plus @href in &lt;location&gt; pointing to some XML resource that provides more information about the concept, person, or thing. This is the method preferred to point to a &lt;TAN-X&gt; file. </a:documentation>
         <choice>
           <ref name="metadata-desc"/>
           <ref name="entity-digital-tan-other-ref"/>

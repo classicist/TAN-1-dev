@@ -3,11 +3,10 @@
 <?xml-model href="../../schemas/TAN-A-tok.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
 <!--<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-tok.rnc" type="application/relax-ng-compact-syntax"?>
 <?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-tok.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>-->
-<TAN-A-tok xmlns="tag:textalign.net,2015:ns" TAN-version="1"
-    id="tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring03">
+<TAN-A-tok xmlns="tag:textalign.net,2015:ns" TAN-version="1" id="tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring03">
     <head>
         <name>token-based alignment of two versions of Ring o Roses</name>
-        <master-location>http://textalign.net/release/1/dev/examples/TAN-A-tok/ringoroses.01+03.token.1.xml</master-location>
+        <master-location href="http://textalign.net/release/1/dev/examples/TAN-A-tok/ringoroses.01+03.token.1.xml"/>
         <rights-excluding-sources rights-holder="kalvesmaki">
             <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
             <name>Creative Commons Attribution 4.0 International License</name>
@@ -17,18 +16,18 @@
         <source xml:id="eng">
             <IRI>tag:parkj@textalign.net,2015:ring01</IRI>
             <name>1881 version of Ring around the Roses</name>
-            <location when-accessed="2015-05-24-04:00">../ring-o-roses.eng.1881.xml</location>
+            <location href="../ring-o-roses.eng.1881.xml" when-accessed="2015-05-24-04:00"/>
         </source>
         <source xml:id="ger">
             <IRI>tag:hans@beispiel.com,2014:ringel</IRI>
             <name>German version of Ring around the Roses</name>
-            <location when-accessed="2015-05-24-04:00">../ring-o-roses.deu.1897.xml</location>
+            <location href="../ring-o-roses.deu.1897.xml" when-accessed="2015-05-24-04:00"/>
         </source>
         <see-also>
             <relationship which="cousin edition"/>
             <IRI>tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring03:alt</IRI>
             <name>Edition that renames div types, values</name>
-            <location when-accessed="2015-08-04">ringoroses.01+03.token.2.xml</location>
+            <location href="ringoroses.01+03.token.2.xml" when-accessed="2015-08-04"/>
         </see-also>
         <declarations>
             <bitext-relation xml:id="unclear">

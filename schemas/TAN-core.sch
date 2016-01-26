@@ -16,7 +16,7 @@
             <sqf:title>Get local source element with this document's IRI + name pattern</sqf:title>
             <sqf:p>Suppose you find a TAN file that you wish to make a source for another. Selecting
                this option will insert a tan:source element as the next child, complete with the
-               appropriate values for tan:IRI and tan:name, and with a tan:location that points to
+               appropriate values for tan:IRI and tan:name, and with a tan:location/@href that points to
                the local directory.</sqf:p>
          </sqf:description>
          <sqf:add match="tan:head" position="before">
@@ -25,9 +25,8 @@
                <IRI>
                   <xsl:value-of select="../@id"/></IRI>
                <name><xsl:value-of select="tan:name"/></name>
-               <location when-accessed="{current-date()}">
-                  <xsl:value-of select="replace($doc-uri, '.*/([^/]+$)', '$1')"/>
-               </location>
+               <location when-accessed="{current-date()}"
+                  href="{replace($doc-uri, '.*/([^/]+$)', '$1')}"/>
             </source>
          </sqf:add>
       </sqf:fix>
@@ -43,9 +42,7 @@
                <IRI>
                   <xsl:value-of select="../@id"/></IRI>
                <name><xsl:value-of select="tan:name"/></name>
-               <location when-accessed="{current-date()}">
-                  <xsl:value-of select="$doc-uri"/>
-               </location>
+               <location when-accessed="{current-date()}" href="{$doc-uri}"/>
             </source>
          </sqf:add>
       </sqf:fix>
@@ -56,7 +53,7 @@
             <sqf:p>Suppose you find a TAN file that has elements you want to automatically include
                in another. Selecting this option will insert a tan:include element as the next
                child, complete with the appropriate values for tan:IRI and tan:name, and with a
-               tan:location that points to the local directory.</sqf:p>
+               tan:location/@href that points to the local directory.</sqf:p>
          </sqf:description>
          <sqf:add match="tan:head" position="before">
             <inclusion xml:id="{replace(base-uri(),'.*/([^/]+$)','$1')}"
@@ -64,9 +61,8 @@
                <IRI>
                   <xsl:value-of select="../@id"/></IRI>
                <name><xsl:value-of select="tan:name"/></name>
-               <location when-accessed="{current-date()}">
-                  <xsl:value-of select="replace($doc-uri, '.*/([^/]+$)', '$1')"/>
-               </location>
+               <location when-accessed="{current-date()}"
+                  href="{replace($doc-uri, '.*/([^/]+$)', '$1')}"/>
             </inclusion>
          </sqf:add>
       </sqf:fix>
@@ -82,9 +78,7 @@
                <IRI>
                   <xsl:value-of select="../@id"/></IRI>
                <name><xsl:value-of select="tan:name"/></name>
-               <location when-accessed="{current-date()}">
-                  <xsl:value-of select="$doc-uri"/>
-               </location>
+               <location when-accessed="{current-date()}" href="{$doc-uri}"/>
             </inclusion>
          </sqf:add>
       </sqf:fix>
@@ -99,9 +93,8 @@
                <IRI>
                   <xsl:value-of select="../@id"/></IRI>
                <name><xsl:value-of select="tan:name"/></name>
-               <location when-accessed="{current-date()}">
-                  <xsl:value-of select="replace($doc-uri, '.*/([^/]+$)', '$1')"/>
-               </location>
+               <location when-accessed="{current-date()}"
+                  href="{replace($doc-uri, '.*/([^/]+$)', '$1')}"/>
             </recommended-tokenization>
          </sqf:add>
       </sqf:fix>
@@ -116,9 +109,7 @@
                <IRI>
                   <xsl:value-of select="../@id"/></IRI>
                <name><xsl:value-of select="tan:name"/></name>
-               <location when-accessed="{current-date()}">
-                  <xsl:value-of select="$doc-uri"/>
-               </location>
+               <location when-accessed="{current-date()}" href="{$doc-uri}"/>
             </recommended-tokenization>
          </sqf:add>
       </sqf:fix>
@@ -133,9 +124,8 @@
                <IRI>
                   <xsl:value-of select="../@id"/></IRI>
                <name><xsl:value-of select="tan:name"/></name>
-               <location when-accessed="{current-date()}">
-                  <xsl:value-of select="replace($doc-uri, '.*/([^/]+$)', '$1')"/>
-               </location>
+               <location when-accessed="{current-date()}"
+                  href="{replace($doc-uri, '.*/([^/]+$)', '$1')}"/>
             </morphology>
          </sqf:add>
       </sqf:fix>
@@ -150,9 +140,7 @@
                <IRI>
                   <xsl:value-of select="../@id"/></IRI>
                <name><xsl:value-of select="tan:name"/></name>
-               <location when-accessed="{current-date()}">
-                  <xsl:value-of select="$doc-uri"/>
-               </location>
+               <location when-accessed="{current-date()}" href="{$doc-uri}"/>
             </morphology>
          </sqf:add>
       </sqf:fix>
@@ -243,8 +231,9 @@
             <sqf:p>Choosing this option will insert a master-location immediately after name, with
                the absolute value of the current file's URL.</sqf:p>
          </sqf:description>
-         <sqf:add node-type="element" target="master-location" position="after" match="tan:name"
-               ><value-of select="$doc-uri"/></sqf:add>
+         <sqf:add position="after" match="tan:name">
+            <tan:master-location href="{$doc-uri}"/>
+         </sqf:add>
       </sqf:fix>
       <sqf:fix id="add-master-location-relative">
          <sqf:description>
@@ -252,8 +241,9 @@
             <sqf:p>Choosing this option will insert a master-location immediately after name, with
                the simple filename current file (i.e., no path).</sqf:p>
          </sqf:description>
-         <sqf:add node-type="element" target="master-location" position="after" match="tan:name"
-               ><value-of select="replace($doc-uri, $doc-parent-directory, '')"/></sqf:add>
+         <sqf:add position="after" match="tan:name">
+            <tan:master-location href="{replace($doc-uri, $doc-parent-directory, '')}"/>
+         </sqf:add>
       </sqf:fix>
    </rule>
    <rule context="tan:master-location | tan:location">
@@ -269,7 +259,7 @@
                'master document'
             else
                name(..)"/>
-      <let name="loc-uri" value="resolve-uri(., $doc-uri)"/>
+      <let name="loc-uri" value="resolve-uri(@href, $doc-uri)"/>
       <let name="loc-doc-is-available" value="doc-available($loc-uri)"/>
       <let name="loc-doc"
          value="
@@ -297,7 +287,7 @@
       <let name="is-first-da-location"
          value="
             if ($loc-doc-is-available and
-            not((preceding-sibling::tan:location, preceding-sibling::tan:master-location)[doc-available(resolve-uri(., $doc-uri))]))
+            not((preceding-sibling::tan:location, preceding-sibling::tan:master-location)[doc-available(resolve-uri(@href, $doc-uri))]))
             then
                true()
             else
@@ -384,7 +374,7 @@
             <sqf:p>Choosing this option replace the content with the current filename (without
                path)</sqf:p>
          </sqf:description>
-         <sqf:replace match="text()" select="replace(base-uri(), '.*/([^/]+$)', '$1')"/>
+         <sqf:replace match="@href" select="replace(base-uri(), '.*/([^/]+$)', '$1')" node-type="attribute" target="href"/>
       </sqf:fix>
       <sqf:fix id="change-to-current-file-base-uri" use-when="self::tan:master-location"
          tan:does-not-apply-to="location">
@@ -445,7 +435,7 @@
          value="
             for $i in $this-resolved
             return
-               tan:first-loc-available($i)"/>
+               tan:first-loc-available($i)/@href"/>
       <let name="first-docs"
          value="
             for $i in $first-locs
@@ -611,10 +601,9 @@
    <rule context="@href">
       <let name="href" value="."/>
       <let name="href-doc" value="doc(resolve-uri($href, $doc-uri))"/>
-      <report test="true()" sqf:fix="get-metadata" sqf:default-fix="get-metadata">Used only for
-         Schematron Quick Fixes, to populate an element with &lt;IRI>, &lt;name>, and &lt;location>
-         values.
-      </report>
+      <assert test="parent::tan:location or parent::tan:master-location" sqf:fix="get-metadata" sqf:default-fix="get-metadata">If
+         not a child of tan:location or tan:master-location, then used only for Schematron Quick Fixes, to populate an
+         element with &lt;IRI>, &lt;name>, and &lt;location> values. </assert>
       <sqf:fix id="get-metadata">
          <sqf:description>
             <sqf:title>Delete @href and insert IRI, name, and location</sqf:title>
@@ -627,8 +616,7 @@
             <tan:IRI>
                <value-of select="$href-doc/*/@id"/></tan:IRI>
             <tan:name><value-of select="$href-doc/*/tan:head/tan:name[1]"/></tan:name>
-            <tan:location when-accessed="{current-dateTime()}"><value-of select="$href"
-               /></tan:location>
+            <tan:location when-accessed="{current-dateTime()}" href="{$href}"/>
          </sqf:add>
          <sqf:delete match="."/>
       </sqf:fix>
@@ -636,7 +624,7 @@
    <rule context="tan:IRI">
       <let name="count" value="count(index-of($all-iris, .))"/>
       <let name="is-iri-of-tan-file" value="tan:must-refer-to-external-tan-file(.)"/>
-      <let name="first-loc" value="tan:first-loc-available(..)"/>
+      <let name="first-loc" value="tan:first-loc-available(..)/@href"/>
       <let name="first-doc"
          value="
             if (exists($first-loc)) then
@@ -667,7 +655,7 @@
    </rule>
    <!-- Rules above relevant to inclusions dealt with here -->
    <rule context="tan:inclusion">
-      <let name="first-loc-avail" value="tan:first-loc-available(.)"/>
+      <let name="first-loc-avail" value="tan:first-loc-available(.)/@href"/>
       <let name="first-doc" value="doc(resolve-uri($first-loc-avail, $doc-uri))"/>
       <let name="first-doc-resolved" value="tan:resolve-doc($first-doc)"/>
       <!-- If TAN ever permits inclusions to themselves be included, the filter below will need to change -->

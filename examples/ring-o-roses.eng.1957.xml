@@ -3,29 +3,27 @@
 <?xml-model href="../schemas/TAN-TEI.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
 <!--<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-TEI.rnc" type="application/relax-ng-compact-syntax"?>
 <?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-TEI.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>-->
-<TEI xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:svg="http://www.w3.org/2000/svg"
-  xmlns:tan="tag:textalign.net,2015:ns" xmlns:math="http://www.w3.org/1998/Math/MathML"
-  xmlns="http://www.tei-c.org/ns/1.0" TAN-version="1" id="tag:parkj@textalign.net,2015:ring04">
-  <teiHeader>
+<TEI xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:svg="http://www.w3.org/2000/svg" xmlns:tan="tag:textalign.net,2015:ns" xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns="http://www.tei-c.org/ns/1.0" TAN-version="1" id="tag:parkj@textalign.net,2015:ring04">
+  <teiHeader type="text">
     <fileDesc>
       <titleStmt>
         <title/>
       </titleStmt>
       <publicationStmt>
-        <p/>
+        <p part="N"/>
       </publicationStmt>
-      <sourceDesc>
-        <p/>
+      <sourceDesc default="false">
+        <p part="N"/>
       </sourceDesc>
     </fileDesc>
-    <revisionDesc>
-      <change when-iso="2015-05-14T16:30:25.958-04:00"/>
+    <revisionDesc status="draft">
+      <change when-iso="2015-05-14T16:30:25.958-04:00" status="draft"/>
     </revisionDesc>
   </teiHeader>
   <head xmlns="tag:textalign.net,2015:ns">
     <name>TAN transcription of 1790 version of Ring around the Rosie reported by Newell in
       1883</name>
-    <master-location>ring-o-roses.eng.1957.xml</master-location>
+    <master-location href="ring-o-roses.eng.1957.xml"/>
     <rights-excluding-sources rights-holder="kalvesmaki">
       <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
       <name>This data file is licensed under a Creative Commons Attribution 4.0 International
@@ -59,17 +57,17 @@
   </head>
   <text>
     <body xml:lang="eng" in-progress="false">
-      <div type="l" n="1">
-        <l>Ring a ring a Rosie,</l>
+      <div type="l" n="1" part="N" org="uniform" sample="complete">
+        <l part="N">Ring a ring a Rosie,</l>
       </div>
-      <div type="l" n="2">
-        <l>A bottle full of posie,</l>
+      <div type="l" n="2" part="N" org="uniform" sample="complete">
+        <l part="N">A bottle full of posie,</l>
       </div>
-      <div type="l" n="3">
-        <l>All the girls in our town</l>
+      <div type="l" n="3" part="N" org="uniform" sample="complete">
+        <l part="N">All the girls in our town</l>
       </div>
-      <div type="l" n="4">
-        <l>Ring for little Josie.</l>
+      <div type="l" n="4" part="N" org="uniform" sample="complete">
+        <l part="N">Ring for little Josie.</l>
       </div>
     </body>
   </text>

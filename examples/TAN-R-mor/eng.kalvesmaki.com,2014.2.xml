@@ -3,11 +3,10 @@
 <?xml-model href="../../schemas/TAN-R-mor.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
 <!--<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-R-mor.rnc" type="application/relax-ng-compact-syntax"?>
 <?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-R-mor.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>-->
-<TAN-R-mor TAN-version="1" id="tag:kalvesmaki.com,2014:tan-r-mor:eng:penn"
-   xmlns="tag:textalign.net,2015:ns">
+<TAN-R-mor xmlns="tag:textalign.net,2015:ns" TAN-version="1" id="tag:kalvesmaki.com,2014:tan-r-mor:eng:penn">
    <head>
       <name>University of Pennsylvania (Penn) Treebank Tag-set</name>
-      <master-location>https://raw.githubusercontent.com/Arithmeticus/TAN-class-3/master/TAN-R-mor/eng.kalvesmaki.com%2C2014.2.xml</master-location>
+      <!--<master-location href="https://raw.githubusercontent.com/Arithmeticus/TAN-class-3/master/TAN-R-mor/eng.kalvesmaki.com%2C2014.2.xml"/>-->
       <rights-excluding-sources rights-holder="kalvesmaki">
          <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
          <name>Creative Commons Attribution 4.0 International License</name>
@@ -219,7 +218,7 @@
          <feature xml:id="SYM">
             <IRI>tag:textalign.net,2015:morphology:option:symbol</IRI>
             <name>symbol</name>
-            <desc>Examples: % &amp; * + &lt; = > @</desc>
+            <desc>Examples: % &amp; * + &lt; = &gt; @</desc>
          </feature>
          <feature xml:id="TO">
             <IRI>tag:textalign.net,2015:morphology:option:eng:to</IRI>

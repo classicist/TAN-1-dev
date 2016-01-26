@@ -118,7 +118,7 @@
       <!-- Sequence of one node/tree per source listing possible tokenizations, their first
          document-available location, and the languages covered:
          <tokenization via-src='[TRUE/FALSE]'>
-            <location>[URL or ERROR MESSAGE]</location>
+            <location href="[URL or ERROR MESSAGE]"/>
             <for-lang>[LANG1 or *]<lang>
             <for-lang>[LANG2]<lang>
             ...
@@ -139,7 +139,7 @@
                <xsl:variable name="cl-2-loc"
                   select="
                      if ($this-tokz/tan:location) then
-                        ($this-tokz/tan:location[doc-available(resolve-uri(., $doc-uri))],
+                        ($this-tokz/tan:location[doc-available(resolve-uri(@href, $doc-uri))],
                         $tokenization-errors[1])[1]
                      else
                         ()"/>
@@ -154,7 +154,7 @@
                <xsl:variable name="cl-1-loc"
                   select="
                      if (exists($src-rec-tokz-chosen)) then
-                        ($src-rec-tokz-chosen/tan:location[doc-available(resolve-uri(., $src-1st-da-base-uri))],
+                        ($src-rec-tokz-chosen/tan:location[doc-available(resolve-uri(@href, $src-1st-da-base-uri))],
                         $tokenization-errors[3])[1]
                      else
                         ()"/>
@@ -193,7 +193,9 @@
                         <xsl:attribute name="error"
                            select="index-of($tokenization-errors, $this-tokz-1st-da-location)"/>
                      </xsl:if>
-                     <xsl:value-of select="$this-tokz-1st-da-location"/>
+                     <xsl:attribute name="href">
+                        <xsl:value-of select="$this-tokz-1st-da-location"/>
+                     </xsl:attribute>
                   </xsl:element>
                   <xsl:if test="doc-available($this-tokz-1st-da-location)">
                      <xsl:choose>
@@ -217,16 +219,18 @@
    </xsl:variable>
    <xsl:variable name="distinct-tokenizations" xml:id="v-distinct-tokenizations" as="element()*">
       <!-- Sequence of one node/tree per tokenization used:
-         <location>[URL]</location>
+         <location href="[URL]"/>
          <replace>[REPLACE NODE 1]</replace>
          <replace>[REPLACE NODE 2]</replace>
          ...
          <tokenize>[tokenize]</replace>-->
-      <xsl:for-each select="distinct-values($tokenizations-per-source//tan:location)">
+      <xsl:for-each select="distinct-values($tokenizations-per-source//tan:location/@href)">
          <xsl:variable name="this-tokenization-location" select="."/>
          <xsl:element name="tan:tokenization">
             <xsl:element name="tan:location">
-               <xsl:value-of select="$this-tokenization-location"/>
+               <xsl:attribute name="href">
+                  <xsl:value-of select="$this-tokenization-location"/>
+               </xsl:attribute>
             </xsl:element>
             <xsl:if test="doc-available($this-tokenization-location)">
                <xsl:copy-of
@@ -890,11 +894,11 @@
                <xsl:variable name="this-tokz"
                   select="
                      $tokenizations-per-source[$this-src]/tan:tokenization[tan:for-lang = ('*',
-                     $this-lang)][1]/tan:location"/>
+                     $this-lang)][1]/tan:location/@href"/>
                <xsl:variable name="this-replaces"
-                  select="$distinct-tokenizations[tan:location = $this-tokz]/tan:replace"/>
+                  select="$distinct-tokenizations[tan:location/@href = $this-tokz]/tan:replace"/>
                <xsl:variable name="this-tokenize"
-                  select="$distinct-tokenizations[tan:location = $this-tokz]/tan:tokenize"/>
+                  select="$distinct-tokenizations[tan:location/@href = $this-tokz]/tan:tokenize"/>
                <xsl:copy>
                   <xsl:copy-of select="@*"/>
                   <xsl:if test="exists($this-lang)">

@@ -388,8 +388,8 @@
             select="
                 for $i in $tan-element
                 return
-                    if (exists(tan:first-loc-available($i))) then
-                        resolve-uri(tan:first-loc-available($i), $doc-uri)
+                    if (exists(tan:first-loc-available($i)/@href)) then
+                        resolve-uri(tan:first-loc-available($i)/@href, $doc-uri)
                     else
                         ''"
         />
@@ -416,7 +416,7 @@
         <xsl:sequence
             select="
                 (for $i in $parent-element/tan:location,
-                    $j in resolve-uri($i, $norm-uri)
+                    $j in resolve-uri($i/@href, $norm-uri)
                 return
                     if (doc-available($j)) then
                         $i
@@ -518,7 +518,7 @@
                             select="
                                 for $i in $these-inclusions
                                 return
-                                    tan:first-loc-available($i, base-uri($i))"/>
+                                    tan:first-loc-available($i, base-uri($i))/@href"/>
                         <xsl:variable name="this-name" select="name()"/>
                         <xsl:variable name="these-replacement-elements"
                             select="
@@ -530,7 +530,7 @@
                                 <xsl:when test="not(exists($these-replacement-elements))">
                                     <xsl:copy-of select="2"/>
                                 </xsl:when>
-                                <xsl:when test="$these-inclusions/tan:location = $urls-so-far">
+                                <xsl:when test="$these-inclusions/tan:location/@href = $urls-so-far">
                                     <xsl:copy-of select="3"/>
                                 </xsl:when>
                                 <xsl:when test="count(distinct-values($this-name)) gt 1">

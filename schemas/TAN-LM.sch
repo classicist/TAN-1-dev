@@ -18,7 +18,7 @@
    <include href="TAN-class-2.sch"/>
    <!--<let name="morphology-ids" value="/tan:TAN-LM/tan:head/tan:declarations/tan:morphology/@xml:id"/>
    <let name="morphologies-1st-loc-avail"
-      value="/tan:TAN-LM/tan:head/tan:declarations/tan:morphology/tan:location[doc-available(resolve-uri(.,$doc-uri))][1]"/>
+      value="/tan:TAN-LM/tan:head/tan:declarations/tan:morphology/tan:location[doc-available(resolve-uri(@href,$doc-uri))][1]"/>
    <let name="morphologies"
       value="for $i in $morphologies-1st-loc-avail
          return
@@ -27,6 +27,9 @@
       <!-- not needed b/c of rnc definition -->
       <!--<rule context="tan:lm">
          <report test="not(tan:l|tan:m)">lm must take at least one l or m.</report>
+      </rule>-->
+      <!--<rule context="tan:morphology">
+         <report test="true()"><xsl:value-of select="$morphologies-1st-la"></xsl:value-of></report>
       </rule>-->
       <rule context="tan:ana">
          <let name="single-tok-test"

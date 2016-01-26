@@ -45,7 +45,7 @@
     <element name="div-type">
       <a:documentation>declares a type of textual division (e.g., title, paragraph, stanza). You may have as many &lt;div-types&gt; as you wish, and they need not all be used.</a:documentation>
       <a:documentation>For more information, see main.xml#reference_system</a:documentation>
-      <a:documentation>This element takes the IRI + name pattern. For more, see iris.xml for suggested values. </a:documentation>
+      <a:documentation>This element takes a reserved keyword or IRI + name pattern. For more, see iris.xml for suggested values. </a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -60,7 +60,10 @@
             <zeroOrMore>
               <ref name="comment"/>
             </zeroOrMore>
-            <ref name="entity-nondigital-ref"/>
+            <choice>
+              <ref name="entity-nondigital-ref"/>
+              <ref name="keyword-ref"/>
+            </choice>
           </interleave>
         </group>
       </choice>

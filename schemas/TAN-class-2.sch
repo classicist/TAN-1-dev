@@ -30,7 +30,7 @@
          exists. IRI: <value-of select="$exists-new-version/tan:IRI"/> Name: <value-of
             select="$exists-new-version/tan:name"/>
          <value-of select="$exists-new-version/tan:desc"/> Location: <value-of
-            select="$exists-new-version/tan:location"/></report>
+            select="$exists-new-version/tan:location/@href"/></report>
       <sqf:fix id="use-new-edition">
          <sqf:description>
             <sqf:title>Replace with new version</sqf:title>
@@ -50,7 +50,7 @@
       />
       <let name="these-tokz-errors"
          value="for $i in (1 to count($this-tokz-per-src)), $j in $this-tokz-per-src[$i] return 
-         if ($j/tan:location[. = $tokenization-errors]) then concat($src-ids[$this-src-list[$i]],': ',$j/tan:location) else ()"
+         if ($j/tan:location[(@href,@error) = $tokenization-errors]) then concat($src-ids[$this-src-list[$i]],': ',$j/tan:location/@href) else ()"
       />
       <report test="$these-tokz-errors"><!-- Common errors in <tokenization>: $tokenization-errors -->Error: <value-of select="$these-tokz-errors"/>
       </report>

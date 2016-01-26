@@ -1,0 +1,27 @@
+default namespace = "tag:textalign.net,2015:ns"
+
+start =
+  element reserved-keywords {
+    attribute href { text },
+    group+
+  }
+group =
+  element group {
+    attribute affects-element { text }?,
+    attribute class { xsd:NCName }?,
+    desc*,
+    item*,
+    group*
+  }
+item = element item { keyword+, IRI+, desc* }
+keyword = element keyword { text }
+IRI =
+  element IRI {
+    attribute see { text }?,
+    xsd:anyURI
+  }
+desc =
+  element desc {
+    attribute see { text }?,
+    text
+  }

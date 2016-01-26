@@ -23,11 +23,11 @@ decl-div =
     
     ## For more information, see main.xml#reference_system
     
-    ## This element takes the IRI + name pattern. For more, see iris.xml for suggested values. 
+    ## This element takes a reserved keyword or IRI + name pattern. For more, see iris.xml for suggested values. 
     element div-type {
         ed-stamp?,
         (inclusion
-         | (ns-are-numerals?, internal-id, (comment* & entity-nondigital-ref)))
+         | (ns-are-numerals?, internal-id, (comment* & (entity-nondigital-ref | keyword-ref))))
     }
 ns-are-numerals =
     

@@ -50,5 +50,6 @@
     <xsl:variable name="relationship-keywords-all"
         select="$keywords//tan:group[@affects-element = 'relationship']//tan:keyword"
         as="xs:string*"/>
+    <xsl:variable name="div-type-keywords" select="$keywords//tan:group[@affects-element = 'div-type']//tan:keyword"/>
     
 </xsl:stylesheet>

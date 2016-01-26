@@ -1,44 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="TAN-keywords.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="TAN-keywords.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
 <!-- master list of TAN keywords, used by validation schemas, functions, and documentation -->
-<reserved-keywords xmlns="tag:textalign.net,2015:ns">
+<reserved-keywords xmlns="tag:textalign.net,2015:ns" href="../../testing/">
     <group affects-element="recommended-tokenization tokenization">
         <desc>@which, if present, must take one of the following values</desc>
         <item>
+            <keyword>general-1</keyword>
             <IRI see="../TAN-R-tok/general-1.xml"/>
             <desc see="../TAN-R-tok/general-1.xml"/>
-            <keyword>general-1</keyword>
         </item>
         <item>
+            <keyword>general-words-only-1</keyword>
             <IRI see="../TAN-R-tok/general-words-only-1.xml"/>
             <desc see="../TAN-R-tok/general-words-only-1.xml"/>
-            <keyword>general-words-only-1</keyword>
         </item>
         <item>
+            <keyword>precise-1</keyword>
             <IRI see="../TAN-R-tok/precise-1.xml"/>
             <desc see="../TAN-R-tok/precise-1.xml"/>
-            <keyword>precise-1</keyword>
         </item>
     </group>
     <group affects-element="relationship">
-        <desc>&lt;relationship>'s optional attribute @which takes the following keywords.</desc>
+        <desc>&lt;relationship&gt;'s optional attribute @which takes the following keywords.</desc>
         <item>
+            <keyword>auxiliary</keyword>
             <IRI>tag:textalign.net,2015:relationship:auxiliary</IRI>
             <desc>Digital or nondigital entity that was helpful in creating or editing the present
                 file. This may be useful for crediting a helpful starting point. </desc>
-            <keyword>auxiliary</keyword>
         </item>
         <group class="tan">
             <desc>Keywords that must point exclusively to TAN files:</desc>
             <item>
+                <keyword>dependent</keyword>
                 <IRI>tag:textalign.net,2015:relationship:dependent</IRI>
                 <desc>Points to a TAN file that uses the current file as a source.</desc>
-                <keyword>dependent</keyword>
             </item>
             <group class="experimental">
                 <desc>Keywords that must point exclusively to the TAN-X format.</desc>
-                <IRI>tag:textalign.net,2015:relationship:context</IRI>
-                <desc>Background information about one or more concepts mentioned in a TAN file.</desc>
-                <keyword>context</keyword>
+                <item>
+                    <keyword>context</keyword>
+                    <IRI>tag:textalign.net,2015:relationship:context</IRI>
+                    <desc>Background information about one or more concepts mentioned in a TAN
+                        file.</desc>
+                </item>
             </group>
             <group class="edition">
                 <desc>Keywords that must point to TAN editions.</desc>
@@ -47,62 +52,62 @@
                     history and treats the same basic material but with a different approach.
                     Neither inherently supersedes the other. If they share a common ancestry, they
                     stand in different branches of that ancestry. Editions must not have the same
-                    TAN id. They normally differ in the content of &lt;source> or &lt;declarations>
-                    or both.</desc>
+                    TAN id. They normally differ in the content of &lt;source&gt; or
+                    &lt;declarations&gt; or both.</desc>
                 <item>
+                    <keyword>parent edition</keyword>
                     <IRI>tag:textalign.net,2015:relationship:parent-edition</IRI>
                     <desc>The edition from which the current one branches.</desc>
-                    <keyword>parent edition</keyword>
                 </item>
                 <item>
+                    <keyword>child edition</keyword>
                     <IRI>tag:textalign.net,2015:relationship:child-edition</IRI>
                     <desc>An edition branched off from the current edition.</desc>
-                    <keyword>child edition</keyword>
                 </item>
                 <item>
+                    <keyword>sibling edition</keyword>
                     <IRI>tag:textalign.net,2015:relationship:sibling-edition</IRI>
                     <desc>An edition that shares the same parent as the current edition.</desc>
-                    <keyword>sibling edition</keyword>
                 </item>
                 <item>
+                    <keyword>ancestor edition</keyword>
                     <IRI>tag:textalign.net,2015:relationship:ancestor-edition</IRI>
                     <desc>An edition that is an anscestor to the current edition.</desc>
-                    <keyword>ancestor edition</keyword>
                 </item>
                 <item>
+                    <keyword>descendant edition</keyword>
                     <IRI>tag:textalign.net,2015:relationship:descendant-edition</IRI>
                     <desc>An edition that descends from the current edition.</desc>
-                    <keyword>descendant edition</keyword>
                 </item>
                 <item>
+                    <keyword>cousin edition</keyword>
                     <IRI>tag:textalign.net,2015:relationship:cousin-edition</IRI>
                     <desc>An edition that shares the same ancestor as the current edition</desc>
-                    <keyword>cousin edition</keyword>
                 </item>
                 <group class="class1">
                     <desc>Keywords that can be used only by class 1 files, to point to other class 1
                         files:</desc>
                     <item>
+                        <keyword>alternatively divided edition</keyword>
                         <IRI>tag:textalign.net,2015:relationship:alternatively-divided-edition</IRI>
                         <desc>Used by a class 1 file to point to another class 1 file that contains
                             the identical transcription for the same version of the same work on the
                             same textual object, but divides that transcription into a different
                             reference system. If this value is invoked, the concatenated text
-                            content of &lt;body> must be identical, after space normalization. This
-                            &lt;relationship> is useful for developing a concordance between
+                            content of &lt;body&gt; must be identical, after space normalization.
+                            This &lt;relationship&gt; is useful for developing a concordance between
                             alternative reference systems for the same text.</desc>
-                        <keyword>alternatively divided edition</keyword>
                     </item>
                     <item>
+                        <keyword>alternatively normalized edition</keyword>
                         <IRI>tag:textalign.net,2015:relationship:alternatively-normalized-edition</IRI>
                         <desc>Used by a class 1 file to point to another class 1 file that treats
                             the same version of the same work on the same textual object, but
-                            normalizes the transcription differently. This &lt;relationship> may be
-                            valuable in cases where normalization standards for a particular
+                            normalizes the transcription differently. This &lt;relationship&gt; may
+                            be valuable in cases where normalization standards for a particular
                             language are not settled, and users may prefer one convention over the
                             other, but wish to have access to another approach to
                             normalization.</desc>
-                        <keyword>alternatively normalized edition</keyword>
                     </item>
                 </group>
             </group>
@@ -115,21 +120,539 @@
                     have the same TAN id and are distinguished exclusively by the latest
                     ISO-compliant date (see @when and @ed-when).</desc>
                 <item>
+                    <keyword>old version</keyword>
                     <IRI>tag:textalign.net,2015:relationship:old-version</IRI>
                     <desc>TAN file superseded by the present file, and part of the same editorial
                         stream. The alterations are considered not to warrant a new @id in the
                         rootmost element.</desc>
-                    <keyword>old version</keyword>
                 </item>
                 <item>
+                    <keyword>new version</keyword>
                     <IRI>tag:textalign.net,2015:relationship:new-version</IRI>
                     <desc>TAN file that supersedes the present file, and part of the same editorial
                         stream. The alterations have not been significant enough to warrant a new
                         @id in the rootmost element. This is useful for officially deprecating a TAN
                         file without deleting it. </desc>
-                    <keyword>new version</keyword>
                 </item>
             </group>
         </group>
+    </group>
+    <group affects-element="div-type">
+        <item>
+            <keyword>abstract</keyword>
+            <IRI>tag:textalign.net,2015:div-type:abstract</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/abstract</IRI>
+            <IRI>http://dbpedia.org/resource/Abstract_(summary)</IRI>
+        </item>
+        <item>
+            <keyword>ad praeterea</keyword>
+            <IRI>tag:textalign.net,2015:div-type:ad_praeterea</IRI>
+            <desc>division used particularly by Thomas Aquinas</desc>
+        </item>
+        <item>
+            <keyword>addendum</keyword>
+            <IRI>tag:textalign.net,2015:div-type:addendum</IRI>
+            <IRI>http://dbpedia.org/page/Addendum</IRI>
+        </item>
+        <item>
+            <keyword>address (postal)</keyword>
+            <IRI>tag:textalign.net,2015:div-type:address_(postal)</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/address</IRI>
+            <IRI>http://dbpedia.org/resource/Address_(geography)</IRI>
+        </item>
+        <item>
+            <keyword>afterword</keyword>
+            <IRI>tag:textalign.net,2015:div-type:afterword</IRI>
+            <IRI>http://dbpedia.org/page/</IRI>
+        </item>
+        <item>
+            <keyword>amendment</keyword>
+            <IRI>tag:textalign.net,2015:div-type:amendment</IRI>
+        </item>
+        <item>
+            <keyword>bibliographic citation</keyword>
+            <IRI>tag:textalign.net,2015:div-type:bibliographic_citation</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/cite</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/bibl</IRI>
+            <IRI>http://dbpedia.org/resource/Citation</IRI>
+        </item>
+        <item>
+            <keyword>bibliography</keyword>
+            <IRI>tag:textalign.net,2015:div-type:bibliography</IRI>
+            <IRI>http://dbpedia.org/page/Bibliography</IRI>
+        </item>
+        <item>
+            <keyword>block quote</keyword>
+            <IRI>tag:textalign.net,2015:div-type:block_quote</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/blockquote</IRI>
+            <IRI>http://dbpedia.org/resource/Block_quotation</IRI>
+        </item>
+        <item>
+            <keyword>book</keyword>
+            <IRI>tag:textalign.net,2015:div-type:book</IRI>
+            <IRI>http://dbpedia.org/resource/Book</IRI>
+            <desc>Conceptual book, not a physical one.</desc>
+        </item>
+        <item>
+            <keyword>canon</keyword>
+            <IRI>tag:textalign.net,2015:div-type:canon</IRI>
+        </item>
+        <item>
+            <keyword>caption</keyword>
+            <IRI>tag:textalign.net,2015:div-type:caption</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/figDesc</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/caption</IRI>
+            <IRI>http://dbpedia.org/resource/Photo_caption</IRI>
+        </item>
+        <item>
+            <keyword>causa</keyword>
+            <IRI>tag:textalign.net,2015:div-type:causa</IRI>
+            <desc>Division in medieval western literature</desc>
+        </item>
+        <item>
+            <keyword>century</keyword>
+            <IRI>tag:textalign.net,2015:div-type:century</IRI>
+        </item>
+        <item>
+            <keyword>chapter</keyword>
+            <keyword>capitulum</keyword>
+            <IRI>tag:textalign.net,2015:div-type:chapter</IRI>
+            <IRI>http://dbpedia.org/resource/Chapter_(books)</IRI>
+        </item>
+        <item>
+            <keyword>character</keyword>
+            <IRI>tag:textalign.net,2015:div-type:character</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/c</IRI>
+            <IRI>http://dbpedia.org/resource/Character_(computing)</IRI>
+        </item>
+        <item>
+            <keyword>clause (grammatical)</keyword>
+            <IRI>tag:textalign.net,2015:div-type:clause_(grammatical)</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/cl</IRI>
+            <IRI>http://dbpedia.org/resource/Clause</IRI>
+        </item>
+        <item>
+            <keyword>clause (legal)</keyword>
+            <IRI>tag:textalign.net,2015:div-type:clause_(legal)</IRI>
+            <IRI>http://dbpedia.org/resource/Provision_(contracting)</IRI>
+        </item>
+        <item>
+            <keyword>colophon</keyword>
+            <IRI>tag:textalign.net,2015:div-type:colophon</IRI>
+            <IRI>http://dbpedia.org/page/Colophon</IRI>
+        </item>
+        <item>
+            <keyword>column (page)</keyword>
+            <IRI>tag:textalign.net,2015:div-type:column_(page)</IRI>
+            <IRI>http://dbpedia.org/resource/Column_(typography)</IRI>
+        </item>
+        <item>
+            <keyword>column (table)</keyword>
+            <IRI>tag:textalign.net,2015:div-type:column_(table)</IRI>
+        </item>
+        <item>
+            <keyword>conclusion</keyword>
+            <IRI>tag:textalign.net,2015:div-type:conclusion</IRI>
+            <IRI>http://dbpedia.org/page/Conclusion_(book)</IRI>
+        </item>
+        <item>
+            <keyword>couplet</keyword>
+            <IRI>tag:textalign.net,2015:div-type:couplet</IRI>
+            <IRI>http://dbpedia.org/resource/Couplet</IRI>
+        </item>
+        <item>
+            <keyword>definition list</keyword>
+            <IRI>tag:textalign.net,2015:div-type:definition_list</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/dl</IRI>
+        </item>
+        <item>
+            <keyword>dictionary entry</keyword>
+            <IRI>tag:textalign.net,2015:div-type:dictionary_entry</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/entry</IRI>
+        </item>
+        <item>
+            <keyword>dictum ante canonem</keyword>
+            <keyword>dictum ante capitulum</keyword>
+            <IRI>tag:textalign.net,2015:div-type:dictum_ante_canonem</IRI>
+            <desc>Terminology used of medieval works, e.g., Gratian.</desc>
+        </item>
+        <item>
+            <keyword>dictum post canonem</keyword>
+            <keyword>dictum post capitulum</keyword>
+            <IRI>tag:textalign.net,2015:div-type:dictum_post_canonem</IRI>
+            <desc>Terminology used of medieval works, e.g., Gratian.</desc>
+        </item>
+        <item>
+            <keyword>distinctio</keyword>
+            <IRI>tag:textalign.net,2015:div-type:distinctio</IRI>
+            <desc>Terminology used of medieval works, e.g., Gratian.</desc>
+        </item>
+        <item>
+            <keyword>epigraph</keyword>
+            <IRI>tag:textalign.net,2015:div-type:epigraph</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/epigraph</IRI>
+            <IRI>http://dbpedia.org/resource/Epigraph_(literature)</IRI>
+        </item>
+        <item>
+            <keyword>epilogue</keyword>
+            <IRI>tag:textalign.net,2015:div-type:epilogue</IRI>
+            <IRI>http://dbpedia.org/resource/Epilogue</IRI>
+        </item>
+        <item>
+            <keyword>explicit</keyword>
+            <IRI>tag:textalign.net,2015:div-type:explicit</IRI>
+        </item>
+        <item>
+            <keyword>folio</keyword>
+            <IRI>tag:textalign.net,2015:div-type:folio</IRI>
+            <IRI>http://dbpedia.org/resource/Recto_and_verso</IRI>
+        </item>
+        <item>
+            <keyword>gloss</keyword>
+            <IRI>tag:textalign.net,2015:div-type:gloss</IRI>
+            <IRI>http://dbpedia.org/resource/Gloss_(annotation)</IRI>
+        </item>
+        <item>
+            <keyword>glossary</keyword>
+            <IRI>tag:textalign.net,2015:div-type:glossary</IRI>
+            <IRI>http://dbpedia.org/page/Glossary</IRI>
+        </item>
+        <item>
+            <keyword>half-line (verse)</keyword>
+            <IRI>tag:textalign.net,2015:div-type:half-line_(verse)</IRI>
+        </item>
+        <item>
+            <keyword>heading</keyword>
+            <IRI>tag:textalign.net,2015:div-type:heading</IRI>
+        </item>
+        <item>
+            <keyword>heading level 1</keyword>
+            <IRI>tag:textalign.net,2015:div-type:heading_level_1</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/h1</IRI>
+        </item>
+        <item>
+            <keyword>heading level 2</keyword>
+            <IRI>tag:textalign.net,2015:div-type:heading_level_2</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/h2</IRI>
+        </item>
+        <item>
+            <keyword>heading level 3</keyword>
+            <IRI>tag:textalign.net,2015:div-type:heading_level_3</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/h3</IRI>
+        </item>
+        <item>
+            <keyword>heading level 4</keyword>
+            <IRI>tag:textalign.net,2015:div-type:heading_level_4</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/h4</IRI>
+        </item>
+        <item>
+            <keyword>heading level 5</keyword>
+            <IRI>tag:textalign.net,2015:div-type:heading_level_5</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/h5</IRI>
+        </item>
+        <item>
+            <keyword>heading level 6</keyword>
+            <IRI>tag:textalign.net,2015:div-type:heading_level_6</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/h6</IRI>
+        </item>
+        <item>
+            <keyword>homily</keyword>
+            <IRI>tag:textalign.net,2015:div-type:homily</IRI>
+            <IRI>http://dbpedia.org/resource/Homily</IRI>
+        </item>
+        <item>
+            <keyword>incipit</keyword>
+            <IRI>tag:textalign.net,2015:div-type:incipit</IRI>
+            <IRI>http://dbpedia.org/resource/Incipit</IRI>
+        </item>
+        <item>
+            <keyword>index</keyword>
+            <IRI>tag:textalign.net,2015:div-type:index</IRI>
+            <IRI>http://dbpedia.org/resource/Index_(publishing)</IRI>
+        </item>
+        <item>
+            <keyword>index entry</keyword>
+            <IRI>tag:textalign.net,2015:div-type:index_entry</IRI>
+        </item>
+        <item>
+            <keyword>line (physical)</keyword>
+            <IRI>tag:textalign.net,2015:div-type:line:physical</IRI>
+            <desc>A physical line of text on the page, not to be confused with a line of poetry,
+                which may take multiple physical lines.</desc>
+        </item>
+        <item>
+            <keyword>line (verse)</keyword>
+            <IRI>tag:textalign.net,2015:div-type:line:verse</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/l</IRI>
+            <IRI>http://dbpedia.org/resource/Line_(poetry)</IRI>
+        </item>
+        <item>
+            <keyword>list</keyword>
+            <IRI>tag:textalign.net,2015:div-type:list</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/list</IRI>
+            <IRI>http://dbpedia.org/resource/Enumeration</IRI>
+        </item>
+        <item>
+            <keyword>list item</keyword>
+            <IRI>tag:textalign.net,2015:div-type:list_item</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/li</IRI>
+        </item>
+        <item>
+            <keyword>litany</keyword>
+            <IRI>tag:textalign.net,2015:div-type:litany</IRI>
+            <IRI>http://dbpedia.org/resource/Litany</IRI>
+        </item>
+        <item>
+            <keyword>morpheme</keyword>
+            <IRI>tag:textalign.net,2015:div-type:morpheme</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/m</IRI>
+            <IRI>http://dbpedia.org/resource/Morpheme</IRI>
+        </item>
+        <item>
+            <keyword>note</keyword>
+            <IRI>tag:textalign.net,2015:div-type:note</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/note</IRI>
+            <IRI>http://dbpedia.org/resource/Note_(typography)</IRI>
+        </item>
+        <item>
+            <keyword>objection</keyword>
+            <IRI>tag:textalign.net,2015:div-type:objection</IRI>
+            <IRI>http://dbpedia.org/page/Objection_(argument)</IRI>
+        </item>
+        <item>
+            <keyword>octet</keyword>
+            <IRI>tag:textalign.net,2015:div-type:octet</IRI>
+        </item>
+        <item>
+            <keyword>oration</keyword>
+            <IRI>tag:textalign.net,2015:div-type:oration</IRI>
+        </item>
+        <item>
+            <keyword>ordered list</keyword>
+            <IRI>tag:textalign.net,2015:div-type:ordered_list</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/ol</IRI>
+        </item>
+        <item>
+            <keyword>page</keyword>
+            <IRI>tag:textalign.net,2015:div-type:page</IRI>
+            <IRI>http://dbpedia.org/resource/Page_(paper)</IRI>
+        </item>
+        <item>
+            <keyword>paragraph</keyword>
+            <IRI>tag:textalign.net,2015:div-type:paragraph</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/p</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/p</IRI>
+            <IRI>http://dbpedia.org/page/Paragraph</IRI>
+        </item>
+        <item>
+            <keyword>part</keyword>
+            <IRI>tag:textalign.net,2015:div-type:part</IRI>
+            <desc>A generic division of a larger textual unit</desc>
+        </item>
+        <item>
+            <keyword>phrase</keyword>
+            <IRI>tag:textalign.net,2015:div-type:phrase</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/phr</IRI>
+            <IRI>http://dbpedia.org/page/Phrase</IRI>
+        </item>
+        <item>
+            <keyword>poem</keyword>
+            <IRI>tag:textalign.net,2015:div-type:poem</IRI>
+            <IRI>http://dbpedia.org/page/Poetry</IRI>
+        </item>
+        <item>
+            <keyword>postface</keyword>
+            <IRI>tag:textalign.net,2015:div-type:postface</IRI>
+            <IRI>http://dbpedia.org/page/Postface</IRI>
+        </item>
+        <item>
+            <keyword>postscript</keyword>
+            <IRI>tag:textalign.net,2015:div-type:postscript</IRI>
+            <IRI>http://dbpedia.org/page/Postscript</IRI>
+        </item>
+        <item>
+            <keyword>preface</keyword>
+            <IRI>tag:textalign.net,2015:div-type:preface</IRI>
+            <IRI>http://dbpedia.org/resource/Preface</IRI>
+        </item>
+        <item>
+            <keyword>prologue</keyword>
+            <IRI>tag:textalign.net,2015:div-type:prologue</IRI>
+            <IRI>http://dbpedia.org/resource/Prologue</IRI>
+        </item>
+        <item>
+            <keyword>psalm</keyword>
+            <IRI>tag:textalign.net,2015:div-type:psalm</IRI>
+            <IRI>http://dbpedia.org/resource/Psalm</IRI>
+        </item>
+        <item>
+            <keyword>punctuation character</keyword>
+            <IRI>tag:textalign.net,2015:div-type:punctuation_character</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/pc</IRI>
+        </item>
+        <item>
+            <keyword>quatrain</keyword>
+            <IRI>tag:textalign.net,2015:div-type:quatrain</IRI>
+            <IRI>http://dbpedia.org/page/Quatrain</IRI>
+        </item>
+        <item>
+            <keyword>question</keyword>
+            <IRI>tag:textalign.net,2015:div-type:question</IRI>
+            <IRI>http://dbpedia.org/page/Question</IRI>
+        </item>
+        <item>
+            <keyword>refrain</keyword>
+            <IRI>tag:textalign.net,2015:div-type:refrain</IRI>
+            <IRI>http://dbpedia.org/page/Refrain</IRI>
+        </item>
+        <item>
+            <keyword>respondeo</keyword>
+            <IRI>tag:textalign.net,2015:div-type:respondeo</IRI>
+            <desc>division used particularly by Thomas Aquinas</desc>
+        </item>
+        <item>
+            <keyword>rubric</keyword>
+            <IRI>tag:textalign.net,2015:div-type:rubric</IRI>
+            <IRI>http://dbpedia.org/resource/Rubric</IRI>
+        </item>
+        <item>
+            <keyword>section</keyword>
+            <IRI>tag:textalign.net,2015:div-type:section</IRI>
+            <IRI>http://dbpedia.org/resource/Section_(typography)</IRI>
+        </item>
+        <item>
+            <keyword>sed contra</keyword>
+            <IRI>tag:textalign.net,2015:div-type:sed_contra</IRI>
+            <desc>division used particularly by Thomas Aquinas</desc>
+        </item>
+        <item>
+            <keyword>sentence</keyword>
+            <IRI>tag:textalign.net,2015:div-type:sentence</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/s</IRI>
+            <IRI>http://dbpedia.org/page/Sentence_(linguistics)</IRI>
+        </item>
+        <item>
+            <keyword>sestet</keyword>
+            <IRI>tag:textalign.net,2015:div-type:sestet</IRI>
+            <IRI>http://dbpedia.org/page/Sestet</IRI>
+        </item>
+        <item>
+            <keyword>song</keyword>
+            <IRI>tag:textalign.net,2015:div-type:song</IRI>
+            <IRI>http://dbpedia.org/page/Song</IRI>
+        </item>
+        <item>
+            <keyword>sonnet</keyword>
+            <IRI>tag:textalign.net,2015:div-type:sonnet</IRI>
+            <IRI>http://dbpedia.org/page/Sonnet</IRI>
+        </item>
+        <item>
+            <keyword>stage direction</keyword>
+            <IRI>tag:textalign.net,2015:div-type:stage_direction</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/stage</IRI>
+        </item>
+        <item>
+            <keyword>stanza</keyword>
+            <IRI>tag:textalign.net,2015:div-type:stanza</IRI>
+            <IRI>http://dbpedia.org/page/Stanza</IRI>
+        </item>
+        <item>
+            <keyword>subcolumn</keyword>
+            <IRI>tag:textalign.net,2015:div-type:subcolumn</IRI>
+            <desc>Divisions of a column. Many early large books with two columns per page were
+                printed with a few letters marking the vertical axis of the column, to make
+                referencing easier. This is seen, for example, in the Patrologia Latina and
+                Patrologia Graeca.</desc>
+        </item>
+        <item>
+            <keyword>subsection</keyword>
+            <IRI>tag:textalign.net,2015:div-type:subsection</IRI>
+        </item>
+        <item>
+            <keyword>syllogism</keyword>
+            <IRI>tag:textalign.net,2015:div-type:syllogism</IRI>
+            <IRI>http://dbpedia.org/page/Syllogism</IRI>
+        </item>
+        <item>
+            <keyword>table</keyword>
+            <IRI>tag:textalign.net,2015:div-type:table</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/table</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/table</IRI>
+            <IRI>http://dbpedia.org/page/Table_(information)</IRI>
+        </item>
+        <item>
+            <keyword>table cell</keyword>
+            <IRI>tag:textalign.net,2015:div-type:table_cell</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/cell</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/td</IRI>
+        </item>
+        <item>
+            <keyword>table footer</keyword>
+            <IRI>tag:textalign.net,2015:div-type:table_footer</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/tfoot</IRI>
+        </item>
+        <item>
+            <keyword>table header</keyword>
+            <IRI>tag:textalign.net,2015:div-type:table_header</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/thead</IRI>
+        </item>
+        <item>
+            <keyword>table row</keyword>
+            <IRI>tag:textalign.net,2015:div-type:table_row</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/row</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/tr</IRI>
+        </item>
+        <item>
+            <keyword>tercet</keyword>
+            <IRI>tag:textalign.net,2015:div-type:tercet</IRI>
+            <IRI>http://dbpedia.org/page/Tercet</IRI>
+        </item>
+        <item>
+            <keyword>term definition</keyword>
+            <IRI>tag:textalign.net,2015:div-type:term_definition</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/dd</IRI>
+        </item>
+        <item>
+            <keyword>term to be defined</keyword>
+            <IRI>tag:textalign.net,2015:div-type:term_to_be_defined</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/dt</IRI>
+        </item>
+        <item>
+            <keyword>title</keyword>
+            <IRI>tag:textalign.net,2015:div-type:title</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/title</IRI>
+            <IRI>http://dbpedia.org/resource/Title_(publishing)</IRI>
+        </item>
+        <item>
+            <keyword>tristich</keyword>
+            <IRI>tag:textalign.net,2015:div-type:tristich</IRI>
+            <IRI>http://dbpedia.org/page/Tristich</IRI>
+        </item>
+        <item>
+            <keyword>unordered list</keyword>
+            <IRI>tag:textalign.net,2015:div-type:unordered_list</IRI>
+            <IRI>http://www.w3.org/1999/xhtml/ul</IRI>
+        </item>
+        <item>
+            <keyword>variant</keyword>
+            <IRI>tag:textalign.net,2015:div-type:variant</IRI>
+            <desc>An alternative rendition of a passage. It is assumed that every variant will have
+                at least one sibling.</desc>
+        </item>
+        <item>
+            <keyword>verse (poetry)</keyword>
+            <IRI>tag:textalign.net,2015:div-type:verse_(poetry)</IRI>
+            <IRI>http://dbpedia.org/resource/Verse_(poetry)</IRI>
+        </item>
+        <item>
+            <keyword>verse (scripture)</keyword>
+            <IRI>tag:textalign.net,2015:div-type:verse_(scripture)</IRI>
+        </item>
+        <item>
+            <keyword>word</keyword>
+            <IRI>tag:textalign.net,2015:div-type:word</IRI>
+            <IRI>http://www.tei-c.org/ns/1.0/w</IRI>
+            <IRI>http://dbpedia.org/page/Word</IRI>
+        </item>
     </group>
 </reserved-keywords>

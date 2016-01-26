@@ -74,6 +74,32 @@
          return $inclusion-errors[number($i)],', ')"
          /></report>-->
    </rule>
+   <rule context="tan:div-type">
+      <let name="escaped-which" value="tan:escape(@which)"/>
+      <let name="close-matches-to-which" value="$div-type-keywords[matches(.,$escaped-which)]"/>
+      <assert sqf:fix="get-first-keyword get-all-keywords"
+         test="
+            if (@which) then
+               @which = $div-type-keywords
+            else
+               true()"
+         >@which must point to a reserved keyword (try: <value-of select="$close-matches-to-which"
+         />)</assert>
+      <sqf:fix id="get-first-keyword">
+         <sqf:description>
+            <sqf:title>Get first valid keyword</sqf:title>
+         </sqf:description>
+         <sqf:replace match="@which" node-type="attribute" target="which"
+            select="$close-matches-to-which[1]"/>
+      </sqf:fix>
+      <sqf:fix id="get-all-keywords">
+         <sqf:description>
+            <sqf:title>Get all valid keywords</sqf:title>
+         </sqf:description>
+         <sqf:replace match="@which" node-type="attribute" target="which"
+            select="string-join($close-matches-to-which,' ')"/>
+      </sqf:fix>
+   </rule>
    <rule context="tan:recommended-tokenization">
       <let name="this-resolved" value="tan:resolve-include(.)"/>
       <let name="this-count" value="(1 to count($this-resolved))"/>

@@ -22,10 +22,7 @@
                 <IRI>http://dbpedia.org/resource/Ring_a_Ring_o%27_Roses</IRI>
                 <name>"Ring a Ring o' Roses" or "Ring Around the Rosie"</name>
             </work>
-            <div-type xml:id="line">
-                <IRI>http://dbpedia.org/resource/Line_(poetry)</IRI>
-                <name>line of poetry</name>
-            </div-type>
+            <div-type xml:id="line" which="half-line (verse)"/>
             <recommended-tokenization which="general-1"/>
         </declarations>
         <agent xml:id="park" roles="creator">

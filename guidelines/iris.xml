@@ -327,9 +327,13 @@
                            \x{2009} \x{200A} \x{200B}]',' ')</code></entry>
                   </row>
                   <row>
-                     <entry><code>tag:textalign.net,2015:normalization:signals-note-removed</code></entry>
+                     <entry><code>tag:textalign.net,2015:normalization:annotation-signals-removed</code></entry>
                      <entry>Footnote or endnote signals (frequently superscript numbers or letters)
                         have been deleted.</entry>
+                  </row>
+                  <row>
+                     <entry><code>tag:textalign.net,2015:normalization:annotation-content-removed</code></entry>
+                     <entry>Footnotes or endnotes have been deleted.</entry>
                   </row>
                   <row>
                      <entry><code>tag:textalign.net,2015:normalization:comments-editorial-removed</code></entry>

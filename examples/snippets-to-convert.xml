@@ -5,18 +5,6 @@
     snippets, or new examples developed instead.
 -->
 <snippets-to-turn-into-real-TAN-examples>
-    <!-- digital entity pattern for non-TAN file -->
-    <source>
-        <IRI>tag:textalign.net,2015:source:digital:http://insaph.kcl.ac.uk/iaph2007/xml/iAph010001.xml</IRI>
-        <name>TEI transcription of boundary marker, set up by C. Julius Zoilos</name>
-        <checksum>
-            <IRI>http://dbpedia.org/resource/Sha-1</IRI>
-            <name>SHA-1</name>
-            <value>8ac1146c86e06071f352bf3cb89614c0a0f0c7ee</value>
-        </checksum>
-        <location when-accessed="2015-05-07"
-            >http://insaph.kcl.ac.uk/iaph2007/xml/iAph010001.xml</location>
-    </source>
     <!-- important for @ed-when, to distinguish it from @when -->
     <change when="2015-02-04" who="cheh" ed-when="2015-02-28" ed-who="smith">Cheh corrected all
         xml:lang values</change>

@@ -51,10 +51,7 @@
             <recommended-tokenization which="general-words-only-1"/>
             <recommended-div-type-refs>implicit</recommended-div-type-refs>
             <filter>
-                <normalization>
-                    <IRI>tag:textalign.net,2015:normalization:hyphens-discretionary-removed</IRI>
-                    <name>discretionary hyphens suppressed</name>
-                </normalization>
+                <normalization which="no hyphens"/>
             </filter>
         </declarations>
         <agent xml:id="kalvesmaki" roles="editor">

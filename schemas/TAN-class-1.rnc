@@ -27,7 +27,9 @@ decl-div =
     element div-type {
         ed-stamp?,
         (inclusion
-         | (ns-are-numerals?, internal-id, (comment* & (entity-nondigital-ref | keyword-ref))))
+         | (ns-are-numerals?,
+            internal-id,
+            (comment* & (entity-nondigital-ref | keyword-ref))))
     }
 ns-are-numerals =
     
@@ -80,7 +82,12 @@ decl-filt-norm =
     ## See iris.xml for suggested IRI + name values for normalizations. 
     
     ## For more on this element see main.xml#normalizing_transcriptions 
-    element normalization { decl-pattern-language }
+    element normalization {
+        ed-stamp?,
+        (inclusion
+         | (decl-id-ref-opt,
+            (comment* & (entity-nondigital-ref | keyword-ref))))
+    }
 
 ## Replacements that have been made to an XML source file. 
 decl-filt-repl = func-replace

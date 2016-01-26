@@ -74,13 +74,20 @@
          return $inclusion-errors[number($i)],', ')"
          /></report>-->
    </rule>
-   <rule context="tan:div-type">
+   <rule context="tan:div-type | tan:normalization">
+      <let name="relevant-keywords"
+         value="
+            if (self::tan:div-type) then
+               $div-type-keywords
+            else
+               $normalization-keywords"
+      />
       <let name="escaped-which" value="tan:escape(@which)"/>
-      <let name="close-matches-to-which" value="$div-type-keywords[matches(.,$escaped-which)]"/>
+      <let name="close-matches-to-which" value="$relevant-keywords[matches(.,$escaped-which)]"/>
       <assert sqf:fix="get-first-keyword get-all-keywords"
          test="
             if (@which) then
-               @which = $div-type-keywords
+               @which = $relevant-keywords
             else
                true()"
          >@which must point to a reserved keyword (try: <value-of select="$close-matches-to-which"

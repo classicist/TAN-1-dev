@@ -38,6 +38,7 @@
             <location href="../ring-o-roses.eng.1957.xml" when-accessed="2015-07-26-04:00"/>
         </source>
         <declarations>
+            <suppress-div-types src="eng-1790" div-type-ref="poem"/>
             <implicit-div-type-refs src="eng-uk eng-us ger eng-1790"/>
             <tokenization src="eng-us" which="general-1"/>
         </declarations>

@@ -39,6 +39,7 @@
         <IRI>http://dbpedia.org/resource/Ring_a_Ring_o%27_Roses</IRI>
         <name>Ring around the Rosie</name>
       </work>
+      <div-type which="poem" xml:id="poem"/>
       <div-type xml:id="l">
         <IRI>http://dbpedia.org/resource/Line_(poetry)</IRI>
         <name>line</name>
@@ -57,17 +58,19 @@
   </head>
   <text>
     <body xml:lang="eng" in-progress="false">
-      <div type="l" n="1" part="N" org="uniform" sample="complete">
-        <l part="N">Ring a ring a Rosie,</l>
-      </div>
-      <div type="l" n="2" part="N" org="uniform" sample="complete">
-        <l part="N">A bottle full of posie,</l>
-      </div>
-      <div type="l" n="3" part="N" org="uniform" sample="complete">
-        <l part="N">All the girls in our town</l>
-      </div>
-      <div type="l" n="4" part="N" org="uniform" sample="complete">
-        <l part="N">Ring for little Josie.</l>
+      <div type="poem" n="">
+        <div type="l" n="1" part="N" org="uniform" sample="complete">
+          <l part="N">Ring a ring a Rosie,</l>
+        </div>
+        <div type="l" n="2" part="N" org="uniform" sample="complete">
+          <l part="N">A bottle full of posie,</l>
+        </div>
+        <div type="l" n="3" part="N" org="uniform" sample="complete">
+          <l part="N">All the girls in our town</l>
+        </div>
+        <div type="l" n="4" part="N" org="uniform" sample="complete">
+          <l part="N">Ring for little Josie.</l>
+        </div>
       </div>
     </body>
   </text>

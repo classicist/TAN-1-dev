@@ -39,6 +39,9 @@
                 <IRI>tag:kalvesmaki@gmail.com,2014:reuse-type:correlation-general</IRI>
                 <name>Texts are generally correlated, but without specifying the relation</name>
             </reuse-type>
+            <rename-div-types src="ger">
+                <rename old="Zeile" new="line"/>
+            </rename-div-types>
             <tokenization src="eng ger" which="general-1"/>
         </declarations>
         <agent xml:id="park" roles="creator">
@@ -56,31 +59,31 @@
     <body reuse-type="correlationGeneral" bitext-relation="unclear">
         <align>
             <tok src="eng" ref="line 4" val="all"/>
-            <tok src="ger" ref="Zeile e" val="alle"/>
+            <tok src="ger" ref="line e" val="alle"/>
         </align>
         <align>
             <tok src="eng" ref="line 3" pos="1"/>
-            <tok src="ger" ref="Zeile e" pos="3"/>
+            <tok src="ger" ref="line e" pos="3"/>
         </align>
         <align>
             <tok src="eng" ref="line 3" pos="2"/>
-            <tok src="ger" ref="Zeile e" pos="4"/>
+            <tok src="ger" ref="line e" pos="4"/>
         </align>
         <align>
             <tok src="eng" ref="line 3" pos="3"/>
-            <tok src="ger" ref="Zeile e" pos="5"/>
+            <tok src="ger" ref="line e" pos="5"/>
         </align>
         <align>
             <tok src="eng" ref="line 1" pos="1, 2"/>
-            <tok src="ger" ref="Zeile a" pos="1"/>
+            <tok src="ger" ref="line a" pos="1"/>
         </align>
         <align>
             <tok src="eng" ref="line 1" pos="3, 4"/>
-            <tok src="ger" ref="Zeile a" pos="2"/>
+            <tok src="ger" ref="line a" pos="2"/>
         </align>
         <align>
             <tok src="eng" ref="line 1" pos="5" cert="low"/>
-            <tok src="ger" ref="Zeile a" pos="3" cert="low"/>
+            <tok src="ger" ref="line a" pos="3" cert="low"/>
         </align>
     </body>
 </TAN-A-tok>

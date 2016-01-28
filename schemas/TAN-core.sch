@@ -16,8 +16,8 @@
             <sqf:title>Get local source element with this document's IRI + name pattern</sqf:title>
             <sqf:p>Suppose you find a TAN file that you wish to make a source for another. Selecting
                this option will insert a tan:source element as the next child, complete with the
-               appropriate values for tan:IRI and tan:name, and with a tan:location/@href that points to
-               the local directory.</sqf:p>
+               appropriate values for tan:IRI and tan:name, and with a tan:location/@href that
+               points to the local directory.</sqf:p>
          </sqf:description>
          <sqf:add match="tan:head" position="before">
             <source xmlns="tag:textalign.net,2015:ns"
@@ -374,7 +374,8 @@
             <sqf:p>Choosing this option replace the content with the current filename (without
                path)</sqf:p>
          </sqf:description>
-         <sqf:replace match="@href" select="replace(base-uri(), '.*/([^/]+$)', '$1')" node-type="attribute" target="href"/>
+         <sqf:replace match="@href" select="replace(base-uri(), '.*/([^/]+$)', '$1')"
+            node-type="attribute" target="href"/>
       </sqf:fix>
       <sqf:fix id="change-to-current-file-base-uri" use-when="self::tan:master-location"
          tan:does-not-apply-to="location">
@@ -559,6 +560,7 @@
    <rule
       context="@who | @ed-who | @roles | @src | @type[parent::tan:div | parent::tei:div] | @lexicon | @morphology | @reuse-type | @bitext-relation | @feature | @include">
       <let name="this-attribute-name" value="name(.)"/>
+      <let name="this-attribute-value" value="."/>
       <let name="should-refer-to-which-element"
          value="$id-idrefs//tan:id[tan:idrefs/@attribute = $this-attribute-name]/@element"/>
       <let name="valid-values" value="$head//*[name(.) = $should-refer-to-which-element]/@xml:id"/>
@@ -568,7 +570,7 @@
             for $n in $idrefs
             return
                name($head//*[@xml:id = $n][1])"/>
-      <assert sqf:fix="get-ids"
+      <assert sqf:fix="get-ids add-decl-div-type"
          test="
             every $k in $idrefs-currently-target-what-element
                satisfies $k = $should-refer-to-which-element"
@@ -592,6 +594,19 @@
          <sqf:add match="." target="{name(.)}" select="string-join($valid-values, ' ')"
             node-type="attribute"/>
       </sqf:fix>
+      <sqf:fix id="add-decl-div-type"
+         use-when="$this-attribute-name = 'type' and $this-attribute-value = $div-type-keywords">
+         <sqf:description>
+            <sqf:title>Add div-type element invoking keyword</sqf:title>
+            <sqf:p>If you are editing a class 1 file, and you wish to use a div type that has a TAN
+               keyword and has not been invoked in the declarations, you may simply use the div type
+               keyword in the context of @type, then invoke this quick fix to automatically add a
+               standardized &lt;div-type> to the &lt;declarations>. </sqf:p>
+         </sqf:description>
+         <sqf:add match="/*/tan:head/tan:declarations/tan:div-type[1]" position="before">
+            <tan:div-type xml:id="{$this-attribute-value}" which="{$this-attribute-value}"/>
+         </sqf:add>
+      </sqf:fix>
    </rule>
    <rule context="@regex-test | tan:pattern">
       <report test="matches(., '\\[^nrtpPsSiIcCdDwW\\|.?*+(){}#x2D#x5B#x5D#x5E\]\[\^\-]')">Every
@@ -601,9 +616,10 @@
    <rule context="@href">
       <let name="href" value="."/>
       <let name="href-doc" value="doc(resolve-uri($href, $doc-uri))"/>
-      <assert test="parent::tan:location or parent::tan:master-location" sqf:fix="get-metadata" sqf:default-fix="get-metadata">If
-         not a child of tan:location or tan:master-location, then used only for Schematron Quick Fixes, to populate an
-         element with &lt;IRI>, &lt;name>, and &lt;location> values. </assert>
+      <assert test="parent::tan:location or parent::tan:master-location" sqf:fix="get-metadata"
+         sqf:default-fix="get-metadata">If not a child of tan:location or tan:master-location, then
+         used only for Schematron Quick Fixes, to populate an element with &lt;IRI>, &lt;name>, and
+         &lt;location> values. </assert>
       <sqf:fix id="get-metadata">
          <sqf:description>
             <sqf:title>Delete @href and insert IRI, name, and location</sqf:title>
@@ -677,8 +693,8 @@
       <report test="false()">Testing. var1: <value-of select="$test1"/> var2: <value-of
             select="$test2"/> var3: <value-of select="$test3"/></report>
       <!-- END TESTING BLOCK -->
-      <report test="$duplicate-ids = $included-elements-with-ids/@xml:id">No inclusion may introduce a duplicate @xml:id
-            (<value-of select="$duplicate-ids"/>)</report>
+      <report test="$duplicate-ids = $included-elements-with-ids/@xml:id">No inclusion may introduce
+         a duplicate @xml:id (<value-of select="$duplicate-ids"/>)</report>
       <assert test="exists($first-loc-avail)" role="fatal">Every inclusion must have at least one
          location that leads to an available document.</assert>
       <!--<report

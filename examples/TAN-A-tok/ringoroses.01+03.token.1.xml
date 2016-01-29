@@ -42,6 +42,9 @@
             <rename-div-types src="ger">
                 <rename old="Zeile" new="line"/>
             </rename-div-types>
+            <rename-div-ns src="ger" div-type-ref="line">
+                <rename old="#a" new="#1"/>
+            </rename-div-ns>
             <tokenization src="eng ger" which="general-1"/>
         </declarations>
         <agent xml:id="park" roles="creator">
@@ -59,31 +62,31 @@
     <body reuse-type="correlationGeneral" bitext-relation="unclear">
         <align>
             <tok src="eng" ref="line 4" val="all"/>
-            <tok src="ger" ref="line e" val="alle"/>
+            <tok src="ger" ref="line 5" val="alle"/>
         </align>
         <align>
             <tok src="eng" ref="line 3" pos="1"/>
-            <tok src="ger" ref="line e" pos="3"/>
+            <tok src="ger" ref="line 5" pos="3"/>
         </align>
         <align>
             <tok src="eng" ref="line 3" pos="2"/>
-            <tok src="ger" ref="line e" pos="4"/>
+            <tok src="ger" ref="line 5" pos="4"/>
         </align>
         <align>
             <tok src="eng" ref="line 3" pos="3"/>
-            <tok src="ger" ref="line e" pos="5"/>
+            <tok src="ger" ref="line 5" pos="5"/>
         </align>
         <align>
             <tok src="eng" ref="line 1" pos="1, 2"/>
-            <tok src="ger" ref="line a" pos="1"/>
+            <tok src="ger" ref="line 1" pos="1"/>
         </align>
         <align>
             <tok src="eng" ref="line 1" pos="3, 4"/>
-            <tok src="ger" ref="line a" pos="2"/>
+            <tok src="ger" ref="line 1" pos="2"/>
         </align>
         <align>
             <tok src="eng" ref="line 1" pos="5" cert="low"/>
-            <tok src="ger" ref="line a" pos="3" cert="low"/>
+            <tok src="ger" ref="line 1" pos="3" cert="low"/>
         </align>
     </body>
 </TAN-A-tok>

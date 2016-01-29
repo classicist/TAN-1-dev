@@ -614,8 +614,19 @@
          http://www.w3.org/TR/xmlschema-2/#regexs for details.</report>
    </rule>
    <rule context="@href">
-      <let name="href" value="."/>
-      <let name="href-doc" value="doc(resolve-uri($href, $doc-uri))"/>
+      <let name="href-resolved" value="resolve-uri(., $doc-uri)"/>
+      <let name="href-is-available" value="doc-available($href-resolved)"/>
+      <let name="href-doc"
+         value="
+            if ($href-is-available = true()) then
+               doc($href-resolved)
+            else
+               ()"
+      />
+      <assert role="warning" test="$href-is-available = true()"
+         ><!-- An @href will be flagged with a warning if the document is either unavailable, is not valid XML, or is at a URL trusted by a validation engine -->@href
+         points to file that is either (1) not available, (2) not valid XML, or (3) at a server not
+         trusted by the validation engine.</assert>
       <assert test="parent::tan:location or parent::tan:master-location" sqf:fix="get-metadata"
          sqf:default-fix="get-metadata">If not a child of tan:location or tan:master-location, then
          used only for Schematron Quick Fixes, to populate an element with &lt;IRI>, &lt;name>, and
@@ -632,7 +643,7 @@
             <tan:IRI>
                <value-of select="$href-doc/*/@id"/></tan:IRI>
             <tan:name><value-of select="$href-doc/*/tan:head/tan:name[1]"/></tan:name>
-            <tan:location when-accessed="{current-dateTime()}" href="{$href}"/>
+            <tan:location when-accessed="{current-dateTime()}" href="{$href-resolved}"/>
          </sqf:add>
          <sqf:delete match="."/>
       </sqf:fix>

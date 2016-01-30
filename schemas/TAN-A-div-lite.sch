@@ -9,7 +9,7 @@
    
    <rule context="/*">
       <let name="this-schematron-pi"
-         value="/processing-instruction()[matches(., 'TAN-A-div-edit\.sch')]"/>
+         value="/processing-instruction()[matches(., 'TAN-A-div(-edit)?\.sch')]"/>
       <let name="this-schematron-cited-url"
          value="
             replace($this-schematron-pi,

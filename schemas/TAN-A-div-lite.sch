@@ -3,47 +3,46 @@
    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
    <title>Schematron light tests for TAN-A-div files, included by both TAN-A-div.sch and
-      TAN-A-div-edit.sch. Represents lightweight, SQF-friendly helps for editing, without any
-      tests that would be time-consuming on long documents.
-   </title>
-   
-   <rule context="/*">
+      TAN-A-div-edit.sch. Represents lightweight, SQF-friendly helps for editing, without any tests
+      that would be time-consuming on long documents. </title>
+   <let name="help-trigger" value="'???'"/>
+   <let name="help-trigger-regex" value="tan:escape($help-trigger)"/>
+   <rule context="tan:TAN-A-div">
       <let name="this-schematron-pi"
          value="/processing-instruction()[matches(., 'TAN-A-div(-edit)?\.sch')]"/>
-      <let name="this-schematron-cited-url"
+      <let name="cited-schematron-url"
          value="
             replace($this-schematron-pi,
             concat('.*href=', $quot, '([^', $quot, ']+).+'),
             '$1')"/>
+      <let name="this-schematron-url"
+         value="replace($cited-schematron-url, 'TAN-A-div(-edit)?\.sch', 'TAN-A-div-lite.sch')"/>
       <let name="this-schematron-resolved-url"
-         value="resolve-uri($this-schematron-cited-url, $doc-parent-directory)"/>
-      <let name="this-schematron" value="doc($this-schematron-resolved-url)"/>
-      <report test="true()" role="warning">Editing help available on <xsl:value-of
+         value="resolve-uri($this-schematron-url, $doc-parent-directory)"/>
+      <let name="this-schematron"
+         value="
+            if (doc-available($this-schematron-resolved-url)) then
+               doc($this-schematron-resolved-url)
+            else
+               ()"/>
+      <report test="true()" role="info"><!-- Information about elements that support editing help will be listed at the rootmost element -->Help available: <xsl:value-of
             select="
                for $i in $this-schematron//sch:rule,
                   $j in $i/@context,
                   $k in $i/(sch:assert, sch:report)/comment()
                return
-                  concat($j, ': ', $k)"
+                  concat('(', $j, ':) ', replace($k, '\$help-trigger', $help-trigger), ' ')"
          />
       </report>
-      <let name="test-var"
-         value="true()"/>
-      <!--<let name="test-var"
-         value="$src-1st-da-data-prepped-for-search[position() = (2, 5)]/*[position() = (1 to 5)]"/>-->
-      <!--<let name="test-var" value="$src-1st-da-data-prepped-for-search[5]"/>-->
-      <report test="false()" sqf:fix="get-copy-of-test-var"><xsl:value-of select="count($test-var)"
-         /></report>
-      <sqf:fix id="get-copy-of-test-var">
-         <sqf:description>
-            <sqf:title>Get copy of test variable</sqf:title>
-         </sqf:description>
-         <sqf:add match="/*" select="$test-var" position="after"/>
-      </sqf:fix>
    </rule>
    <rule context="tan:div-ref | tan:anchor-div-ref">
-      <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
-      <let name="this-ref" value="@ref"/>
+      <let name="this-ref" value="normalize-space(replace(@ref, $help-trigger-regex, ''))"/>
+      <let name="this-src" value="normalize-space(replace(@src, $help-trigger-regex, ''))"/>
+      <let name="this-seg" value="normalize-space(replace(@seg, $help-trigger-regex, ''))"/>
+      <let name="this-src-list" value="tan:src-ids-to-nos($this-src)"/>
+      <let name="src-help-requested" value="matches(@src, $help-trigger-regex)"/>
+      <let name="ref-help-requested" value="matches(@ref, $help-trigger-regex)"/>
+      <let name="seg-help-requested" value="matches(@seg, $help-trigger-regex)"/>
       <let name="these-sources-resolved" value="$src-1st-da-data[position() = $this-src-list]"/>
       <let name="is-implicit"
          value="
@@ -51,52 +50,34 @@
                true()
             else
                false()"/>
-
-      <!-- EDITING HELP ON REFERENCE SYSTEM SYNTAX -->
-      <let name="help-asked-on-what-ref" value="normalize-space(replace(@ref, '\?\?\?', ''))"/>
-      <let name="this-ref-normalized"
-         value="
-            if ($is-implicit = true())
-            then
-               replace($help-asked-on-what-ref, '\W+', $separator-hierarchy-regex)
-            else
-               tan:normalize-ref-punctuation($help-asked-on-what-ref)
-            "/>
-      <let name="possible-refs"
-         value="
-            if ($is-implicit = true()) then
-               $these-sources-resolved/tan:div[matches(@impl-ref, concat('^', $this-ref-normalized, $separator-hierarchy-regex, '?\w+$|^', $this-ref-normalized, '\w+$'))]/@impl-ref
-            else
-               $these-sources-resolved/tan:div[matches(@ref, concat('^', $this-ref-normalized, '\w*', $separator-type-and-n-regex, '\?\w*', $separator-hierarchy-regex, '?\w+$'))]/@ref"/>
-      <let name="possible-common-refs"
-         value="distinct-values($possible-refs[count(index-of($possible-refs, .)) ge count($this-src-list)])"/>
-      <assert test="$help-asked-on-what-ref = @ref" sqf:fix="get-div-refs-from-hints"
-         ><!-- Putting three question marks in a row in @ref will request help on the div ref syntax of the sources -->Help:
-            <xsl:value-of select="$possible-common-refs"/></assert>
-
-      <!-- EDITING HELP FOR DIVS THAT MATCH REGEX PATTERN HELD BY @ref -->
-      <let name="this-refs-norm"
+      <let name="these-refs-norm"
          value="
             for $i in $this-src-list
             return
                if ($i = $src-impl-div-types) then
-                  tan:normalize-impl-refs(@ref, $i)
+                  tan:normalize-impl-refs($this-ref, $i)
                else
-                  tan:normalize-refs(@ref)"/>
+                  tan:normalize-refs($this-ref)"/>
       <let name="these-atomic-refs"
          value="
-            distinct-values(for $i in $this-refs-norm
+            distinct-values(for $i in $these-refs-norm
             return
                tokenize($i, ' [-,] '))"/>
       <let name="ref-identifies-what-divs"
          value="$these-sources-resolved/tan:div[@ref = $these-atomic-refs]"/>
-      <let name="ref-is-search-pattern"
+      <let name="refs-that-fail" value="$these-atomic-refs[not(. = $ref-identifies-what-divs/@ref)]"/>
+      <let name="possible-corrected-refs"
          value="
-            if (exists($ref-identifies-what-divs) or
-            not($help-asked-on-what-ref = @ref)) then
-               false()
+            if ($is-implicit = true()) then
+               for $i in $refs-that-fail
+               return
+                  $these-sources-resolved/tan:div[matches(@impl-ref, $i)]/@impl-ref
             else
-               true()"/>
+               for $i in $refs-that-fail
+               return
+                  $these-sources-resolved/tan:div[matches(@ref, $i)]/@ref"/>
+      <let name="possible-common-corrected-refs"
+         value="distinct-values($possible-corrected-refs[count(index-of($possible-corrected-refs, .)) ge count($this-src-list)])"/>
       <let name="search-report"
          value="
             concat('(case ', if ($searches-are-case-sensitive = true()) then
@@ -112,17 +93,17 @@
                tan:expand-search($this-ref)
             else
                $this-ref"/>
-      <!--<let name="search-flags"
-            value="
-               if ($searches-are-case-sensitive = false()) then
-                  'i'
-               else
-                  ()"
-         />-->
       <let name="matched-refs"
          value="$these-sources-resolved/tan:div[matches(., $this-ref-as-regex-search, $match-flags)]"/>
-      <report test="$ref-is-search-pattern = true()" sqf:fix="get-div-text-from-search"
-            ><!-- Any bad value in @ref without three question marks will be treated as a request to search for divs that match the value of @ref (treated as a regular expression) --><xsl:value-of
+
+      <report test="$ref-help-requested and exists($possible-common-corrected-refs)"
+         sqf:fix="get-div-refs-from-hints get-div-text-from-search fetch-content"
+         ><!-- Putting $help-trigger in @ref with a partial match on a div ref will return suggested alternatives -->Perhaps
+         you mean: <xsl:value-of select="$possible-common-corrected-refs"/></report>
+      <report
+         test="not(exists($ref-identifies-what-divs)) and not(exists($possible-common-corrected-refs))"
+         sqf:fix="get-div-text-from-search"
+            ><!-- @ref with no match on a div ref will return suggested divs whose texts match the value of @ref (treated as a regular expression) --><xsl:value-of
             select="$this-ref"/>
          <xsl:value-of select="$search-report"/> found in: <xsl:value-of
             select="
@@ -134,14 +115,25 @@
                      $matched-refs[../@id = $i]/@ref, ' '),
                   ' (', $i, ') ')"
          /></report>
-
-      <!-- EDITING HELP: REVIEW CONTENT OF THE DIVS REFERRED TO -->
-      <report test="text() or exists($ref-identifies-what-divs)" role="warning"
-         sqf:fix="fetch-content">Adding any text content to this element triggers a Schematron Quick
-         Fix to allow the content of div refs to be retrieved.</report>
+      <report test="$ref-help-requested = true() and exists($ref-identifies-what-divs)" sqf:fix="fetch-content"
+         ><!-- Putting $help-trigger in @ref with an exact match on a div ref will return either the text of the chosen div or the references to children div refs -->
+         <xsl:value-of
+            select="
+               for $i in $ref-identifies-what-divs
+               return
+                  if (exists($i/text())) then
+                     concat('(', $i/@ref, ':) ', $i/text(), ' ')
+                  else
+                     concat('(', $i/@ref, ':) ',
+                     string-join(if ($is-implicit = true()) then
+                        $these-sources-resolved/tan:div[@ref = $i/@ref]/following-sibling::*[matches(@ref, $i/@ref)]/@impl-ref
+                     else
+                        $these-sources-resolved/tan:div[@ref = $i/@ref]/following-sibling::*[matches(@ref, $i/@ref)]/@ref, ' '
+                     ), ' ')"
+         /></report>
 
       <!-- SCHEMATRON QUICK FIXES -->
-      <sqf:fix id="fetch-content">
+      <sqf:fix id="fetch-content" use-when="exists($ref-identifies-what-divs)">
          <sqf:description>
             <sqf:title>Append text content of the divs being referred to</sqf:title>
             <sqf:p>Selecting this option will insert for every reference in every source a
@@ -165,7 +157,7 @@
                references common to all sources. </sqf:p>
          </sqf:description>
          <sqf:replace match="@ref" node-type="attribute" target="ref"
-            select="string-join($possible-common-refs, ', ')"/>
+            select="string-join($possible-common-corrected-refs, ', ')"/>
       </sqf:fix>
       <sqf:fix id="get-div-text-from-search">
          <sqf:description>

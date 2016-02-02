@@ -6,9 +6,10 @@
    <ns prefix="xs" uri="http://www.w3.org/2001/XMLSchema"/>
    <ns prefix="sqf" uri="http://www.schematron-quickfix.com/validator/process"/>
    <!-- common core below -->
-   <include href="../TAN-core.sch"/>
+   <include href="TAN-core.sch"/>
+   <include href="TAN-class-4.sch"/>
 
    <!-- FUNCTIONS -->
-   <xsl:include href="../../functions/TAN-T-functions.xsl"/>
+   <xsl:include href="../functions/TAN-T-functions.xsl"/>
 
 </schema>

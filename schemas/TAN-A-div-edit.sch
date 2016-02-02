@@ -10,7 +10,7 @@
    <ns prefix="xsl" uri="http://www.w3.org/1999/XSL/Transform"/>
 
    <include href="TAN-A-div-lite.sch"/>
-   <!--<pattern>
+   <pattern>
       <rule context="/*">
          <let name="this-schematron-pi"
             value="/processing-instruction()[matches(., 'TAN-A-div-edit\.sch')]"/>
@@ -33,7 +33,7 @@
          </report>
          <let name="test-var"
             value="$src-1st-da-data-prepped-for-search[position() = (2, 5)]/*[position() = (1 to 5)]"/>
-         <!-\-<let name="test-var" value="$src-1st-da-data-prepped-for-search[5]"/>-\->
+         <!--<let name="test-var" value="$src-1st-da-data-prepped-for-search[5]"/>-->
          <report test="false()" sqf:fix="get-copy-of-test-var"><xsl:value-of
                select="count($test-var)"/></report>
          <sqf:fix id="get-copy-of-test-var">
@@ -54,7 +54,7 @@
                else
                   false()"/>
 
-         <!-\- EDITING HELP ON REFERENCE SYSTEM SYNTAX -\->
+         <!-- EDITING HELP ON REFERENCE SYSTEM SYNTAX -->
          <let name="help-asked-on-what-ref" value="normalize-space(replace(@ref, '\?\?\?', ''))"/>
          <let name="this-ref-normalized"
             value="
@@ -73,10 +73,10 @@
          <let name="possible-common-refs"
             value="distinct-values($possible-refs[count(index-of($possible-refs, .)) ge count($this-src-list)])"/>
          <assert test="$help-asked-on-what-ref = @ref" sqf:fix="get-div-refs-from-hints"
-            ><!-\- Putting three question marks in a row in @ref will request help on the div ref syntax of the sources -\->Help:
+            ><!-- Putting three question marks in a row in @ref will request help on the div ref syntax of the sources -->Help:
                <xsl:value-of select="$possible-common-refs"/></assert>
 
-         <!-\- EDITING HELP FOR DIVS THAT MATCH REGEX PATTERN HELD BY @ref -\->
+         <!-- EDITING HELP FOR DIVS THAT MATCH REGEX PATTERN HELD BY @ref -->
          <let name="this-refs-norm"
             value="
                for $i in $this-src-list
@@ -113,17 +113,17 @@
                   tan:expand-search($this-ref)
                else
                   $this-ref"/>
-         <!-\-<let name="search-flags"
+         <!--<let name="search-flags"
             value="
                if ($searches-are-case-sensitive = false()) then
                   'i'
                else
                   ()"
-         />-\->
+         />-->
          <let name="matched-refs"
             value="$these-sources-resolved/tan:div[matches(., $this-ref-as-regex-search, $match-flags)]"/>
          <report test="$ref-is-search-pattern = true()" sqf:fix="get-div-text-from-search"
-               ><!-\- Any bad value in @ref without three question marks will be treated as a request to search for divs that match the value of @ref (treated as a regular expression) -\-><xsl:value-of
+               ><!-- Any bad value in @ref without three question marks will be treated as a request to search for divs that match the value of @ref (treated as a regular expression) --><xsl:value-of
                select="$this-ref"/>
             <xsl:value-of select="$search-report"/> found in: <xsl:value-of
                select="
@@ -136,12 +136,12 @@
                      ' (', $i, ') ')"
             /></report>
 
-         <!-\- EDITING HELP: REVIEW CONTENT OF THE DIVS REFERRED TO -\->
+         <!-- EDITING HELP: REVIEW CONTENT OF THE DIVS REFERRED TO -->
          <report test="text() or exists($ref-identifies-what-divs)" role="warning" sqf:fix="fetch-content">Adding any text content to
             this element triggers a Schematron Quick Fix to allow the content of div refs to be
             retrieved.</report>
 
-         <!-\- SCHEMATRON QUICK FIXES -\->
+         <!-- SCHEMATRON QUICK FIXES -->
          <sqf:fix id="fetch-content">
             <sqf:description>
                <sqf:title>Append text content of the divs being referred to</sqf:title>
@@ -192,12 +192,12 @@
             </sqf:add>
          </sqf:fix>
 
-         <!-\- Testing -\->
+         <!-- Testing -->
          <let name="test-var" value="tan:string-base('ἀνθρὠρους')"/>
          <report test="false()"><xsl:value-of select="$test-var"/></report>
 
       </rule>
-   </pattern>-->
+   </pattern>
 
    <!-- FUNCTIONS -->
    <!--<xsl:include href="../functions/TAN-core-functions.xsl"/>-->

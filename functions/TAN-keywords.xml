@@ -7,10 +7,16 @@
             <IRI see="../TAN-R-tok/general-1.xml"/>
             <desc see="../TAN-R-tok/general-1.xml"/>
         </item>
-        <item>
+        <!--<item>
             <keyword>general-words-only-1</keyword>
             <IRI see="../TAN-R-tok/general-words-only-1.xml"/>
             <desc see="../TAN-R-tok/general-words-only-1.xml"/>
+        </item>-->
+        <item>
+            <keyword>general-words-only-1</keyword>
+            <IRI>tag:textalign.net,2015:tan-r-tok:general-words-only-1</IRI>
+            <name>General tokenization pattern for any language, words only</name>
+            <location href="../TAN-R-tok/general-words-only-1.xml" when-accessed="2016-02-02-05:00"/>
         </item>
         <item>
             <keyword>precise-1</keyword>
@@ -34,7 +40,7 @@
                 <desc>Points to a TAN file that uses the current file as a source.</desc>
             </item>
             <group class="experimental">
-                <desc>Keywords that must point exclusively to the TAN-X format.</desc>
+                <desc>Keywords that must point exclusively to the TAN-rdf format.</desc>
                 <item>
                     <keyword>context</keyword>
                     <IRI>tag:textalign.net,2015:relationship:context</IRI>

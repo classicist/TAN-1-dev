@@ -276,4 +276,9 @@
       <report test="count($joined-siblings//(@strength | @conf)) gt 1">Neither @strength nor @conf
          may be repeated by siblings joined by @cont.</report>
    </rule>
+   <rule context="@src">
+      <let name="these-srcs" value="tokenize(replace(.,$help-trigger-regex,' '),'\s+')"/>
+      <let name="this-src-list" value="tan:src-ids-to-nos($these-srcs)"/>
+      <report test="count($these-srcs) != count($this-src-list)">Not a complete match</report>
+   </rule>
 </pattern>

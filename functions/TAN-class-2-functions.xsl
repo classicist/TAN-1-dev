@@ -685,9 +685,15 @@
       () - > 1
       -->
       <xsl:param name="att-src" as="xs:string*"/>
+      <xsl:variable name="att-src-checked-for-help"
+         select="
+            for $i in $att-src
+            return
+               normalize-space(replace($i, $help-trigger-regex, ''))"
+      />
       <xsl:choose>
-         <xsl:when test="exists($att-src) and not($source-lacks-id)">
-            <xsl:for-each select="$att-src">
+         <xsl:when test="exists($att-src-checked-for-help) and not($source-lacks-id)">
+            <xsl:for-each select="$att-src-checked-for-help">
                <xsl:variable name="this-src-string" select="."/>
                <xsl:choose>
                   <xsl:when test="$this-src-string = '*'">

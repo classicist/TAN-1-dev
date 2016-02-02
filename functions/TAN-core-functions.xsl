@@ -7,18 +7,44 @@
     version="3.0">
     <xd:doc scope="stylesheet">
         <xd:desc>
-            <xd:p><xd:b>Updated </xd:b>Aug 31, 2015</xd:p>
+            <xd:p><xd:b>Updated </xd:b>Feb 1, 2016</xd:p>
             <xd:p>Functions and variables for core TAN files (i.e., applicable to TAN file types of
                 more than one class). Used by Schematron validation, but suitable for general use in
                 other contexts.</xd:p>
         </xd:desc>
     </xd:doc>
-    
+
     <xsl:include href="TAN-parameters.xsl"/>
+
+    <xsl:variable name="TAN-keywords" as="element()*">
+        <xsl:apply-templates mode="resolve-href" select="doc('TAN-keywords.xml')/*/tan:group"/>
+    </xsl:variable>
+    <xsl:variable name="relationship-keywords-for-tan-versions"
+        select="$TAN-keywords//tan:group[@affects-element = 'relationship']/descendant-or-self::tan:group[@class = 'tan']/descendant-or-self::tan:group[@class = 'version']//tan:keyword"
+        as="xs:string*"/>
+    <xsl:variable name="relationship-keywords-for-tan-editions"
+        select="$TAN-keywords//tan:group[@affects-element = 'relationship']/descendant-or-self::tan:group[@class = 'tan']/descendant-or-self::tan:group[@class = 'edition']//tan:keyword"
+        as="xs:string*"/>
+    <xsl:variable name="relationship-keywords-for-class-1-editions"
+        select="$TAN-keywords//tan:group[@affects-element = 'relationship']/descendant-or-self::tan:group[@class = 'tan']/descendant-or-self::tan:group[@class = 'edition']/descendant-or-self::tan:group[@class = 'class1']//tan:keyword"
+        as="xs:string*"/>
+    <xsl:variable name="relationship-keywords-for-tan-files"
+        select="
+            $TAN-keywords//tan:group[@affects-element = 'relationship']/descendant-or-self::tan:group[@class = 'tan']//tan:keyword"
+        as="xs:string*"/>
+    <xsl:variable name="relationship-keywords-all"
+        select="$TAN-keywords//tan:group[@affects-element = 'relationship']//tan:keyword"
+        as="xs:string*"/>
+    <xsl:variable name="div-type-keywords"
+        select="$TAN-keywords//tan:group[@affects-element = 'div-type']//tan:keyword"/>
+    <xsl:variable name="normalization-keywords"
+        select="$TAN-keywords//tan:group[@affects-element = 'normalization']//tan:keyword"/>
+
+
 
     <xsl:variable name="quot" select="'&quot;'"/>
 
-    <xsl:variable name="root" select="/" xml:id="test"/>
+    <xsl:variable name="root" select="/"/>
     <xsl:variable name="head">
         <xsl:variable name="head-pass-1">
             <xsl:for-each select="/*/tan:head">
@@ -26,11 +52,14 @@
             </xsl:for-each>
         </xsl:variable>
         <xsl:variable name="head-pass-2">
-            <xsl:for-each select="$head-pass-1">
+            <xsl:apply-templates mode="resolve-keyword" select="$head-pass-1"/>
+        </xsl:variable>
+        <xsl:variable name="head-pass-3">
+            <xsl:for-each select="$head-pass-2">
                 <xsl:apply-templates mode="strip-duplicates"/>
             </xsl:for-each>
         </xsl:variable>
-        <xsl:sequence select="$head-pass-2"/>
+        <xsl:sequence select="$head-pass-3"/>
     </xsl:variable>
     <xsl:variable name="body">
         <xsl:for-each select="/*/tan:body | /*/*/tei:body">
@@ -101,19 +130,21 @@
             'TAN-R-mor')"/>
     <xsl:variable name="experimental-root-names" select="'TAN-X'"/>
     <xsl:variable name="all-root-names"
-        select="$class-1-root-names, $class-2-root-names, $class-3-root-names, $experimental-root-names"
-    />
-    
+        select="$class-1-root-names, $class-2-root-names, $class-3-root-names, $experimental-root-names"/>
+
     <xsl:variable name="elements-that-must-always-refer-to-tan-files"
         select="
             ('recommended-tokenization',
             'tokenization',
             'morphology',
             'inclusion')"/>
-    <xsl:variable name="tag-urn-regex-pattern" select="'tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-(0\d|1[0-2]))?(-([0-2]\d|3[01]))?:\S+'"/>
+    <xsl:variable name="tag-urn-regex-pattern"
+        select="'tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-(0\d|1[0-2]))?(-([0-2]\d|3[01]))?:\S+'"/>
+
+    <xsl:variable name="self-keywords" as="element()*"/>
 
     <xsl:variable name="tokenization-which-reserved"
-        select="$keywords//tan:group[tokenize(@affects-element, '\s+') = 'tokenization']//tan:keyword"
+        select="$TAN-keywords//tan:group[tokenize(@affects-element, '\s+') = 'tokenization']//tan:keyword"
         as="xs:string*"/>
     <!-- Reserved URLs for officially supplied TAN-R-tok patterns -->
     <xsl:variable name="tokenization-which-reserved-url"
@@ -150,7 +181,8 @@
             <xsl:copy/>
         </xsl:for-each>
     </xsl:variable>
-    <xsl:variable name="context-1st-da-locations" select="tan:get-1st-da-locations($head/tan:see-also[tan:relationship/@which = 'context'])"/>
+    <xsl:variable name="context-1st-da-locations"
+        select="tan:get-1st-da-locations($head/tan:see-also[tan:relationship/@which = 'context'])"/>
     <xsl:variable name="context-1st-da"
         select="
             for $i in $context-1st-da-locations
@@ -158,8 +190,7 @@
                 if ($i = '') then
                     $empty-doc
                 else
-                    tan:resolve-doc(document($i))"
-    />
+                    tan:resolve-doc(document($i))"/>
 
     <!-- CONTEXT INDEPENDENT FUNCTIONS -->
     <xsl:function name="tan:dec-to-hex" as="xs:string">
@@ -366,7 +397,12 @@
          Output: @feature-test, normalized
       -->
         <xsl:param name="strings" as="xs:string*"/>
-        <xsl:copy-of select="for $i in $strings return normalize-space(replace($i, '([\(\),\|])', ' $1 '))"/>
+        <xsl:copy-of
+            select="
+                for $i in $strings
+                return
+                    normalize-space(replace($i, '([\(\),\|])', ' $1 '))"
+        />
     </xsl:function>
 
     <xsl:function name="tan:escape" as="xs:string*">
@@ -471,20 +507,20 @@
 
     <xsl:function name="tan:resolve-doc" as="document-node()*">
         <xsl:param name="TAN-documents" as="document-node()*"/>
-      <xsl:variable name="pass-1" as="document-node()*">
-         <xsl:for-each select="$TAN-documents">
+        <xsl:variable name="pass-1" as="document-node()*">
+            <xsl:for-each select="$TAN-documents">
+                <xsl:copy>
+                    <xsl:copy-of select="processing-instruction()"/>
+                    <xsl:apply-templates mode="include"/>
+                </xsl:copy>
+            </xsl:for-each>
+        </xsl:variable>
+        <xsl:for-each select="$pass-1">
             <xsl:copy>
-               <xsl:copy-of select="processing-instruction()"/>
-               <xsl:apply-templates mode="include"/>
+                <xsl:copy-of select="processing-instruction()"/>
+                <xsl:apply-templates mode="strip-duplicates"/>
             </xsl:copy>
-         </xsl:for-each>
-      </xsl:variable>
-       <xsl:for-each select="$pass-1">
-          <xsl:copy>
-             <xsl:copy-of select="processing-instruction()"/>
-             <xsl:apply-templates mode="strip-duplicates"/>
-          </xsl:copy>
-       </xsl:for-each>
+        </xsl:for-each>
     </xsl:function>
 
     <xsl:function name="tan:resolve-include" as="element()*">
@@ -581,13 +617,47 @@
 
     <xsl:template match="node()" mode="strip-duplicates">
         <xsl:if
-            test="every $i in current()/preceding-sibling::*
-                satisfies not(deep-equal(current(), $i))">
+            test="
+                every $i in current()/preceding-sibling::*
+                    satisfies not(deep-equal(current(), $i))">
             <xsl:copy>
                 <xsl:copy-of select="@*"/>
                 <xsl:apply-templates mode="#current"/>
             </xsl:copy>
         </xsl:if>
+    </xsl:template>
+    
+    <!--<xsl:template match="/" mode="resolve-keyword resolve-href">
+        <xsl:for-each select="node()">
+            <xsl:apply-templates mode="#current" select="."/>
+        </xsl:for-each>
+    </xsl:template>-->
+    <xsl:template match="node()" mode="resolve-keyword resolve-href">
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:apply-templates mode="#current"/>
+        </xsl:copy>
+    </xsl:template>
+    
+    <xsl:template match="*[@which]" mode="resolve-keyword">
+        <xsl:variable name="element-name" select="name(.)"/>
+        <xsl:variable name="this-which" select="@which"/>
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:copy-of
+                select="$TAN-keywords//tan:item[tan:keyword = $this-which]/(tan:IRI, tan:name, tan:location)"
+            />
+        </xsl:copy>
+    </xsl:template>
+    
+    <xsl:template match="*[@href]" mode="resolve-href">
+        <xsl:variable name="this-doc-uri" select="document-uri(/)"/>
+        <xsl:copy>
+            <xsl:copy-of select="@* except @href"/>
+            <xsl:attribute name="href">
+                <xsl:value-of select="resolve-uri(@href, $this-doc-uri)"/>
+            </xsl:attribute>
+        </xsl:copy>
     </xsl:template>
 
 </xsl:stylesheet>

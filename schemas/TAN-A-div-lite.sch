@@ -4,9 +4,7 @@
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
    <title>Schematron light tests for TAN-A-div files, included by both TAN-A-div.sch and
       TAN-A-div-edit.sch. Represents lightweight, SQF-friendly helps for editing, without any tests
-      that would be time-consuming on long documents. </title>
-   <let name="help-trigger" value="'???'"/>
-   <let name="help-trigger-regex" value="tan:escape($help-trigger)"/>
+      that would be time-consuming on long documents. No tests in this file should invoke tokenization.</title>
    <rule context="tan:TAN-A-div">
       <let name="this-schematron-pi"
          value="/processing-instruction()[matches(., 'TAN-A-div(-edit)?\.sch')]"/>
@@ -38,11 +36,9 @@
    <rule context="tan:div-ref | tan:anchor-div-ref">
       <let name="this-ref" value="normalize-space(replace(@ref, $help-trigger-regex, ''))"/>
       <let name="this-src" value="normalize-space(replace(@src, $help-trigger-regex, ''))"/>
-      <let name="this-seg" value="normalize-space(replace(@seg, $help-trigger-regex, ''))"/>
       <let name="this-src-list" value="tan:src-ids-to-nos($this-src)"/>
       <let name="src-help-requested" value="matches(@src, $help-trigger-regex)"/>
       <let name="ref-help-requested" value="matches(@ref, $help-trigger-regex)"/>
-      <let name="seg-help-requested" value="matches(@seg, $help-trigger-regex)"/>
       <let name="these-sources-resolved" value="$src-1st-da-data[position() = $this-src-list]"/>
       <let name="is-implicit"
          value="
@@ -131,6 +127,8 @@
                         $these-sources-resolved/tan:div[@ref = $i/@ref]/following-sibling::*[matches(@ref, $i/@ref)]/@ref, ' '
                      ), ' ')"
          /></report>
+      <report test="$src-help-requested">Sources available: 
+         <xsl:value-of select="$src-ids"/></report>
 
       <!-- SCHEMATRON QUICK FIXES -->
       <sqf:fix id="fetch-content" use-when="exists($ref-identifies-what-divs)">

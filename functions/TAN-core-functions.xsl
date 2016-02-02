@@ -112,7 +112,7 @@
     <xsl:variable name="doc-ver"
         select="$doc-ver-dates[index-of($doc-ver-nos, max($doc-ver-nos))[1]]"/>
     <xsl:variable name="all-ids" select="$head//@xml:id"/>
-    <xsl:variable name="all-iris" select="$head//tan:IRI"/>
+    <xsl:variable name="all-iris" select="$head//tan:IRI, $body//tan:IRI"/>
     <xsl:variable name="tan-iri-namespace"
         select="substring-before(substring-after($doc-id, 'tag:'), ':')"/>
 

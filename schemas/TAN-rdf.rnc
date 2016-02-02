@@ -5,16 +5,16 @@ datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 start =
     
     ## specifies that the TAN file makes assertions subject a conceptual work. Root element.
-    element TAN-X { TAN-root }
+    element TAN-rdf { TAN-root }
 include "TAN-class-4.rnc" {
     
     ## all declarations must have ids
     decl-id-ref-opt = internal-id
     source-list = source-item*
-    decl-non-core = TAN-X-decl
-    TAN-body-core = TAN-X-body
+    decl-non-core = TAN-rdf-decl
+    TAN-body-core = TAN-rdf-body
 }
-TAN-X-decl = decl-work* & decl-place* & decl-verb+ & decl-unit*
+TAN-rdf-decl = decl-work* & decl-place* & decl-verb+ & decl-unit*
 decl-place =
     
     ## contains an IRI + name pattern identifying a spatial location, usually somewhere on earth
@@ -29,7 +29,7 @@ decl-unit =
     
     ## contains an IRI + name pattern identifying a unit type (e.g., millimeters, seconds, Euros), to be used in conjunction with <object> to specify the meaning of a value
     element unit { decl-pattern-default }
-TAN-X-body = claimant, subject, claim+
+TAN-rdf-body = claimant, subject, claim+
 claim =
     element claim {
         inclusion | (ed-stamp?, claimant?, subject?, verb, object, period-filter*, place-filter?)
@@ -38,7 +38,7 @@ claimant =
     
     ## points to an <agent> who makes a claim. @claimant within <body> indicates the default persons to be credited or blamed for an assertion.
     
-    ## Claimants are not to be confused with the editor of a TAN file. If an editor X writes a TAN-X file that says that person Y makes such-and-such a claim, then the implication is that X claims that Y claims that....  
+    ## Claimants are not to be confused with the editor of a TAN file. If an editor X writes a TAN-rdf file that says that person Y makes such-and-such a claim, then the implication is that X claims that Y claims that....  
     attribute claimant { d:IDREFS }
 subject =
     

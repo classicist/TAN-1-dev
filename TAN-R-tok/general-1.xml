@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="../schemas/TAN-R-tok.rnc" type="application/relax-ng-compact-syntax"?>
 <?xml-model href="../schemas/TAN-R-tok.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
-<TAN-R-tok xmlns="tag:textalign.net,2015:ns" TAN-version="1/dev"
-   id="tag:textalign.net,2015:tan-r-tok:general-1">
+<TAN-R-tok xmlns="tag:textalign.net,2015:ns" TAN-version="1/dev" id="tag:textalign.net,2015:tan-r-tok:general-1">
    <head>
       <name>General tokenization pattern for any language</name>
       <desc>This tokenization pattern takes any text in any language, offsets punctuation and other
@@ -23,7 +22,7 @@
             </recommended-tokenization>
          -->
       </desc>
-      <master-location>http://textalign.net/release/1/dev/TAN-R-tok/general-1.xml</master-location>
+      <master-location href="http://textalign.net/release/1/dev/TAN-R-tok/general-1.xml"/>
       <rights-excluding-sources rights-holder="kalvesmaki">
          <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
          <name>Creative Commons Attribution 4.0 International License</name>

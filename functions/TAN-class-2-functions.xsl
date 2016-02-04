@@ -136,13 +136,7 @@
                <!-- The next variables trace the process used to determine which tokenization should be applied to
                   each source. The local <location> takes precedence, followed by a @which that corresponds to a
                   <recommended-tokenization> in the source, followed by a @which that uses a reserved keyword.-->
-               <xsl:variable name="cl-2-loc"
-                  select="
-                     if ($this-tokz/tan:location) then
-                        ($this-tokz/tan:location[doc-available(resolve-uri(@href, $doc-uri))],
-                        $tokenization-errors[1])[1]
-                     else
-                        ()"/>
+               <xsl:variable name="cl-2-loc" select="tan:first-loc-available(.)"/>
                <xsl:variable name="cl-2-no-which"
                   select="
                      if ($this-tokz/@which) then

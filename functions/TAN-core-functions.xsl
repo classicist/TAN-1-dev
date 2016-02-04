@@ -84,9 +84,7 @@
             <xsl:apply-templates mode="resolve-keyword" select="$head-pass-1"/>
         </xsl:variable>
         <xsl:variable name="head-pass-3">
-            <xsl:for-each select="$head-pass-2">
-                <xsl:apply-templates mode="strip-duplicates"/>
-            </xsl:for-each>
+            <xsl:apply-templates mode="strip-duplicates" select="$head-pass-2"/>
         </xsl:variable>
         <xsl:sequence select="$head-pass-3"/>
     </xsl:variable>
@@ -495,7 +493,7 @@
         <!-- one-parameter version of the function, the one to be most commonly used, feeds 
             into the three-parameter version, below -->
         <xsl:param name="TAN-document" as="document-node()"/>
-        <xsl:sequence select="tan:get-inclusions-1st-da($TAN-document, (), (), (), ())[position() gt 1]"/>
+        <xsl:sequence select="tan:get-inclusions-1st-da($TAN-document, (), (), (), (), $doc-uri)[position() gt 1]"/>
     </xsl:function>
     <xsl:function name="tan:get-inclusions-1st-da" as="document-node()*">
         <xsl:param name="TAN-document-currently-being-checked" as="document-node()"/>
@@ -503,16 +501,17 @@
         <xsl:param name="TAN-included-documents-found-so-far" as="document-node()*"/>
         <xsl:param name="resolved-URLs-so-far" as="xs:string*"/>
         <xsl:param name="inclusion-IRIs-so-far" as="xs:string*"/>
+        <xsl:param name="uri-of-document-currently-being-checked" as="xs:anyURI"/>
         <xsl:variable name="these-inclusions-1st-la"
             select="
                 for $i in $TAN-document-currently-being-checked/*/tan:head/tan:inclusion[not(tan:IRI = $inclusion-IRIs-so-far)]
                 return
-                    tan:first-loc-available($i)"/>
+                    tan:first-loc-available($i, $uri-of-document-currently-being-checked)"/>
         <xsl:variable name="these-inclusions-1st-la-resolved"
             select="
                 for $i in $these-inclusions-1st-la
                 return
-                    resolve-uri($i, base-uri($TAN-document-currently-being-checked/*))"/>
+                    resolve-uri($i, $uri-of-document-currently-being-checked)"/>
         <xsl:variable name="new-inclusions-1st-la"
             select="$these-inclusions-1st-la-resolved[not(. = $resolved-URLs-so-far)]"/>
         <xsl:variable name="new-inclusions-1st-da"
@@ -543,7 +542,8 @@
                         $new-set-of-docs-to-be-checked[position() gt 1],
                         ($TAN-included-documents-found-so-far, $TAN-document-currently-being-checked),
                         ($resolved-URLs-so-far, $new-inclusions-1st-la[position() = $which-docs-are-new]),
-                        ($inclusion-IRIs-so-far, $new-inclusions-1st-da/*/@id))"
+                        ($inclusion-IRIs-so-far, $new-inclusions-1st-da/*/@id),
+                        base-uri($new-set-of-docs-to-be-checked[1]/*))"
                 />
             </xsl:otherwise>
         </xsl:choose>
@@ -700,6 +700,8 @@
         </xsl:copy>
     </xsl:template>
     <xsl:template match="*[@include]" mode="include">
+        <!--<xsl:variable name="pass-1" select="tan:resolve-include(.)" as="element()*"/>
+        <xsl:apply-templates select="$pass-1" mode="resolve-keyword"/>-->
         <xsl:sequence select="tan:resolve-include(.)"/>
     </xsl:template>
 

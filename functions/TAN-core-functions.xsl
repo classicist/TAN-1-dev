@@ -17,8 +17,11 @@
     <xsl:include href="TAN-parameters.xsl"/>
 
     <xsl:variable name="TAN-keywords" as="element()*">
+        <xsl:variable name="TAN-keyword-files" as="document-node()+"
+            select="doc('../TAN-key/div-types.TAN-key.xml'), doc('../TAN-key/relationships.TAN-key.xml'), doc('../TAN-key/normalizations.TAN-key.xml'), doc('../TAN-key/tokenizations.TAN-key.xml')"
+        />
         <xsl:apply-templates mode="resolve-href"
-            select="collection('../TAN-key')/tan:TAN-key/tan:body"/>
+            select="$TAN-keyword-files/tan:TAN-key/tan:body"/>
     </xsl:variable>
     <xsl:variable name="relationship-keywords-for-tan-versions"
         select="$TAN-keywords[@affects-element = 'relationship']//tan:group[tan:name = 'TAN version']//tan:item/tan:name"

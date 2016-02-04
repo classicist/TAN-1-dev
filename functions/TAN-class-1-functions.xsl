@@ -33,6 +33,7 @@
       </xsl:element>
    </xsl:variable>
    <xsl:variable name="languages-used" select="distinct-values(($prep-body/@xml:lang,$body//@xml:lang))"/>
+   <!-- In light of TAN-key format, the following variable needs to be retired -->
    <xsl:variable name="recommended-tokenizations" as="element()*">
       <!-- Sequence of one element per recommended tokenizations, their first
          document-available location, and the languages covered:

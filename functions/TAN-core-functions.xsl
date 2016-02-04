@@ -39,6 +39,15 @@
         select="$TAN-keywords[@affects-element = 'div-type']//tan:item/tan:name"/>
     <xsl:variable name="normalization-keywords"
         select="$TAN-keywords[@affects-element = 'normalization']//tan:item/tan:name"/>
+    <xsl:variable name="keywords-reserved-tokenization"
+        select="$TAN-keywords[tokenize(@affects-element, '\s+') = ('tokenization', 'recommended-tokenization')]//tan:item/tan:name"
+    />
+    <xsl:variable name="keywords-private-tokenization"
+        select="$private-keywords//tan:name[tokenize(ancestor::*[@affects-element][1]/@affects-element, '\s+') = 'recommended-tokenization']"
+    />
+    <xsl:variable name="keywords-all-tokenization"
+        select="$keywords-reserved-tokenization, $keywords-private-tokenization"
+    />
     <xsl:variable name="private-keywords" select="$keys-1st-da/tan:TAN-key/tan:body"/>
     <xsl:variable name="all-keywords" select="$TAN-keywords, $private-keywords"/>
 
@@ -165,7 +174,7 @@
     <xsl:variable name="self-keywords" as="element()*"/>
 
     <xsl:variable name="tokenization-which-reserved"
-        select="$TAN-keywords//tan:group[tokenize(@affects-element, '\s+') = 'tokenization']//tan:keyword"
+        select="$TAN-keywords//tan:group[tokenize(@affects-element, '\s+') = 'tokenization']//tan:name"
         as="xs:string*"/>
     <!-- Reserved URLs for officially supplied TAN-R-tok patterns -->
     <xsl:variable name="tokenization-which-reserved-url"

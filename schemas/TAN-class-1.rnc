@@ -49,7 +49,7 @@ decl-tok-rec =
     element recommended-tokenization {
         empty
         | inclusion
-        | (internal-id, ed-stamp?, (comment* & (keyword-ref | entity-digital-tan-other-ref)))
+        | (ed-stamp?, (comment* & (keyword-ref | (internal-id, entity-digital-tan-other-ref))))
     }
 decl-ref-rec =
     

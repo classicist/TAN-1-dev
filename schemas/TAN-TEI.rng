@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:s="http://www.ascc.net/xml/schematron" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:ns2="http://www.tei-c.org/ns/Examples" xmlns:ns1="http://www.isocat.org/ns/dcr" xmlns:ns3="http://www.tei-c.org/ns/1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <!--
-    Schema generated from ODD source 2015-12-23T11:40:29Z. .
+    Schema generated from ODD source 2016-02-04T15:04:57Z. .
     TEI Edition: Version 2.8.0. Last updated on
     	6th April 2015, revision 13197
     TEI Edition Location: http://www.tei-c.org/Vault/P5/Version 2.8.0/
@@ -14,6 +14,9 @@
         <attribute name="who">
           <a:documentation>names an &lt;agent&gt;</a:documentation>
         </attribute>
+      </define>
+      <define name="decl-id-ref-opt">
+        <empty/>
       </define>
       <define name="ed-agent">
         <attribute name="ed-who">
@@ -35,8 +38,9 @@
       </define>
       <define name="href-opt">
         <attribute name="href">
-          <a:documentation>points to the location of a TAN file that should be used to populate the &lt;IRI&gt; and &lt;location&gt; child elements.</a:documentation>
-          <a:documentation>This attribute is entirely pragmatic, used only as a convenience to TAN users who wish to include the metadata of another TAN file without leaving the current file. It is associated with a warning message that is linked to a Schematron Quick Fix that will supply the correct metadata and remove the attribute.</a:documentation>
+          <a:documentation>points to the location of a file, either as part of &lt;location&gt; or in elements that refer to TAN files, to be used to invoke a schematron quick fix to populate the &lt;IRI&gt; and &lt;location&gt; child elements.</a:documentation>
+          <a:documentation>The first use is a convenience for XML editors that autocomplete filenames or allow users to open the referred file (oftentimes with control+click)</a:documentation>
+          <a:documentation>The second use of this attribute is pragmatic, used only as a convenience to TAN users who wish to include the metadata of another TAN file without leaving the current file. It is associated with a warning message that is linked to a Schematron Quick Fix that will supply the correct metadata and remove the attribute.</a:documentation>
         </attribute>
       </define>
       <define name="inclusion">
@@ -66,7 +70,7 @@
       </define>
       <define name="lang-of-content">
         <attribute name="xml:lang">
-          <a:documentation>specifies an ISO (BCP 47) language code that names the language of the text enclosed by the parent element. Values are inherited by all descendants except for those that have an @xml:lang and their descendants.  </a:documentation>
+          <a:documentation>specifies a language code that names the language of the text enclosed by the parent element. Values are inherited by all descendants except for those that have an @xml:lang and their descendants.  </a:documentation>
           <a:documentation>Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see main.xml#language.</a:documentation>
           <a:documentation>Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin) </a:documentation>
           <data type="language"/>
@@ -74,9 +78,9 @@
       </define>
       <define name="lang-outside">
         <element name="for-lang">
-          <a:documentation>specifies a language discussed by the TAN file. This element does NOT name the language of the text enclosed by the parent element, which is the province of @xml:lang.</a:documentation>
+          <a:documentation>specifies a language that is being discussed. This element does NOT name the language of the text enclosed by the parent element, which is the province of @xml:lang.</a:documentation>
           <a:documentation>Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see main.xml#language.</a:documentation>
-          <a:documentation>Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin) </a:documentation>
+          <a:documentation>Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin). For more see main.xml#language</a:documentation>
           <data type="language"/>
         </element>
       </define>
@@ -147,13 +151,52 @@
           <text/>
         </element>
       </define>
+      <define name="decl-pattern-default">
+        <optional>
+          <ref name="ed-stamp"/>
+        </optional>
+        <choice>
+          <ref name="inclusion"/>
+          <group>
+            <ref name="decl-id-ref-opt"/>
+            <interleave>
+              <zeroOrMore>
+                <ref name="comment"/>
+              </zeroOrMore>
+              <ref name="entity-nondigital-ref"/>
+            </interleave>
+          </group>
+        </choice>
+      </define>
+      <define name="decl-pattern-language">
+        <optional>
+          <ref name="ed-stamp"/>
+        </optional>
+        <choice>
+          <ref name="inclusion"/>
+          <group>
+            <ref name="decl-id-ref-opt"/>
+            <interleave>
+              <zeroOrMore>
+                <ref name="comment"/>
+              </zeroOrMore>
+              <group>
+                <zeroOrMore>
+                  <ref name="lang-outside"/>
+                </zeroOrMore>
+                <ref name="entity-nondigital-ref"/>
+              </group>
+            </interleave>
+          </group>
+        </choice>
+      </define>
       <define name="ed-stamp">
         <a:documentation>Editorial stamp: who created or edited the enclosed data and when. </a:documentation>
         <ref name="ed-agent"/>
         <ref name="ed-time"/>
       </define>
       <define name="entity-digital-tan-other-ref">
-        <a:documentation>Reference to an external digital entity that is a TAN file</a:documentation>
+        <a:documentation>Reference to an external digital entity that is a TAN file; unlike other types, the keyword-ref option much be turned on and off for specific elements (e.g., not advisable for &lt;inclusion&gt;)</a:documentation>
         <choice>
           <ref name="href-opt"/>
           <group>
@@ -170,16 +213,21 @@
       </define>
       <define name="entity-digital-generic-ref">
         <a:documentation>Reference to an external digital entity that is not a TAN file</a:documentation>
-        <oneOrMore>
-          <ref name="IRI-gen-ref"/>
-        </oneOrMore>
-        <ref name="metadata-human"/>
-        <zeroOrMore>
-          <ref name="checksum"/>
-        </zeroOrMore>
-        <oneOrMore>
-          <ref name="loc-src"/>
-        </oneOrMore>
+        <choice>
+          <group>
+            <oneOrMore>
+              <ref name="IRI-gen-ref"/>
+            </oneOrMore>
+            <ref name="metadata-human"/>
+            <zeroOrMore>
+              <ref name="checksum"/>
+            </zeroOrMore>
+            <oneOrMore>
+              <ref name="loc-src"/>
+            </oneOrMore>
+          </group>
+          <ref name="keyword-ref"/>
+        </choice>
       </define>
       <define name="entity-digital-tan-self-ref">
         <a:documentation>Reference to self as digital entity (i.e., TAN file)</a:documentation>
@@ -190,10 +238,15 @@
       </define>
       <define name="entity-nondigital-ref">
         <a:documentation>Reference to an external non-digital entity (e.g., agents, roles, works, topics)</a:documentation>
-        <oneOrMore>
-          <ref name="IRI-gen-ref"/>
-        </oneOrMore>
-        <ref name="metadata-human"/>
+        <choice>
+          <group>
+            <oneOrMore>
+              <ref name="IRI-gen-ref"/>
+            </oneOrMore>
+            <ref name="metadata-human"/>
+          </group>
+          <ref name="keyword-ref"/>
+        </choice>
       </define>
       <define name="func-param-pattern">
         <element name="pattern">
@@ -269,7 +322,7 @@
           <optional>
             <ref name="ed-stamp"/>
           </optional>
-          <data type="anyURI"/>
+          <ref name="href-opt"/>
         </element>
       </define>
       <define name="loc-src">
@@ -286,7 +339,7 @@
               <data type="dateTime"/>
             </choice>
           </attribute>
-          <data type="anyURI"/>
+          <ref name="href-opt"/>
         </element>
       </define>
       <define name="metadata-desc">
@@ -314,10 +367,13 @@
           <element name="desc">
             <a:documentation>provides a description of a concept, person, or thing referred to by the parent element (or the current document, if the parent element is &lt;head&gt;). &lt;desc&gt; is, in effect, a &lt;comment&gt; about that concept, person, or thing. It has two possible structures, one human-readable and the other computer-readable.</a:documentation>
             <a:documentation>The first, human-readable approach defines &lt;desc&gt; as taking merely a string that comments on the entity. Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script. If you provide a comment in multiple languages, it best to make sure that each version says roughly the same thing.</a:documentation>
-            <a:documentation>The second, computer-readable approach has &lt;desc&gt; take an IRI + name pattern plus &lt;location&gt; pointing to some XML resource that provides more information about the concept, person, or thing. This is the method preferred to point to a &lt;TAN-X&gt; file. </a:documentation>
+            <a:documentation>The second, computer-readable approach has &lt;desc&gt; take an IRI + name pattern plus @href in &lt;location&gt; pointing to some XML resource that provides more information about the concept, person, or thing. This is the method preferred to point to a &lt;TAN-X&gt; file. </a:documentation>
             <choice>
               <ref name="metadata-desc"/>
-              <ref name="entity-digital-tan-other-ref"/>
+              <choice>
+                <ref name="keyword-ref"/>
+                <ref name="entity-digital-tan-other-ref"/>
+              </choice>
             </choice>
           </element>
         </zeroOrMore>
@@ -336,9 +392,12 @@
             <group>
               <ref name="entity-digital-tan-self-ref"/>
               <ref name="nonsource-rights"/>
-              <ref name="inclusion-list"/>
-              <ref name="source-list"/>
-              <ref name="see-also-list"/>
+              <interleave>
+                <ref name="inclusion-list"/>
+                <ref name="key-list"/>
+                <ref name="source-list"/>
+                <ref name="see-also-list"/>
+              </interleave>
               <ref name="decl-opt"/>
               <oneOrMore>
                 <ref name="agent-list"/>
@@ -406,7 +465,7 @@
       </define>
       <define name="inclusion-item">
         <element name="inclusion">
-          <a:documentation>specifies a TAN file that is available for inclusion. An inclusion occurs whenever an element X points to this inclusion by means of @include. TAN-compliant validators and processors will fin every X that is found in the included file (checked recursively, against any inclusions adopted by the inclusion) and insert them at that place in the main document.</a:documentation>
+          <a:documentation>specifies a TAN file that is available for inclusion. An inclusion occurs whenever an element X points to this inclusion by means of @include. TAN-compliant validators and processors will find every X that is found in the included file (checked recursively, against any inclusions adopted by the inclusion) and insert them at that place in the main document.</a:documentation>
           <a:documentation>Only the elements of that name X will be included, not the entire inclusion file. It is up to you to specify exactly which elements should be included.</a:documentation>
           <a:documentation>You may include as many &lt;inclusion&gt;s as you wish, and do not have to use them all.</a:documentation>
           <a:documentation>If you are using an &lt;inclusion&gt; primarily for metadata (&lt;head&gt;) it is recommended to put the value of @xml:id in uppercase. &lt;body&gt; inclusions should be set in lowercase.</a:documentation>
@@ -415,6 +474,30 @@
             <ref name="ed-stamp"/>
           </optional>
           <ref name="internal-id"/>
+          <interleave>
+            <zeroOrMore>
+              <ref name="comment"/>
+            </zeroOrMore>
+            <ref name="entity-digital-tan-other-ref"/>
+          </interleave>
+        </element>
+      </define>
+      <define name="key-list">
+        <zeroOrMore>
+          <ref name="key-item"/>
+        </zeroOrMore>
+      </define>
+      <define name="key-item">
+        <element name="key">
+          <a:documentation>specifies a TAN-key file that defines the use of @which for various elements. TAN-compliant validators and processors will substitute any element with @which with the IRI + name pattern of the entity that is named.</a:documentation>
+          <a:documentation>You may include as many &lt;key&gt;s as you wish, and do not have to use them all. All &lt;key&gt;s must have &lt;item&gt;s with unique names for the element touched by @affects-elements.</a:documentation>
+          <a:documentation>For more on this, see main.xml#TAN-key</a:documentation>
+          <optional>
+            <ref name="ed-stamp"/>
+          </optional>
+          <optional>
+            <ref name="internal-id"/>
+          </optional>
           <interleave>
             <zeroOrMore>
               <ref name="comment"/>
@@ -521,10 +604,7 @@
           </optional>
           <choice>
             <ref name="inclusion"/>
-            <choice>
-              <ref name="entity-nondigital-ref"/>
-              <ref name="keyword-ref"/>
-            </choice>
+            <ref name="entity-nondigital-ref"/>
           </choice>
         </element>
       </define>
@@ -632,6 +712,14 @@
         <a:documentation>Reserved for any declarations that are shared across classes</a:documentation>
         <empty/>
       </define>
+      <define name="decl-work">
+        <element name="work">
+          <a:documentation>indicates a creative work. Must be a conceptual entity, not a physical one.</a:documentation>
+          <a:documentation>The term "work" is only pragmatically defined in TAN. Any text that has enough unity to be referred to in ordinary conversation as a single entity may be defined as a work. A work may be composed of other works, be a part of other works, or even overlap with other works. E.g., the Lord's Prayer, the Gospel of Luke, the Tetravengelion, the New Testament, and the Bible are all valid works, despite the complex relationship between each of these concepts.</a:documentation>
+          <a:documentation>This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works</a:documentation>
+          <ref name="decl-pattern-default"/>
+        </element>
+      </define>
     </div>
     <define name="decl-non-core">
       <interleave>
@@ -664,49 +752,19 @@
       <a:documentation>Reserved for declarations specific to individual types of class 1 files</a:documentation>
       <empty/>
     </define>
-    <define name="decl-work">
-      <element name="work">
-        <a:documentation>indicates the creative work that has been transcribed. Must be a conceptual entity, not a physical one.</a:documentation>
-        <a:documentation>The term "work" is only pragmatically defined in TAN. Any unitary text that lends itself in ordinary discourse to reference by means of noun, proper or common. A work may be composed of other works, be a part of other works, or even overlap with other works. E.g., the Lord's Prayer, the Gospel of Luke, the Tetravengelion, the New Testament, and the Bible are all valid works.</a:documentation>
-        <a:documentation>This element akes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works</a:documentation>
-        <optional>
-          <ref name="ed-stamp"/>
-        </optional>
-        <choice>
-          <ref name="inclusion"/>
-          <interleave>
-            <zeroOrMore>
-              <ref name="comment"/>
-            </zeroOrMore>
-            <ref name="entity-nondigital-ref"/>
-          </interleave>
-        </choice>
-      </element>
-    </define>
     <define name="decl-vers">
       <element name="version">
         <a:documentation>states the version of the work has been transcribed. Applicable to text-bearing objects that have multiple versions of the same work such as a bilingual edition of a text.</a:documentation>
         <a:documentation>Very few work-versions have their own URN names. It is advisable to assign a tag URN or a UUID. If you have used an IRI for &lt;work&gt; that you are entitled to modify, you may wish to add a suffix that will name the version. If you need to specify exactly where on a text-bearing object a version appears, &lt;desc&gt; or &lt;comment&gt; should be used.</a:documentation>
         <a:documentation>This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works</a:documentation>
-        <optional>
-          <ref name="ed-stamp"/>
-        </optional>
-        <choice>
-          <ref name="inclusion"/>
-          <interleave>
-            <zeroOrMore>
-              <ref name="comment"/>
-            </zeroOrMore>
-            <ref name="entity-nondigital-ref"/>
-          </interleave>
-        </choice>
+        <ref name="decl-pattern-default"/>
       </element>
     </define>
     <define name="decl-div">
       <element name="div-type">
         <a:documentation>declares a type of textual division (e.g., title, paragraph, stanza). You may have as many &lt;div-types&gt; as you wish, and they need not all be used.</a:documentation>
         <a:documentation>For more information, see main.xml#reference_system</a:documentation>
-        <a:documentation>This element takes the IRI + name pattern. For more, see iris.xml for suggested values. </a:documentation>
+        <a:documentation>This element takes a reserved keyword or IRI + name pattern. For more, see iris.xml for suggested values. </a:documentation>
         <optional>
           <ref name="ed-stamp"/>
         </optional>
@@ -743,10 +801,8 @@
         <a:documentation>For theoretical background and more information, see main.xml#preparing_transcriptions_for_tokenization</a:documentation>
         <choice>
           <empty/>
-          <ref name="keyword-ref"/>
           <ref name="inclusion"/>
           <group>
-            <ref name="internal-id"/>
             <optional>
               <ref name="ed-stamp"/>
             </optional>
@@ -754,7 +810,13 @@
               <zeroOrMore>
                 <ref name="comment"/>
               </zeroOrMore>
-              <ref name="entity-digital-tan-other-ref"/>
+              <choice>
+                <ref name="keyword-ref"/>
+                <group>
+                  <ref name="internal-id"/>
+                  <ref name="entity-digital-tan-other-ref"/>
+                </group>
+              </choice>
             </interleave>
           </group>
         </choice>
@@ -815,17 +877,15 @@
         </optional>
         <choice>
           <ref name="inclusion"/>
-          <interleave>
-            <zeroOrMore>
-              <ref name="comment"/>
-            </zeroOrMore>
-            <group>
+          <group>
+            <ref name="decl-id-ref-opt"/>
+            <interleave>
               <zeroOrMore>
-                <ref name="lang-outside"/>
+                <ref name="comment"/>
               </zeroOrMore>
               <ref name="entity-nondigital-ref"/>
-            </group>
-          </interleave>
+            </interleave>
+          </group>
         </choice>
       </element>
     </define>
@@ -838,23 +898,7 @@
         <a:documentation>indicates a transliteration scheme that has been applied to a source to convert it from one writing system to another. This element may be useful if it easier to work with a source in the Latin alphabet (for example) rather than a native one. </a:documentation>
         <a:documentation>The scope of this element may be specified through optional &lt;for-lang&gt;s.</a:documentation>
         <a:documentation>This may be useful for texts easier to handle in a Latin alphabet rather than a native one.  </a:documentation>
-        <optional>
-          <ref name="ed-stamp"/>
-        </optional>
-        <choice>
-          <ref name="inclusion"/>
-          <interleave>
-            <zeroOrMore>
-              <ref name="comment"/>
-            </zeroOrMore>
-            <group>
-              <zeroOrMore>
-                <ref name="lang-outside"/>
-              </zeroOrMore>
-              <ref name="entity-nondigital-ref"/>
-            </group>
-          </interleave>
-        </choice>
+        <ref name="decl-pattern-language"/>
       </element>
     </define>
   </div>

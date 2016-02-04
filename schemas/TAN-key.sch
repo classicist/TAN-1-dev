@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://purl.oclc.org/dsdl/schematron"
+   xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
+   xmlns:tan="tag:textalign.net,2015:ns"
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" queryBinding="xslt2">
    <title>Tests for TAN-key files.</title>
    <ns prefix="tan" uri="tag:textalign.net,2015:ns"/>
@@ -42,6 +44,26 @@
          <let name="count" value="count(index-of($all-body-iris, .))"/>
          <assert test="$count = 1">Every IRI in invoked in the body of a TAN-key should be unique
             within the body.</assert>
+      </rule>
+      <rule context="tan:item">
+         <report
+            test="
+               $is-reserved-TAN-key = true() and not(some $i in tan:IRI/text()
+                  satisfies starts-with($i, $TAN-namespace))"
+            >Every reserved TAN keyword will have an IRI assigned from the TAN namespace</report>
+         <sqf:fix id="add-TAN-IRI">
+            <sqf:description>
+               <sqf:title>Add TAN IRI</sqf:title>
+            </sqf:description>
+            <sqf:add position="before" match="(tan:IRI[1], tan:desc[1], *[1])[1]">
+               <tan:IRI>
+                  <xsl:value-of
+                     select="concat($TAN-namespace, ':div-type:', replace(../tan:keyword[1], '\s+', '_'))"
+                  />
+               </tan:IRI>
+               <xsl:value-of select="'&#xA;'"/>
+            </sqf:add>
+         </sqf:fix>
       </rule>
    </pattern>
 

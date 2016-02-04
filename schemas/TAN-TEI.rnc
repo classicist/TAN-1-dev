@@ -10,7 +10,7 @@ namespace xlink = "http://www.w3.org/1999/xlink"
 
 datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
-# Schema generated from ODD source 2016-01-26T12:14:25Z. .
+# Schema generated from ODD source 2016-02-04T15:04:57Z. .
 # TEI Edition: Version 2.8.0. Last updated on
 #	6th April 2015, revision 13197
 # TEI Edition Location: http://www.tei-c.org/Vault/P5/Version 2.8.0/
@@ -144,19 +144,19 @@ div {
     ## Editorial stamp: who created or edited the enclosed data and when. 
     ed-stamp = ed-agent, ed-time
     
-    ## Reference to an external digital entity that is a TAN file
+    ## Reference to an external digital entity that is a TAN file; unlike other types, the keyword-ref option much be turned on and off for specific elements (e.g., not advisable for <inclusion>)
     entity-digital-tan-other-ref =
       href-opt | (IRI-gen-ref, metadata-human, checksum*, loc-src+)
     
     ## Reference to an external digital entity that is not a TAN file
     entity-digital-generic-ref =
-      IRI-gen-ref+, metadata-human, checksum*, loc-src+
+      (IRI-gen-ref+, metadata-human, checksum*, loc-src+) | keyword-ref
     
     ## Reference to self as digital entity (i.e., TAN file)
     entity-digital-tan-self-ref = metadata-human, loc-self*
     
     ## Reference to an external non-digital entity (e.g., agents, roles, works, topics)
-    entity-nondigital-ref = IRI-gen-ref+, metadata-human
+    entity-nondigital-ref = (IRI-gen-ref+, metadata-human) | keyword-ref
     func-param-pattern =
       
       ## specifies a regular expression pattern to be searched for or matched
@@ -237,7 +237,9 @@ div {
       ## The first, human-readable approach defines <desc> as taking merely a string that comments on the entity. Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script. If you provide a comment in multiple languages, it best to make sure that each version says roughly the same thing.
       
       ## The second, computer-readable approach has <desc> take an IRI + name pattern plus @href in <location> pointing to some XML resource that provides more information about the concept, person, or thing. This is the method preferred to point to a <TAN-X> file. 
-      element desc { metadata-desc | entity-digital-tan-other-ref }*
+      element desc {
+        metadata-desc | (keyword-ref | entity-digital-tan-other-ref)
+      }*
     TAN-head =
       
       ## contains the metadata (data about the data contained by <body>)
@@ -248,9 +250,7 @@ div {
         (comment*
          & (entity-digital-tan-self-ref,
             nonsource-rights,
-            inclusion-list,
-            source-list,
-            see-also-list,
+            (inclusion-list & key-list & source-list & see-also-list),
             decl-opt,
             agent-list+,
             role-list+,
@@ -279,7 +279,7 @@ div {
     inclusion-list = inclusion-item*
     inclusion-item =
       
-      ## specifies a TAN file that is available for inclusion. An inclusion occurs whenever an element X points to this inclusion by means of @include. TAN-compliant validators and processors will fin every X that is found in the included file (checked recursively, against any inclusions adopted by the inclusion) and insert them at that place in the main document.
+      ## specifies a TAN file that is available for inclusion. An inclusion occurs whenever an element X points to this inclusion by means of @include. TAN-compliant validators and processors will find every X that is found in the included file (checked recursively, against any inclusions adopted by the inclusion) and insert them at that place in the main document.
       
       ## Only the elements of that name X will be included, not the entire inclusion file. It is up to you to specify exactly which elements should be included.
       
@@ -291,6 +291,19 @@ div {
       element inclusion {
         ed-stamp?,
         internal-id,
+        (comment* & entity-digital-tan-other-ref)
+      }
+    key-list = key-item*
+    key-item =
+      
+      ## specifies a TAN-key file that defines the use of @which for various elements. TAN-compliant validators and processors will substitute any element with @which with the IRI + name pattern of the entity that is named.
+      
+      ## You may include as many <key>s as you wish, and do not have to use them all. All <key>s must have <item>s with unique names for the element touched by @affects-elements.
+      
+      ## For more on this, see main.xml#TAN-key
+      element key {
+        ed-stamp?,
+        internal-id?,
         (comment* & entity-digital-tan-other-ref)
       }
     source-list = source-item
@@ -341,8 +354,7 @@ div {
       
       ## specifies the role that the item named by the parent <see-also> played. This may be either a reserved keyword or an IRI + name pattern that identifies a specific kind of relationship.
       element relationship {
-        ed-stamp?,
-        (inclusion | (entity-nondigital-ref | keyword-ref))
+        ed-stamp?, (inclusion | entity-nondigital-ref)
       }
     decl-opt =
       
@@ -436,7 +448,7 @@ div {
       (inclusion
        | (ns-are-numerals?,
           internal-id,
-          (comment* & (entity-nondigital-ref | keyword-ref))))
+          (comment* & entity-nondigital-ref)))
     }
   ns-are-numerals =
     
@@ -457,11 +469,11 @@ div {
     ## For theoretical background and more information, see main.xml#preparing_transcriptions_for_tokenization
     element recommended-tokenization {
       empty
-      | keyword-ref
       | inclusion
-      | (internal-id,
-         ed-stamp?,
-         (comment* & entity-digital-tan-other-ref))
+      | (ed-stamp?,
+         (comment*
+          & (keyword-ref
+             | (internal-id, entity-digital-tan-other-ref))))
     }
   decl-ref-rec =
     
@@ -492,7 +504,11 @@ div {
     ## See iris.xml for suggested IRI + name values for normalizations. 
     
     ## For more on this element see main.xml#normalizing_transcriptions 
-    element normalization { decl-pattern-language }
+    element normalization {
+      ed-stamp?,
+      (inclusion
+       | (decl-id-ref-opt, (comment* & entity-nondigital-ref)))
+    }
   
   ## Replacements that have been made to an XML source file. 
   decl-filt-repl = func-replace

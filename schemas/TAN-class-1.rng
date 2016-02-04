@@ -60,10 +60,7 @@
             <zeroOrMore>
               <ref name="comment"/>
             </zeroOrMore>
-            <choice>
-              <ref name="entity-nondigital-ref"/>
-              <ref name="keyword-ref"/>
-            </choice>
+            <ref name="entity-nondigital-ref"/>
           </interleave>
         </group>
       </choice>
@@ -85,10 +82,8 @@
       <a:documentation>For theoretical background and more information, see main.xml#preparing_transcriptions_for_tokenization</a:documentation>
       <choice>
         <empty/>
-        <ref name="keyword-ref"/>
         <ref name="inclusion"/>
         <group>
-          <ref name="internal-id"/>
           <optional>
             <ref name="ed-stamp"/>
           </optional>
@@ -96,7 +91,13 @@
             <zeroOrMore>
               <ref name="comment"/>
             </zeroOrMore>
-            <ref name="entity-digital-tan-other-ref"/>
+            <choice>
+              <ref name="keyword-ref"/>
+              <group>
+                <ref name="internal-id"/>
+                <ref name="entity-digital-tan-other-ref"/>
+              </group>
+            </choice>
           </interleave>
         </group>
       </choice>
@@ -152,7 +153,21 @@
       <a:documentation>&lt;normalization&gt; is especially helpful in reference to nondigital sources, but it may be made also for digital sources, to declare global changes that would be cumbersome, difficult, or impossible to describe in &lt;replace&gt;. </a:documentation>
       <a:documentation>See iris.xml for suggested IRI + name values for normalizations. </a:documentation>
       <a:documentation>For more on this element see main.xml#normalizing_transcriptions </a:documentation>
-      <ref name="decl-pattern-language"/>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <ref name="decl-id-ref-opt"/>
+          <interleave>
+            <zeroOrMore>
+              <ref name="comment"/>
+            </zeroOrMore>
+            <ref name="entity-nondigital-ref"/>
+          </interleave>
+        </group>
+      </choice>
     </element>
   </define>
   <define name="decl-filt-repl">

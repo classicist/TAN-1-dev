@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0">
   <start>
-    <element name="TAN-X">
+    <element name="TAN-rdf">
       <a:documentation>specifies that the TAN file makes assertions subject a conceptual work. Root element.</a:documentation>
       <ref name="TAN-root"/>
     </element>
   </start>
-  <include href="TAN-core.rng">
+  <include href="TAN-class-4.rng">
     <define name="decl-id-ref-opt">
       <a:documentation>all declarations must have ids</a:documentation>
       <ref name="internal-id"/>
@@ -17,13 +17,13 @@
       </zeroOrMore>
     </define>
     <define name="decl-non-core">
-      <ref name="TAN-X-decl"/>
+      <ref name="TAN-rdf-decl"/>
     </define>
     <define name="TAN-body-core">
-      <ref name="TAN-X-body"/>
+      <ref name="TAN-rdf-body"/>
     </define>
   </include>
-  <define name="TAN-X-decl">
+  <define name="TAN-rdf-decl">
     <interleave>
       <zeroOrMore>
         <ref name="decl-work"/>
@@ -58,7 +58,7 @@
       <ref name="decl-pattern-default"/>
     </element>
   </define>
-  <define name="TAN-X-body">
+  <define name="TAN-rdf-body">
     <ref name="claimant"/>
     <ref name="subject"/>
     <oneOrMore>
@@ -94,7 +94,7 @@
   <define name="claimant">
     <attribute name="claimant">
       <a:documentation>points to an &lt;agent&gt; who makes a claim. @claimant within &lt;body&gt; indicates the default persons to be credited or blamed for an assertion.</a:documentation>
-      <a:documentation>Claimants are not to be confused with the editor of a TAN file. If an editor X writes a TAN-X file that says that person Y makes such-and-such a claim, then the implication is that X claims that Y claims that....  </a:documentation>
+      <a:documentation>Claimants are not to be confused with the editor of a TAN file. If an editor X writes a TAN-rdf file that says that person Y makes such-and-such a claim, then the implication is that X claims that Y claims that....  </a:documentation>
       <data type="IDREFS"/>
     </attribute>
   </define>

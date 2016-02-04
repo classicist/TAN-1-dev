@@ -15,6 +15,8 @@
     </xd:doc>
 
     <xsl:include href="TAN-parameters.xsl"/>
+    
+    <xsl:variable name="TAN-namespace" select="'tag:textalign.net,2015'"/>
 
     <xsl:variable name="TAN-keywords" as="element()*">
         <xsl:variable name="TAN-keyword-files" as="document-node()+"

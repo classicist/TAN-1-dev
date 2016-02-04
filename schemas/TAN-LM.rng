@@ -57,7 +57,10 @@
           <zeroOrMore>
             <ref name="lang-outside"/>
           </zeroOrMore>
-          <ref name="entity-digital-tan-other-ref"/>
+          <choice>
+            <ref name="keyword-ref"/>
+            <ref name="entity-digital-tan-other-ref"/>
+          </choice>
         </group>
       </choice>
     </element>

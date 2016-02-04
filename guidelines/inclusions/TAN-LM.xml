@@ -83,14 +83,16 @@ text</synopsis><para>Used by: <code><link linkend="element-lm">&lt;lm&gt;</link>
    <code><link linkend="attribute-include">@include</link></code> |
       (<code><link linkend="attribute-xmlid">@xml:id</link></code>,
       <code><link linkend="element-for-lang">&lt;for-lang&gt;</link></code>*,
-         ((<code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
-<code><link linkend="element-name">&lt;name&gt;</link></code>+,
-<code><link linkend="element-desc">&lt;desc&gt;</link></code>*,
-<code><link linkend="element-checksum">&lt;checksum&gt;</link></code>*,
-<code><link linkend="element-location">&lt;location&gt;</link></code>+) |
-         (<code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
-         <code><link linkend="element-name">&lt;name&gt;</link></code>+,
-         <code><link linkend="element-desc">&lt;desc&gt;</link></code>*)))</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><example><title><code>&lt;lexicon&gt;</code></title><programlisting>      &lt;declarations&gt;
+         (   (   (<code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
+   <code><link linkend="element-name">&lt;name&gt;</link></code>+,
+   <code><link linkend="element-desc">&lt;desc&gt;</link></code>*,
+   <code><link linkend="element-checksum">&lt;checksum&gt;</link></code>*,
+   <code><link linkend="element-location">&lt;location&gt;</link></code>+) |
+   <code><link linkend="attribute-which">@which</link></code>) |
+            (   (<code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
+   <code><link linkend="element-name">&lt;name&gt;</link></code>+,
+   <code><link linkend="element-desc">&lt;desc&gt;</link></code>*) |
+            <code><link linkend="attribute-which">@which</link></code>)))</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><example><title><code>&lt;lexicon&gt;</code></title><programlisting>      &lt;declarations&gt;
          &lt;morphology xml:id="penn" ed-when="2015-08-20-04:00" ed-who="park"&gt;
             .........
          &lt;/morphology&gt;
@@ -187,16 +189,17 @@ string (pattern [^\s\(\),|]+(\s+[^\s\(\),|]+)*)</synopsis><para>Used by: <code><
    <code><link linkend="attribute-include">@include</link></code> |
       (<code><link linkend="attribute-xmlid">@xml:id</link></code>,
       <code><link linkend="element-for-lang">&lt;for-lang&gt;</link></code>*,
-         (<code><link linkend="attribute-href">@href</link></code> |
-            (<code><link linkend="element-IRI">&lt;IRI&gt;</link></code>,
-            <code><link linkend="element-name">&lt;name&gt;</link></code>+,
-            <code><link linkend="element-desc">&lt;desc&gt;</link></code>*,
-            <code><link linkend="element-checksum">&lt;checksum&gt;</link></code>*,
-            <code><link linkend="element-location">&lt;location&gt;</link></code>+)))</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><example><title><code>&lt;morphology&gt;</code></title><programlisting>      &lt;declarations&gt;
+         (<code><link linkend="attribute-which">@which</link></code> |
+            (<code><link linkend="attribute-href">@href</link></code> |
+               (<code><link linkend="element-IRI">&lt;IRI&gt;</link></code>,
+               <code><link linkend="element-name">&lt;name&gt;</link></code>+,
+               <code><link linkend="element-desc">&lt;desc&gt;</link></code>*,
+               <code><link linkend="element-checksum">&lt;checksum&gt;</link></code>*,
+               <code><link linkend="element-location">&lt;location&gt;</link></code>+))))</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><example><title><code>&lt;morphology&gt;</code></title><programlisting>      &lt;declarations&gt;
          <emphasis role="bold">&lt;morphology xml:id="penn" ed-when="2015-08-20-04:00" ed-who="park"&gt;</emphasis>
             &lt;IRI&gt;tag:kalvesmaki.com,2014:tan-r-mor:eng:penn&lt;/IRI&gt;
             &lt;name&gt;Penn Treebank tag set&lt;/name&gt;
-            &lt;location when-accessed="2015-08-20"&gt;https://raw.githubusercontent.com/Arithmeticus/TAN-class-3/master/TAN-R-mor/eng.kalvesmaki.com%2C2014.2.xml&lt;/location&gt;
+            &lt;location href="http://textalign.net/release/1/dev/examples/TAN-R-mor/eng.kalvesmaki.com,2014.2.xml" when-accessed="2016-01-25"/&gt;
             .........
          <emphasis role="bold">&lt;/morphology&gt;</emphasis>
          &lt;lexicon xml:id="test"&gt;

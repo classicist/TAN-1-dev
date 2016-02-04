@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="http://docbook.org/xml/5.0/rng/docbook.rng" schematypens="http://relaxng.org/ns/structure/1.0"?>
 <?xml-model href="http://docbook.org/xml/5.0/rng/docbook.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
-<book xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" 
+<book xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0">
    <info>
       <title>The Text Alignment Network: Official Guidelines</title>
@@ -84,7 +84,7 @@
                only as export/import format for tools but, in many cases, for native use. </para>
             <para>Built upon stand-off annotation, the TAN format allows scholars to edit and study
                the same texts independently and collaboratively. TAN schemas are written not only to
-               ensure  validation, but to provide feedback and assistance to anyone editing and
+               ensure validation, but to provide feedback and assistance to anyone editing and
                correcting TAN files. Because the format has well-defined rules, it comes with a
                library of functions that definitively interpret the format and pre-process the
                files, thereby assisting developers creating TAN-based tools and applications.</para>
@@ -444,12 +444,14 @@
                These three lines will be identical, or nearly so, from one TAN transcription file to
                the next, and we can simply cut and paste when we want to start a new one.</para>
             <para>The fourth line is the opening tag of what is called the root element, here called
-                  <code><link linkend="element-TAN-T">&lt;TAN-T></link></code>. That opening tag, <code>&lt;TAN-T...></code> is answered
-               by a closing tag, <code>&lt;/TAN-T></code>, the last line. The same thing happens
-               with all the other elements in this example. <code><link linkend="element-head">&lt;head></link></code> is answered by
-                  <code>&lt;/head></code>, <code><link linkend="element-body">&lt;body></link></code> by <code>&lt;/body></code> and
-               each <code>&lt;div...></code> by <code>&lt;/div></code>. These elements nest within
-               or alongside each other, but they never overlap. (The prohibition on overlapping
+                     <code><link linkend="element-TAN-T">&lt;TAN-T></link></code>. That opening tag,
+                  <code>&lt;TAN-T...></code> is answered by a closing tag, <code>&lt;/TAN-T></code>,
+               the last line. The same thing happens with all the other elements in this example.
+                     <code><link linkend="element-head">&lt;head></link></code> is answered by
+                  <code>&lt;/head></code>, <code><link linkend="element-body"
+                  >&lt;body></link></code> by <code>&lt;/body></code> and each
+                  <code>&lt;div...></code> by <code>&lt;/div></code>. These elements nest within or
+               alongside each other, but they never overlap. (The prohibition on overlapping
                elements is one of the cardinal rules of XML.) This relationship means that every XML
                file can be thought of as a tree, with the root at the trunk and the enveloped
                elements as branches, terminating in metaphorical leaves. It is helpful to use the
@@ -459,43 +461,56 @@
                   role="italic">leafward</emphasis>, and <emphasis role="italic">leafmost</emphasis>
                when we want to trace movement within an XML document.</para>
             <para>An XML document is also profitably thought of as a family tree, a metaphor that
-               provides terminology that will be very common. In our examples above,
-                  <code><link linkend="element-TAN-T">&lt;TAN-T></link></code> is the <emphasis role="italic">parent</emphasis> of
-                  <code><link linkend="element-body">&lt;body></link></code>, and <code><link linkend="element-body">&lt;body></link></code> the parent of the four
-                  <code><link linkend="element-div">&lt;div></link></code> elements. Vice versa, each <code><link linkend="element-div">&lt;div></link></code> is the
-                  <emphasis role="italic">child</emphasis> of <code><link linkend="element-body">&lt;body></link></code>, and
-                  <code><link linkend="element-body">&lt;body></link></code> is the child of <code><link linkend="element-TAN-T">&lt;TAN-T></link></code>. Distant parental
-               relationships can be described with the terms <emphasis role="italic"
-                  >ancestor</emphasis> and <emphasis role="italic">descendant</emphasis>.
-                  <code><link linkend="element-TAN-T">&lt;TAN-T></link></code> is the ancestor of every element it encompasses, and every
-               element encompassed by <code><link linkend="element-TAN-T">&lt;TAN-T></link></code> is its descendant. Paratactic
-               relationships are also important. <code><link linkend="element-head">&lt;head></link></code> and <code><link linkend="element-body">&lt;body></link></code>
-               are <emphasis role="italic">siblings</emphasis> to each other, and every
-                  <code><link linkend="element-div">&lt;div></link></code> is a sibling to every other <code><link linkend="element-div">&lt;div></link></code>.</para>
-            <para>Inside of the opening tags for the <code><link linkend="element-TAN-T">&lt;TAN-T></link></code>,
-               <code><link linkend="element-body">&lt;body></link></code>, and <code><link linkend="element-div">&lt;div></link></code> elements are pairs of text joined
-               by an equals sign. The left side of each pair is called an attribute, and on the
-               right side, within the quotation marks, is the value. <code><link linkend="element-TAN-T">&lt;TAN-T></link></code> has two
-               attributes, <code>@xmlns</code> and <code><link linkend="attribute-id">@id</link></code> (attributes are commonly
-               referred to with @ before the name). We will skip <code>@xmlns</code> for now; this
-               attribute (actually, a pseudo-attribute) specifies the namespace of the XML file, a somewhat advanced topic. </para>
-            <para>The value of <code><link linkend="attribute-id">@id</link></code>, however, is quite important and our first item of
-               business. Every TAN file has an <code><link linkend="attribute-id">@id</link></code> that uniquely and permanently
+               provides terminology that will be very common. In our examples above, <code><link
+                     linkend="element-TAN-T">&lt;TAN-T></link></code> is the <emphasis role="italic"
+                  >parent</emphasis> of <code><link linkend="element-body">&lt;body></link></code>,
+               and <code><link linkend="element-body">&lt;body></link></code> the parent of the four
+                     <code><link linkend="element-div">&lt;div></link></code> elements. Vice versa,
+               each <code><link linkend="element-div">&lt;div></link></code> is the <emphasis
+                  role="italic">child</emphasis> of <code><link linkend="element-body"
+                     >&lt;body></link></code>, and <code><link linkend="element-body"
+                     >&lt;body></link></code> is the child of <code><link linkend="element-TAN-T"
+                     >&lt;TAN-T></link></code>. Distant parental relationships can be described with
+               the terms <emphasis role="italic">ancestor</emphasis> and <emphasis role="italic"
+                  >descendant</emphasis>. <code><link linkend="element-TAN-T"
+                  >&lt;TAN-T></link></code> is the ancestor of every element it encompasses, and
+               every element encompassed by <code><link linkend="element-TAN-T"
+                  >&lt;TAN-T></link></code> is its descendant. Paratactic relationships are also
+               important. <code><link linkend="element-head">&lt;head></link></code> and <code><link
+                     linkend="element-body">&lt;body></link></code> are <emphasis role="italic"
+                  >siblings</emphasis> to each other, and every <code><link linkend="element-div"
+                     >&lt;div></link></code> is a sibling to every other <code><link
+                     linkend="element-div">&lt;div></link></code>.</para>
+            <para>Inside of the opening tags for the <code><link linkend="element-TAN-T"
+                     >&lt;TAN-T></link></code>, <code><link linkend="element-body"
+                  >&lt;body></link></code>, and <code><link linkend="element-div"
+                  >&lt;div></link></code> elements are pairs of text joined by an equals sign. The
+               left side of each pair is called an attribute, and on the right side, within the
+               quotation marks, is the value. <code><link linkend="element-TAN-T"
+                  >&lt;TAN-T></link></code> has two attributes, <code>@xmlns</code> and <code><link
+                     linkend="attribute-id">@id</link></code> (attributes are commonly referred to
+               with @ before the name). We will skip <code>@xmlns</code> for now; this attribute
+               (actually, a pseudo-attribute) specifies the namespace of the XML file, a somewhat
+               advanced topic. </para>
+            <para>The value of <code><link linkend="attribute-id">@id</link></code>, however, is
+               quite important and our first item of business. Every TAN file has an <code><link
+                     linkend="attribute-id">@id</link></code> that uniquely and permanently
                identifies the file itself. It is quite similar to the name we give a file when we
                save it, and to the names we see when we browse through our files, except that it
                should not be changed. When we make corrections to our work, we will not change the
-                  <code><link linkend="attribute-id">@id</link></code> value. We simply note a change (to be discussed later) with the
-               date of the change.</para>
-            <para>The value of <code><link linkend="attribute-id">@id</link></code> is always what is called a tag uniform resource name
-               (tag URN). It always starts with <code>tag:</code>, followed by an email address or
-               domain name that we owned on a given day. (It is okay to use an obsolete address.)
-               After that email address or domain name comes a comma (no spaces) and a date on which
-               we owned it, in the international standard format of year, month, and date, joined by
-               hyphens, e.g., 2014-12-31. If we leave off a day value, it is assumed to be the first
-               of the month; if we leave off the month value it is assumed to be January. In the
-               examples above, <code>[USER@DOMAIN.NET],2014</code> indicates that the email address
-               was owned on the stroke of midnight (Coordinated Universal Time) January 1, 2014.
-               After that comes a colon, and then any name we wish to assign to the file. <note>
+                     <code><link linkend="attribute-id">@id</link></code> value. We simply note a
+               change (to be discussed later) with the date of the change.</para>
+            <para>The value of <code><link linkend="attribute-id">@id</link></code> is always what
+               is called a tag uniform resource name (tag URN). It always starts with
+                  <code>tag:</code>, followed by an email address or domain name that we owned on a
+               given day. (It is okay to use an obsolete address.) After that email address or
+               domain name comes a comma (no spaces) and a date on which we owned it, in the
+               international standard format of year, month, and date, joined by hyphens, e.g.,
+               2014-12-31. If we leave off a day value, it is assumed to be the first of the month;
+               if we leave off the month value it is assumed to be January. In the examples above,
+                  <code>[USER@DOMAIN.NET],2014</code> indicates that the email address was owned on
+               the stroke of midnight (Coordinated Universal Time) January 1, 2014. After that comes
+               a colon, and then any name we wish to assign to the file. <note>
                   <para>Many if not most TAN files will be circulated under a liberal license,
                      encouraging people to modify and use the data freely, with attribution. If you
                      decide to modify someone else's TAN file, and you become responsible for
@@ -510,44 +525,53 @@
                   <code>ring01</code> and <code>ring02</code>. (If we run out of names, or want to
                restart, we can simply use a new email-date preface, e.g.,
                   <code>[USER@DOMAIN.NET],2014-01-02</code>.)</para>
-            <para>The element <code><link linkend="element-body">&lt;body></link></code> contains our transcription.
-                  <code><link linkend="attribute-xmllang">@xml:lang</link></code>, required, specifies the principal language of the
-               transcribed text. We use the standard 3-letter abbreviation for English. (See later
-               in the guide for more complex language requirements.) By saying that
-                  <code><link linkend="attribute-in-progress">@in-progress</link></code> is <code>false</code>, we indicate that we have
+            <para>The element <code><link linkend="element-body">&lt;body></link></code> contains
+               our transcription. <code><link linkend="attribute-xmllang">@xml:lang</link></code>,
+               required, specifies the principal language of the transcribed text. We use the
+               standard 3-letter abbreviation for English. (See later in the guide for more complex
+               language requirements.) By saying that <code><link linkend="attribute-in-progress"
+                     >@in-progress</link></code> is <code>false</code>, we indicate that we have
                finished our transcription and have no further plans to develop it. It doesn't mean
                that the file is error free. We will have the option to make corrections later. It
                just means that we have done all the work that we intended, and any further changes
                will be restricted to corrections of errors. This attribute is optional; if left off,
                the TAN file is assumed to be a work in progress.</para>
-            <para>Our transcription has been divided into four <code><link linkend="element-div">&lt;div></link></code> elements. How
-               we divide up the work is entirely up to us. But we must make sure that every bit of
-               text is enclode by a leafmost <code><link linkend="element-div">&lt;div></link></code>. That is, every
-                  <code><link linkend="element-div">&lt;div></link></code> must be the parent of only other <code><link linkend="element-div">&lt;div></link></code>s, or
-               none at all. We cannot have a <code><link linkend="element-div">&lt;div></link></code> that mixes any text or other
-               elements with other <code><link linkend="element-div">&lt;div></link></code>s. The values of <code><link linkend="attribute-type">@type</link></code> and
-                  <code><link linkend="attribute-n">@n</link></code> indicate, respectively, the type of division and the name of the
-               division. We have used <code>line</code> in the first example, but we could easily
-               have also used <code>l</code> (as we did in the second) or <code>ln</code> or any
-               other phrase that we think will make intuitive sense to other users (we will see why
-               below). We have used arabic numerals for the values of <code><link linkend="attribute-n">@n</link></code>, but the
-               value, once again, could have been anything. But since other people may use our work,
-               we have adopted the naming scheme that seems most common and expected.</para>
-            <para>Aside from the <code><link linkend="element-head">&lt;head></link></code> element (discussed later), that's all we
-               need in the transcription. We can now move to alignment.</para>
+            <para>Our transcription has been divided into four <code><link linkend="element-div"
+                     >&lt;div></link></code> elements. How we divide up the work is entirely up to
+               us. But we must make sure that every bit of text is enclode by a leafmost <code><link
+                     linkend="element-div">&lt;div></link></code>. That is, every <code><link
+                     linkend="element-div">&lt;div></link></code> must be the parent of only other
+                     <code><link linkend="element-div">&lt;div></link></code>s, or none at all. We
+               cannot have a <code><link linkend="element-div">&lt;div></link></code> that mixes any
+               text or other elements with other <code><link linkend="element-div"
+                  >&lt;div></link></code>s. The values of <code><link linkend="attribute-type"
+                     >@type</link></code> and <code><link linkend="attribute-n">@n</link></code>
+               indicate, respectively, the type of division and the name of the division. We have
+               used <code>line</code> in the first example, but we could easily have also used
+                  <code>l</code> (as we did in the second) or <code>ln</code> or any other phrase
+               that we think will make intuitive sense to other users (we will see why below). We
+               have used arabic numerals for the values of <code><link linkend="attribute-n"
+                     >@n</link></code>, but the value, once again, could have been anything. But
+               since other people may use our work, we have adopted the naming scheme that seems
+               most common and expected.</para>
+            <para>Aside from the <code><link linkend="element-head">&lt;head></link></code> element
+               (discussed later), that's all we need in the transcription. We can now move to
+               alignment.</para>
             <para>There are two different types of alignment, one emphasizing breadth, the other,
                depth. The broad type of alignment, called TAN-A-div, allows us to specify TAN
                transcriptions of as many versions of as many works as we wish, and to fine-tune the
-               alignment upon the basis of the <code><link linkend="element-div">&lt;div></link></code> elements within the
-               transcription. We do not specify why we wish to align the versions. We only declare
-               our interest in doing so. The type of alignment emphasizing depth, called TAN-A-tok,
-               allows us to take any two (and no more) TAN transcriptions and specify word-to-word
-               (or better put, token-to-token) relationships, and specify what type of relationship
-               holds between them. TAN-A-div is suitable for work that focuses on the general
-               alignment of multiple versions of one or more works at a single time. TAN-A-tok is
-               for highly detailed, precise alignment of two text versions.</para>
+               alignment upon the basis of the <code><link linkend="element-div"
+                  >&lt;div></link></code> elements within the transcription. We do not specify why
+               we wish to align the versions. We only declare our interest in doing so. The type of
+               alignment emphasizing depth, called TAN-A-tok, allows us to take any two (and no
+               more) TAN transcriptions and specify word-to-word (or better put, token-to-token)
+               relationships, and specify what type of relationship holds between them. TAN-A-div is
+               suitable for work that focuses on the general alignment of multiple versions of one
+               or more works at a single time. TAN-A-tok is for highly detailed, precise alignment
+               of two text versions.</para>
             <para>For our example, we start with a TAN-A-div file (once again suppressing
-                  <code><link linkend="element-head">&lt;head></link></code>):<programlisting>&lt;?xml version="1.0" encoding="UTF-8"?>
+                     <code><link linkend="element-head"
+               >&lt;head></link></code>):<programlisting>&lt;?xml version="1.0" encoding="UTF-8"?>
 &lt;?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-div.rnc" type="application/relax-ng-compact-syntax"?>
 &lt;?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-div.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
 &lt;TAN-A-div xmlns="tag:textalign.net,2015:ns" id="tag:parkj@textalign.net,2015:ring-alignment">
@@ -559,13 +583,16 @@
             <para>In the prolog, the first line is identical to the first line of our transcription
                files. The second and third lines are identical, aside from pointing to the
                validation files for alignment. Even the fourth line looks like the transcription
-               file, other than the new name for the root element, <code><link linkend="element-TAN-A-div">&lt;TAN-A-div></link></code>, and
-               the new value for <code><link linkend="attribute-id">@id</link></code>.</para>
+               file, other than the new name for the root element, <code><link
+                     linkend="element-TAN-A-div">&lt;TAN-A-div></link></code>, and the new value for
+                     <code><link linkend="attribute-id">@id</link></code>.</para>
             <para>The penultimate line, <code>&lt;body/></code>, is what is called an empty element,
-               and is equivalent to <code><link linkend="element-body">&lt;body></link>&lt;/body></code>. Collapsing the opening and the
-               closing tags of the element into a single tag provides a shorthand syntax for
-               elements contains nothing. It will become apparent, when we discuss
-                  <code><link linkend="element-head">&lt;head></link></code> below, why our <code><link linkend="element-body">&lt;body></link></code> can be empty.</para>
+               and is equivalent to <code><link linkend="element-body"
+                  >&lt;body></link>&lt;/body></code>. Collapsing the opening and the closing tags of
+               the element into a single tag provides a shorthand syntax for elements contains
+               nothing. It will become apparent, when we discuss <code><link linkend="element-head"
+                     >&lt;head></link></code> below, why our <code><link linkend="element-body"
+                     >&lt;body></link></code> can be empty.</para>
             <para>The other kind of alignment, TAN-A-tok, takes a bit more work, because we must
                first identify words that correspond with each other. Even before we do that, we need
                to decide what kind of relationship holds between the two texts. Let us pretend, for
@@ -661,44 +688,61 @@
 &lt;/TAN-A-tok></programlisting></para>
             <para>Once again, the first four lines, the prolog and root element, should look
                familiar, with the only significant changes being the names of the validation files,
-               the name of the root element (<code><link linkend="element-TAN-A-tok">&lt;TAN-A-tok></link></code>) and the value of
-                  <code><link linkend="attribute-id">@id</link></code>.</para>
-            <para>The heart of the data is <code><link linkend="element-body">&lt;body></link></code>, which has, in addition to
-                  <code><link linkend="attribute-in-progress">@in-progress</link></code>, two more attributes, <code><link linkend="attribute-reuse-type">@reuse-type</link></code>, which
-               specifies the default type of relationship between the two sources, and
-                  <code><link linkend="attribute-bitext-relation">@bitext-relation</link></code>, which specifies how the versions relate to each
-               other. Our two values, <code>B-descends-from-A</code> and <code>adaptation</code>,
-               are arbitrary names that we define in the <code><link linkend="element-head">&lt;head></link></code> (discussed later). </para>
-            <para><code><link linkend="element-body">&lt;body></link></code> is the parent of one or more <code><link linkend="element-align">&lt;align></link></code>
-               elements, each of which correlates a set of tokens in the two texts through its
-                  <code><link linkend="element-tok">&lt;tok></link></code> children. Each <code><link linkend="element-tok">&lt;tok></link></code> has, in this example,
-               three attributes. <code><link linkend="attribute-src">@src</link></code> takes a nickname (an <code><link linkend="attribute-id">@id</link></code> reference)
-               that points to one of the two transcriptions; we have used <code>ring1881</code> and
+               the name of the root element (<code><link linkend="element-TAN-A-tok"
+                     >&lt;TAN-A-tok></link></code>) and the value of <code><link
+                     linkend="attribute-id">@id</link></code>.</para>
+            <para>The heart of the data is <code><link linkend="element-body"
+                  >&lt;body></link></code>, which has, in addition to <code><link
+                     linkend="attribute-in-progress">@in-progress</link></code>, two more
+               attributes, <code><link linkend="attribute-reuse-type">@reuse-type</link></code>,
+               which specifies the default type of relationship between the two sources, and
+                     <code><link linkend="attribute-bitext-relation">@bitext-relation</link></code>,
+               which specifies how the versions relate to each other. Our two values,
+                  <code>B-descends-from-A</code> and <code>adaptation</code>, are arbitrary names
+               that we define in the <code><link linkend="element-head">&lt;head></link></code>
+               (discussed later). </para>
+            <para><code><link linkend="element-body">&lt;body></link></code> is the parent of one or
+               more <code><link linkend="element-align">&lt;align></link></code> elements, each of
+               which correlates a set of tokens in the two texts through its <code><link
+                     linkend="element-tok">&lt;tok></link></code> children. Each <code><link
+                     linkend="element-tok">&lt;tok></link></code> has, in this example, three
+               attributes. <code><link linkend="attribute-src">@src</link></code> takes a nickname
+               (an <code><link linkend="attribute-id">@id</link></code> reference) that points to
+               one of the two transcriptions; we have used <code>ring1881</code> and
                   <code>ring1987</code> but we could have just as easily used anything else such as
-                  <code>uk</code> and <code>us</code>. <code><link linkend="attribute-ref">@ref</link></code> has a value that points to
-               a specific <code><link linkend="element-div">&lt;div></link></code> in the source transcription; and <code><link linkend="attribute-pos">@pos</link></code>
-               or <code><link linkend="attribute-val">@val</link></code> specify which token is intended, either by word number
-                  (<code><link linkend="attribute-pos">@pos</link></code>) or text of the actual word (<code><link linkend="attribute-val">@val</link></code>). Either
-               technique is fine, and can be mixed, as in the example. You may also notice that the
-               comma and hyphen can be used in <code><link linkend="attribute-pos">@pos</link></code> to point to multiple words within
-               the same <code><link linkend="element-div">&lt;div></link></code>, and that <code>last</code> and <code>last-X</code>
-               (where <code>X</code> is a digit) can be used to point to a word token relative to
-               the last one in a <code><link linkend="element-div">&lt;div></link></code>.</para>
-            <para>Each <code><link linkend="element-align">&lt;align></link></code> can establish one-to-one, one-to-many, many-to-one,
-               or many-to-many relationships between the two texts. It is perfectly fine to have the
-               same word represented in multiple <code><link linkend="element-align">&lt;align></link></code> elements. And if an
-                  <code><link linkend="element-align">&lt;align></link></code> has <code><link linkend="element-tok">&lt;tok></link></code> elements belonging to only one
-               source, such as in the fourth-to-last <code><link linkend="element-align">&lt;align></link></code> above, we have what is
-               called, in these guidelines, a <emphasis>half-null alignment</emphasis>. That is to
-               say, using our example, that we have stated that the second word of line four of the
-               1881 version is excluded from the act that we have called <code>adaptation</code>
-               (which is, as we shall see, defined in the <code><link linkend="element-head">&lt;head></link></code>). If this were a
-               translation, it would be as if we were saying that this word was excluded from the
-               translation. (If this was a half-null alignment for the later source, we would say
-               that it was a word that the translator added.) A half-null alignment is not to be
+                  <code>uk</code> and <code>us</code>. <code><link linkend="attribute-ref"
+                     >@ref</link></code> has a value that points to a specific <code><link
+                     linkend="element-div">&lt;div></link></code> in the source transcription; and
+                     <code><link linkend="attribute-pos">@pos</link></code> or <code><link
+                     linkend="attribute-val">@val</link></code> specify which token is intended,
+               either by word number (<code><link linkend="attribute-pos">@pos</link></code>) or
+               text of the actual word (<code><link linkend="attribute-val">@val</link></code>).
+               Either technique is fine, and can be mixed, as in the example. You may also notice
+               that the comma and hyphen can be used in <code><link linkend="attribute-pos"
+                     >@pos</link></code> to point to multiple words within the same <code><link
+                     linkend="element-div">&lt;div></link></code>, and that <code>last</code> and
+                  <code>last-X</code> (where <code>X</code> is a digit) can be used to point to a
+               word token relative to the last one in a <code><link linkend="element-div"
+                     >&lt;div></link></code>.</para>
+            <para>Each <code><link linkend="element-align">&lt;align></link></code> can establish
+               one-to-one, one-to-many, many-to-one, or many-to-many relationships between the two
+               texts. It is perfectly fine to have the same word represented in multiple <code><link
+                     linkend="element-align">&lt;align></link></code> elements. And if an
+                     <code><link linkend="element-align">&lt;align></link></code> has <code><link
+                     linkend="element-tok">&lt;tok></link></code> elements belonging to only one
+               source, such as in the fourth-to-last <code><link linkend="element-align"
+                     >&lt;align></link></code> above, we have what is called, in these guidelines, a
+                  <emphasis>half-null alignment</emphasis>. That is to say, using our example, that
+               we have stated that the second word of line four of the 1881 version is excluded from
+               the act that we have called <code>adaptation</code> (which is, as we shall see,
+               defined in the <code><link linkend="element-head">&lt;head></link></code>). If this
+               were a translation, it would be as if we were saying that this word was excluded from
+               the translation. (If this was a half-null alignment for the later source, we would
+               say that it was a word that the translator added.) A half-null alignment is not to be
                confused with our own silence. If we nowhere mention a token in our TAN-A-tok file,
-               and if we specify through <code><link linkend="attribute-in-progress">@in-progress</link></code> that our work is finished, then
-               we are saying only that we have nothing to say about it.</para>
+               and if we specify through <code><link linkend="attribute-in-progress"
+                     >@in-progress</link></code> that our work is finished, then we are saying only
+               that we have nothing to say about it.</para>
             <para>We could have aligned the two texts in different ways. Perhaps further study will
                reveal that we were in error to associate the second "ring" with "round" is line 1.
                We can make corrections, even after publication, and signal the change to users of
@@ -706,42 +750,47 @@
                correlate fragments of tokens (letters, prefixes, infixes, or suffixes). All these
                more advanced uses are discussed in later chapters of these guidelines.</para>
             <para>For now, we have finished everything for two TAN transcriptions and two alignment
-               files, except for the <code><link linkend="element-head">&lt;head></link></code>. Before getting into details, we need
-               first to discuss (1) the principles behind the TAN <code><link linkend="element-head">&lt;head></link></code> and (2) how
-               to ensure that the data in <code><link linkend="element-head">&lt;head></link></code> is both human readable and computer
-               readable.</para>
+               files, except for the <code><link linkend="element-head">&lt;head></link></code>.
+               Before getting into details, we need first to discuss (1) the principles behind the
+               TAN <code><link linkend="element-head">&lt;head></link></code> and (2) how to ensure
+               that the data in <code><link linkend="element-head">&lt;head></link></code> is both
+               human readable and computer readable.</para>
          </section>
          <section>
-            <title>The Principles of TAN Metadata (<code><link linkend="element-head">&lt;head></link></code>)</title>
-            <para>Unlike <code><link linkend="element-body">&lt;body></link></code>, which carries the raw data, <code><link linkend="element-head">&lt;head></link></code>
-               contains what is oftentimes called metadata. That is, <code><link linkend="element-head">&lt;head></link></code> takes
-               data that describes the data. Because the TAN format is intended primarily to serve
-               scholars, some metadata requirements are stricter than those in other formats.
-               Scholars who use our data really need to know some essential things before
-               thoughtfully studying and handling the data we produce. For example, what are the
-               sources we have used? Who produced the data? When? What key assumptions have been
-               made in producing the data? What rights do other people have to use the data? The
-               questions are not difficult to answer, but they are critical.</para>
+            <title>The Principles of TAN Metadata (<code><link linkend="element-head"
+                     >&lt;head></link></code>)</title>
+            <para>Unlike <code><link linkend="element-body">&lt;body></link></code>, which carries
+               the raw data, <code><link linkend="element-head">&lt;head></link></code> contains
+               what is oftentimes called metadata. That is, <code><link linkend="element-head"
+                     >&lt;head></link></code> takes data that describes the data. Because the TAN
+               format is intended primarily to serve scholars, some metadata requirements are
+               stricter than those in other formats. Scholars who use our data really need to know
+               some essential things before thoughtfully studying and handling the data we produce.
+               For example, what are the sources we have used? Who produced the data? When? What key
+               assumptions have been made in producing the data? What rights do other people have to
+               use the data? The questions are not difficult to answer, but they are
+               critical.</para>
             <para>Some of these questions are specific to certain types of data, and others can be
                applied universally, no matter what kind of data. We have seen that the TAN
-               transcription <code><link linkend="element-body">&lt;body></link></code>s look quite different from those in the two
-               alignment files. And there are other kinds of TAN files that cover other types of
-               data, such as lexicomorphology and tokenization rules. And TAN may grow to cover
-               other kinds of information. So <code><link linkend="element-head">&lt;head></link></code> has been concisely and
+               transcription <code><link linkend="element-body">&lt;body></link></code>s look quite
+               different from those in the two alignment files. And there are other kinds of TAN
+               files that cover other types of data, such as lexicomorphology and tokenization
+               rules. And TAN may grow to cover other kinds of information. So <code><link
+                     linkend="element-head">&lt;head></link></code> has been concisely and
                predictably structured so it can apply across all TAN formats. This reduces potential
                confusion and makes it easier for other people using our data to find the information
                they want.</para>
             <para>The rigorous scholarly requirements for TAN metadata are offset somewhat by
                another principle that was adopted in the design of TAN, namely, that each format's
-                  <code><link linkend="element-head">&lt;head></link></code> should focus upon describing the data in
-                  <code><link linkend="element-body">&lt;body></link></code> and not other things. That is to say, for the two
-               transcriptions in our example above, we should definitely indicate what our sources
-               are. But we should not do what librarians do so much better and try to write a
-               catalog entry describing the books we have used. Anyone who really wants that
-               information should go elsewhere. We need merely point to those other places. The TAN
-               format does not forbid us from providing this information. But the
-                  <code><link linkend="element-head">&lt;head></link></code> is designed so that we can stay focused on the task and
-               data at hand.</para>
+                     <code><link linkend="element-head">&lt;head></link></code> should focus upon
+               describing the data in <code><link linkend="element-body">&lt;body></link></code> and
+               not other things. That is to say, for the two transcriptions in our example above, we
+               should definitely indicate what our sources are. But we should not do what librarians
+               do so much better and try to write a catalog entry describing the books we have used.
+               Anyone who really wants that information should go elsewhere. We need merely point to
+               those other places. The TAN format does not forbid us from providing this
+               information. But the <code><link linkend="element-head">&lt;head></link></code> is
+               designed so that we can stay focused on the task and data at hand.</para>
             <para>TAN was also designed with the assumption that all metadata should be useful to
                both humans and computers. For our example above, we must describe the work we have
                chosen in such a way that <emphasis role="italic">Ring around the Rosie</emphasis> is
@@ -796,11 +845,12 @@
                IRI, so computers can act upon the data. (It is this requirement that makes possible
                another principle mentioned earlier, that we should provide metadata about our data
                and not about other things.)</para>
-            <para>Our first task, then, in writing the <code><link linkend="element-head">&lt;head></link></code> sections of our four
-               TAN files is to look for IRI vocabulary that will be familiar to the community of
-               practice most likely to use our files. In trying to find suitable IRIs, we will find
-               that the persons, things, and concepts we want to describe will be range from
-               generally familiar to generally unfamiliar.</para>
+            <para>Our first task, then, in writing the <code><link linkend="element-head"
+                     >&lt;head></link></code> sections of our four TAN files is to look for IRI
+               vocabulary that will be familiar to the community of practice most likely to use our
+               files. In trying to find suitable IRIs, we will find that the persons, things, and
+               concepts we want to describe will be range from generally familiar to generally
+               unfamiliar.</para>
             <para><emphasis role="italic">Generally familiar</emphasis>: The two books that provide
                the basis of our transcription are well catalogued and generally known. A number of
                services provided by librarians provide a controlled IRI vocabulary that can be used
@@ -845,10 +895,11 @@
             <para>There is a good chance, however, that many contributors will not be listed in
                these general databases. In these cases, we can assign our own IRI to name these
                participants. We have already done something like this by assigning tag URNs to our
-               four transcriptions (the value of <code><link linkend="attribute-id">@id</link></code> in the rootmost element). We can
-               do the same for our editors. If a student Robin Smith has been helping with
-               proofreading, we can take an email address for Robin (even one that doesn't work any
-               more) and a date when the email was sed and construct a tag URN such as
+               four transcriptions (the value of <code><link linkend="attribute-id"
+                  >@id</link></code> in the rootmost element). We can do the same for our editors.
+               If a student Robin Smith has been helping with proofreading, we can take an email
+               address for Robin (even one that doesn't work any more) and a date when the email was
+               sed and construct a tag URN such as
                   <code>tag:smith.robin@example.com,2012:self</code>. This has a slight drawback in
                that we cannot type this string into our browser to find out more about the Robin,
                but it at least allows us to assign a name that will not be confused as the Robin
@@ -891,7 +942,8 @@
                never use the same IRI to identify more than one object or concept.</para>
          </section>
          <section>
-            <title>Creating TAN Metadata (<code><link linkend="element-head">&lt;head></link></code>)</title>
+            <title>Creating TAN Metadata (<code><link linkend="element-head"
+               >&lt;head></link></code>)</title>
             <para>Now that we have explored various IRI vocabularies for concepts around our
                versions of <emphasis>Ring-a-ring-a-roses</emphasis>, we can now complete the
                metadata in our four TAN files. Let us start with the TAN-T file of the 1881
@@ -929,90 +981,119 @@
         &lt;/role>
         &lt;change when="2014-08-13" who="park">Started file&lt;/change>
     &lt;/head></programlisting></para>
-            <para>The <code><link linkend="element-head">&lt;head></link></code> element is the parent of eight children, all but one
-               required in every TAN-T file.</para>
-            <para><code><link linkend="element-name">&lt;name></link></code> is the human readable form of the <code><link linkend="attribute-id">@id</link></code> that is
-               inside the root element, <code><link linkend="element-TAN-T">&lt;TAN-T></link></code>. It can be anything. And we can
-               supply more than one <code><link linkend="element-name">&lt;name></link></code>, in case we wish to provide it in
-               different languages or variations.</para>
-            <para><code><link linkend="element-master-location">&lt;master-location></link></code> is mandatory only if we have claimed through
-                  <code><link linkend="attribute-in-progress">@in-progress</link></code> that the file is no longer in progress. One or more of
-               these elements provide URLs where master versions of the file are kept (and updated).
-               They may be absolute URLs, such as an address on the Internet, or it may be a
-               relative URL, in case we are working exclusively on our local computer. During
-               validation, if a file does not match the one in the master version, a warning is
-               returned. This allows us to publish a file, make corrections, and notify other users
-               without having to keep track of who may be using the file. Similarly, if we are
-               working with a copy of a file and it doesn't match the version in the master
-               location, a warning will be returned, along with a message or a location of the
-               elements that were last changed.</para>
-            <para><code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources></link></code> contains information about rights to
-               the data we are releasing. This element has nothing to do with the copyright of the
-               source we have used (although, having been published in 1881, the book is clearly in
-               the public domain). This once again gets to the TAN metadata principle of describing
-               our data and not other things. We have the option to describe the license of the
-               source we have used (see the rest of the guidelines for guidance), but we absolutely
-               must declare whether we have placed additional scrictures on the dataset we have
-               created. In this example, we have released the data under a creative commons license.
-               The child element <code><link linkend="element-IRI">&lt;IRI></link></code> specifies the IRI assigned by Creative
-               Commons, and <code><link linkend="element-desc">&lt;desc></link></code> describes it in human-readable format.</para>
-            <para>The conjunction of <code><link linkend="element-IRI">&lt;IRI></link></code> and <code><link linkend="element-desc">&lt;desc></link></code>, the
-                  <emphasis>IRI + name pattern</emphasis>, is a recurrent feature of TAN files. We
-               may include any number of <code><link linkend="element-IRI">&lt;IRI></link></code> or <code><link linkend="element-desc">&lt;desc></link></code> elements in
-               an IRI + name pattern. But if we do so, we are stating that they all name the same
-               thing, not different things.</para>
-            <para><code><link linkend="element-source">&lt;source></link></code> points, through its IRI + name pattern, to a computer-
-               and human-readable description of the book we have chosen. </para>
-            <para><code><link linkend="element-declarations">&lt;declarations></link></code> contains data that is specific to the type of TAN
-               file in hand, to declare the assumptions we have made in creating the data. In this
-               case, because we are working with transcriptions, we have three major components:
-                  <code><link linkend="element-work">&lt;work></link></code>, <code><link linkend="element-div-type">&lt;div-type></link></code>, and
-                  <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization></link></code>. </para>
-            <para><code><link linkend="element-work">&lt;work></link></code> uses the IRI + name pattern to name the work we have chosen
-               to transcribe. <code><link linkend="element-div-type">&lt;div-type></link></code> specifies the type of divisions we have
-               chosen to use to segment the transcription. In a more complex text, there would be
-               several <code><link linkend="element-div-type">&lt;div-type></link></code>s. Each one has an <code><link linkend="attribute-xmlid">@xml:id</link></code>, which
-               takes as a value some nickname that we wish to use for <code><link linkend="attribute-type">@type</link></code> values of
-                  <code><link linkend="element-div">&lt;div></link></code>s. <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization></link></code> specifies a
-               pattern recommended for changing the text into word tokens. In the example above, the
-                  <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization></link></code> is empty, and specifies through
-                  <code><link linkend="attribute-which">@which</link></code> that a general tokenization pattern should be used, which
-               means that word tokens should be created by dividing according to space, and each
-               point of punctuation should be treated as a word. Other general options for
-                  <code><link linkend="attribute-which">@which</link></code> include <code>general-words-only-1</code> (all punctuation is
-               suppressed) and <code>precise-1</code> (tokens should be formed only from spaces or
-               U+200B, ZERO WIDTH SPACE). Tokenization also allows the IRI + pattern for customized
-               TAN tokenization files (TAN-R-tok), discussed elsewhere in these guidelines.</para>
-            <para>The IRI + name pattern is also used for <code><link linkend="element-agent">&lt;agent></link></code>, which describes
-               who was involved in creating the data, and <code><link linkend="element-role">&lt;role></link></code>. Any number of
-                  <code><link linkend="element-agent">&lt;agent></link></code> and <code><link linkend="element-role">&lt;role></link></code> elements may be included and
+            <para>The <code><link linkend="element-head">&lt;head></link></code> element is the
+               parent of eight children, all but one required in every TAN-T file.</para>
+            <para><code><link linkend="element-name">&lt;name></link></code> is the human readable
+               form of the <code><link linkend="attribute-id">@id</link></code> that is inside the
+               root element, <code><link linkend="element-TAN-T">&lt;TAN-T></link></code>. It can be
+               anything. And we can supply more than one <code><link linkend="element-name"
+                     >&lt;name></link></code>, in case we wish to provide it in different languages
+               or variations.</para>
+            <para><code><link linkend="element-master-location">&lt;master-location></link></code>
+               is mandatory only if we have claimed through <code><link
+                     linkend="attribute-in-progress">@in-progress</link></code> that the file is no
+               longer in progress. One or more of these elements provide URLs where master versions
+               of the file are kept (and updated). They may be absolute URLs, such as an address on
+               the Internet, or it may be a relative URL, in case we are working exclusively on our
+               local computer. During validation, if a file does not match the one in the master
+               version, a warning is returned. This allows us to publish a file, make corrections,
+               and notify other users without having to keep track of who may be using the file.
+               Similarly, if we are working with a copy of a file and it doesn't match the version
+               in the master location, a warning will be returned, along with a message or a
+               location of the elements that were last changed.</para>
+            <para><code><link linkend="element-rights-excluding-sources"
+                     >&lt;rights-excluding-sources></link></code> contains information about rights
+               to the data we are releasing. This element has nothing to do with the copyright of
+               the source we have used (although, having been published in 1881, the book is clearly
+               in the public domain). This once again gets to the TAN metadata principle of
+               describing our data and not other things. We have the option to describe the license
+               of the source we have used (see the rest of the guidelines for guidance), but we
+               absolutely must declare whether we have placed additional scrictures on the dataset
+               we have created. In this example, we have released the data under a creative commons
+               license. The child element <code><link linkend="element-IRI">&lt;IRI></link></code>
+               specifies the IRI assigned by Creative Commons, and <code><link
+                     linkend="element-desc">&lt;desc></link></code> describes it in human-readable
+               format.</para>
+            <para>The conjunction of <code><link linkend="element-IRI">&lt;IRI></link></code> and
+                     <code><link linkend="element-desc">&lt;desc></link></code>, the <emphasis>IRI +
+                  name pattern</emphasis>, is a recurrent feature of TAN files. We may include any
+               number of <code><link linkend="element-IRI">&lt;IRI></link></code> or <code><link
+                     linkend="element-desc">&lt;desc></link></code> elements in an IRI + name
+               pattern. But if we do so, we are stating that they all name the same thing, not
+               different things.</para>
+            <para><code><link linkend="element-source">&lt;source></link></code> points, through its
+               IRI + name pattern, to a computer- and human-readable description of the book we have
+               chosen. </para>
+            <para><code><link linkend="element-declarations">&lt;declarations></link></code>
+               contains data that is specific to the type of TAN file in hand, to declare the
+               assumptions we have made in creating the data. In this case, because we are working
+               with transcriptions, we have three major components: <code><link
+                     linkend="element-work">&lt;work></link></code>, <code><link
+                     linkend="element-div-type">&lt;div-type></link></code>, and <code><link
+                     linkend="element-recommended-tokenization"
+                  >&lt;recommended-tokenization></link></code>. </para>
+            <para><code><link linkend="element-work">&lt;work></link></code> uses the IRI + name
+               pattern to name the work we have chosen to transcribe. <code><link
+                     linkend="element-div-type">&lt;div-type></link></code> specifies the type of
+               divisions we have chosen to use to segment the transcription. In a more complex text,
+               there would be several <code><link linkend="element-div-type"
+                  >&lt;div-type></link></code>s. Each one has an <code><link
+                     linkend="attribute-xmlid">@xml:id</link></code>, which takes as a value some
+               nickname that we wish to use for <code><link linkend="attribute-type"
+                  >@type</link></code> values of <code><link linkend="element-div"
+                  >&lt;div></link></code>s. <code><link linkend="element-recommended-tokenization"
+                     >&lt;recommended-tokenization></link></code> specifies a pattern recommended
+               for changing the text into word tokens. In the example above, the <code><link
+                     linkend="element-recommended-tokenization"
+                  >&lt;recommended-tokenization></link></code> is empty, and specifies through
+                     <code><link linkend="attribute-which">@which</link></code> that a general
+               tokenization pattern should be used, which means that word tokens should be created
+               by dividing according to space, and each point of punctuation should be treated as a
+               word. Other general options for <code><link linkend="attribute-which"
+                  >@which</link></code> include <code>general-words-only-1</code> (all punctuation
+               is suppressed) and <code>precise-1</code> (tokens should be formed only from spaces
+               or U+200B, ZERO WIDTH SPACE). Tokenization also allows the IRI + pattern for
+               customized TAN tokenization files (TAN-R-tok), discussed elsewhere in these
+               guidelines.</para>
+            <para>The IRI + name pattern is also used for <code><link linkend="element-agent"
+                     >&lt;agent></link></code>, which describes who was involved in creating the
+               data, and <code><link linkend="element-role">&lt;role></link></code>. Any number of
+                     <code><link linkend="element-agent">&lt;agent></link></code> and <code><link
+                     linkend="element-role">&lt;role></link></code> elements may be included and
                combined as we wish. The <code>agent</code> in this case, Jenny Park, has been given
-               a tag URI. The <code><link linkend="element-IRI">&lt;IRI></link></code> value of <code><link linkend="element-role">&lt;role></link></code> comes from the
+               a tag URI. The <code><link linkend="element-IRI">&lt;IRI></link></code> value of
+                     <code><link linkend="element-role">&lt;role></link></code> comes from the
                vocabulary of <link xlink:href="http://schema.org">schema.org</link>, which is
                maintained by Bing, Google, and Yahoo! in conjunction with the W3C (the nonprofit
                organization dedicated to universal Internet standards), but we could have used
                Dublin Core or some other IRI vocabulary describing behaviors, responsibilities, and
                roles.</para>
-            <para>Remember that <code><link linkend="element-head">&lt;head></link></code> is focused on the data, not its sources, so
-               the claim that Jenny Park is the creator pertains only to the data. No inference
-               should be made about who created the source. If someone wants that information, or
-               anything else about the source, they should pursue the identifier we have provided
-               under <code><link linkend="element-source">&lt;source></link></code>.</para>
-            <para><code><link linkend="element-change">&lt;change></link></code> has attributes <code><link linkend="attribute-when">@when</link></code> and <code><link linkend="attribute-who">@who</link></code>
-               that specify who made the change/comment and when. The value of <code><link linkend="attribute-when">@when</link></code> is
-               always a date plus optional time formatted according to the standard
-                  <code>YYYY-MM-DD</code> + time (optional).<note>
+            <para>Remember that <code><link linkend="element-head">&lt;head></link></code> is
+               focused on the data, not its sources, so the claim that Jenny Park is the creator
+               pertains only to the data. No inference should be made about who created the source.
+               If someone wants that information, or anything else about the source, they should
+               pursue the identifier we have provided under <code><link linkend="element-source"
+                     >&lt;source></link></code>.</para>
+            <para><code><link linkend="element-change">&lt;change></link></code> has attributes
+                     <code><link linkend="attribute-when">@when</link></code> and <code><link
+                     linkend="attribute-who">@who</link></code> that specify who made the
+               change/comment and when. The value of <code><link linkend="attribute-when"
+                     >@when</link></code> is always a date plus optional time formatted according to
+               the standard <code>YYYY-MM-DD</code> + time (optional).<note>
                   <para>If you are working with an XML editor that supports Schematron Quick Fixes
-                     then whenever you are at a <code><link linkend="attribute-when">@when</link></code> or any other attribute that
-                     requires an ISO date and the value is malformed you will be given a prompt to
-                     insert today's date or date and time in a conformant manner. Using this feature
-                     will save you time and effort.</para>
+                     then whenever you are at a <code><link linkend="attribute-when"
+                        >@when</link></code> or any other attribute that requires an ISO date and
+                     the value is malformed you will be given a prompt to insert today's date or
+                     date and time in a conformant manner. Using this feature will save you time and
+                     effort.</para>
                </note>
-               <code><link linkend="attribute-who">@who</link></code> always carries a value that refers to an
-               <code>agent/<link linkend="attribute-xmlid">@xml:id</link></code>. Both <code><link linkend="element-change">&lt;change></link></code> (as well as
-                  <code><link linkend="element-comment">&lt;comment></link></code>, missing here) lack any IRIs, mainly because the
-               likelihood that the data would ever be reused, repeated, or linked to is altogether
-               too remote to be make a mandated <code><link linkend="element-IRI">&lt;IRI></link></code> useful.</para>
+               <code><link linkend="attribute-who">@who</link></code> always carries a value that
+               refers to an <code>agent/<link linkend="attribute-xmlid">@xml:id</link></code>. Both
+                     <code><link linkend="element-change">&lt;change></link></code> (as well as
+                     <code><link linkend="element-comment">&lt;comment></link></code>, missing here)
+               lack any IRIs, mainly because the likelihood that the data would ever be reused,
+               repeated, or linked to is altogether too remote to be make a mandated <code><link
+                     linkend="element-IRI">&lt;IRI></link></code> useful.</para>
             <para>The other transcription file looks
                similar:<programlisting>    &lt;head>
       &lt;name>TAN transcription of Ring around the Rosie&lt;/name>
@@ -1056,28 +1137,32 @@
       &lt;change when="2014-10-24" who="park">Started file&lt;/change>
       &lt;comment when="2014-10-24" who="park">See p. 39 of source.&lt;/comment>
    &lt;/head></programlisting></para>
-            <para>One significant difference is that <code><link linkend="element-declarations">&lt;declarations></link></code> has a new child,
-                  <code><link linkend="element-filter">&lt;filter></link></code>, which contains a <code><link linkend="element-normalization">&lt;normalization></link></code>
+            <para>One significant difference is that <code><link linkend="element-declarations"
+                     >&lt;declarations></link></code> has a new child, <code><link
+                     linkend="element-filter">&lt;filter></link></code>, which contains a
+                     <code><link linkend="element-normalization">&lt;normalization></link></code>
                statement that declares, in both a description and an IRI, that we have opted to
                remove word-break line-end hyphenation. This provides a cautionary note to users of
-               our data who might value line-end hyphenation. Any number of
-                  <code><link linkend="element-normalization">&lt;normalization></link></code>s can be used to describe any alterations we might
-               have made in our transcription. In other transcriptions we could use this feature to
-               declare other suppressions, such as editorial comments or footnote signals.</para>
-            <para>Note that the value of <code>div-type/<link linkend="attribute-xmlid">@xml:id</link></code> here, the letter
-                  <code>l</code>, differs from our previous transcription file, <code>line</code>.
-               Even though we have adopted a different nickname, they are treated as equivalent
-               because in each file we have defined <code>l</code> or <code>line</code> with the
-               same IRI, <code>http://dbpedia.org/resource/Line_(poetry)</code>. A computer that
-               later aligns these two files will not worry so much about <code>l</code> and
+               our data who might value line-end hyphenation. Any number of <code><link
+                     linkend="element-normalization">&lt;normalization></link></code>s can be used
+               to describe any alterations we might have made in our transcription. In other
+               transcriptions we could use this feature to declare other suppressions, such as
+               editorial comments or footnote signals.</para>
+            <para>Note that the value of <code>div-type/<link linkend="attribute-xmlid"
+                     >@xml:id</link></code> here, the letter <code>l</code>, differs from our
+               previous transcription file, <code>line</code>. Even though we have adopted a
+               different nickname, they are treated as equivalent because in each file we have
+               defined <code>l</code> or <code>line</code> with the same IRI,
+                  <code>http://dbpedia.org/resource/Line_(poetry)</code>. A computer that later
+               aligns these two files will not worry so much about <code>l</code> and
                   <code>line</code>, but will look at the underlying IRI that defines these terms.
                This exemplifies how linked data (see above) can support our work. We are free to use
                abbreviations that make sense to us, yet tie those abbreviations into the larger
                infrastructure by means of IRIs. It also means that our transcriptions can be
                assigned divisions that may be generally rare and unfamiliar or common but only to a
                specific field (e.g., sections of a legal document).</para>
-            <para>Our alignment <code><link linkend="element-head">&lt;head></link></code>s will look slightly different. We start with
-               the TAN-A-div alignment
+            <para>Our alignment <code><link linkend="element-head">&lt;head></link></code>s will
+               look slightly different. We start with the TAN-A-div alignment
                file:<programlisting>    &lt;head>
        &lt;name>div-based alignment of multiple versions of Ring o Roses&lt;/name>
        &lt;master-location>ringoroses.div.1.xml&lt;/master-location>
@@ -1111,44 +1196,54 @@
     &lt;/head></programlisting></para>
             <para>Much of this will look similar to the previous two examples. Every alignment file
                has only one kind of source, namely TAN transcription files, nothing else. Therefore
-                  <code><link linkend="element-source">&lt;source></link></code>'s <code><link linkend="element-IRI">&lt;IRI></link></code> always takes the <code><link linkend="attribute-id">@id</link></code>
-               value in the TAN transcription file. <code><link linkend="element-name">&lt;name></link></code> may replicate exactly the
-               title found in the transcription file, or it may be modified, perhaps to harmonize
-               better with the descriptions of the other texts aligned in the file.
-                  <code><link linkend="element-source">&lt;source></link></code> also has an child element not seen in the earlier two
-               examples, <code><link linkend="element-location">&lt;location></link></code>, which specifies where the digital file was
-               accessed and when (through <code><link linkend="attribute-when-accessed">@when-accessed</link></code>). We may include as many of
-               these <code><link linkend="element-location">&lt;location></link></code> elements as we wish (starting with a preferred or
-               reliable location). The <code><link linkend="attribute-when-accessed">@when-accessed</link></code> value is important, because if
-               the owner of the file later edits it, and provides a date for the change, the
-               validator will be able to detect that our alignment file depends upon an older
-               version and return a warning with details about the latest change. We can then
-               explore the source and see if the alterations merit any changes on our part.</para>
-            <para>Our TAN-A-div file could have any number of <code><link linkend="element-source">&lt;source></link></code>s, and not
-               necessarily for the same work. It also does not matter in which order we put the
-                  <code><link linkend="element-source">&lt;source></link></code>s. By putting the 1987 or the 1881 version first, we are
-               not implying that one is the source of the other. The most important consequence is
-               that most processes that use our alignment file will treat the first-listed source as
-               the basis from which to compare other sources.</para>
-            <para><code><link linkend="element-declarations">&lt;declarations></link></code> is empty, mainly because we have, in this case, no
-               working assumptions to declare. In more advanced uses, this element would not be
-               empty.</para>
-            <para>This <code><link linkend="element-head">&lt;head></link></code> explains why the <code><link linkend="element-body">&lt;body></link></code> of our
-               TAN-A-div file could be empty. In the <code><link linkend="element-head">&lt;head></link></code> we have already
-               specified the texts that would need to be aligned and where they are to be found. All
-               TAN-A-div files assume, by default, that every source should be aligned with each
-               other upon the basis of <code><link linkend="element-div">&lt;div></link></code>s, especially leaf
-               <code><link linkend="element-div">&lt;div></link></code>s. That is, the TAN-A-div format assumes all alignments are to
-               be made implicitly unless otherwise specified. </para>
+                     <code><link linkend="element-source">&lt;source></link></code>'s <code><link
+                     linkend="element-IRI">&lt;IRI></link></code> always takes the <code><link
+                     linkend="attribute-id">@id</link></code> value in the TAN transcription file.
+                     <code><link linkend="element-name">&lt;name></link></code> may replicate
+               exactly the title found in the transcription file, or it may be modified, perhaps to
+               harmonize better with the descriptions of the other texts aligned in the file.
+                     <code><link linkend="element-source">&lt;source></link></code> also has an
+               child element not seen in the earlier two examples, <code><link
+                     linkend="element-location">&lt;location></link></code>, which specifies where
+               the digital file was accessed and when (through <code><link
+                     linkend="attribute-when-accessed">@when-accessed</link></code>). We may include
+               as many of these <code><link linkend="element-location">&lt;location></link></code>
+               elements as we wish (starting with a preferred or reliable location). The <code><link
+                     linkend="attribute-when-accessed">@when-accessed</link></code> value is
+               important, because if the owner of the file later edits it, and provides a date for
+               the change, the validator will be able to detect that our alignment file depends upon
+               an older version and return a warning with details about the latest change. We can
+               then explore the source and see if the alterations merit any changes on our
+               part.</para>
+            <para>Our TAN-A-div file could have any number of <code><link linkend="element-source"
+                     >&lt;source></link></code>s, and not necessarily for the same work. It also
+               does not matter in which order we put the <code><link linkend="element-source"
+                     >&lt;source></link></code>s. By putting the 1987 or the 1881 version first, we
+               are not implying that one is the source of the other. The most important consequence
+               is that most processes that use our alignment file will treat the first-listed source
+               as the basis from which to compare other sources.</para>
+            <para><code><link linkend="element-declarations">&lt;declarations></link></code> is
+               empty, mainly because we have, in this case, no working assumptions to declare. In
+               more advanced uses, this element would not be empty.</para>
+            <para>This <code><link linkend="element-head">&lt;head></link></code> explains why the
+                     <code><link linkend="element-body">&lt;body></link></code> of our TAN-A-div
+               file could be empty. In the <code><link linkend="element-head"
+                  >&lt;head></link></code> we have already specified the texts that would need to be
+               aligned and where they are to be found. All TAN-A-div files assume, by default, that
+               every source should be aligned with each other upon the basis of <code><link
+                     linkend="element-div">&lt;div></link></code>s, especially leaf <code><link
+                     linkend="element-div">&lt;div></link></code>s. That is, the TAN-A-div format
+               assumes all alignments are to be made implicitly unless otherwise specified. </para>
             <para>In fact, a TAN-A-div file is in this case technically unnecessary. The two files
                are already predictably structured and aligned, and the works and division types are
                defined identically. But we will see that the options available in a TAN-A-div's
-                  <code><link linkend="element-declarations">&lt;declarations></link></code> and <code><link linkend="element-body">&lt;body></link></code> will allow us not only
-               to deal with inconsistencies in source transcriptions but to create interesting
+                     <code><link linkend="element-declarations">&lt;declarations></link></code> and
+                     <code><link linkend="element-body">&lt;body></link></code> will allow us not
+               only to deal with inconsistencies in source transcriptions but to create interesting
                alignments that go well beyond the automatic alignment afforded by identically
                structured transcriptions.</para>
-            <para>Meanwhile we turn to our fourth file, the TAN-A-tok alignment, whose
-                  <code><link linkend="element-head">&lt;head></link></code> looks like
+            <para>Meanwhile we turn to our fourth file, the TAN-A-tok alignment, whose <code><link
+                     linkend="element-head">&lt;head></link></code> looks like
                this:<programlisting>    &lt;head>
         &lt;name>token-based alignment of two versions of Ring o Roses&lt;/name>
         &lt;master-location>ringoroses.01+02.token.1.xml&lt;/master-location>
@@ -1192,26 +1287,33 @@
         &lt;/role>
         &lt;change when="2015-01-20" who="park">Started file&lt;/change>
     &lt;/head></programlisting></para>
-            <para>The TAN-A-tok <code><link linkend="element-head">&lt;head></link></code> looks similar to the previous examples,
-               except that <code><link linkend="element-declarations">&lt;declarations></link></code> has three children.</para>
-            <para><code><link linkend="element-bitext-relation">&lt;bitext-relation></link></code> states through an IRI + name pattern the
-               stemmatic relationship we think holds between the two sources. (Stemmatics is the
-               study of the chain of transmission by which the versions written by authors made
-               their way into the copies, versions, and editions that are extant; it frequently
-               involves the creation of genealogical-like tree to depict how text-bearing objects
-               with different copies of the same text derive from or relate to each other.)</para>
-            <para>One or more <code><link linkend="element-reuse-type">&lt;reuse-type></link></code>s specify how one text has reused another.
-               The IRI we have used shows that we suspect that the text reuse is general adaptation.
-               If this were a translation or a quotation or some other kind of text reuse, we would
-               have used a different IRI value.</para>
-            <para>A third declaration, <code><link linkend="element-tokenization">&lt;tokenization></link></code>, specifies the tokenization
-               pattern we have adopted to define our word tokens. It is much like the
-                  <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization></link></code>s that feature in TAN-T files. Note,
-               however, that <code><link linkend="attribute-src">@src</link></code> may take more than one value, to specify that the
-               same tokenization rule should be applied to both sources. We could have applied
-               different tokenization patterns had we wanted to, either to customized TAN-R-tok
-               files or to one of the <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization></link></code> patterns in the
-               source.</para>
+            <para>The TAN-A-tok <code><link linkend="element-head">&lt;head></link></code> looks
+               similar to the previous examples, except that <code><link
+                     linkend="element-declarations">&lt;declarations></link></code> has three
+               children.</para>
+            <para><code><link linkend="element-bitext-relation">&lt;bitext-relation></link></code>
+               states through an IRI + name pattern the stemmatic relationship we think holds
+               between the two sources. (Stemmatics is the study of the chain of transmission by
+               which the versions written by authors made their way into the copies, versions, and
+               editions that are extant; it frequently involves the creation of genealogical-like
+               tree to depict how text-bearing objects with different copies of the same text derive
+               from or relate to each other.)</para>
+            <para>One or more <code><link linkend="element-reuse-type"
+               >&lt;reuse-type></link></code>s specify how one text has reused another. The IRI we
+               have used shows that we suspect that the text reuse is general adaptation. If this
+               were a translation or a quotation or some other kind of text reuse, we would have
+               used a different IRI value.</para>
+            <para>A third declaration, <code><link linkend="element-tokenization"
+                     >&lt;tokenization></link></code>, specifies the tokenization pattern we have
+               adopted to define our word tokens. It is much like the <code><link
+                     linkend="element-recommended-tokenization"
+                  >&lt;recommended-tokenization></link></code>s that feature in TAN-T files. Note,
+               however, that <code><link linkend="attribute-src">@src</link></code> may take more
+               than one value, to specify that the same tokenization rule should be applied to both
+               sources. We could have applied different tokenization patterns had we wanted to,
+               either to customized TAN-R-tok files or to one of the <code><link
+                     linkend="element-recommended-tokenization"
+                  >&lt;recommended-tokenization></link></code> patterns in the source.</para>
          </section>
          <section>
             <title>Aligning across Projects</title>
@@ -1285,19 +1387,21 @@
                example, we can later generate an HTML report that will allow us to more conducively
                read the three versions in parallel and study their relationships.</para>
             <para>To that end, we first observe some differences between this transcription and our
-               other two. First, the value of <code><link linkend="element-work">&lt;work></link></code> is not the one we have given
-               our two versions. Second, the <code><link linkend="element-div-type">&lt;div-type></link></code> is defined as
+               other two. First, the value of <code><link linkend="element-work"
+                  >&lt;work></link></code> is not the one we have given our two versions. Second,
+               the <code><link linkend="element-div-type">&lt;div-type></link></code> is defined as
                   <code>http://dbpedia.org/resource/Gedichtzeile</code>. Third, the lines have been
                lettered instead of numbered. And last, the editor seems to have made a typographical
                error, making the last line <code>n="e"</code> instead of <code>n="d"</code>). These
                four differences typify some of the inconsistencies that are found as people work
                independently on similar texts.<note>
                   <para>There are a few other differences in this third transcription that do not
-                     affect our alignment. <code><link linkend="element-version">&lt;version></link></code> is used to distinguish
-                     different version of the same work found on the same text-bearing object.
-                     Notice that the <code><link linkend="element-IRI">&lt;IRI></link></code> value is a uuid, in this case because the
-                     editor was not prepared to deploy a formal IRI naming scheme (perhaps using a
-                     tag URN) that would be satisfactory for work-versions.</para>
+                     affect our alignment. <code><link linkend="element-version"
+                        >&lt;version></link></code> is used to distinguish different version of the
+                     same work found on the same text-bearing object. Notice that the <code><link
+                           linkend="element-IRI">&lt;IRI></link></code> value is a uuid, in this
+                     case because the editor was not prepared to deploy a formal IRI naming scheme
+                     (perhaps using a tag URN) that would be satisfactory for work-versions.</para>
                </note></para>
             <para>These are points we can easily reconcile in our TAN-A-div file, which we now
                expand to include the German version. We make the following adjustments (in
@@ -1355,69 +1459,78 @@
        &lt;/realign></emphasis>
     &lt;/body>
 &lt;/TAN-A-div></programlisting></para>
-            <para>The first major change is the insertion of a new <code><link linkend="element-source">&lt;source></link></code>,
-               identifying the name and location of the third example. Note that two locations have
-               been provided, one for the original location and another for the copy saved locally
-               into our project folder. Validation will occur at the first document available, so if
-               we wanted to work primarily off our local copy, we would have put it first. By
-               placing it second, we indicate that we want to have our local copy as a backup, in
-               case the first is not available.</para>
-            <para>The second major insertion is a new <code><link linkend="element-change">&lt;change></link></code>, documenting when we
-               made the alterations. The value of <code><link linkend="attribute-when">@when</link></code> effectively alters the version
-               number of our TAN-A-div file.</para>
-            <para>The third major change populates the <code><link linkend="element-body">&lt;body></link></code> with elements that
-               calibrate the new version to the other two. <code><link linkend="element-equate-works">&lt;equate-works></link></code> says that,
-               for the sake of this alignment, the works defined in the UK version and the German
-               version to be considered equivalent. We did not mention the US version because we do
-               not need to. As was mentioned above, anyone using a TAN-A-div should assume that all
-               alignments are transitive unless otherwise specified. That includes specifications
-               like this. If A and B are already defined to be the same work, and we specify that A
-               and C are also the same work, then it must be inferred that B and C are as well.
-               Note, we are not committing ourselves to the proposition that they are in reality the
-               same work. We are making this statement only provisionally, to facilitate the
-               alignment.</para>
-            <para><code><link linkend="element-equate-div-types">&lt;equate-div-types></link></code> declares that what the German version calls
-               Zeile is, for the sake of this alignment, equivalent to what the UK version calls
-               line. Transitivity means that Zeile is inferred to be equivalent to what the US
-               version calls <code>l</code>.</para>
-            <para>A <code><link linkend="element-realign">&lt;realign></link></code> takes care of the apparent typographical error, this
-               time using the US version as the main way to correlate the division references. Any
-                  <code><link linkend="element-div-ref">&lt;div-ref></link></code> in a <code><link linkend="element-realign">&lt;realign></link></code> is wrested from automatic
-               alignment. If there is an <code><link linkend="element-anchor-div-ref">&lt;anchor-div-ref></link></code> then it will be realigned
-               with that reference and, by the law of transitivity, anything that aligns to it, in
-               this case the UK version.</para>
-            <para>We do not need to reconcile the <code><link linkend="attribute-n">@n</link></code> values of <code>a</code>,
-                  <code>b</code>, and <code>c</code> in the German version. The TAN format allows
-               four numeration systems other than Arabic numerals: Roman numerals (uppercase or
-               lowercase), alphabetic numerals (a, b, c, ..., z, aa, bb, ....), and digit-alphabet
-               combinations (e.g., 1a, 1e, 4g) or alphabet-digit combinations (e.g., a4, a5, b5).
-               All these will be treated as their numerical equivalent.</para>
+            <para>The first major change is the insertion of a new <code><link
+                     linkend="element-source">&lt;source></link></code>, identifying the name and
+               location of the third example. Note that two locations have been provided, one for
+               the original location and another for the copy saved locally into our project folder.
+               Validation will occur at the first document available, so if we wanted to work
+               primarily off our local copy, we would have put it first. By placing it second, we
+               indicate that we want to have our local copy as a backup, in case the first is not
+               available.</para>
+            <para>The second major insertion is a new <code><link linkend="element-change"
+                     >&lt;change></link></code>, documenting when we made the alterations. The value
+               of <code><link linkend="attribute-when">@when</link></code> effectively alters the
+               version number of our TAN-A-div file.</para>
+            <para>The third major change populates the <code><link linkend="element-body"
+                     >&lt;body></link></code> with elements that calibrate the new version to the
+               other two. <code><link linkend="element-equate-works">&lt;equate-works></link></code>
+               says that, for the sake of this alignment, the works defined in the UK version and
+               the German version to be considered equivalent. We did not mention the US version
+               because we do not need to. As was mentioned above, anyone using a TAN-A-div should
+               assume that all alignments are transitive unless otherwise specified. That includes
+               specifications like this. If A and B are already defined to be the same work, and we
+               specify that A and C are also the same work, then it must be inferred that B and C
+               are as well. Note, we are not committing ourselves to the proposition that they are
+               in reality the same work. We are making this statement only provisionally, to
+               facilitate the alignment.</para>
+            <para><code><link linkend="element-equate-div-types">&lt;equate-div-types></link></code>
+               declares that what the German version calls Zeile is, for the sake of this alignment,
+               equivalent to what the UK version calls line. Transitivity means that Zeile is
+               inferred to be equivalent to what the US version calls <code>l</code>.</para>
+            <para>A <code><link linkend="element-realign">&lt;realign></link></code> takes care of
+               the apparent typographical error, this time using the US version as the main way to
+               correlate the division references. Any <code><link linkend="element-div-ref"
+                     >&lt;div-ref></link></code> in a <code><link linkend="element-realign"
+                     >&lt;realign></link></code> is wrested from automatic alignment. If there is an
+                     <code><link linkend="element-anchor-div-ref">&lt;anchor-div-ref></link></code>
+               then it will be realigned with that reference and, by the law of transitivity,
+               anything that aligns to it, in this case the UK version.</para>
+            <para>We do not need to reconcile the <code><link linkend="attribute-n">@n</link></code>
+               values of <code>a</code>, <code>b</code>, and <code>c</code> in the German version.
+               The TAN format allows four numeration systems other than Arabic numerals: Roman
+               numerals (uppercase or lowercase), alphabetic numerals (a, b, c, ..., z, aa, bb,
+               ....), and digit-alphabet combinations (e.g., 1a, 1e, 4g) or alphabet-digit
+               combinations (e.g., a4, a5, b5). All these will be treated as their numerical
+               equivalent.</para>
             <para>With these changes, the new version is completely synchronized with the other two.
                Our work may have been simplified if we had just modified the German version ourself.
                But then we would not have been able to connect our work to other TAN files that may
                be depending upon this version. Perhaps we should have gotten in touch with Hans
                Schmidt, the producer of the German version, and suggest that he modify the version
-               to make it align better. In the case of <code><link linkend="element-div-type">&lt;div-type></link></code>, he need merely
-               add another line:
-                  <code><link linkend="element-IRI">&lt;IRI></link>http://dbpedia.org/resource/Line_(poetry)&lt;/IRI></code>. This
-               line, in addition to the preexisting <code><link linkend="element-IRI">&lt;IRI></link></code>, specifies that the two
-               IRIs are equivalent. Perhaps he has reasons for labeling the lines with letters, and
-               perhaps he is reluctant to explicitly identify this poem with <emphasis role="italic"
-                  >Ring around the Rosie</emphasis>. That is within his rights. (Remember, TAN is
-               meant to provide a framework within which opinions can be registered, even against
-               popular opinion.) But the conversation might lead to our pointing out that
-                  <code>n="e"</code> should probably be <code>n="d"</code> and that there is an
-               apparent discrepancy in the last line (the original, printed book has the poem twice
-               on page 438, one with "Holderbuch," the other, "Holderbusch"). In correcting the
-               original transcription and providing a record of the change through
-                  <code><link linkend="element-change">&lt;change></link></code>, he tacitly notifies anyone else using the file that
+               to make it align better. In the case of <code><link linkend="element-div-type"
+                     >&lt;div-type></link></code>, he need merely add another line: <code><link
+                     linkend="element-IRI"
+                  >&lt;IRI></link>http://dbpedia.org/resource/Line_(poetry)&lt;/IRI></code>. This
+               line, in addition to the preexisting <code><link linkend="element-IRI"
+                     >&lt;IRI></link></code>, specifies that the two IRIs are equivalent. Perhaps he
+               has reasons for labeling the lines with letters, and perhaps he is reluctant to
+               explicitly identify this poem with <emphasis role="italic">Ring around the
+                  Rosie</emphasis>. That is within his rights. (Remember, TAN is meant to provide a
+               framework within which opinions can be registered, even against popular opinion.) But
+               the conversation might lead to our pointing out that <code>n="e"</code> should
+               probably be <code>n="d"</code> and that there is an apparent discrepancy in the last
+               line (the original, printed book has the poem twice on page 438, one with
+               "Holderbuch," the other, "Holderbusch"). In correcting the original transcription and
+               providing a record of the change through <code><link linkend="element-change"
+                     >&lt;change></link></code>, he tacitly notifies anyone else using the file that
                corrections have been made.</para>
             <para>There is much more to TAN, of course. The rest of these guidelines provide full
                documentation. In addition, other examples in the TAN repository provide ideas on how
                to develop your other alignments, perhaps more complex. The data files in that
                repository are open for modification, copying, reuse, and so forth. Just remember, if
-               you do that, be certain to change the tag URN of each TAN file's <code><link linkend="attribute-id">@id</link></code> so
-               that it points to an email address or domain name that you own(ed).</para>
+               you do that, be certain to change the tag URN of each TAN file's <code><link
+                     linkend="attribute-id">@id</link></code> so that it points to an email address
+               or domain name that you own(ed).</para>
          </section>
       </chapter>
       <chapter>
@@ -1498,25 +1611,28 @@
                a single work from a single text-bearing object, whether physical or digital (TAN
                regards digital files as objects). There are two types of transcription file, a
                standard generic format and another for TEI XML files. These two types are
-               differentiated by the name of the rootmost element in the file,
-                  <code><link linkend="element-TAN-T">&lt;TAN-T></link></code> and <code>&lt;TEI></code> respectively. In the future,
-               class 1 may expand to include formats intended to segment (and therefore align)
-               visual, audio, or audiovisual files; it may also expand to include a customized form
-               of HTML.</para>
+               differentiated by the name of the rootmost element in the file, <code><link
+                     linkend="element-TAN-T">&lt;TAN-T></link></code> and <code>&lt;TEI></code>
+               respectively. In the future, class 1 may expand to include formats intended to
+               segment (and therefore align) visual, audio, or audiovisual files; it may also expand
+               to include a customized form of HTML.</para>
             <para><emphasis role="bold">Class 2</emphasis>, annotations of textual representations,
                consists of alignment files and lexico-morphology files. There are two types of
                alignment, one for broad, general alignments and another that focuses on detailed
-               specificity. The former, identified by the name <code><link linkend="element-TAN-A-div">&lt;TAN-A-div></link></code> in the
-               rootmost element, aligns any number (one or more) of class 1 files. The latter,
-                  <code><link linkend="element-TAN-A-tok">&lt;TAN-A-tok></link></code>, aligns only pairs of class 1 files. Lexico-morphology
-               files, <code><link linkend="element-TAN-LM">&lt;TAN-LM></link></code>, are used to encode the lexical and morphological (or
-               part of speech) forms of individual words in a given class 1 file. In the future,
+               specificity. The former, identified by the name <code><link
+                     linkend="element-TAN-A-div">&lt;TAN-A-div></link></code> in the rootmost
+               element, aligns any number (one or more) of class 1 files. The latter, <code><link
+                     linkend="element-TAN-A-tok">&lt;TAN-A-tok></link></code>, aligns only pairs of
+               class 1 files. Lexico-morphology files, <code><link linkend="element-TAN-LM"
+                     >&lt;TAN-LM></link></code>, are used to encode the lexical and morphological
+               (or part of speech) forms of individual words in a given class 1 file. In the future,
                class 2 may expand to include syntax (treebanking).</para>
             <para><emphasis role="bold">Class 3</emphasis>, rules for linguistic concepts, consists
-               of tokenization patterns and morphological patterns. The first of these,
-                  <code><link linkend="element-TAN-R-tok">&lt;TAN-R-tok></link></code>, declares a pattern to be used to transform a string
-               of text into a sequence of word tokens for linguistic analysis. The second type,
-                  <code><link linkend="element-TAN-R-mor">&lt;TAN-R-mor></link></code>, is used to declare the grammatical categories or
+               of tokenization patterns and morphological patterns. The first of these, <code><link
+                     linkend="element-TAN-R-tok">&lt;TAN-R-tok></link></code>, declares a pattern to
+               be used to transform a string of text into a sequence of word tokens for linguistic
+               analysis. The second type, <code><link linkend="element-TAN-R-mor"
+                     >&lt;TAN-R-mor></link></code>, is used to declare the grammatical categories or
                features of a given language and to stipulate rules for classifying words. Class 3
                file may expand in the future to include transliteration, lexicography, and syntax. </para>
             <para><emphasis role="italic">Dependence and reference</emphasis>: Class 1 files depend
@@ -1817,35 +1933,34 @@
                         discrepancy. (In &lt;oXygen/> XML editor go to Options > Preferences... >
                         XML > XML Parser > RELAX NG and uncheck the box check ID/IDREF.)</para>
                   </note></para>
-               
-                  <section xml:id="whitespace">
-                     <title>TAN and white space</title>
-                     <para>By default, XML treats multiple instances of space characters (space,
-                        tab, newline, and carriage return) as a single space. If retention of
-                        multiple spaces is important for your research, then the TAN formats are not
-                        an appropriate XML format, because it always assumes space normalization.
-                        TAN is not intended to replicate the appearance of a text-bearing object.
-                        Any project that has this as a requirement should not use the TAN
-                        format.</para>
-                     <para>All leaf <code><link linkend="element-div">&lt;div></link></code>s will
-                        have their space normalized. This will be applied to the concatenation of
-                        all text() descendants. This is important in transcriptions. If any amount
-                        of space exists between two <code><link linkend="element-div"
-                              >&lt;div></link></code>s, it is assumed that there is some amount of
-                        white space between them. If a word straddles <code><link
-                              linkend="element-div">&lt;div></link></code>s, there should be no
-                        space between the end tag of the first <code><link linkend="element-div"
-                              >&lt;div></link></code> and the opening tag of the next.</para>
-                     <para>If two adjacent sibling <code><link linkend="element-div"
-                           >&lt;div></link></code>s have some space between them, no specification
-                        is made as to whether that spacing character should be interpreted as a word
-                        space (U+0020 or the XML entity &amp;#x20;) or one of the other three
-                        possible characters (line feed, carriage return, tab), or a combination
-                        thereof. It is up to TAN-compliant processors to determine, according to the
-                        relevant <code><link linkend="element-div-type">&lt;div-type></link></code>
-                        to interpret the behavior. </para>
-                  </section>
-               
+
+               <section xml:id="whitespace">
+                  <title>TAN and white space</title>
+                  <para>By default, XML treats multiple instances of space characters (space, tab,
+                     newline, and carriage return) as a single space. If retention of multiple
+                     spaces is important for your research, then the TAN formats are not an
+                     appropriate XML format, because it always assumes space normalization. TAN is
+                     not intended to replicate the appearance of a text-bearing object. Any project
+                     that has this as a requirement should not use the TAN format.</para>
+                  <para>All leaf <code><link linkend="element-div">&lt;div></link></code>s will have
+                     their space normalized. This will be applied to the concatenation of all text()
+                     descendants. This is important in transcriptions. If any amount of space exists
+                     between two <code><link linkend="element-div">&lt;div></link></code>s, it is
+                     assumed that there is some amount of white space between them. If a word
+                     straddles <code><link linkend="element-div">&lt;div></link></code>s, there
+                     should be no space between the end tag of the first <code><link
+                           linkend="element-div">&lt;div></link></code> and the opening tag of the
+                     next.</para>
+                  <para>If two adjacent sibling <code><link linkend="element-div"
+                        >&lt;div></link></code>s have some space between them, no specification is
+                     made as to whether that spacing character should be interpreted as a word space
+                     (U+0020 or the XML entity &amp;#x20;) or one of the other three possible
+                     characters (line feed, carriage return, tab), or a combination thereof. It is
+                     up to TAN-compliant processors to determine, according to the relevant
+                           <code><link linkend="element-div-type">&lt;div-type></link></code> to
+                     interpret the behavior. </para>
+               </section>
+
             </section>
             <section xml:id="namespace">
                <title>Namespace</title>
@@ -1954,24 +2069,26 @@
                <title>Data types</title>
                <para>&lt;Stuff about data types></para>
                <para>Data types regularly used: boolean, string, integer, IRI, date, dateTime</para>
-               <para>New paragraph introducing <code><link linkend="attribute-xmllang">@xml:lang</link></code> / xsd:language<note
-                     xml:id="language">
+               <para>New paragraph introducing <code><link linkend="attribute-xmllang"
+                        >@xml:lang</link></code> / xsd:language<note xml:id="language">
                      <title>xsd:language</title>
                      <para>TAN adopts for language identification Best Common Practices (BCP) 47,
                         which standardizes with high precision how languages are identified. For
                         most users of TAN, this will be a simple three-letter abbreviation,
                         sometimes supplemented with a hyphen and a script or regional subtag. For
-                        example, <code>eng</code>, <code>eng-UK</code>, and
-                           <code>eng-UK-Cyrl</code> refer, respectively, to English generally,
-                        English from the United Kingdom, and English from the United Kingdom written
-                        in the Cyrillic script. As a general rule, values of this type should begin
-                        with a three-letter language code, preferably lowercase.</para>
-                     <para>ISO codes for human languages appear in <code><link linkend="attribute-xmllang">@xml:lang</link></code> and
-                           <code><link linkend="element-for-lang">&lt;for-lang></link></code>. The first, an attribute, indicates the
-                        principal language of the text enclosed by the element and its descendants.
-                        But the second, an element, provides a way to make a statement about a
-                        language. For example, <code><link linkend="element-for-lang">&lt;for-lang></link></code> in the context of a
-                        TAN-R-tok file indicates languages for which a tokenization rule is
+                        example, <code>eng</code>, <code>eng-UK</code>, and <code>eng-UK-Cyrl</code>
+                        refer, respectively, to English generally, English from the United Kingdom,
+                        and English from the United Kingdom written in the Cyrillic script. As a
+                        general rule, values of this type should begin with a three-letter language
+                        code, preferably lowercase.</para>
+                     <para>ISO codes for human languages appear in <code><link
+                              linkend="attribute-xmllang">@xml:lang</link></code> and <code><link
+                              linkend="element-for-lang">&lt;for-lang></link></code>. The first, an
+                        attribute, indicates the principal language of the text enclosed by the
+                        element and its descendants. But the second, an element, provides a way to
+                        make a statement about a language. For example, <code><link
+                              linkend="element-for-lang">&lt;for-lang></link></code> in the context
+                        of a TAN-R-tok file indicates languages for which a tokenization rule is
                         appropriate.</para>
                      <para>More reading:<itemizedlist>
                            <listitem>
@@ -1989,9 +2106,9 @@
                      <title>xsd:date, xsd:dateTime</title>
                      <para>TAN adopts the standardized ISO form of dates and times, which begins
                         with the largest unit and moves to the smallest. A simple date takes this
-                        form: <code>YYYY-MM-DD</code>. A time is specified by continuing the
-                        string, first with a <code>T</code> (for time) then with &lt;NEEDS TO
-                        BE WRITTEN>. Examples: &lt;PENDING>.</para>
+                        form: <code>YYYY-MM-DD</code>. A time is specified by continuing the string,
+                        first with a <code>T</code> (for time) then with &lt;NEEDS TO BE WRITTEN>.
+                        Examples: &lt;PENDING>.</para>
                      <para>The normalized value of <code><link linkend="attribute-when"
                            >@when</link></code> that is most recent in a TAN document differentiates
                         the version of a documents that share the same IRI name (see <xref
@@ -2081,15 +2198,15 @@
                </para>
                <para>TAN formats make extensive use of IRIs, kept either in <code><link
                         linkend="attribute-id">@id</link></code> or <code><link
-                        linkend="element-IRI">&lt;IRI></link></code>. Values for
-                     <code><link linkend="element-IRI">&lt;IRI></link></code> do not state where a source is, even though some of them
-                  may look like they do. If the value looks like a web page address (e.g.,
-                     <code>http://...</code>), beware—it might be simply a name that looks like a
-                  URL, but really isn't where you will find the source. Vice versa, any <code><link
-                        linkend="element-location">&lt;location></link></code> that happens fall in
-                  an IRI + name Pattern indicates only where the digital file was found; it is not
-                  to be interpreted by anyone using linked open data as the name of an entity. See
-                     <xref linkend="IRIs_and_linked_data"/> and <xref
+                        linkend="element-IRI">&lt;IRI></link></code>. Values for <code><link
+                        linkend="element-IRI">&lt;IRI></link></code> do not state where a source is,
+                  even though some of them may look like they do. If the value looks like a web page
+                  address (e.g., <code>http://...</code>), beware—it might be simply a name that
+                  looks like a URL, but really isn't where you will find the source. Vice versa, any
+                        <code><link linkend="element-location">&lt;location></link></code> that
+                  happens fall in an IRI + name Pattern indicates only where the digital file was
+                  found; it is not to be interpreted by anyone using linked open data as the name of
+                  an entity. See <xref linkend="IRIs_and_linked_data"/> and <xref
                      linkend="digital_entity_metadata"/>.</para>
                <para>
                   <note>
@@ -2101,75 +2218,74 @@
                   </note>
                </para>
                <section xml:id="tag_urn">
-                     <title>Tag URNs</title>
-                  
-                  
-                     <para>TAN files make extensive use of the tag URN scheme. A <link
-                           xlink:href="http://www.taguri.org">tag URN</link> is a composite of (1) a
-                        namespace, an identifier of the authority of the TAN file and (2) a name, a
-                        string unique relative to the namespace. Those two parts, more
-                        specificially, are:</para>
-                     <para>
-                        <orderedlist>
-                           <listitem>
-                              <para><emphasis role="bold">Namespace.</emphasis>
-                                 <code>tag:</code> + an e-mail address or domain name owned by the
-                                 person or organization that has authorized the creation of the TAN
-                                 file + <code>,</code> + an arbitrary day on which that address or
-                                 domain name was owned. The day is expressed in the form
-                                    <code>YYYY-MM-DD</code>, <code>YYYY-MM</code>, or
-                                    <code>YYYY</code>. A missing <code>MM</code> or
-                                    <code>DD</code> is implicitly assigned the value of
-                                    <code>01</code>.</para>
-                           </listitem>
-                           <listitem>
-                              <para><emphasis role="bold">Name of the TAN file.</emphasis>
-                                 <code>:</code> + an arbitrary string (unique to the namespace
-                                 chosen) chosen by the namespace owner as a label for the entire
-                                 file and related versions. It need not be the same as the filename
-                                 stored on a local directory. You should pick a name that is at
-                                 least somewhat intelligible to human readers.</para>
-                           </listitem>
-                        </orderedlist>
-                     </para>
-                     <para>Tag URNs are used as the IRI name for TAN files for a number of reasons,
-                        foremost of which are their suitability for enduring naming schemes. That
-                        is, they will remain valid centuries from now, long after the death of the
-                        owner of a domain names or email address. It is essential to familiarize
-                        yourself with this simple but powerful IRI system.</para>
-                     <para>Great care must be taken in choosing the IRI name, because you are the
-                        sole guarantor of its uniqueness. <emphasis role="italic">It is permissible
-                           for something to have multiple IRIs, but never acceptable for a IRI to
-                           name more than one thing.</emphasis> It is a good practice to keep a
-                        master checklist of IRI names you have created. If you find yourself
-                        forgetting, or think you run the risk of creating duplicate IRI names, you
-                        should start afresh by creating a new namespace for your tag URNs. That is,
-                        if <code>tag:textalign.net,2015:...</code> seems to be overly cluttered, you
-                        may start a new set of names with something else, e.g.,
-                           <code>tag:textalign.net,2015-01-02:...</code>.</para>
-                     <para>
-                        <example>
-                           <title>TAN IRI names</title>
-                           <programlisting>tag:jan@example.com,1999-01-31:TAN-T001
+                  <title>Tag URNs</title>
+
+
+                  <para>TAN files make extensive use of the tag URN scheme. A <link
+                        xlink:href="http://www.taguri.org">tag URN</link> is a composite of (1) a
+                     namespace, an identifier of the authority of the TAN file and (2) a name, a
+                     string unique relative to the namespace. Those two parts, more specificially,
+                     are:</para>
+                  <para>
+                     <orderedlist>
+                        <listitem>
+                           <para><emphasis role="bold">Namespace.</emphasis>
+                              <code>tag:</code> + an e-mail address or domain name owned by the
+                              person or organization that has authorized the creation of the TAN
+                              file + <code>,</code> + an arbitrary day on which that address or
+                              domain name was owned. The day is expressed in the form
+                                 <code>YYYY-MM-DD</code>, <code>YYYY-MM</code>, or
+                              <code>YYYY</code>. A missing <code>MM</code> or <code>DD</code> is
+                              implicitly assigned the value of <code>01</code>.</para>
+                        </listitem>
+                        <listitem>
+                           <para><emphasis role="bold">Name of the TAN file.</emphasis>
+                              <code>:</code> + an arbitrary string (unique to the namespace chosen)
+                              chosen by the namespace owner as a label for the entire file and
+                              related versions. It need not be the same as the filename stored on a
+                              local directory. You should pick a name that is at least somewhat
+                              intelligible to human readers.</para>
+                        </listitem>
+                     </orderedlist>
+                  </para>
+                  <para>Tag URNs are used as the IRI name for TAN files for a number of reasons,
+                     foremost of which are their suitability for enduring naming schemes. That is,
+                     they will remain valid centuries from now, long after the death of the owner of
+                     a domain names or email address. It is essential to familiarize yourself with
+                     this simple but powerful IRI system.</para>
+                  <para>Great care must be taken in choosing the IRI name, because you are the sole
+                     guarantor of its uniqueness. <emphasis role="italic">It is permissible for
+                        something to have multiple IRIs, but never acceptable for a IRI to name more
+                        than one thing.</emphasis> It is a good practice to keep a master checklist
+                     of IRI names you have created. If you find yourself forgetting, or think you
+                     run the risk of creating duplicate IRI names, you should start afresh by
+                     creating a new namespace for your tag URNs. That is, if
+                        <code>tag:textalign.net,2015:...</code> seems to be overly cluttered, you
+                     may start a new set of names with something else, e.g.,
+                        <code>tag:textalign.net,2015-01-02:...</code>.</para>
+                  <para>
+                     <example>
+                        <title>TAN IRI names</title>
+                        <programlisting>tag:jan@example.com,1999-01-31:TAN-T001
 tag:example.com,2001-04:hamlet-tan-t
 tag:evagriusponticus.net,2014:tan-lm:Evagrius_Praktikos_grc_Guillaumonts
 tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
-                           <para>The first example comes from someone who owned the email address
-                                 <code>jan@example.com</code> on January 31, 1999 (at the stroke of
-                              midnight, Universal Coordinated Time). The other examples follow a
-                              similar logic. The namespace of the second and third examples are tied
-                              to the owners of specific domain names, not those of email addresses.
-                              The <code>2014</code> in the fourth example is shorthand for the first
-                              second of January 1, 2014.</para>
-                        </example>
-                     </para>
-                     <para>Further reading:<itemizedlist>
-                           <listitem>
-                              <para><link xlink:href="https://tools.ietf.org/html/rfc4151">RFC
-                                    4151</link>, the official definition of tag URNs</para>
-                           </listitem>
-                        </itemizedlist></para>
-                  
+                        <para>The first example comes from someone who owned the email address
+                              <code>jan@example.com</code> on January 31, 1999 (at the stroke of
+                           midnight, Universal Coordinated Time). The other examples follow a
+                           similar logic. The namespace of the second and third examples are tied to
+                           the owners of specific domain names, not those of email addresses. The
+                              <code>2014</code> in the fourth example is shorthand for the first
+                           second of January 1, 2014.</para>
+                     </example>
+                  </para>
+                  <para>Further reading:<itemizedlist>
+                        <listitem>
+                           <para><link xlink:href="https://tools.ietf.org/html/rfc4151">RFC
+                                 4151</link>, the official definition of tag URNs</para>
+                        </listitem>
+                     </itemizedlist></para>
+
                </section>
             </section>
             <section xml:id="regular_expressions">
@@ -2531,8 +2647,9 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
             <title>Overall Structure (root)</title>
             <para>All TAN-compliant files, no matter the type or class, follow a common basic
                structure: (1) at least three processing instruction nodes, (2) a namespace node, and
-               (3) a rootmost element that has only two children: <code><link linkend="element-head">&lt;head></link></code> and
-                  <code><link linkend="element-body">&lt;body></link></code> (with one exception, noted below).</para>
+               (3) a rootmost element that has only two children: <code><link linkend="element-head"
+                     >&lt;head></link></code> and <code><link linkend="element-body"
+                     >&lt;body></link></code> (with one exception, noted below).</para>
             <para><emphasis role="italic">Processing instruction nodes</emphasis>: The first of
                three required processing nodes is the standard declaration made in every XML file's
                prolog: <code>&lt;?xml version="1.0" encoding="UTF-8"?></code> After that come two
@@ -2548,7 +2665,7 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   </listitem>
                </itemizedlist></para>
             <para>The first processing instruction node points to the RELAX-NG schema that declares
-               the major rules of the chosen TAN format. The pattern above points to  The second
+               the major rules of the chosen TAN format. The pattern above points to The second
                points to the finely tuned rules, written in Schematron. Both processing instructions
                are required. <code>[PATH]</code> represents the pathname to the schema file, whether
                local or in the master location (see <xref linkend="schemas_and_validation"/>) and
@@ -2644,7 +2761,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                      >&lt;head></link></code>, and <code>&lt;text></code>. See <xref
                   linkend="tan-tei"/>.</para>
             <section xml:id="iri_name">
-               <title><code><link linkend="attribute-id">@id</link></code> and a TAN file's IRI Name</title>
+               <title><code><link linkend="attribute-id">@id</link></code> and a TAN file's IRI
+                  Name</title>
                <para>Every TAN file requires in the rootmost element <code><link
                         linkend="attribute-id">@id</link></code>, which needs special discussion.
                   Its value, termed the TAN file's <emphasis>IRI name</emphasis>, must take the form
@@ -2763,8 +2881,11 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
             <para>All editorial assumptions are placed in <code><link linkend="element-declarations"
                      >&lt;declarations></link></code>, which differs widely in structure from one
                TAN format to the next.</para>
-            <para>Finally comes the section that states who did what when: one or more <code><link linkend="element-agent">&lt;agent></link></code>s,
-               <code><link linkend="element-role">&lt;role></link></code>s, and <code><link linkend="element-change">&lt;change></link></code>s, and zero or more <code><link linkend="element-agentrole">&lt;agentrole></link></code>s.</para>
+            <para>Finally comes the section that states who did what when: one or more <code><link
+                     linkend="element-agent">&lt;agent></link></code>s, <code><link
+                     linkend="element-role">&lt;role></link></code>s, and <code><link
+                     linkend="element-change">&lt;change></link></code>s, and zero or more
+                     <code><link linkend="element-agentrole">&lt;agentrole></link></code>s.</para>
             <para>Detailed descriptions about these elemnets are found in the links above. The rest
                of this section deals with broader issues relevant to constructing metadata.</para>
             <section xml:id="license">
@@ -2779,13 +2900,16 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   license behind your own work than others'. Declaring the who holds what rights
                   over your source(s) may be more difficult, perhaps even risky, and is therefore
                   optional (see below).</para>
-               <para>As an editor, you are strongly encouraged in the <code><link linkend="element-desc">&lt;desc></link></code> element
-                  of <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources></link></code> to emphasize the distinction between
-                  the rights you have over your data and the rights held by others over your source.
-                  A statement something like this is recommended: <code><link linkend="element-desc">&lt;desc></link>The data in this
-                     file, only insofar as it constitutes an independent work, is licensed exclusive
-                     of any licenses held by parties over the source or sources listed
-                     below.&lt;/desc></code></para>
+               <para>As an editor, you are strongly encouraged in the <code><link
+                        linkend="element-desc">&lt;desc></link></code> element of <code><link
+                        linkend="element-rights-excluding-sources"
+                        >&lt;rights-excluding-sources></link></code> to emphasize the distinction
+                  between the rights you have over your data and the rights held by others over your
+                  source. A statement something like this is recommended: <code><link
+                        linkend="element-desc">&lt;desc></link>The data in this file, only insofar
+                     as it constitutes an independent work, is licensed exclusive of any licenses
+                     held by parties over the source or sources listed
+                  below.&lt;/desc></code></para>
                <para>If you find a discrepancy between the two licenses--that of a TAN file and that
                   of its sources--the more restrictive license should be respected. In using a TAN
                   file, it is your responsibility to investigate the entire chain of rights. If a
@@ -2834,9 +2958,10 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   other files that are shared by a single project or provider. Many of these related
                   files will repeat information found in the others. Such repetition opens up the
                   possibility of discrepancies in the course of editing. To avoid duplication and to
-                  minimize the problems inherent in incomplete editing, the
-                     <code><link linkend="element-inclusion">&lt;inclusion></link></code> element is provided. This element points to any TAN
-                  file that is a candidate for including in the parent file.</para>
+                  minimize the problems inherent in incomplete editing, the <code><link
+                        linkend="element-inclusion">&lt;inclusion></link></code> element is
+                  provided. This element points to any TAN file that is a candidate for including in
+                  the parent file.</para>
                <para>An <code><link linkend="element-inclusion">&lt;inclusion></link></code> does
                   nothing on its own. It merely indicates a file that may be used for patterned
                   inclusions. It is made effective through other parts of the file, where
@@ -2871,7 +2996,9 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   for its body.</para>
                <para>
                   <example>
-                     <title><code><link linkend="element-inclusion">&lt;inclusion></link></code>, <code><link linkend="attribute-include">@include</link></code>: metadata</title>
+                     <title><code><link linkend="element-inclusion">&lt;inclusion></link></code>,
+                              <code><link linkend="attribute-include">@include</link></code>:
+                        metadata</title>
                      <programlisting>      ...........
    &lt;inclusion xml:id="HEAD">
       &lt;IRI>tag:parkj@textalign.net,2014:major-work-1-TAN-A-div&lt;/IRI>
@@ -2889,7 +3016,9 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                      </caption>
                   </example>
                   <example>
-                     <title><code><link linkend="element-inclusion">&lt;inclusion></link></code>, <code><link linkend="attribute-include">@include</link></code>: body</title>
+                     <title><code><link linkend="element-inclusion">&lt;inclusion></link></code>,
+                              <code><link linkend="attribute-include">@include</link></code>:
+                        body</title>
                      <programlisting>      ...........
    &lt;inclusion xml:id="ot">
       &lt;IRI>tag:parkj@textalign.net,2014:ot-kjv&lt;/IRI>
@@ -2992,10 +3121,10 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
             2 files (e.g., alignment, morphology) can be created without class 1 files. </para>
          <para>Transcriptions come in two different formats, identified by the rootmost element.
                   <code><link linkend="element-TAN-T">&lt;TAN-T></link></code> is a simple, generic
-            format, as close as one can get to plain text. <code>&lt;TEI></code> (also referred to in this manual as TAN-TEI), on the other
-            hand, is highly expressive. Because the two types function almost identically, the
-            generic TAN-T format is described first, followed by a supplementary discussion
-            pertaining to TAN-TEI.</para>
+            format, as close as one can get to plain text. <code>&lt;TEI></code> (also referred to
+            in this manual as TAN-TEI), on the other hand, is highly expressive. Because the two
+            types function almost identically, the generic TAN-T format is described first, followed
+            by a supplementary discussion pertaining to TAN-TEI.</para>
          <section xml:id="transcription_principles">
             <title>Principles and Assumptions</title>
             <section>
@@ -3345,7 +3474,7 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   such that the morphemes and lexemes are defined by a consistent pattern.</para>
                <para>For cases such as this, one reserved keyword is available,
                      <code>precise-1</code>, which defines the word separator to be any white space
-                  in conjunction with  U+200B (ZERO-WIDTH SPACE = [ZWS]). It is recommended that the
+                  in conjunction with U+200B (ZERO-WIDTH SPACE = [ZWS]). It is recommended that the
                   latter be spelled out with its XML entity, <code>&amp;#x200B;</code>, so that
                   editors and readers of the text can easily see where these markers have been set.
                   In display, however, the ZWS will not introduce space between characters.</para>
@@ -3449,26 +3578,26 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                any other sibling <code><link linkend="element-div">&lt;div></link></code> of the
                same type that would assign its <code><link linkend="attribute-n">@n</link></code> as
                a null value (for example, two prefaces to the same work).</para>
-            
-               <section xml:id="leaf_div_uniqueness_rule">
-                  <title>Flattened References, and the Leaf Div Uniqueness Rule</title>
+
+            <section xml:id="leaf_div_uniqueness_rule">
+               <title>Flattened References, and the Leaf Div Uniqueness Rule</title>
                <para>One of the most important validation rules is the <emphasis>Leaf Div Uniqueness
                      Rule</emphasis>, which states that the flat ref for each leaf <code><link
                         linkend="element-div">&lt;div></link></code> must be unique.</para>
-                  <para>Take for example a work that is structured into books, chapters, and finally
+               <para>Take for example a work that is structured into books, chapters, and finally
                   sections. If you are told to find book 3, chapter 7, section b, line 5, you should
                   be able to find the one place where that applies. There should not be two passages
                   labeled 3.7.b.5.</para>
-                  <para>This rule applies only to leaf <code><link linkend="element-div"
-                           >&lt;div></link></code>s and not to <code><link linkend="element-div"
-                           >&lt;div></link></code>s in general. That is because there are many cases
-                     where a source will begin a major textual unit, interject another one, then
-                     resume the previous one. For example, chapters 24 and 30 in the book of
-                     Proverbs of the Septuagint are split in half and collated. The sequence goes as
-                     follows: 24.1 - 24.22e (22a - 22e are verses not extant in the Hebrew); 30.1 -
-                     30.14; 24.23 - 24.34; and 30.15 - 30.33. If the uniqueness rule applied
-                     universally, this kind of reference system would be impossible.</para>
-               </section>
+               <para>This rule applies only to leaf <code><link linkend="element-div"
+                        >&lt;div></link></code>s and not to <code><link linkend="element-div"
+                        >&lt;div></link></code>s in general. That is because there are many cases
+                  where a source will begin a major textual unit, interject another one, then resume
+                  the previous one. For example, chapters 24 and 30 in the book of Proverbs of the
+                  Septuagint are split in half and collated. The sequence goes as follows: 24.1 -
+                  24.22e (22a - 22e are verses not extant in the Hebrew); 30.1 - 30.14; 24.23 -
+                  24.34; and 30.15 - 30.33. If the uniqueness rule applied universally, this kind of
+                  reference system would be impossible.</para>
+            </section>
          </section>
          <section xml:id="tan-tei">
             <title>Transcriptions Using the Text Encoding Initiative (<code>&lt;TEI></code>)</title>
@@ -3530,7 +3659,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                                  <listitem>
                                     <para>takes a new child element, <code><link
                                              linkend="element-head">&lt;head></link></code>, placed
-                                       between <code>&lt;teiHeader></code> and <code>&lt;text></code></para>
+                                       between <code>&lt;teiHeader></code> and
+                                          <code>&lt;text></code></para>
                                  </listitem>
                               </itemizedlist>
                            </entry>
@@ -3583,20 +3713,18 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
             <para>Like all other TAN files, the rootmost elements of TAN-TEI files must take an
                      <code><link linkend="attribute-id">@id</link></code>, the IRI name. See above,
                   <xref linkend="tag_urn"/>.</para>
-            <para>The <code>&lt;teiHeader></code> is
-               retained, but for TAN purposes, the contents do not matter. If your <code>&lt;teiHeader></code> has any kind of
-               metadata relevant to TAN users, you will need to copy and modify the data for
-               <code>&lt;tan:head></code>. You must follow the TAN rules for <link
-                  linkend="element-head">&lt;head></link> (see <xref
-                  linkend="metadata_head"/> and <xref linkend="transcription_principles"/>). You
-               may find that some of the material you put in <code>&lt;teiHeader></code> is not expected in <code><link
-                     linkend="element-head">&lt;head></link></code> and that some of the
-               expectations of <code><link linkend="element-head">&lt;head></link></code> are
+            <para>The <code>&lt;teiHeader></code> is retained, but for TAN purposes, the contents do
+               not matter. If your <code>&lt;teiHeader></code> has any kind of metadata relevant to
+               TAN users, you will need to copy and modify the data for <code>&lt;tan:head></code>.
+               You must follow the TAN rules for <link linkend="element-head">&lt;head></link> (see
+                  <xref linkend="metadata_head"/> and <xref linkend="transcription_principles"/>).
+               You may find that some of the material you put in <code>&lt;teiHeader></code> is not
+               expected in <code><link linkend="element-head">&lt;head></link></code> and that some
+               of the expectations of <code><link linkend="element-head">&lt;head></link></code> are
                nowhere in your <code>&lt;teiHeader></code>.</para>
             <para>The opening tage of <code>&lt;tan:head></code> (the sibling element between
-                     <code>&lt;teiHeader></code> and
-                     <code>&lt;text></code>) will declare the
-               TAN namespace to be its default, i.e., <code>&lt;head
+                  <code>&lt;teiHeader></code> and <code>&lt;text></code>) will declare the TAN
+               namespace to be its default, i.e., <code>&lt;head
                   xmlns="tag:textalign.net,2015:ns"></code> or <code>&lt;tan:head></code> if the
                prefix <code>tan:</code> has been defined in the rootmost element.</para>
             <para>The TEI <code><link linkend="element-body">&lt;body></link></code> must take
@@ -3628,7 +3756,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   <listitem>
                      <para>Structure: insert new processing instructions (TAN-TEI validation files);
                         adjust rootmost element by supplying IRI name to <code><link
-                              linkend="attribute-id">@id</link></code>, TAN namespace to <code>@xmlns:tan</code>.</para>
+                              linkend="attribute-id">@id</link></code>, TAN namespace to
+                           <code>@xmlns:tan</code>.</para>
                   </listitem>
                   <listitem>
                      <para>Metadata: create new <code><link linkend="element-head"
@@ -3711,7 +3840,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                to that particular <code><link linkend="element-div">&lt;div></link></code> and does
                not affect the rest of the document.</para>
             <section xml:id="class_2_metadata">
-               <title>Class 2 Metadata (<code><link linkend="element-head">&lt;head></link></code>)</title>
+               <title>Class 2 Metadata (<code><link linkend="element-head"
+                  >&lt;head></link></code>)</title>
                <para>Class 2 files share a few common features in their metadata, mostly to
                   facilitate the human-friendly reference system outlined above.</para>
                <para>All class 2 files have as their sources nothing other than class 1 files.
@@ -3775,12 +3905,13 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   preserve the Leaf Div Uniqueness Rule. Furthermore, in a TAN-A-div file, this kind
                   of renaming changes any default alignments. See <xref linkend="tan-a-div"
                   />.</para>
-               
-               
-               
+
+
+
             </section>
             <section xml:id="class_2_body">
-               <title>Class 2 Data Patterns (<code><link linkend="element-body">&lt;body></link></code>)</title>
+               <title>Class 2 Data Patterns (<code><link linkend="element-body"
+                     >&lt;body></link></code>)</title>
                <para>The three types of class 2 files treat different kinds of phenomena, so their
                   data looks quite different. Nevertheless, a few elements and attributes are shared
                   by two or more formats.</para>
@@ -3928,7 +4059,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                with the Greek before going to the Latin.</para>
          </section>
          <section xml:id="tan-a-div">
-            <title>Division-Based Alignments (<code><link linkend="element-TAN-A-div">&lt;TAN-A-div></link></code>)</title>
+            <title>Division-Based Alignments (<code><link linkend="element-TAN-A-div"
+                     >&lt;TAN-A-div></link></code>)</title>
             <para>TAN-A-div is the format for macroscopic, division-based alignment, and is
                dedicated to aligning any number of versions of any number of works on the basis of
                      <code><link linkend="element-div">&lt;div></link></code>s, or even smaller, ad
@@ -3958,18 +4090,22 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                align with anything that aligns with B.</para>
             <section>
                <title>Rootmost Element and Header</title>
-               <para>The rootmost element of a TAN division-based alignment file is
-                     <code><link linkend="element-TAN-A-div">&lt;TAN-A-div></link></code>.</para>
-               <para>Under <code><link linkend="element-head">&lt;head></link></code>, some special rules apply to TAN-A-div
-                  types.</para>
-               <para>One or more <code><link linkend="element-source">&lt;source></link></code>s must be declared (<xref
-                     linkend="source_and_see-also"/>). An alignment file with only a single source
-                  may seem at first strange, but it may be useful for self-alignment (i.e., to
-                  indicate places where a source reuses itself). </para>
-               <para><code><link linkend="element-declarations">&lt;declarations></link></code> takes zero or more of the declarations common to
-                  class 2 files: <code><link linkend="element-tokenization">&lt;tokenization></link></code>,
-                     <code><link linkend="element-suppress-div-types">&lt;suppress-div-types></link></code>, <code><link linkend="element-rename-div-types">&lt;rename-div-types></link></code>,
-                     <code><link linkend="element-rename-div-ns">&lt;rename-div-ns></link></code>. See <xref linkend="class_2_common"/>.</para>
+               <para>The rootmost element of a TAN division-based alignment file is <code><link
+                        linkend="element-TAN-A-div">&lt;TAN-A-div></link></code>.</para>
+               <para>Under <code><link linkend="element-head">&lt;head></link></code>, some special
+                  rules apply to TAN-A-div types.</para>
+               <para>One or more <code><link linkend="element-source">&lt;source></link></code>s
+                  must be declared (<xref linkend="source_and_see-also"/>). An alignment file with
+                  only a single source may seem at first strange, but it may be useful for
+                  self-alignment (i.e., to indicate places where a source reuses itself). </para>
+               <para><code><link linkend="element-declarations">&lt;declarations></link></code>
+                  takes zero or more of the declarations common to class 2 files: <code><link
+                        linkend="element-tokenization">&lt;tokenization></link></code>, <code><link
+                        linkend="element-suppress-div-types">&lt;suppress-div-types></link></code>,
+                        <code><link linkend="element-rename-div-types"
+                     >&lt;rename-div-types></link></code>, <code><link
+                        linkend="element-rename-div-ns">&lt;rename-div-ns></link></code>. See <xref
+                     linkend="class_2_common"/>.</para>
             </section>
             <section>
                <title>Data (<code><link linkend="element-body">&lt;body></link></code>)</title>
@@ -4033,8 +4169,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                </section>
                <section>
                   <title>Step 2: Correlate Division Types</title>
-                  
-                  
+
+
                   <para>This second step does for div types what the first step did for works.
                      Across all sources, every <code><link linkend="element-div-type"
                            >&lt;div-type></link></code> that shares an <code><link
@@ -4060,8 +4196,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                </section>
                <section>
                   <title>Step 3: Refine Segmentation</title>
-                  
-                  
+
+
                   <para>Suppose you have two transcriptions where a phrase ending one leaf
                            <code><link linkend="element-div">&lt;div></link></code> in source A
                      actually corresponds to the beginning phrase of the next leaf <code><link
@@ -4086,13 +4222,13 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                </section>
                <section>
                   <title>Step 4: Realign Versions of the Same Work</title>
-                  
-                  
-                  
-                  
-                  
-                  
-                  
+
+
+
+
+
+
+
                   <para>After step 3, some of the divisions and segments of a work may not be
                      properly aligned. Segments newly created by <code><link
                            linkend="element-split-leaf-div-at">&lt;split-leaf-div-at></link></code>s
@@ -4163,7 +4299,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
             </section>
          </section>
          <section xml:id="tan-a-tok">
-            <title>Token-Based Alignments (<code><link linkend="element-TAN-A-tok">&lt;TAN-A-tok></link></code>)</title>
+            <title>Token-Based Alignments (<code><link linkend="element-TAN-A-tok"
+                     >&lt;TAN-A-tok></link></code>)</title>
             <para>TAN-A-tok files provide a microscopic view of how two texts relate to each other.
                The format is intended to allow you to specify exactly where, how, and why two
                transcriptions align, and to do so on the most granular level possible. TAN-A-tok
@@ -4212,8 +4349,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                of reuse.</para>
             <section>
                <title>Rootmost Element and Header</title>
-               <para>The rootmost element of a token-based alignment file is
-                     <code><link linkend="element-TAN-A-tok">&lt;TAN-A-tok></link></code>.</para>
+               <para>The rootmost element of a token-based alignment file is <code><link
+                        linkend="element-TAN-A-tok">&lt;TAN-A-tok></link></code>.</para>
                <para>The TAN-A-tok header builds upon the core and class 2 headers (see <xref
                      linkend="metadata_head"/> and <xref linkend="class_2_metadata"/>).</para>
                <para>TAN-A-tok files take exactly two <code><link linkend="element-source"
@@ -4221,9 +4358,11 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   order in which processors will handle the data. Each <code><link
                         linkend="element-source">&lt;source></link></code> must take an <code><link
                         linkend="attribute-xmlid">@xml:id</link></code>.</para>
-               <para><code><link linkend="element-declarations">&lt;declarations></link></code> takes, in addition to all the elements allowed
-                  in class 2 files (see <xref linkend="class_2_metadata"/>), two elements unique to
-                  TAN-A-tok: <code><link linkend="element-bitext-relation">&lt;bitext-relation></link></code> and <code><link linkend="element-reuse-type">&lt;reuse-type></link></code>. The
+               <para><code><link linkend="element-declarations">&lt;declarations></link></code>
+                  takes, in addition to all the elements allowed in class 2 files (see <xref
+                     linkend="class_2_metadata"/>), two elements unique to TAN-A-tok: <code><link
+                        linkend="element-bitext-relation">&lt;bitext-relation></link></code> and
+                        <code><link linkend="element-reuse-type">&lt;reuse-type></link></code>. The
                   first of these describes genealogical descent of the two versions, and is
                   concerned with directionality. The second avoids these categories altogether and
                   focuses on the qualitative aspect of the bitext relationship.</para>
@@ -4265,22 +4404,24 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   only one source. That is, a half-null alignment implies—to drawn from the
                   terminology of translation studies—implicitation or explicitation of entire
                   words.</para>
-               <para>Because nothing can be implied in a TAN-A-tok file, the status of
-                     <code><link linkend="attribute-in-progress">@in-progress</link></code> (default = true) is very important, since it is the
-                  only way to signal that you have said all you intend to say about the bitext.
-                  (Remember, <code>in-progress = "false"</code> does not mean that the file is free
-                  of errors, only that the entire scope of work has been finished.)</para>
+               <para>Because nothing can be implied in a TAN-A-tok file, the status of <code><link
+                        linkend="attribute-in-progress">@in-progress</link></code> (default = true)
+                  is very important, since it is the only way to signal that you have said all you
+                  intend to say about the bitext. (Remember, <code>in-progress = "false"</code> does
+                  not mean that the file is free of errors, only that the entire scope of work has
+                  been finished.)</para>
                <para>A fully aligned bitext may result in a TAN-A-tok file with a very long
                         <code><link linkend="element-body">&lt;body></link></code> (in contrast to
                   the typical TAN-A-div file). That does not mean, however, that everything in a
                   transcription <emphasis>must </emphasis>be encoded or described. In writing and
                   editing a TAN-A-tok file you do not commit you to saying everything possible about
                   the bitext. You might choose to encode only a few token clusters.</para>
-               <para>If there are multiple IDs in <code><link linkend="attribute-reuse-type">@reuse-type</link></code> or
-                     <code><link linkend="attribute-bitext-relation">@bitext-relation</link></code>, the union, not the intersection, of those values
-                  is to be understood. For example, <code>reuse-type="trans para"</code> might be
-                  used to indicate that the token cluster results from translation, paraphrase, or
-                  both. </para>
+               <para>If there are multiple IDs in <code><link linkend="attribute-reuse-type"
+                        >@reuse-type</link></code> or <code><link
+                        linkend="attribute-bitext-relation">@bitext-relation</link></code>, the
+                  union, not the intersection, of those values is to be understood. For example,
+                     <code>reuse-type="trans para"</code> might be used to indicate that the token
+                  cluster results from translation, paraphrase, or both. </para>
             </section>
          </section>
          <section xml:id="tan-lm">
@@ -4313,8 +4454,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
             <section>
                <title>Rootmost Element and Header</title>
                <para>The rootmost element of a lexico-morphological file is TAN-LM.</para>
-               <para>A mandatory <code><link linkend="element-source">&lt;source></link></code> element points to the one and only
-                  TAN-T(EI) file that is the object of analysis. </para>
+               <para>A mandatory <code><link linkend="element-source">&lt;source></link></code>
+                  element points to the one and only TAN-T(EI) file that is the object of analysis. </para>
                <para><code><link linkend="element-declarations">&lt;declarations></link></code>
                   takes the elements common to class 2 files (see <xref linkend="class_2_metadata"
                   />. It takes two other elements unique to TAN-LM: <code><link
@@ -4413,7 +4554,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                for referring to specific word tokens in one or more class 1 files. Because TAN-R-tok
                files are used extensively by both class 1 and class 2 files, it is important that
                you familiarize yourself with how a TAN-R-tok file will be invoked by them. See <xref
-                  linkend="element-recommended-tokenization"/> and <xref linkend="tokenization"/>.</para>
+                  linkend="element-recommended-tokenization"/> and <xref linkend="tokenization"
+               />.</para>
             <para>Tokenization files may be either language specific or language agnostic. The
                latter are used for patterns that recur throughout languages, and are anticipated to
                be heavily used and limited in number. So for convenience, TAN provides the following
@@ -4467,8 +4609,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
             </section>
             <section>
                <title>Rootmost Element and Header</title>
-               <para>The rootmost element of a tokenizing file is
-                  <code><link linkend="element-TAN-R-tok">&lt;TAN-R-tok></link></code>.</para>
+               <para>The rootmost element of a tokenizing file is <code><link
+                        linkend="element-TAN-R-tok">&lt;TAN-R-tok></link></code>.</para>
                <para>Many TAN-R-tok files will have no <code><link linkend="element-source"
                         >&lt;source></link></code> element. Those that do may describe previous
                   works that have been used as sources for the patterning rules.</para>
@@ -4545,13 +4687,15 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
             </section>
             <section>
                <title>Rootmost Element and Header</title>
-               <para>The rootmost element of a morphological rule file is
-                     <code><link linkend="element-TAN-R-mor">&lt;TAN-R-mor></link></code>.</para>
-               <para>Zero or more <code><link linkend="element-source">&lt;source></link></code> elements describe the grammars or related
-                  works that account for the rules declared in the TAN file. If the rules are not
-                  based upon any published work, then <code><link linkend="element-source">&lt;source></link></code> may be omitted. Any
-                  TAN-R-mor file without a source will assume to be based upon the personal
-                  knowledge of the <code><link linkend="element-agent">&lt;agent></link></code>s who edited the file.</para>
+               <para>The rootmost element of a morphological rule file is <code><link
+                        linkend="element-TAN-R-mor">&lt;TAN-R-mor></link></code>.</para>
+               <para>Zero or more <code><link linkend="element-source">&lt;source></link></code>
+                  elements describe the grammars or related works that account for the rules
+                  declared in the TAN file. If the rules are not based upon any published work, then
+                        <code><link linkend="element-source">&lt;source></link></code> may be
+                  omitted. Any TAN-R-mor file without a source will assume to be based upon the
+                  personal knowledge of the <code><link linkend="element-agent"
+                     >&lt;agent></link></code>s who edited the file.</para>
                <para><code><link linkend="element-declarations">&lt;declarations></link></code>
                   takes two types of element, one or more <code><link linkend="element-for-lang"
                         >&lt;for-lang></link></code>s that take a standard language code (see <xref
@@ -4654,29 +4798,44 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
          <xi:include href="inclusions/TAN-R-tok.xml"/>
          <xi:include href="inclusions/TAN-R-mor.xml"/>
       </chapter>
-      <chapter xml:id="tan-x">
+      <chapter xml:id="tan-rdf">
          <title>Experimental TAN files, RDF Assertions</title>
          <para>Many projects using the TAN format will find the need to include in their workflow
             declarations about related concepts, and to include that in their workflow. In many
             cases, there are adequate formats that are available. At other times, you may want to
             encode your information in a format much like your other TAN files. For those cases, an
-            experimental format, TAN-X, is provided.</para>
+            experimental format, TAN-rdf, is provided.</para>
          <para>The concept is relatively simple: allow a user to make RDF-compliant declarations
             about concepts invoked, but never defined in the TAN format. Take, for example, two TAN
             files, where one is a commentary or set of notes on the other. Properly speaking, each
             TAN-T(EI) file should define the work differently. But you want to be able to indicate
             that one work is a set of annotations or comments to the other. In such a case, you
-            would write a separate TAN-X file that declares this relationship, and you would point
-            to that TAN-X file in the two transcription files, via a computer-readable form of
+            would write a separate TAN-rdf file that declares this relationship, and you would point
+            to that TAN-rdf file in the two transcription files, via a computer-readable form of
                   <code><link linkend="element-desc">&lt;desc></link></code> under <code><link
                   linkend="element-work">&lt;work></link></code>.</para>
-         <xi:include href="inclusions/TAN-X.xml"/>
+      </chapter>
+      <chapter>
+         <title>Class 4: Keyword Vocabulary, General RDF-friendly Statements</title>
+         <para>[This part has not been drafted. Individual chapters may contain ideas in the rough
+               that will later be developed into comprehensive prose.]</para>
+         <section>
+            <title>Keyword Vocabulary (<code>TAN-key</code>)</title>
+            <xi:include href="inclusions/TAN-key.xml"/>
+         </section>
+         <section>
+            <title>RDF assertions (<code>TAN-rdf</code>)</title>
+            <xi:include href="inclusions/TAN-rdf.xml"/>
+         </section>
       </chapter>
    </part>
+   
    <part>
       <title>Working with the Text Alignment Network</title>
-      <partintro><para>[This part has not been drafted. Individual chapters may contain ideas in the rough that will
-            later be developed into comprehensive prose.]</para></partintro>
+      <partintro>
+         <para>[This part has not been drafted. Individual chapters may contain ideas in the rough
+            that will later be developed into comprehensive prose.]</para>
+      </partintro>
       <chapter>
          <title>Built-in Editorial Aids for TAN Files</title>
          <para>Editing any XML file can be a chore. Perhaps a file is invalid, and for unclear
@@ -4722,13 +4881,14 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
             number. TAN-R-tok: tok + description + version number.</para>
          <para>If you have a text with notes, distinguish between whether the notes are intrinsic or
             extrinsic to the work. </para>
-         <para>If the former, treat them as such and give them <code><link linkend="element-div">&lt;div></link></code>s. But don't try
-            to keep everything in document order. That is, either put notes at the end of every
-            relevant div, or put them all the way at the end of the work. And you can also probably
-            delete the note signals. You can use self-alignment to make sure that notes are pegged
-            to their proper place. And there you have the opportunity to attach the note not only to
-            the word or punctuation to which it is attached, but you can try to sense the entire
-            range of text that the author wished the note to apply to.</para>
+         <para>If the former, treat them as such and give them <code><link linkend="element-div"
+                  >&lt;div></link></code>s. But don't try to keep everything in document order. That
+            is, either put notes at the end of every relevant div, or put them all the way at the
+            end of the work. And you can also probably delete the note signals. You can use
+            self-alignment to make sure that notes are pegged to their proper place. And there you
+            have the opportunity to attach the note not only to the word or punctuation to which it
+            is attached, but you can try to sense the entire range of text that the author wished
+            the note to apply to.</para>
          <para>If the notes are not part of the work per se -- for example, translator's notes in a
             translation of a primary source -- you may treat the notes as a work in their own right.
             Just create a separate TAN file for those notes, then create an alignment file to
@@ -4768,11 +4928,13 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
             the data into a simplified, normalized data set. The second step queries and arranges
             that simplified data.</para>
          <para>The first step: collect all the files that have been invoked. Normalize the data
-            according to the <code><link linkend="element-declarations">&lt;declarations></link></code>s specified in the <code><link linkend="element-head">&lt;head></link></code>.
-            Transcription references should be homogenized to have a common nomenclature. It may
-            help to flatten the hierarchy of the transcription data into leaf
-            <code><link linkend="element-div">&lt;div></link></code>s, i.e., pairs consisting of a leaf <code><link linkend="element-div">&lt;div></link></code> ref and
-            the text values for that ref.</para>
+            according to the <code><link linkend="element-declarations"
+               >&lt;declarations></link></code>s specified in the <code><link linkend="element-head"
+                  >&lt;head></link></code>. Transcription references should be homogenized to have a
+            common nomenclature. It may help to flatten the hierarchy of the transcription data into
+            leaf <code><link linkend="element-div">&lt;div></link></code>s, i.e., pairs consisting
+            of a leaf <code><link linkend="element-div">&lt;div></link></code> ref and the text
+            values for that ref.</para>
          <para>The second step, that of transforming or querying the text, becomes much simpler and
             easier.</para>
       </chapter>

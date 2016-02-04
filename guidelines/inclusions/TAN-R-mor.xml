@@ -26,19 +26,23 @@ text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;<
 <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
       (<code><link linkend="attribute-include">@include</link></code> |
          (
-<emphasis>TAN-X.rng:</emphasis>
+<emphasis>TAN-A-tok.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
-<emphasis>TAN-A-tok.rng:</emphasis>
+<emphasis>TAN-key.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
 <emphasis>TAN-R-mor.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
+<emphasis>  ~OR~</emphasis>
+<emphasis>TAN-rdf.rng:</emphasis>
+<code><link linkend="attribute-xmlid">@xml:id</link></code>
 ,
             (<code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
-            <code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
-            <code><link linkend="element-name">&lt;name&gt;</link></code>+,
-            <code><link linkend="element-desc">&lt;desc&gt;</link></code>*)))</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><caution><itemizedlist><listitem><para>Included features must be written for every language declared by the current file.</para></listitem></itemizedlist></caution><example><title><code>&lt;feature&gt;</code></title><programlisting>   &lt;head&gt;
+               (   (<code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
+   <code><link linkend="element-name">&lt;name&gt;</link></code>+,
+   <code><link linkend="element-desc">&lt;desc&gt;</link></code>*) |
+               <code><link linkend="attribute-which">@which</link></code>))))</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><caution><itemizedlist><listitem><para>Included features must be written for every language declared by the current file.</para></listitem></itemizedlist></caution><example><title><code>&lt;feature&gt;</code></title><programlisting>   &lt;head&gt;
       &lt;declarations ed-when="2015-03-03" ed-who="kalvesmaki"&gt;
          &lt;for-lang&gt;eng&lt;/for-lang&gt;
          <emphasis role="bold">&lt;feature xml:id="quote-cl"&gt;</emphasis>

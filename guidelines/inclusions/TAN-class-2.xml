@@ -105,6 +105,7 @@
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
    <code><link linkend="attribute-include">@include</link></code> |
    <code><link linkend="attribute-src">@src</link></code></synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><caution><itemizedlist><listitem><para>Implicitation not allowed for sources with empty values for <code><link linkend="attribute-n">@n</link></code>.</para></listitem><listitem><para>Implicitation not allowed for sources where ignoring types would result in duplicate flattened references to leaf divs, a violation of the Leaf Div Uniqueness Rule.</para></listitem></itemizedlist></caution><example><title><code>&lt;implicit-div-type-refs&gt;</code></title><programlisting>      &lt;declarations&gt;
+         &lt;suppress-div-types src="eng-1790" div-type-ref="poem"/&gt;
          <emphasis role="bold">&lt;implicit-div-type-refs src="eng-uk eng-us ger eng-1790"/&gt;</emphasis>
          &lt;tokenization src="eng-us" which="general-1"/&gt;
       &lt;/declarations&gt;
@@ -122,7 +123,39 @@
       &lt;/declarations&gt;
 </programlisting></example></section><section xml:id="element-rename"><title><code>&lt;rename&gt;</code></title><para>The element <code>rename</code> indicates the name of a <code><link linkend="element-div">&lt;div&gt;</link></code> <code><link linkend="attribute-n">@n</link></code> or <code><link linkend="attribute-type">@type</link></code> that should be changed, and the name to which it should be changed.</para><para>To change Roman numerals or letter numeration to Arabic numerals use this syntax: </para><para>&lt;rename old="#i" new="#1"/&gt; </para><para>&lt;rename old="#a" new="#1"/&gt; </para><synopsis><emphasis>Definition:</emphasis>
    <code><link linkend="attribute-old">@old</link></code>,
-   <code><link linkend="attribute-new">@new</link></code></synopsis><para>Used by: <code><link linkend="element-rename-div-ns">&lt;rename-div-ns&gt;</link></code> <code><link linkend="element-rename-div-types">&lt;rename-div-types&gt;</link></code> </para><caution><itemizedlist><listitem><para>Old values may not be duplicated</para></listitem><listitem><para>New values may not be duplicated</para></listitem><listitem><para>You may not change a name into one that is already in use by the source as a div-type id.</para></listitem><listitem><para>For rename-div-types, every div type must be found in every source.</para></listitem><listitem><para>For rename-div-ns, every n value must be found in at least one div type in every source.</para></listitem><listitem><para>For rename-div-ns, if a numeration system is to be renamed, the appropriate rename element must have the valid pattern identifiers in <code><link linkend="attribute-old">@old</link></code> and <code><link linkend="attribute-new">@new</link></code> for letter, Roman, or Arabic numerals -- #a, #i, or #1 respectively</para></listitem><listitem><para><code><link linkend="attribute-old">@old</link></code> and <code><link linkend="attribute-new">@new</link></code> may not take the same value</para></listitem><listitem><para>If converting <code><link linkend="attribute-n">@n</link></code> numeration from letter numerals to Arabic, the <code><link linkend="attribute-n">@n</link></code> values for each div type of each source must be predominantly letter numerals</para></listitem><listitem><para>If converting <code><link linkend="attribute-n">@n</link></code> numeration from roman numerals to Arabic, the <code><link linkend="attribute-n">@n</link></code> values for each div type of each source must be predominantly Roman numerals</para></listitem></itemizedlist></caution><example><title><code>&lt;rename&gt;</code></title><programlisting>      &lt;declarations&gt;
+   <code><link linkend="attribute-new">@new</link></code></synopsis><para>Used by: <code><link linkend="element-rename-div-ns">&lt;rename-div-ns&gt;</link></code> <code><link linkend="element-rename-div-types">&lt;rename-div-types&gt;</link></code> </para><caution><itemizedlist><listitem><para>Old values may not be duplicated</para></listitem><listitem><para>New values may not be duplicated</para></listitem><listitem><para>You may not change a name into one that is already in use by the source as a div-type id.</para></listitem><listitem><para>For rename-div-types, every div type must be found in every source.</para></listitem><listitem><para>For rename-div-ns, every n value must be found in at least one div type in every source.</para></listitem><listitem><para>For rename-div-ns, if a numeration system is to be renamed, the appropriate rename element must have the valid pattern identifiers in <code><link linkend="attribute-old">@old</link></code> and <code><link linkend="attribute-new">@new</link></code> for letter, Roman, or Arabic numerals -- #a, #i, or #1 respectively</para></listitem><listitem><para><code><link linkend="attribute-old">@old</link></code> and <code><link linkend="attribute-new">@new</link></code> may not take the same value</para></listitem><listitem><para>If converting <code><link linkend="attribute-n">@n</link></code> numeration from letter numerals to Arabic, the <code><link linkend="attribute-n">@n</link></code> values for each div type of each source must be predominantly letter numerals</para></listitem><listitem><para>If converting <code><link linkend="attribute-n">@n</link></code> numeration from roman numerals to Arabic, the <code><link linkend="attribute-n">@n</link></code> values for each div type of each source must be predominantly Roman numerals</para></listitem></itemizedlist></caution><example><title><code>&lt;rename&gt;</code></title><programlisting>   &lt;head&gt;
+      &lt;name&gt;token-based alignment of two versions of Ring o Roses&lt;/name&gt;
+      &lt;master-location href="http://textalign.net/release/1/dev/examples/TAN-A-tok/ringoroses.01+03.token.1.xml"/&gt;
+      &lt;rights-excluding-sources rights-holder="kalvesmaki"&gt;
+         .........
+      &lt;/rights-excluding-sources&gt;
+      &lt;source xml:id="eng"&gt;
+         .........
+         &lt;name&gt;1881 version of Ring around the Roses&lt;/name&gt;
+         &lt;location href="../ring-o-roses.eng.1881.xml" when-accessed="2015-05-24-04:00"/&gt;
+      &lt;/source&gt;
+      &lt;source xml:id="ger"&gt;
+         .........
+         &lt;name&gt;German version of Ring around the Roses&lt;/name&gt;
+         &lt;location href="../ring-o-roses.deu.1897.xml" when-accessed="2015-05-24-04:00"/&gt;
+      &lt;/source&gt;
+      &lt;see-also&gt;
+         &lt;relationship which="cousin edition"/&gt;
+         &lt;IRI&gt;tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring03:alt&lt;/IRI&gt;
+         &lt;name&gt;Edition that renames div types, values&lt;/name&gt;
+         &lt;location href="ringoroses.01+03.token.2.xml" when-accessed="2015-08-04"/&gt;
+      &lt;/see-also&gt;
+      &lt;declarations&gt;
+         &lt;rename-div-types src="ger"&gt;
+            <emphasis role="bold">&lt;rename old="Zeile" new="line"/&gt;</emphasis>
+         &lt;/rename-div-types&gt;
+         &lt;rename-div-ns src="ger" div-type-ref="line"&gt;
+            <emphasis role="bold">&lt;rename old="#a" new="#1"/&gt;</emphasis>
+         &lt;/rename-div-ns&gt;
+         &lt;tokenization src="eng ger" which="general-1"/&gt;
+      &lt;/declarations&gt;
+   &lt;/head&gt;
+</programlisting></example><example><title><code>&lt;rename&gt;</code></title><programlisting>      &lt;declarations&gt;
          .........
          &lt;reuse-type xml:id="correlationGeneral"&gt;
             .........
@@ -142,6 +175,19 @@
       <code><link linkend="attribute-div-type-ref">@div-type-ref</link></code>,
       <code><link linkend="element-rename">&lt;rename&gt;</link></code>+)</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><caution><itemizedlist><listitem><para>Every div type value must valid in every source.</para></listitem><listitem><para>May not refer to a div type with a name that has been changed elsewhere.</para></listitem><listitem><para>For rename-div-ns, every n value must be found in at least one div type in every source.</para></listitem><listitem><para>For rename-div-ns, if a numeration system is to be renamed, the appropriate rename element must have the valid pattern identifiers in <code><link linkend="attribute-old">@old</link></code> and <code><link linkend="attribute-new">@new</link></code> for letter, Roman, or Arabic numerals -- #a, #i, or #1 respectively</para></listitem><listitem><para><code><link linkend="attribute-old">@old</link></code> and <code><link linkend="attribute-new">@new</link></code> may not take the same value</para></listitem><listitem><para>If converting <code><link linkend="attribute-n">@n</link></code> numeration from letter numerals to Arabic, the <code><link linkend="attribute-n">@n</link></code> values for each div type of each source must be predominantly letter numerals</para></listitem><listitem><para>If converting <code><link linkend="attribute-n">@n</link></code> numeration from roman numerals to Arabic, the <code><link linkend="attribute-n">@n</link></code> values for each div type of each source must be predominantly Roman numerals</para></listitem></itemizedlist></caution><example><title><code>&lt;rename-div-ns&gt;</code></title><programlisting>      &lt;declarations&gt;
          .........
+         &lt;reuse-type xml:id="correlationGeneral"&gt;
+            .........
+         &lt;/reuse-type&gt;
+         &lt;rename-div-types src="ger"&gt;
+            &lt;rename old="Zeile" new="line"/&gt;
+         &lt;/rename-div-types&gt;
+         <emphasis role="bold">&lt;rename-div-ns src="ger" div-type-ref="line"&gt;</emphasis>
+            &lt;rename old="#a" new="#1"/&gt;
+         <emphasis role="bold">&lt;/rename-div-ns&gt;</emphasis>
+         &lt;tokenization src="eng ger" which="general-1"/&gt;
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;rename-div-ns&gt;</code></title><programlisting>      &lt;declarations&gt;
+         .........
          &lt;tokenization src="eng ger" which="general-1"/&gt;
          <emphasis role="bold">&lt;rename-div-ns src="ger" div-type-ref="Zeile"&gt;</emphasis>
             &lt;rename old="#a" new="#1"/&gt;
@@ -154,12 +200,30 @@
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
    <code><link linkend="attribute-include">@include</link></code> |
       (<code><link linkend="attribute-src">@src</link></code>,
-      <code><link linkend="element-rename">&lt;rename&gt;</link></code>+)</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><important><itemizedlist><listitem><para>Renaming div types for a source where div type references are declared to be implicit has no effect.</para></listitem></itemizedlist></important><caution><itemizedlist><listitem><para>For rename-div-types, every div type must be found in every source.</para></listitem></itemizedlist></caution></section><section xml:id="element-suppress-div-types"><title><code>&lt;suppress-div-types&gt;</code></title><para>The element <code>suppress-div-types</code> marks div types in a source that should be suppressed in references. Any suppression of a div type must preserve the Leaf Div Uniqueness Rule (LDUR). See <xref linkend="leaf_div_uniqueness_rule"/></para><para>This element will be used seldomly, for cases where a source has a div type that is dispensable in text references. </para><synopsis><emphasis>Definition:</emphasis>
+      <code><link linkend="element-rename">&lt;rename&gt;</link></code>+)</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><important><itemizedlist><listitem><para>Renaming div types for a source where div type references are declared to be implicit has no effect.</para></listitem></itemizedlist></important><caution><itemizedlist><listitem><para>For rename-div-types, every div type must be found in every source.</para></listitem></itemizedlist></caution><example><title><code>&lt;rename-div-types&gt;</code></title><programlisting>      &lt;declarations&gt;
+         .........
+         &lt;reuse-type xml:id="correlationGeneral"&gt;
+            .........
+         &lt;/reuse-type&gt;
+         <emphasis role="bold">&lt;rename-div-types src="ger"&gt;</emphasis>
+            &lt;rename old="Zeile" new="line"/&gt;
+         <emphasis role="bold">&lt;/rename-div-types&gt;</emphasis>
+         &lt;rename-div-ns src="ger" div-type-ref="line"&gt;
+            &lt;rename old="#a" new="#1"/&gt;
+         &lt;/rename-div-ns&gt;
+         &lt;tokenization src="eng ger" which="general-1"/&gt;
+      &lt;/declarations&gt;
+</programlisting></example></section><section xml:id="element-suppress-div-types"><title><code>&lt;suppress-div-types&gt;</code></title><para>The element <code>suppress-div-types</code> marks div types in a source that should be suppressed in references. Any suppression of a div type must preserve the Leaf Div Uniqueness Rule (LDUR). See <xref linkend="leaf_div_uniqueness_rule"/></para><para>This element will be used seldomly, for cases where a source has a div type that is dispensable in text references. </para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
    <code><link linkend="attribute-include">@include</link></code> |
       (<code><link linkend="attribute-src">@src</link></code>,
-      <code><link linkend="attribute-div-type-ref">@div-type-ref</link></code>)</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para></section><section xml:id="element-tok"><title><code>&lt;tok&gt;</code></title><para>The element <code>tok</code> identifies one or more words or word fragments. Used by class 2 files to make assertions about specific words. </para><synopsis><emphasis>Definition:</emphasis>
+      <code><link linkend="attribute-div-type-ref">@div-type-ref</link></code>)</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><example><title><code>&lt;suppress-div-types&gt;</code></title><programlisting>      &lt;declarations&gt;
+         <emphasis role="bold">&lt;suppress-div-types src="eng-1790" div-type-ref="poem"/&gt;</emphasis>
+         &lt;implicit-div-type-refs src="eng-uk eng-us ger eng-1790"/&gt;
+         &lt;tokenization src="eng-us" which="general-1"/&gt;
+      &lt;/declarations&gt;
+</programlisting></example></section><section xml:id="element-tok"><title><code>&lt;tok&gt;</code></title><para>The element <code>tok</code> identifies one or more words or word fragments. Used by class 2 files to make assertions about specific words. </para><synopsis><emphasis>Definition:</emphasis>
 
    <emphasis>TAN-A-div.rng:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
@@ -186,6 +250,21 @@
       &lt;/split-leaf-div-at&gt;
 </programlisting></example><example><title><code>&lt;tok&gt;</code></title><programlisting>&lt;TAN-A-tok TAN-version="1" id="tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring02"&gt;
    &lt;head&gt;
+      &lt;name&gt;token-based alignment of two versions of Ring o Roses&lt;/name&gt;
+      &lt;master-location href="http://textalign.net/release/1/dev/examples/TAN-A-tok/ringoroses.01+02.token.1.xml"/&gt;
+      &lt;rights-excluding-sources rights-holder="park"&gt;
+         .........
+      &lt;/rights-excluding-sources&gt;
+      &lt;source xml:id="ring1881"&gt;
+         .........
+         &lt;name&gt;Ring o roses 1881&lt;/name&gt;
+         &lt;location href="../ring-o-roses.eng.1881.xml" when-accessed="2015-01-17"/&gt;
+      &lt;/source&gt;
+      &lt;source xml:id="ring1987"&gt;
+         .........
+         &lt;name&gt;Ring o roses 1987&lt;/name&gt;
+         &lt;location href="../ring-o-roses.eng.1987.xml" when-accessed="2015-01-17"/&gt;
+      &lt;/source&gt;
       &lt;declarations&gt;
          .........
          &lt;reuse-type xml:id="adaptation"&gt;
@@ -264,35 +343,7 @@
       &lt;/align&gt;
    &lt;/body&gt;
 &lt;/TAN-A-tok&gt;
-</programlisting></example></section><section xml:id="element-tokenization"><title><code>&lt;tokenization&gt;</code></title><para>The element <code>tokenization</code> specifies a tokenization method to be applied to one or more sources, either by (1) pointing to a TAN-R-tok file, (2) pointing by IDREF to a <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code> in a source, or (3) using a reserved tokenization keyword.</para><para>Class 2 files that do not require tokenization (i.e., TAN-A-div) must include <code><link linkend="element-tokenization">&lt;tokenization&gt;</link></code> only if the file uses elements (e.g., <code><link linkend="element-split-leaf-div-at">&lt;split-leaf-div-at&gt;</link></code>) that assume tokenization. </para><para><emphasis><code><link linkend="attribute-which">@which</link></code>, if present, must take one of the following values</emphasis><itemizedlist><listitem><para><emphasis role="bold">general-1</emphasis></para><para><link xlink:href="../../TAN-R-tok/general-1.xml">Master file</link></para><para>IRI: <code> tag:textalign.net,2015:tan-r-tok:general-1</code></para><para>This tokenization pattern takes any text in any language, offsets punctuation and other
-         non-word characters with spaces, then returns a sequence of strings tokenized by white
-         space. It is meant to be applied to transcriptions prepared by agents who have given little
-         or no thought to tokenization, and to be suitable for languages and texts where individual
-         punctuation marks are deemed important objects of linguistic analysis. This is a core
-         tokenization pattern, so can be invoked by the elements tokenization or
-         recommended-tokenization simply by setting <code><link linkend="attribute-which">@which</link></code> to the value "general-1". Or you may use
-         the full IRI + name pattern.
-         
-         
-      </para></listitem><listitem><para><emphasis role="bold">general-words-only-1</emphasis></para><para><link xlink:href="../../TAN-R-tok/general-words-only-1.xml">Master file</link></para><para>IRI: <code> tag:textalign.net,2015:tan-r-tok:general-words-only-1</code></para><para>This tokenization pattern takes any text in any language and tokenizes on any non-word
-         characters (i.e., spaces and punctuation). This tokenization pattern is suitable for
-         transcriptions of texts where punctuation is anachronistic or not an object of linguistic
-         analysis. This is a core tokenization pattern, so can be invoked by the elements
-         tokenization or recommended-tokenization simply by setting <code><link linkend="attribute-which">@which</link></code> to the value "precise-1".
-         Or you may use the full IRI + name pattern.
-         
-         
-      </para></listitem><listitem><para><emphasis role="bold">precise-1</emphasis></para><para><link xlink:href="../../TAN-R-tok/precise-1.xml">Master file</link></para><para>IRI: <code> tag:textalign.net,2015:tan-r-tok:precise-1</code></para><para>This tokenization pattern takes any text in any language and after space normalization
-         returns a tokenization based only on white space and U+200B (ZERO-WIDTH SPACE). The
-         zero-width spaces are intended to allow transcribers to mark word or morpheme morpheme
-         boundaries where ordinarily no space would be provided (and where one would wish not to
-         display space). In addition, if a transcriber wishes to suppress a word space, as a point
-         of tokenization, one of U+2000..U+200A should be used. This is a core tokenization pattern,
-         so can be invoked by the elements tokenization or recommended-tokenization simply by
-         setting <code><link linkend="attribute-which">@which</link></code> to the value "precise-1". Or you may use the full IRI + name pattern.
-         
-         
-      </para></listitem></itemizedlist></para><synopsis><emphasis>Definition:</emphasis>
+</programlisting></example></section><section xml:id="element-tokenization"><title><code>&lt;tokenization&gt;</code></title><para>The element <code>tokenization</code> specifies a tokenization method to be applied to one or more sources, either by (1) pointing to a TAN-R-tok file, (2) pointing by IDREF to a <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code> in a source, or (3) using a reserved tokenization keyword.</para><para>Class 2 files that do not require tokenization (i.e., TAN-A-div) must include <code><link linkend="element-tokenization">&lt;tokenization&gt;</link></code> only if the file uses elements (e.g., <code><link linkend="element-split-leaf-div-at">&lt;split-leaf-div-at&gt;</link></code>) that assume tokenization. </para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
    <code><link linkend="attribute-include">@include</link></code> |
@@ -305,6 +356,7 @@
                <code><link linkend="element-checksum">&lt;checksum&gt;</link></code>*,
                <code><link linkend="element-location">&lt;location&gt;</link></code>+))))</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><caution><itemizedlist><listitem><para> Common errors in <code><link linkend="element-tokenization">&lt;tokenization&gt;</link></code>: <itemizedlist><listitem><para><code><link linkend="element-location">&lt;location&gt;</link></code> must point to an available document.</para></listitem><listitem><para>If there is no <code><link linkend="element-location">&lt;location&gt;</link></code> then <code><link linkend="attribute-which">@which</link></code> must be present.</para></listitem><listitem><para>If <code><link linkend="element-tokenization">&lt;tokenization&gt;</link></code> points to a <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code> the latter must point
             to an available document.</para></listitem><listitem><para>The value of <code><link linkend="attribute-which">@which</link></code> must be either in the source or a reserved keyword.</para></listitem><listitem><para>If a core TAN-R-tok file is invoked, it must be available.</para></listitem><listitem><para>Tokenizations must accommodate every language used by a source.</para></listitem></itemizedlist> </para></listitem></itemizedlist></caution><example><title><code>&lt;tokenization&gt;</code></title><programlisting>      &lt;declarations&gt;
+         &lt;suppress-div-types src="eng-1790" div-type-ref="poem"/&gt;
          &lt;implicit-div-type-refs src="eng-uk eng-us ger eng-1790"/&gt;
          <emphasis role="bold">&lt;tokenization src="eng-us" which="general-1"/&gt;</emphasis>
       &lt;/declarations&gt;
@@ -316,10 +368,12 @@
          <emphasis role="bold">&lt;tokenization src="ring1881 ring1987" which="general-1"/&gt;</emphasis>
       &lt;/declarations&gt;
 </programlisting></example><example><title><code>&lt;tokenization&gt;</code></title><programlisting>      &lt;declarations&gt;
-         .........
-         &lt;reuse-type xml:id="correlationGeneral"&gt;
-            .........
-         &lt;/reuse-type&gt;
+         &lt;rename-div-types src="ger"&gt;
+            &lt;rename old="Zeile" new="line"/&gt;
+         &lt;/rename-div-types&gt;
+         &lt;rename-div-ns src="ger" div-type-ref="line"&gt;
+            &lt;rename old="#a" new="#1"/&gt;
+         &lt;/rename-div-ns&gt;
          <emphasis role="bold">&lt;tokenization src="eng ger" which="general-1"/&gt;</emphasis>
       &lt;/declarations&gt;
 </programlisting></example><example><title><code>&lt;tokenization&gt;</code></title><programlisting>      &lt;declarations&gt;
@@ -337,7 +391,42 @@
 </programlisting></example></section><section xml:id="attribute-chars"><title><code>@chars</code></title><para>The attribute <code>chars</code> list of one or more characters, specified through Arabic numerals, the keyword 'last' or 'last-X' (where X is a valid number), joined with commas or hyphens.</para><para>Examples: '1', 'last', 'last-3 - last-1', '1, 3, 5, 7 - 11, last-8, last'</para><synopsis><emphasis>Definition:</emphasis>
 string (pattern ((last)|(last-\d+)|(\d+))(\s*-\s*((last)|(last-\d+)|(\d+)))?(\s*,?\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*)</synopsis><para>Used by: <code><link linkend="element-tok">&lt;tok&gt;</link></code> </para><note><itemizedlist><listitem><para>If you insert a question mark anywhere as the value of <code><link linkend="attribute-chars">@chars</link></code> and then validate the file, you will be given a list of allowed values.</para></listitem></itemizedlist></note><important><itemizedlist><listitem><para>Any <code><link linkend="attribute-chars">@chars</link></code> applied to a token that has combining characters will identify only base characters, grouped with any immediately following combining characters.</para></listitem></itemizedlist></important></section><section xml:id="attribute-cont"><title><code>@cont</code></title><para>The attribute <code>cont</code> indicates whether the current element is continued by the next one and to be treated as a single one. Value must be 1 or true, implied by the very presence of the attribute. If you wish to decare it to be false, delete the attribute altogether.</para><para>This feature is useful in <code><link linkend="element-tok">&lt;tok&gt;</link></code> for rejoining the portion of a word split across two <code><link linkend="element-div">&lt;div&gt;</link></code>s, or for uniting into a single linguistic token multiple tokens separated by the tokenization process, e.g., "pom pom". </para><para>This feature is useful in <code><link linkend="element-div-ref">&lt;div-ref&gt;</link></code> for creating groups of references that cannot be expressed in a single <code><link linkend="element-div-ref">&lt;div-ref&gt;</link></code>  </para><synopsis><emphasis>Definition:</emphasis>
 boolean (pattern true|1)</synopsis><para>Used by: <code><link linkend="element-anchor-div-ref">&lt;anchor-div-ref&gt;</link></code> <code><link linkend="element-div-ref">&lt;div-ref&gt;</link></code> <code><link linkend="element-tok">&lt;tok&gt;</link></code> <code><link linkend="element-tok">&lt;tok&gt;</link></code> </para><caution><itemizedlist><listitem><para><code><link linkend="attribute-cont">@cont</link></code> may not be used to join sources that belong to more than one work.</para></listitem><listitem><para>Any <code><link linkend="element-div-ref">&lt;div-ref&gt;</link></code> taking <code><link linkend="attribute-cont">@cont</link></code> must be followed by at least one other <code><link linkend="element-div-ref">&lt;div-ref&gt;</link></code>.</para></listitem><listitem><para>Any <code><link linkend="element-tok">&lt;tok&gt;</link></code> taking <code><link linkend="attribute-cont">@cont</link></code> must be followed by at least one other <code><link linkend="element-tok">&lt;tok&gt;</link></code>.</para></listitem></itemizedlist></caution></section><section xml:id="attribute-div-type-ref"><title><code>@div-type-ref</code></title><para>The attribute <code>div-type-ref</code> is used by class-2 files to point to one or more <code><link linkend="element-div-type">&lt;div-type&gt;</link></code>s in class-1 files. Permits multiple values separated by spaces.</para><synopsis><emphasis>Definition:</emphasis>
-text</synopsis><para>Used by: <code><link linkend="element-div-type-ref">&lt;div-type-ref&gt;</link></code> <code><link linkend="element-rename-div-ns">&lt;rename-div-ns&gt;</link></code> <code><link linkend="element-suppress-div-types">&lt;suppress-div-types&gt;</link></code> </para><example><title><code>@div-type-ref</code></title><programlisting>   &lt;body&gt;
+text</synopsis><para>Used by: <code><link linkend="element-div-type-ref">&lt;div-type-ref&gt;</link></code> <code><link linkend="element-rename-div-ns">&lt;rename-div-ns&gt;</link></code> <code><link linkend="element-suppress-div-types">&lt;suppress-div-types&gt;</link></code> </para><example><title><code>@div-type-ref</code></title><programlisting>&lt;TAN-A-div TAN-version="1" id="tag:parkj@textalign.net,2015:ring01-TAN-A-ring02"&gt;
+   &lt;head&gt;
+      &lt;name&gt;div-based alignment of multiple versions of Ring o Roses&lt;/name&gt;
+      &lt;master-location href="http://textalign.net/release/1/dev/examples/TAN-A-div/ringoroses.div.1.xml"/&gt;
+      &lt;master-location href="ringoroses.div.1.xml"/&gt;
+      &lt;rights-excluding-sources rights-holder="park"&gt;
+         .........
+      &lt;/rights-excluding-sources&gt;
+      &lt;source xml:id="eng-uk"&gt;
+         .........
+         &lt;name&gt;Transcription of ring around the roses in English (UK)&lt;/name&gt;
+         &lt;location href="../ring-o-roses.eng.1881.xml" when-accessed="2015-03-10"/&gt;
+      &lt;/source&gt;
+      &lt;source xml:id="eng-us"&gt;
+         .........
+         &lt;name&gt;Transcription of ring around the roses in English (US)&lt;/name&gt;
+         &lt;location href="../ring-o-roses.eng.1987.xml" when-accessed="2014-08-13"/&gt;
+      &lt;/source&gt;
+      &lt;source xml:id="ger"&gt;
+         .........
+         &lt;name&gt;Transcription of an ancestor of Ring around the roses in German&lt;/name&gt;
+         &lt;location href="../ring-o-roses.deu.1897.xml" when-accessed="2014-08-13"/&gt;
+      &lt;/source&gt;
+      &lt;source xml:id="eng-1790"&gt;
+         .........
+         &lt;name&gt;TAN transcription of 1790 version of Ring around the Rosie reported by Newell in
+                1883&lt;/name&gt;
+         &lt;location href="../ring-o-roses.eng.1957.xml" when-accessed="2015-07-26-04:00"/&gt;
+      &lt;/source&gt;
+      &lt;declarations&gt;
+         &lt;suppress-div-types src="eng-1790"<emphasis role="bold"> div-type-ref="poem"</emphasis>/&gt;
+         &lt;implicit-div-type-refs src="eng-uk eng-us ger eng-1790"/&gt;
+         &lt;tokenization src="eng-us" which="general-1"/&gt;
+      &lt;/declarations&gt;
+   &lt;/head&gt;
+   &lt;body&gt;
       &lt;equate-works src="eng-uk ger"/&gt;
       &lt;equate-div-types&gt;
          <emphasis role="bold">&lt;div-type-ref src="ger" div-type-ref="Zeile"/&gt;</emphasis>
@@ -351,18 +440,55 @@ text</synopsis><para>Used by: <code><link linkend="element-div-type-ref">&lt;div
          &lt;div-ref src="ger" ref="e"/&gt;
       &lt;/realign&gt;
    &lt;/body&gt;
+&lt;/TAN-A-div&gt;
 </programlisting></example><example><title><code>@div-type-ref</code></title><programlisting>      &lt;declarations&gt;
          .........
-         &lt;tokenization src="eng ger" which="general-1"/&gt;
-         &lt;rename-div-ns src="ger"<emphasis role="bold"> div-type-ref="Zeile"</emphasis>&gt;
+         &lt;reuse-type xml:id="correlationGeneral"&gt;
+            .........
+         &lt;/reuse-type&gt;
+         &lt;rename-div-types src="ger"&gt;
+            &lt;rename old="Zeile" new="line"/&gt;
+         &lt;/rename-div-types&gt;
+         &lt;rename-div-ns src="ger"<emphasis role="bold"> div-type-ref="line"</emphasis>&gt;
             &lt;rename old="#a" new="#1"/&gt;
-            &lt;rename old="e" new="4"/&gt;
          &lt;/rename-div-ns&gt;
-         &lt;implicit-div-type-refs src="eng ger"/&gt;
+         &lt;tokenization src="eng ger" which="general-1"/&gt;
       &lt;/declarations&gt;
 </programlisting></example></section><section xml:id="attribute-new"><title><code>@new</code></title><para>The attribute <code>new</code> new name for an <code><link linkend="attribute-n">@n</link></code> or <code><link linkend="attribute-type">@type</link></code> that is to be renamed</para><synopsis><emphasis>Definition:</emphasis>
    string (pattern \w*) |
-   string (pattern #1)</synopsis><para>Used by: <code><link linkend="element-rename">&lt;rename&gt;</link></code> </para><example><title><code>@new</code></title><programlisting>      &lt;declarations&gt;
+   string (pattern #1)</synopsis><para>Used by: <code><link linkend="element-rename">&lt;rename&gt;</link></code> </para><example><title><code>@new</code></title><programlisting>   &lt;head&gt;
+      &lt;name&gt;token-based alignment of two versions of Ring o Roses&lt;/name&gt;
+      &lt;master-location href="http://textalign.net/release/1/dev/examples/TAN-A-tok/ringoroses.01+03.token.1.xml"/&gt;
+      &lt;rights-excluding-sources rights-holder="kalvesmaki"&gt;
+         .........
+      &lt;/rights-excluding-sources&gt;
+      &lt;source xml:id="eng"&gt;
+         .........
+         &lt;name&gt;1881 version of Ring around the Roses&lt;/name&gt;
+         &lt;location href="../ring-o-roses.eng.1881.xml" when-accessed="2015-05-24-04:00"/&gt;
+      &lt;/source&gt;
+      &lt;source xml:id="ger"&gt;
+         .........
+         &lt;name&gt;German version of Ring around the Roses&lt;/name&gt;
+         &lt;location href="../ring-o-roses.deu.1897.xml" when-accessed="2015-05-24-04:00"/&gt;
+      &lt;/source&gt;
+      &lt;see-also&gt;
+         &lt;relationship which="cousin edition"/&gt;
+         &lt;IRI&gt;tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring03:alt&lt;/IRI&gt;
+         &lt;name&gt;Edition that renames div types, values&lt;/name&gt;
+         &lt;location href="ringoroses.01+03.token.2.xml" when-accessed="2015-08-04"/&gt;
+      &lt;/see-also&gt;
+      &lt;declarations&gt;
+         &lt;rename-div-types src="ger"&gt;
+            &lt;rename old="Zeile"<emphasis role="bold"> new="line"</emphasis>/&gt;
+         &lt;/rename-div-types&gt;
+         &lt;rename-div-ns src="ger" div-type-ref="line"&gt;
+            &lt;rename old="#a"<emphasis role="bold"> new="#1"</emphasis>/&gt;
+         &lt;/rename-div-ns&gt;
+         &lt;tokenization src="eng ger" which="general-1"/&gt;
+      &lt;/declarations&gt;
+   &lt;/head&gt;
+</programlisting></example><example><title><code>@new</code></title><programlisting>      &lt;declarations&gt;
          .........
          &lt;reuse-type xml:id="correlationGeneral"&gt;
             .........
@@ -376,7 +502,39 @@ text</synopsis><para>Used by: <code><link linkend="element-div-type-ref">&lt;div
       &lt;/declarations&gt;
 </programlisting></example></section><section xml:id="attribute-old"><title><code>@old</code></title><para>The attribute <code>old</code> name of an <code><link linkend="attribute-n">@n</link></code> or <code><link linkend="attribute-type">@type</link></code> in a source to be renamed</para><synopsis><emphasis>Definition:</emphasis>
    string (pattern \w*) |
-   string (pattern #[ai])</synopsis><para>Used by: <code><link linkend="element-rename">&lt;rename&gt;</link></code> </para><example><title><code>@old</code></title><programlisting>      &lt;declarations&gt;
+   string (pattern #[ai])</synopsis><para>Used by: <code><link linkend="element-rename">&lt;rename&gt;</link></code> </para><example><title><code>@old</code></title><programlisting>   &lt;head&gt;
+      &lt;name&gt;token-based alignment of two versions of Ring o Roses&lt;/name&gt;
+      &lt;master-location href="http://textalign.net/release/1/dev/examples/TAN-A-tok/ringoroses.01+03.token.1.xml"/&gt;
+      &lt;rights-excluding-sources rights-holder="kalvesmaki"&gt;
+         .........
+      &lt;/rights-excluding-sources&gt;
+      &lt;source xml:id="eng"&gt;
+         .........
+         &lt;name&gt;1881 version of Ring around the Roses&lt;/name&gt;
+         &lt;location href="../ring-o-roses.eng.1881.xml" when-accessed="2015-05-24-04:00"/&gt;
+      &lt;/source&gt;
+      &lt;source xml:id="ger"&gt;
+         .........
+         &lt;name&gt;German version of Ring around the Roses&lt;/name&gt;
+         &lt;location href="../ring-o-roses.deu.1897.xml" when-accessed="2015-05-24-04:00"/&gt;
+      &lt;/source&gt;
+      &lt;see-also&gt;
+         &lt;relationship which="cousin edition"/&gt;
+         &lt;IRI&gt;tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring03:alt&lt;/IRI&gt;
+         &lt;name&gt;Edition that renames div types, values&lt;/name&gt;
+         &lt;location href="ringoroses.01+03.token.2.xml" when-accessed="2015-08-04"/&gt;
+      &lt;/see-also&gt;
+      &lt;declarations&gt;
+         &lt;rename-div-types src="ger"&gt;
+            &lt;rename<emphasis role="bold"> old="Zeile"</emphasis> new="line"/&gt;
+         &lt;/rename-div-types&gt;
+         &lt;rename-div-ns src="ger" div-type-ref="line"&gt;
+            &lt;rename<emphasis role="bold"> old="#a"</emphasis> new="#1"/&gt;
+         &lt;/rename-div-ns&gt;
+         &lt;tokenization src="eng ger" which="general-1"/&gt;
+      &lt;/declarations&gt;
+   &lt;/head&gt;
+</programlisting></example><example><title><code>@old</code></title><programlisting>      &lt;declarations&gt;
          .........
          &lt;reuse-type xml:id="correlationGeneral"&gt;
             .........
@@ -394,6 +552,21 @@ string (pattern ((last)|(last-\d+)|(\d+))(\s*-\s*((last)|(last-\d+)|(\d+)))?(\s*
       &lt;/split-leaf-div-at&gt;
 </programlisting></example><example><title><code>@pos</code></title><programlisting>&lt;TAN-A-tok TAN-version="1" id="tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring02"&gt;
    &lt;head&gt;
+      &lt;name&gt;token-based alignment of two versions of Ring o Roses&lt;/name&gt;
+      &lt;master-location href="http://textalign.net/release/1/dev/examples/TAN-A-tok/ringoroses.01+02.token.1.xml"/&gt;
+      &lt;rights-excluding-sources rights-holder="park"&gt;
+         .........
+      &lt;/rights-excluding-sources&gt;
+      &lt;source xml:id="ring1881"&gt;
+         .........
+         &lt;name&gt;Ring o roses 1881&lt;/name&gt;
+         &lt;location href="../ring-o-roses.eng.1881.xml" when-accessed="2015-01-17"/&gt;
+      &lt;/source&gt;
+      &lt;source xml:id="ring1987"&gt;
+         .........
+         &lt;name&gt;Ring o roses 1987&lt;/name&gt;
+         &lt;location href="../ring-o-roses.eng.1987.xml" when-accessed="2015-01-17"/&gt;
+      &lt;/source&gt;
       &lt;declarations&gt;
          .........
          &lt;reuse-type xml:id="adaptation"&gt;
@@ -475,7 +648,35 @@ string (pattern ((last)|(last-\d+)|(\d+))(\s*-\s*((last)|(last-\d+)|(\d+)))?(\s*
 </programlisting></example></section><section xml:id="attribute-ref"><title><code>@ref</code></title><para>The attribute <code>ref</code> lists references to one or more <code><link linkend="element-div">&lt;div&gt;</link></code>s. It consists of one or more atomic references joined with commas or hyphens. An atomic reference is a string value that points to a single <code><link linkend="element-div">&lt;div&gt;</link></code></para><para>Examples: 'bk.2:ch.4', '2.4 - 2.7, 2.9', 'poem 5, poem 6:line 6 - poem 7:line 2'</para><para>Any hyphen used as a range should be preceded and followed by at least one space character.</para><para>For more, see <xref linkend="class_2_body"/> </para><synopsis><emphasis>Definition:</emphasis>
 string (pattern (\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*)((\s*,|\s+-)\s+(\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*))*)</synopsis><para>Used by: <code><link linkend="element-anchor-div-ref">&lt;anchor-div-ref&gt;</link></code> <code><link linkend="element-div-ref">&lt;div-ref&gt;</link></code> <code><link linkend="element-tok">&lt;tok&gt;</link></code> </para><caution><itemizedlist><listitem><para>In any <code><link linkend="attribute-ref">@ref</link></code> whose values might be distributed, every range must begin and end with siblings.</para></listitem></itemizedlist></caution><note><itemizedlist><listitem><para>If you add a question mark to a partially completed reference, you will get in response a list of all possible valid references</para></listitem></itemizedlist></note><example><title><code>@ref</code></title><programlisting>&lt;TAN-A-div TAN-version="1" id="tag:parkj@textalign.net,2015:ring01-TAN-A-ring02"&gt;
    &lt;head&gt;
+      &lt;name&gt;div-based alignment of multiple versions of Ring o Roses&lt;/name&gt;
+      &lt;master-location href="http://textalign.net/release/1/dev/examples/TAN-A-div/ringoroses.div.1.xml"/&gt;
+      &lt;master-location href="ringoroses.div.1.xml"/&gt;
+      &lt;rights-excluding-sources rights-holder="park"&gt;
+         .........
+      &lt;/rights-excluding-sources&gt;
+      &lt;source xml:id="eng-uk"&gt;
+         .........
+         &lt;name&gt;Transcription of ring around the roses in English (UK)&lt;/name&gt;
+         &lt;location href="../ring-o-roses.eng.1881.xml" when-accessed="2015-03-10"/&gt;
+      &lt;/source&gt;
+      &lt;source xml:id="eng-us"&gt;
+         .........
+         &lt;name&gt;Transcription of ring around the roses in English (US)&lt;/name&gt;
+         &lt;location href="../ring-o-roses.eng.1987.xml" when-accessed="2014-08-13"/&gt;
+      &lt;/source&gt;
+      &lt;source xml:id="ger"&gt;
+         .........
+         &lt;name&gt;Transcription of an ancestor of Ring around the roses in German&lt;/name&gt;
+         &lt;location href="../ring-o-roses.deu.1897.xml" when-accessed="2014-08-13"/&gt;
+      &lt;/source&gt;
+      &lt;source xml:id="eng-1790"&gt;
+         .........
+         &lt;name&gt;TAN transcription of 1790 version of Ring around the Rosie reported by Newell in
+                1883&lt;/name&gt;
+         &lt;location href="../ring-o-roses.eng.1957.xml" when-accessed="2015-07-26-04:00"/&gt;
+      &lt;/source&gt;
       &lt;declarations&gt;
+         &lt;suppress-div-types src="eng-1790" div-type-ref="poem"/&gt;
          &lt;implicit-div-type-refs src="eng-uk eng-us ger eng-1790"/&gt;
          &lt;tokenization src="eng-us" which="general-1"/&gt;
       &lt;/declarations&gt;
@@ -500,10 +701,38 @@ string (pattern (\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*)((\s*,|\s+-)\s+(\w+\W\w*(\W\w
          &lt;tok src="ring1987"<emphasis role="bold"> ref="l 1"</emphasis> pos="1"/&gt;
       &lt;/align&gt;
 </programlisting></example></section><section xml:id="attribute-src"><title><code>@src</code></title><para>The attribute <code>src</code> refers to the ID of one or more <code><link linkend="element-source">&lt;source&gt;</link></code>s </para><synopsis><emphasis>Definition:</emphasis>
-text</synopsis><para>Used by: <code><link linkend="element-anchor-div-ref">&lt;anchor-div-ref&gt;</link></code> <code><link linkend="element-div-ref">&lt;div-ref&gt;</link></code> <code><link linkend="element-div-type-ref">&lt;div-type-ref&gt;</link></code> <code><link linkend="element-equate-works">&lt;equate-works&gt;</link></code> <code><link linkend="element-implicit-div-type-refs">&lt;implicit-div-type-refs&gt;</link></code> <code><link linkend="element-rename-div-ns">&lt;rename-div-ns&gt;</link></code> <code><link linkend="element-rename-div-types">&lt;rename-div-types&gt;</link></code> <code><link linkend="element-suppress-div-types">&lt;suppress-div-types&gt;</link></code> <code><link linkend="element-tok">&lt;tok&gt;</link></code> <code><link linkend="element-tokenization">&lt;tokenization&gt;</link></code> </para><caution><itemizedlist><listitem><para>Must point to <code><link linkend="attribute-xmlid">@xml:id</link></code> value of <code><link linkend="element-source">&lt;source&gt;</link></code></para></listitem><listitem><para>Must not contain duplicates</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Replace content of attribute with all valid values </emphasis>To see a list of all possible valid values, add any invalid content, then choose
+text</synopsis><para>Used by: <code><link linkend="element-anchor-div-ref">&lt;anchor-div-ref&gt;</link></code> <code><link linkend="element-div-ref">&lt;div-ref&gt;</link></code> <code><link linkend="element-div-type-ref">&lt;div-type-ref&gt;</link></code> <code><link linkend="element-equate-works">&lt;equate-works&gt;</link></code> <code><link linkend="element-implicit-div-type-refs">&lt;implicit-div-type-refs&gt;</link></code> <code><link linkend="element-rename-div-ns">&lt;rename-div-ns&gt;</link></code> <code><link linkend="element-rename-div-types">&lt;rename-div-types&gt;</link></code> <code><link linkend="element-suppress-div-types">&lt;suppress-div-types&gt;</link></code> <code><link linkend="element-tok">&lt;tok&gt;</link></code> <code><link linkend="element-tokenization">&lt;tokenization&gt;</link></code> </para><caution><itemizedlist><listitem><para>Not a complete match</para></listitem><listitem><para>Must point to <code><link linkend="attribute-xmlid">@xml:id</link></code> value of <code><link linkend="element-source">&lt;source&gt;</link></code></para></listitem><listitem><para>Must not contain duplicates</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Replace content of attribute with all valid values </emphasis>To see a list of all possible valid values, add any invalid content, then choose
                this quick fix to replace all content with every possible value.</para></tip><example><title><code>@src</code></title><programlisting>&lt;TAN-A-div TAN-version="1" id="tag:parkj@textalign.net,2015:ring01-TAN-A-ring02"&gt;
    &lt;head&gt;
+      &lt;name&gt;div-based alignment of multiple versions of Ring o Roses&lt;/name&gt;
+      &lt;master-location href="http://textalign.net/release/1/dev/examples/TAN-A-div/ringoroses.div.1.xml"/&gt;
+      &lt;master-location href="ringoroses.div.1.xml"/&gt;
+      &lt;rights-excluding-sources rights-holder="park"&gt;
+         .........
+      &lt;/rights-excluding-sources&gt;
+      &lt;source xml:id="eng-uk"&gt;
+         .........
+         &lt;name&gt;Transcription of ring around the roses in English (UK)&lt;/name&gt;
+         &lt;location href="../ring-o-roses.eng.1881.xml" when-accessed="2015-03-10"/&gt;
+      &lt;/source&gt;
+      &lt;source xml:id="eng-us"&gt;
+         .........
+         &lt;name&gt;Transcription of ring around the roses in English (US)&lt;/name&gt;
+         &lt;location href="../ring-o-roses.eng.1987.xml" when-accessed="2014-08-13"/&gt;
+      &lt;/source&gt;
+      &lt;source xml:id="ger"&gt;
+         .........
+         &lt;name&gt;Transcription of an ancestor of Ring around the roses in German&lt;/name&gt;
+         &lt;location href="../ring-o-roses.deu.1897.xml" when-accessed="2014-08-13"/&gt;
+      &lt;/source&gt;
+      &lt;source xml:id="eng-1790"&gt;
+         .........
+         &lt;name&gt;TAN transcription of 1790 version of Ring around the Rosie reported by Newell in
+                1883&lt;/name&gt;
+         &lt;location href="../ring-o-roses.eng.1957.xml" when-accessed="2015-07-26-04:00"/&gt;
+      &lt;/source&gt;
       &lt;declarations&gt;
+         &lt;suppress-div-types<emphasis role="bold"> src="eng-1790"</emphasis> div-type-ref="poem"/&gt;
          &lt;implicit-div-type-refs<emphasis role="bold"> src="eng-uk eng-us ger eng-1790"</emphasis>/&gt;
          &lt;tokenization<emphasis role="bold"> src="eng-us"</emphasis> which="general-1"/&gt;
       &lt;/declarations&gt;
@@ -526,6 +755,21 @@ text</synopsis><para>Used by: <code><link linkend="element-anchor-div-ref">&lt;a
 </programlisting></example></section><section xml:id="attribute-val"><title><code>@val</code></title><para>The attribute <code>val</code> specifies a particular word token by means of its string value. Permits regular expressions. Therefore a request for help should consist of a space before or after a question mark.</para><para>For more see <xref linkend="attr_pos_and_val"/></para><synopsis><emphasis>Definition:</emphasis>
 string (pattern .+)</synopsis><para>Used by: <code><link linkend="element-tok">&lt;tok&gt;</link></code> </para><note><itemizedlist><listitem><para>If you insert a question mark anywhere as the value of <code><link linkend="attribute-val">@val</link></code> and then validate the file, you will be given a list of allowed values.</para></listitem></itemizedlist></note><example><title><code>@val</code></title><programlisting>&lt;TAN-A-tok TAN-version="1" id="tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring02"&gt;
    &lt;head&gt;
+      &lt;name&gt;token-based alignment of two versions of Ring o Roses&lt;/name&gt;
+      &lt;master-location href="http://textalign.net/release/1/dev/examples/TAN-A-tok/ringoroses.01+02.token.1.xml"/&gt;
+      &lt;rights-excluding-sources rights-holder="park"&gt;
+         .........
+      &lt;/rights-excluding-sources&gt;
+      &lt;source xml:id="ring1881"&gt;
+         .........
+         &lt;name&gt;Ring o roses 1881&lt;/name&gt;
+         &lt;location href="../ring-o-roses.eng.1881.xml" when-accessed="2015-01-17"/&gt;
+      &lt;/source&gt;
+      &lt;source xml:id="ring1987"&gt;
+         .........
+         &lt;name&gt;Ring o roses 1987&lt;/name&gt;
+         &lt;location href="../ring-o-roses.eng.1987.xml" when-accessed="2015-01-17"/&gt;
+      &lt;/source&gt;
       &lt;declarations&gt;
          .........
          &lt;reuse-type xml:id="adaptation"&gt;

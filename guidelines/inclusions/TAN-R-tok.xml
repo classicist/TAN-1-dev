@@ -4,43 +4,24 @@
    <code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
       (<code><link linkend="element-input">&lt;input&gt;</link></code>,
       <code><link linkend="element-output-token">&lt;output-token&gt;</link></code>+)</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> </para><caution><itemizedlist><listitem><para>Input must match output</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Correct &lt;output-token&gt; elements </emphasis>Selecting this quick fix will replace all <code><link linkend="element-example-output">&lt;example-output&gt;</link></code> elements with the correct results.</para></tip><example><title><code>&lt;example&gt;</code></title><programlisting>&lt;snippets-to-turn-into-real-TAN-examples&gt;
-   .........
-   &lt;comment&gt; In this example, &lt;change&gt; ascribes an alteration to Cheh, but the edit stamp
-        credits Smith with last changing the &lt;change&gt;.&lt;/comment&gt;
    <emphasis role="bold">&lt;example&gt;</emphasis>
       &lt;title&gt;
          .........
       &lt;/title&gt;
-      &lt;programlisting&gt;      ...........
-   &lt;recommended-tokenization xml:id="penn"&gt;
-      &lt;IRI&gt;tag:textalign.net,2015:tokenization:eng.1&lt;/IRI&gt;
-      &lt;name&gt;Tokenization pattern for English, in Penn Treebank style&lt;/name&gt;
-      &lt;location when-accessed="2015-03-17"&gt;../TAN-R-tok/tok.eng.1.xml&lt;/location&gt;
-   &lt;/recommended-tokenization&gt;
-   &lt;recommended-tokenization which="general"/&gt;
-      ...........               &lt;/programlisting&gt;
+      &lt;para&gt;
+         .........
+      &lt;/para&gt;
+      &lt;caption&gt;
+         .........
+      &lt;/caption&gt;
    <emphasis role="bold">&lt;/example&gt;</emphasis>
    <emphasis role="bold">&lt;example&gt;</emphasis>
       &lt;title&gt;
          .........
       &lt;/title&gt;
-      &lt;programlisting&gt;      ...........
-   &lt;filter&gt;
-      &lt;normalization&gt;
-         &lt;for-lang&gt;grc&lt;/for-lang&gt;
-         &lt;IRI&gt;tag:textalign.net,2015:normalization:hyphens-discretionary-removed&lt;/IRI&gt;
-         &lt;name&gt;Suppression of hyphens&lt;/name&gt;
-      &lt;/normalization&gt;
-      &lt;replace&gt;
-         &lt;pattern&gt;&amp;lt;lb[^/]*\s*break\s*=\s*"no"[^/]*\s*/&gt;&lt;/pattern&gt;
-         &lt;replacement/&gt;
-      &lt;/replace&gt;
-      &lt;replace&gt;
-         &lt;pattern&gt;&amp;lt;lb[^/]*\s*[^/]*/&gt;&lt;/pattern&gt;
-         &lt;replacement&gt; &lt;/replacement&gt;
-      &lt;/replace&gt;
-   &lt;/filter&gt;
-      ...........&lt;/programlisting&gt;
+      &lt;para&gt;
+         .........
+      &lt;/para&gt;
       &lt;caption&gt;
          .........
       &lt;/caption&gt;

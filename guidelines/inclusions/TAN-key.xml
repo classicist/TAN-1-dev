@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-key elements and attributes summarized</title><section xml:id="element-group"><title><code>&lt;group&gt;</code></title><para>The element <code>group</code> collects a group of items that have a natural affinity</para><synopsis><emphasis>Definition:</emphasis>
+   <code><link linkend="element-name">&lt;name&gt;</link></code>+,
+   <code><link linkend="element-desc">&lt;desc&gt;</link></code>*,
+   <code><link linkend="attribute-affects-element">@affects-element</link></code>?,
+      (<code><link linkend="element-group">&lt;group&gt;</link></code> |
+      <code><link linkend="element-item">&lt;item&gt;</link></code>)*</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-group">&lt;group&gt;</link></code> </para></section><section xml:id="element-item"><title><code>&lt;item&gt;</code></title><para>The element <code>item</code> names an item that is being described. The item is assumed to be a species of the type of thing discussed by the TAN element that is affected.</para><synopsis><emphasis>Definition:</emphasis>
+   <code><link linkend="attribute-affects-element">@affects-element</link></code>?,
+      (<code><link linkend="attribute-href">@href</link></code> |
+      (<code><link linkend="element-IRI">&lt;IRI&gt;</link></code>,
+      <code><link linkend="element-name">&lt;name&gt;</link></code>+,
+      <code><link linkend="element-desc">&lt;desc&gt;</link></code>*,
+      <code><link linkend="element-checksum">&lt;checksum&gt;</link></code>*,
+      <code><link linkend="element-location">&lt;location&gt;</link></code>+)) |
+      (   (<code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
+   <code><link linkend="element-name">&lt;name&gt;</link></code>+,
+   <code><link linkend="element-desc">&lt;desc&gt;</link></code>*,
+   <code><link linkend="element-checksum">&lt;checksum&gt;</link></code>*,
+   <code><link linkend="element-location">&lt;location&gt;</link></code>+) |
+      <code><link linkend="attribute-which">@which</link></code>) |
+      (   (<code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
+   <code><link linkend="element-name">&lt;name&gt;</link></code>+,
+   <code><link linkend="element-desc">&lt;desc&gt;</link></code>*) |
+      <code><link linkend="attribute-which">@which</link></code>)</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-group">&lt;group&gt;</link></code> </para><caution><itemizedlist><listitem><para>No duplication allowed: an IRI should appear only once in a file.</para></listitem><listitem><para>If referring to a TAN file, the value must be a tag URN that matches exactly the TAN id</para></listitem><listitem><para>Every IRI in invoked in the body of a TAN-key should be unique within the body.</para></listitem><listitem><para>Every reserved TAN keyword will have an IRI assigned from the TAN namespace</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Replace with TAN id of 1st document available </emphasis>Choosing this option will replace the content of an IRI element with the value of
+               the TAN id</para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Add TAN IRI </emphasis></para></tip></section><section xml:id="element-TAN-key"><title><code>&lt;TAN-key&gt;</code></title><para>The element <code>TAN-key</code> specifies that the TAN file makes assertions subject a conceptual work. Root element.</para><synopsis><emphasis>Definition:</emphasis>
+   <code><link linkend="attribute-id">@id</link></code>,
+   <code><link linkend="attribute-TAN-version">@TAN-version</link></code>,
+   (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
+   <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
+   <code><link linkend="element-head">&lt;head&gt;</link></code>,
+   <code><link linkend="element-body">&lt;body&gt;</link></code></synopsis><para>Used by: none</para></section><section xml:id="attribute-affects-element"><title><code>@affects-element</code></title><para>The attribute <code>affects-element</code> names one or more TAN elements that the keywords apply to</para><synopsis><emphasis>Definition:</emphasis>
+text</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-group">&lt;group&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> </para><caution><itemizedlist><listitem><para>Items and groups must be about elements that take <code><link linkend="attribute-which">@which</link></code></para></listitem></itemizedlist></caution></section></section>

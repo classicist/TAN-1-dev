@@ -248,7 +248,7 @@
        FOUR TYPES OF ENTITIES THAT CAN BE REFERENCED USING THE IRI+NAME PATTERN
   -->
   <define name="entity-digital-tan-other-ref">
-    <a:documentation>Reference to an external digital entity that is a TAN file</a:documentation>
+    <a:documentation>Reference to an external digital entity that is a TAN file; unlike other types, the keyword-ref option much be turned on and off for specific elements (e.g., not advisable for &lt;inclusion&gt;)</a:documentation>
     <choice>
       <ref name="href-opt"/>
       <group>
@@ -265,16 +265,21 @@
   </define>
   <define name="entity-digital-generic-ref">
     <a:documentation>Reference to an external digital entity that is not a TAN file</a:documentation>
-    <oneOrMore>
-      <ref name="IRI-gen-ref"/>
-    </oneOrMore>
-    <ref name="metadata-human"/>
-    <zeroOrMore>
-      <ref name="checksum"/>
-    </zeroOrMore>
-    <oneOrMore>
-      <ref name="loc-src"/>
-    </oneOrMore>
+    <choice>
+      <group>
+        <oneOrMore>
+          <ref name="IRI-gen-ref"/>
+        </oneOrMore>
+        <ref name="metadata-human"/>
+        <zeroOrMore>
+          <ref name="checksum"/>
+        </zeroOrMore>
+        <oneOrMore>
+          <ref name="loc-src"/>
+        </oneOrMore>
+      </group>
+      <ref name="keyword-ref"/>
+    </choice>
   </define>
   <define name="entity-digital-tan-self-ref">
     <a:documentation>Reference to self as digital entity (i.e., TAN file)</a:documentation>
@@ -285,10 +290,15 @@
   </define>
   <define name="entity-nondigital-ref">
     <a:documentation>Reference to an external non-digital entity (e.g., agents, roles, works, topics)</a:documentation>
-    <oneOrMore>
-      <ref name="IRI-gen-ref"/>
-    </oneOrMore>
-    <ref name="metadata-human"/>
+    <choice>
+      <group>
+        <oneOrMore>
+          <ref name="IRI-gen-ref"/>
+        </oneOrMore>
+        <ref name="metadata-human"/>
+      </group>
+      <ref name="keyword-ref"/>
+    </choice>
   </define>
   <define name="func-param-pattern">
     <element name="pattern">
@@ -434,7 +444,10 @@
         <a:documentation>The second, computer-readable approach has &lt;desc&gt; take an IRI + name pattern plus @href in &lt;location&gt; pointing to some XML resource that provides more information about the concept, person, or thing. This is the method preferred to point to a &lt;TAN-X&gt; file. </a:documentation>
         <choice>
           <ref name="metadata-desc"/>
-          <ref name="entity-digital-tan-other-ref"/>
+          <choice>
+            <ref name="keyword-ref"/>
+            <ref name="entity-digital-tan-other-ref"/>
+          </choice>
         </choice>
       </element>
     </zeroOrMore>
@@ -659,10 +672,7 @@
       </optional>
       <choice>
         <ref name="inclusion"/>
-        <choice>
-          <ref name="entity-nondigital-ref"/>
-          <ref name="keyword-ref"/>
-        </choice>
+        <ref name="entity-nondigital-ref"/>
       </choice>
     </element>
   </define>

@@ -436,7 +436,7 @@
          value="
             for $i in $this-resolved
             return
-               tan:first-loc-available($i)/@href"/>
+               tan:first-loc-available($i)"/>
       <let name="first-docs"
          value="
             for $i in $first-locs
@@ -502,11 +502,12 @@
          />)</assert>
    </rule>
    <rule context="tan:agent">
-      <let name="all-agent-uris" value="concat(' ', string-join($head/tan:agent/tan:IRI, ' '))"/>
-      <let name="match" value="matches($all-agent-uris, concat(' tag:', $tan-iri-namespace))"/>
-      <assert test="$match">To attach responsibility for the TAN file to a person or organization,
-         at least one agent must have an IRI element that contains a tag URI whose namespace matches
-         that of the URI name (<value-of select="$tan-iri-namespace"/>)</assert>
+      <let name="all-agent-uris" value="$head/tan:agent/tan:IRI"/>
+      <let name="matches" value="$all-agent-uris[matches(., concat('^tag:', $tan-iri-namespace))]"/>
+      <assert test="exists($matches)">To attach responsibility for the TAN file to a person or
+         organization, at least one agent must have an IRI that is a tag URI whose namespace matches
+         that of the URI name (<value-of select="$tan-iri-namespace"/>
+         <xsl:value-of select="$head"/>)</assert>
    </rule>
    <rule context="@when[parent::tan:*] | @ed-when | @when-accessed">
       <let name="this-time" value="tan:dateTime-to-decimal(.)"/>
@@ -648,10 +649,10 @@
          <sqf:delete match="."/>
       </sqf:fix>
    </rule>
-   <rule context="tan:IRI">
+   <rule context="tan:IRI[not(parent::tan:item)]">
       <let name="count" value="count(index-of($all-iris, .))"/>
       <let name="is-iri-of-tan-file" value="tan:must-refer-to-external-tan-file(.)"/>
-      <let name="first-loc" value="tan:first-loc-available(..)/@href"/>
+      <let name="first-loc" value="tan:first-loc-available(..)"/>
       <let name="first-doc"
          value="
             if (exists($first-loc)) then
@@ -660,7 +661,7 @@
                ()"/>
       <let name="first-da-iri-name" value="$first-doc/*/@id"/>
       <assert test="$count = 1">No duplication allowed: an IRI should appear only once in a
-         file.</assert>
+         file. <xsl:value-of select="$count"></xsl:value-of></assert>
       <report
          test="
             if (exists($first-loc)) then
@@ -682,7 +683,7 @@
    </rule>
    <!-- Rules above relevant to inclusions dealt with here -->
    <rule context="tan:inclusion">
-      <let name="first-loc-avail" value="tan:first-loc-available(.)/@href"/>
+      <let name="first-loc-avail" value="tan:first-loc-available(.)"/>
       <let name="first-doc" value="doc(resolve-uri($first-loc-avail, $doc-uri))"/>
       <let name="first-doc-resolved" value="tan:resolve-doc($first-doc)"/>
       <!-- If TAN ever permits inclusions to themselves be included, the filter below will need to change -->

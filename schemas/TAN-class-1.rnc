@@ -27,9 +27,7 @@ decl-div =
     element div-type {
         ed-stamp?,
         (inclusion
-         | (ns-are-numerals?,
-            internal-id,
-            (comment* & (entity-nondigital-ref | keyword-ref))))
+         | (ns-are-numerals?, internal-id, (comment* & entity-nondigital-ref)))
     }
 ns-are-numerals =
     
@@ -50,9 +48,8 @@ decl-tok-rec =
     ## For theoretical background and more information, see main.xml#preparing_transcriptions_for_tokenization
     element recommended-tokenization {
         empty
-        | keyword-ref
         | inclusion
-        | (internal-id, ed-stamp?, (comment* & entity-digital-tan-other-ref))
+        | (internal-id, ed-stamp?, (comment* & (keyword-ref | entity-digital-tan-other-ref)))
     }
 decl-ref-rec =
     
@@ -86,7 +83,7 @@ decl-filt-norm =
         ed-stamp?,
         (inclusion
          | (decl-id-ref-opt,
-            (comment* & (entity-nondigital-ref | keyword-ref))))
+            (comment* & entity-nondigital-ref)))
     }
 
 ## Replacements that have been made to an XML source file. 

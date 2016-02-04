@@ -57,7 +57,7 @@
                      else
                         ())[1]"
             />-->
-            <xsl:variable name="this-tok-1st-la" select="tan:first-loc-available(.)/@href"/>
+            <xsl:variable name="this-tok-1st-la" select="tan:first-loc-available(.)"/>
             <xsl:variable name="this-tokz-loc" select="($this-tok-reserved-loc,$this-tok-1st-la)[1]"/>
             <xsl:element name="location" namespace="tag:textalign.net,2015:ns">
                <xsl:if test="not(exists($this-tokz-loc))">

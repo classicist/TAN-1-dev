@@ -28,7 +28,8 @@ decl-morph =
     ## identifies a <TAN-R-mor> file that defines the parts of speech for a language, the codes for those parts, and the rules for combining them
     element morphology {
         ed-stamp?,
-        (inclusion | (internal-id, lang-outside*, entity-digital-tan-other-ref))
+        (inclusion
+         | (internal-id, lang-outside*, (keyword-ref | entity-digital-tan-other-ref)))
     }
 decl-lexi =
     
@@ -74,8 +75,6 @@ lexeme =
     ## names a lexeme. Points to the main word entry. Sholud not be used to point to roots, only lexical headwords. 
     
     ## In many languages, especially those that are lightly inflected, this word will be identical to the word token itself. In those cases, <l> may be left empty, indicating that the value of <tok>
-    
-    
     element l {
         lexicon-attr?,
         

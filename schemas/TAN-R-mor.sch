@@ -12,7 +12,7 @@
    <pattern>
       <let name="feature-incl-refs" value="for $i in $head/tan:declarations/tan:feature/@include return tokenize($i,'\s+')"/>
       <let name="feature-inclusion" value="$head/tan:inclusion[@xml:id = $feature-incl-refs]"/>
-      <let name="incl-1st-loc-avail" value="for $i in $feature-inclusion return tan:first-loc-available($i)/@href"/>
+      <let name="incl-1st-loc-avail" value="for $i in $feature-inclusion return tan:first-loc-available($i)"/>
       <let name="incl-1st-da" value="for $i in $incl-1st-loc-avail return doc(resolve-uri($i, $doc-uri))"/>
       <let name="incl-1st-da-resolved" value="for $i in $incl-1st-da return tan:resolve-doc($i)"/>
       <rule context="tan:feature">

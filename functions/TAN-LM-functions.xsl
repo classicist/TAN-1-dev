@@ -17,7 +17,7 @@
     <xsl:variable name="morphologies"
         select="$head/tan:declarations/tan:morphology"/>
     <xsl:variable name="morphologies-1st-la"
-        select="for $i in $morphologies return tan:first-loc-available($i)/@href"/>
+        select="for $i in $morphologies return tan:first-loc-available($i)"/>
     <xsl:variable name="mory-1st-da" select="for $i in $morphologies-1st-la return doc(resolve-uri($i,$doc-uri))"/>
     <xsl:variable name="mory-1st-da-resolved" select="for $i in $mory-1st-da return tan:resolve-doc($i)"/>
     <xsl:variable name="mory-1st-da-features" as="element()*">

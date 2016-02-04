@@ -25,7 +25,7 @@
       value="for $i in $this-tokz-fails-modifiers-at-what-div return tan:locate-modifiers($i)"/>
    <rule context="tan:see-also">
       <let name="this-resolved" value="tan:resolve-include(.)"/>
-      <let name="first-locs" value="for $i in $this-resolved return tan:first-loc-available($i)/@href"/>
+      <let name="first-locs" value="for $i in $this-resolved return tan:first-loc-available($i)"/>
       <let name="first-docs" value="for $i in $first-locs return doc(resolve-uri($i,$doc-uri))"/>
       <let name="is-alternatively-divided-edition"
          value="for $i in $this-resolved return $i/tan:relationship = 'alternatively divided edition'"/>

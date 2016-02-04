@@ -10,6 +10,6 @@
    <include href="TAN-class-4.sch"/>
 
    <!-- FUNCTIONS -->
-   <xsl:include href="../functions/TAN-T-functions.xsl"/>
+   <xsl:include href="../functions/TAN-rdf-functions.xsl"/>
 
 </schema>

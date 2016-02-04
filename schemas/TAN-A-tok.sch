@@ -12,7 +12,7 @@
    <include href="TAN-class-2.sch"/>
    <pattern xmlns:sqf="http://www.schematron-quickfix.com/validator/process">
       <let name="head-inclusion" value="/tan:TAN-A-tok/tan:head/tan:inclusion[@xml:id = following-sibling::tan:source/@include]"/>
-      <let name="incl-1st-loc-avail" value="tan:first-loc-available($head-inclusion)/@href"/>
+      <let name="incl-1st-loc-avail" value="tan:first-loc-available($head-inclusion)"/>
       <let name="incl-1st-da" value="doc(resolve-uri($incl-1st-loc-avail, $doc-uri))"/>
       <let name="incl-1st-da-resolved" value="tan:resolve-doc($incl-1st-da)"/>
       <rule context="tan:declarations">

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../schemas/TAN-key.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="../schemas/TAN-key.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TAN-key xmlns="tag:textalign.net,2015:ns" TAN-version="1/dev"
+    id="tag:textalign.net,2015:tan-key:relationships">
+    <head>
+        <name>TAN keywords for types of relationships</name>
+        <master-location href="http://textalign.net/release/1/dev/TAN-key/relationships.TAN-key.xml"/>
+        <rights-excluding-sources rights-holder="kalvesmaki">
+            <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
+            <name>Creative Commons Attribution 4.0 International License</name>
+            <desc>This license is granted independent of rights and licenses associated with the
+                source. </desc>
+        </rights-excluding-sources>
+        <declarations/>
+        <agent xml:id="kalvesmaki" roles="creator">
+            <IRI>http://viaf.org/viaf/299582703</IRI>
+            <IRI>tag:textalign.net,2015:agent:kalvesmaki:joel</IRI>
+            <name xml:lang="eng">Joel Kalvesmaki</name>
+        </agent>
+        <role xml:id="creator">
+            <IRI>http://schema.org/creator</IRI>
+            <name xml:lang="eng">creator</name>
+        </role>
+        <change when="2016-02-02" who="kalvesmaki">Started file</change>
+    </head>
+    <body in-progress="false" affects-element="relationship">
+        <item>
+            <IRI>tag:textalign.net,2015:relationship:auxiliary</IRI>
+            <name>auxiliary</name>
+            <desc>Digital or nondigital entity that was helpful in creating or editing the present
+                file. This may be useful for crediting a helpful starting point.</desc>
+        </item>
+        <group>
+            <name>TAN files</name>
+            <desc>Keywords that must point exclusively to TAN files:</desc>
+            <item>
+                <IRI>tag:textalign.net,2015:relationship:dependent</IRI>
+                <name>dependent</name>
+                <desc>Points to a TAN file that uses the current file as a source.</desc>
+            </item>
+            <group>
+                <name>TAN-rdf</name>
+                <desc>Keywords that must point exclusively to the TAN-rdf format.</desc>
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:context</IRI>
+                    <name>context</name>
+                    <desc>Background information about one or more concepts mentioned in a TAN
+                        file.</desc>
+                </item>
+            </group>
+            <group>
+                <name>TAN edition</name>
+                <desc>Keywords that must point to TAN editions.</desc>
+                <desc>Two TAN files are different editions if they are genetically related to each
+                    other, but neither one supersedes the other. They share a common editorial
+                    history and treats the same basic material but with a different approach.
+                    Neither inherently supersedes the other. If they share a common ancestry, they
+                    stand in different branches of that ancestry. Editions must not have the same
+                    TAN id. They normally differ in the content of &lt;source&gt; or
+                    &lt;declarations&gt; or both.</desc>
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:parent-edition</IRI>
+                    <name>parent edition</name>
+                    <desc>The edition from which the current one branches.</desc>
+                </item>
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:child-edition</IRI>
+                    <name>child edition</name>
+                    <desc>An edition branched off from the current edition.</desc>
+                </item>
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:sibling-edition</IRI>
+                    <name>sibling edition</name>
+                    <desc>An edition that shares the same parent as the current edition.</desc>
+                </item>
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:ancestor-edition</IRI>
+                    <name>ancestor edition</name>
+                    <desc>An edition that is an anscestor to the current edition.</desc>
+                </item>
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:descendant-edition</IRI>
+                    <name>descendant edition</name>
+                    <desc>An edition that descends from the current edition.</desc>
+                </item>
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:cousin-edition</IRI>
+                    <name>cousin edition</name>
+                    <desc>An edition that shares the same ancestor as the current edition</desc>
+                </item>
+                <group>
+                    <name>TAN class 1</name>
+                    <desc>Keywords that can be used only by class 1 files, to point to other class 1
+                        files:</desc>
+                    <item>
+                        <IRI>tag:textalign.net,2015:relationship:alternatively-divided-edition</IRI>
+                        <name>alternatively divided edition</name>
+                        <desc>Used by a class 1 file to point to another class 1 file that contains
+                            the identical transcription for the same version of the same work on the
+                            same textual object, but divides that transcription into a different
+                            reference system. If this value is invoked, the concatenated text
+                            content of &lt;body&gt; must be identical, after space normalization.
+                            This &lt;relationship&gt; is useful for developing a concordance between
+                            alternative reference systems for the same text.</desc>
+                    </item>
+                    <item>
+                        <IRI>tag:textalign.net,2015:relationship:alternatively-normalized-edition</IRI>
+                        <name>alternatively normalized edition</name>
+                        <desc>Used by a class 1 file to point to another class 1 file that treats
+                            the same version of the same work on the same textual object, but
+                            normalizes the transcription differently. This &lt;relationship&gt; may
+                            be valuable in cases where normalization standards for a particular
+                            language are not settled, and users may prefer one convention over the
+                            other, but wish to have access to another approach to
+                            normalization.</desc>
+                    </item>
+                </group>
+            </group>
+            <group>
+                <name>TAN version</name>
+                <desc>Keywords that must point to TAN versions.</desc>
+                <desc>One TAN file is a version of another if it derives from it (either directly or
+                    through a chain of versions) and if the later version supersedes the older one.
+                    Versions of a TAN file stand on a linear path of editorial labor. Differences
+                    tend to be minor and reflect a progressive effort to correct errors. Versions
+                    have the same TAN id and are distinguished exclusively by the latest
+                    ISO-compliant date (see @when and @ed-when).</desc>
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:old-version</IRI>
+                    <name>old version</name>
+                    <desc>TAN file superseded by the present file, and part of the same editorial
+                        stream. The alterations are considered not to warrant a new @id in the
+                        rootmost element.</desc>
+                </item>
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:new-version</IRI>
+                    <name>new version</name>
+                    <desc>TAN file that supersedes the present file, and part of the same editorial
+                        stream. The alterations have not been significant enough to warrant a new
+                        @id in the rootmost element. This is useful for officially deprecating a TAN
+                        file without deleting it.</desc>
+                </item>
+            </group>
+        </group>
+    </body>
+</TAN-key>

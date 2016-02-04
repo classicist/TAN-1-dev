@@ -504,9 +504,7 @@
    <rule context="tan:agent">
       <let name="all-agent-uris" value="$head/tan:agent/tan:IRI"/>
       <let name="matches" value="$all-agent-uris[matches(., concat('^tag:', $tan-iri-namespace))]"/>
-      <assert test="exists($matches)">(<value-of select="$head/tan:agent"/>) 
-         (<xsl:value-of select="$inclusions-1st-da/*/tan:head"/>)
-         To attach responsibility for the TAN file to a person or
+      <assert test="exists($matches)">To attach responsibility for the TAN file to a person or
          organization, at least one agent must have an IRI that is a tag URI whose namespace matches
          that of the URI name (<value-of select="$tan-iri-namespace"/>)</assert>
    </rule>

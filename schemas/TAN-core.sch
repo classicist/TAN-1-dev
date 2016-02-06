@@ -508,6 +508,34 @@
          organization, at least one agent must have an IRI that is a tag URI whose namespace matches
          that of the URI name (<value-of select="$tan-iri-namespace"/>)</assert>
    </rule>
+   <rule context="@which">
+      <let name="these-keywords" value="tan:get-keywords(..)"/>
+      <let name="escaped-which" value="tan:escape(.)"/>
+      <let name="close-matches" value="$these-keywords[matches(., $escaped-which)]"/>
+      <let name="feedback" value="if (exists($close-matches))
+         then
+         concat('try: ', $close-matches)
+         else
+         if (exists($these-keywords)) then
+         concat('try: ', $these-keywords)
+         else
+         'no keywords have been defined for this element'"/>
+      <assert sqf:fix="get-first-keyword get-all-keywords" test=". = $these-keywords">@which must
+         contain a reserved or privately defined keyword (<value-of select="$feedback"/>)</assert>
+      <sqf:fix id="get-first-keyword">
+         <sqf:description>
+            <sqf:title>Get first valid keyword</sqf:title>
+         </sqf:description>
+         <sqf:replace match="." node-type="attribute" target="which" select="$close-matches[1]"/>
+      </sqf:fix>
+      <sqf:fix id="get-all-keywords">
+         <sqf:description>
+            <sqf:title>Get all valid keywords</sqf:title>
+         </sqf:description>
+         <sqf:replace match="." node-type="attribute" target="which"
+            select="string-join($close-matches, ' ')"/>
+      </sqf:fix>
+   </rule>
    <rule context="@when[parent::tan:*] | @ed-when | @when-accessed">
       <let name="this-time" value="tan:dateTime-to-decimal(.)"/>
       <report test="$this-time > $now">Future dates are not allowed (today's date and time is
@@ -621,8 +649,7 @@
             if ($href-is-available = true()) then
                doc($href-resolved)
             else
-               ()"
-      />
+               ()"/>
       <assert role="warning" test="$href-is-available = true()"
          ><!-- An @href will be flagged with a warning if the document is either unavailable, is not valid XML, or is at a URL trusted by a validation engine -->@href
          points to file that is either (1) not available, (2) not valid XML, or (3) at a server not
@@ -659,8 +686,8 @@
             else
                ()"/>
       <let name="first-da-iri-name" value="$first-doc/*/@id"/>
-      <assert test="$count = 1">No duplication allowed: an IRI should appear only once in a
-         file. <xsl:value-of select="$count"></xsl:value-of></assert>
+      <assert test="$count = 1">No duplication allowed: an IRI should appear only once in a file.
+            <xsl:value-of select="$count"/></assert>
       <report
          test="
             if (exists($first-loc)) then

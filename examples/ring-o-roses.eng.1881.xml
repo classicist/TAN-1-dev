@@ -7,12 +7,7 @@
     <head>
         <name>TAN transcription of Ring a Ring o' Roses</name>
         <master-location href="ring-o-roses.eng.1881.xml"/>
-        <rights-excluding-sources rights-holder="park">
-            <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
-            <name>Creative Commons Attribution 4.0 International License</name>
-            <desc>This license is granted independent of rights and licenses associated with the
-                source. </desc>
-        </rights-excluding-sources>
+        <rights-excluding-sources which="by-nc-nd_2.0" rights-holder="park"/>
         <source>
             <IRI>http://lccn.loc.gov/12032709</IRI>
             <name>Kate Greenaway, Mother Goose, New York, G. Routledge and sons [1881]</name>

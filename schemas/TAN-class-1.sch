@@ -169,57 +169,12 @@
          /></report>
    </rule>
    <rule context="tan:work">
-      <report test="$head/tan:declarations/tan:work[2]">There may be no more than one work
-         element.</report>
-      <!-- unclear why we need this next report; not deleting until it can be determined that it's already covered with tests on @include -->
-      <!--<report test="$head/tan:declarations/tan:work/@error" >Error: <value-of
-            select="string-join(for $i in $head/tan:declarations/tan:work/@error
-         return $inclusion-errors[number($i)],', ')"
-         /></report>-->
-   </rule>
-   <rule context="tan:div-type | tan:normalization">
-      <let name="relevant-keywords"
-         value="
-            if (self::tan:div-type) then
-               $div-type-keywords
-            else
-               $normalization-keywords"/>
-      <let name="escaped-which" value="tan:escape(@which)"/>
-      <let name="close-matches-to-which" value="$relevant-keywords[matches(., $escaped-which)]"/>
-      <assert sqf:fix="get-first-keyword get-all-keywords"
-         test="
-            if (@which) then
-               @which = $relevant-keywords
-            else
-               true()"
-         >@which must point to a reserved keyword (try: <value-of select="$close-matches-to-which"
-         />)</assert>
-      <sqf:fix id="get-first-keyword">
-         <sqf:description>
-            <sqf:title>Get first valid keyword</sqf:title>
-         </sqf:description>
-         <sqf:replace match="@which" node-type="attribute" target="which"
-            select="$close-matches-to-which[1]"/>
-      </sqf:fix>
-      <sqf:fix id="get-all-keywords">
-         <sqf:description>
-            <sqf:title>Get all valid keywords</sqf:title>
-         </sqf:description>
-         <sqf:replace match="@which" node-type="attribute" target="which"
-            select="string-join($close-matches-to-which, ' ')"/>
-      </sqf:fix>
+      <report test="count(tokenize(@include, '\s+')) gt 1">No more than one inclusion may be
+         invoked.</report>
    </rule>
    <rule context="tan:recommended-tokenization">
       <let name="this-resolved" value="tan:resolve-include(.)"/>
       <let name="this-count" value="(1 to count($this-resolved))"/>
-      <let name="this-which-is-reserved"
-         value="
-            for $i in $this-resolved
-            return
-               if ($i/@which = $tokenization-which-reserved) then
-                  true()
-               else
-                  false()"/>
       <let name="tokz-mismatch-1"
          value="
             for $i in $recommended-tokenizations[tan:for-lang]
@@ -235,22 +190,6 @@
       <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
             select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
       <!-- END TESTING BLOCK -->
-      <!--<report
-         test="some $i in $this-count satisfies $this-resolved[$i]/@which and $this-which-is-reserved[$i] = false()"
-         >@which may take only one of the reserved tokenization names (<value-of
-            select="string-join($tokenization-which-reserved,', ')"/>)</report>-->
-      <report
-         test="
-            some $i in $head/tan:declarations/tan:recommended-tokenization/@which
-               satisfies not($i = $keywords-all-tokenization) and (not(@which = $keywords-all-tokenization))"
-         >@which must take either a reserved tokenization keyword or a private one (<xsl:value-of
-            select="string-join($keywords-all-tokenization, '; ')"/>) </report>
-
-      <report
-         test="
-            some $i in $this-count
-               satisfies $this-resolved[$i]/@xml:id = $tokenization-which-reserved"
-         >@xml:id values may not use a reserved tokenization name</report>
       <assert
          test="
             every $i in $rec-tokz-1st-da
@@ -264,7 +203,7 @@
       <report
          test="not('*' = $recommended-tokenizations/tan:for-lang) and $languages-used[not(. = $recommended-tokenizations/tan:for-lang)]"
          >Every language used in the transcription must be accommodated by at least one recommended
-         tokenization patterns (unsupported: <value-of
+         tokenization pattern (unsupported: <value-of
             select="$transcription-langs[not(. = $recommended-tokenizations/tan:for-lang)]"/>;
          currently supported: <value-of select="$recommended-tokenizations/tan:for-lang"
          />).</report>

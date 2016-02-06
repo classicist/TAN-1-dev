@@ -33,12 +33,27 @@
       </rule>
       <rule context="@affects-element">
          <let name="these-elements" value="tokenize(., '\s+')"/>
-         <assert
+         <let name="matching-element-names" value="for $i in $these-elements
+            return
+            $TAN-elements-that-take-the-attribute-which/@name[matches(., $i)]"/>
+         <assert sqf:fix="get-element-names"
             test="
                every $i in $these-elements
                   satisfies $i = $TAN-elements-that-take-the-attribute-which/@name"
-            >Items and groups must be about elements that take @which (<xsl:value-of
+            >Items and groups must be about elements that take @which (did you mean 
+            <xsl:value-of select="$matching-element-names"/>?) (all values: <xsl:value-of
                select="$TAN-elements-that-take-the-attribute-which/@name"/>)</assert>
+         <sqf:fix id="get-element-names">
+            <sqf:description>
+               <sqf:title>Replace affects-element with similar element names</sqf:title>
+               <sqf:p>Put part of an element name into @affects-element, and the validation
+                  process will trigger an SQF that will replace it with element names that
+                  match the portion you have typed.</sqf:p>
+            </sqf:description>
+            <sqf:replace node-type="attribute" target="affects-element">
+               <xsl:value-of select="$matching-element-names"></xsl:value-of>
+            </sqf:replace>
+         </sqf:fix>
       </rule>
       <rule context="tan:IRI[parent::tan:item]">
          <let name="count" value="count(index-of($all-body-iris, .))"/>

@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- To do: 
+   Change default behavior for tokenization: if tokenization on a language of a source 
+   is not specified then adopt the first recommended tokenization specified in the source.
+   If for some reason the source has neglected this, then adopt general-words-only as a
+   default.
    ADD rule to <tokenization>: for any tokenization not already recommended by 
-   a source, ensure that tokenization on the source text is identical no matter how modifying letters are handled (probably time consuming)
+   a source, ensure that tokenization on the source text is identical no matter how 
+   modifying letters are handled (probably time consuming)
    Ensure that <rename-div-ns> does not break the LDUR; document for guidelines
    Ensure that tan:tok/@cont is used to fuse tokens.
 -->

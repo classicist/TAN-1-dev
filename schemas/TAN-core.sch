@@ -423,7 +423,7 @@
          value="
             for $i in $this-resolved
             return
-               normalize-space($i/tan:relationship)"/>
+               normalize-space($i/tan:relationship/@which)"/>
       <let name="must-point-to-external-tan"
          value="
             for $i in $these-relationships
@@ -485,21 +485,6 @@
          ><!-- If <relationship> keyword is  $relationship-keywords-for-tan-editions then the current file and the see-also file cannot have the same @id value. -->The
             <value-of select="$these-relationships"/> cannot have the same @id value as this
          file.</report>
-
-   </rule>
-   <rule context="tan:relationship">
-      <report test="@which and not(@which = $relationship-keywords-all)">Unless you define a
-         relationship through an IRI + name pattern, the value must be: <value-of
-            select="string-join($relationship-keywords-all, ', ')"/>
-      </report>
-      <assert
-         test="
-            if (@which) then
-               @which = $relationship-keywords-all
-            else
-               true()"
-         >@which must point to a reserved keyword (<value-of select="$relationship-keywords-all"
-         />)</assert>
    </rule>
    <rule context="tan:agent">
       <let name="all-agent-uris" value="$head/tan:agent/tan:IRI"/>
@@ -512,14 +497,17 @@
       <let name="these-keywords" value="tan:get-keywords(..)"/>
       <let name="escaped-which" value="tan:escape(.)"/>
       <let name="close-matches" value="$these-keywords[matches(., $escaped-which)]"/>
-      <let name="feedback" value="if (exists($close-matches))
-         then
-         concat('try: ', $close-matches)
-         else
-         if (exists($these-keywords)) then
-         concat('try: ', $these-keywords)
-         else
-         'no keywords have been defined for this element'"/>
+      <let name="feedback"
+         value="
+            if (exists($close-matches))
+            then
+               concat('try: ', string-join($close-matches, ', '))
+            else
+               if (exists($these-keywords)) then
+                  concat('try: ', string-join($these-keywords, ', '))
+               else
+                  'no keywords have been defined for this element'"
+      />
       <assert sqf:fix="get-first-keyword get-all-keywords" test=". = $these-keywords">@which must
          contain a reserved or privately defined keyword (<value-of select="$feedback"/>)</assert>
       <sqf:fix id="get-first-keyword">
@@ -623,7 +611,7 @@
             node-type="attribute"/>
       </sqf:fix>
       <sqf:fix id="add-decl-div-type"
-         use-when="$this-attribute-name = 'type' and $this-attribute-value = $div-type-keywords">
+         use-when="name(..) = 'div' and $this-attribute-value = tan:get-keywords(..)">
          <sqf:description>
             <sqf:title>Add div-type element invoking keyword</sqf:title>
             <sqf:p>If you are editing a class 1 file, and you wish to use a div type that has a TAN

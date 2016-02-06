@@ -47,7 +47,7 @@
    <xi:include href="TAN-class-2-functions.xsl" xpointer="f-expand-search"/>
 
    <xsl:variable name="src-1st-da-data-prepped-for-search"
-      select="tan:prep-for-search($src-1st-da-data)"/>
+      select="tan:prep-for-search($src-1st-da-data)" xml:id="test"/>
 
    <xsl:function name="tan:prep-for-search" as="element()*">
       <xsl:param name="src-data" as="element()*"/>

@@ -14,7 +14,7 @@
     </xd:doc>
 
     <xsl:param name="regex-escaping-characters" as="xs:string"
-        select="'[\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\)]'"/>
+        select="'[\.\[\]\\\|\-\^\$\?\*\+\{\}\(\)]'"/><!-- olim: [\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\)] -->
 
     <xsl:param name="separator-type-and-n" select="'.'" as="xs:string"/>
     <xsl:param name="separator-type-and-n-regex" select="'\.'" as="xs:string"/>

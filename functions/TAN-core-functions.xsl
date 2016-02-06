@@ -15,47 +15,44 @@
     </xd:doc>
 
     <xsl:include href="TAN-parameters.xsl"/>
-    
+
     <xsl:variable name="TAN-namespace" select="'tag:textalign.net,2015'"/>
 
     <xsl:variable name="TAN-keywords" as="element()*">
         <xsl:variable name="TAN-keyword-files" as="document-node()+"
-            select="doc('../TAN-key/div-types.TAN-key.xml'), doc('../TAN-key/relationships.TAN-key.xml'), doc('../TAN-key/normalizations.TAN-key.xml'), doc('../TAN-key/tokenizations.TAN-key.xml')"
-        />
-        <xsl:apply-templates mode="resolve-href"
-            select="$TAN-keyword-files/tan:TAN-key/tan:body"/>
+            select="
+                doc('../TAN-key/div-types.TAN-key.xml'), doc('../TAN-key/relationships.TAN-key.xml'),
+                doc('../TAN-key/normalizations.TAN-key.xml'), doc('../TAN-key/tokenizations.TAN-key.xml'),
+                doc('../TAN-key/rights.TAN-key.xml')"/>
+        <xsl:apply-templates mode="resolve-href" select="$TAN-keyword-files/tan:TAN-key/tan:body"/>
     </xsl:variable>
     <xsl:variable name="relationship-keywords-for-tan-versions"
-        select="$TAN-keywords[@affects-element = 'relationship']//tan:group[tan:name = 'TAN version']//tan:item/tan:name"
-        as="xs:string*"/>
+        select="tan:get-keywords('relationship', 'TAN version')"/>
     <xsl:variable name="relationship-keywords-for-tan-editions"
+        select="tan:get-keywords('relationship', 'TAN edition')"/>
+    <xsl:variable name="relationship-keywords-for-tan-class-1-editions"
+        select="tan:get-keywords('relationship', 'TAN class 1')"/>
+    <xsl:variable name="relationship-keywords-for-tan-files"
+        select="tan:get-keywords('relationship', 'TAN files')"/>
+    <xsl:variable name="relationship-keywords-all" select="tan:get-keywords('relationship')"/>
+    <!--<xsl:variable name="relationship-keywords-for-tan-versions"
+        select="$TAN-keywords[@affects-element = 'relationship']//tan:group[tan:name = 'TAN version']//tan:item/tan:name"
+        as="xs:string*"/>-->
+    <!--<xsl:variable name="relationship-keywords-for-tan-editions"
         select="$TAN-keywords[@affects-element = 'relationship']//tan:group[tan:name = 'TAN edition']//tan:item/tan:name"
         as="xs:string*"/>
     <xsl:variable name="relationship-keywords-for-class-1-editions"
         select="$TAN-keywords[@affects-element = 'relationship']//tan:group[tan:name = 'TAN class 1']//tan:item/tan:name"
-        as="xs:string*"/>
-    <xsl:variable name="relationship-keywords-for-tan-files"
+        as="xs:string*"/>-->
+    <!--<xsl:variable name="relationship-keywords-for-tan-files"
         select="
             $TAN-keywords[@affects-element = 'relationship']//tan:group[tan:name = 'TAN files']//tan:item/tan:name"
-        as="xs:string*"/>
-    <xsl:variable name="relationship-keywords-all"
-        select="$TAN-keywords[@affects-element = 'relationship']//tan:item/tan:name" as="xs:string*"/>
-    <xsl:variable name="div-type-keywords"
-        select="$TAN-keywords[@affects-element = 'div-type']//tan:item/tan:name"/>
-    <xsl:variable name="normalization-keywords"
-        select="$TAN-keywords[@affects-element = 'normalization']//tan:item/tan:name"/>
-    <xsl:variable name="keywords-reserved-tokenization"
-        select="$TAN-keywords[tokenize(@affects-element, '\s+') = ('tokenization', 'recommended-tokenization')]//tan:item/tan:name"
-    />
-    <xsl:variable name="keywords-private-tokenization"
-        select="$private-keywords//tan:name[tokenize(ancestor::*[@affects-element][1]/@affects-element, '\s+') = 'recommended-tokenization']"
-    />
-    <xsl:variable name="keywords-all-tokenization"
-        select="$keywords-reserved-tokenization, $keywords-private-tokenization"
-    />
+        as="xs:string*"/>-->
+    <!--<xsl:variable name="relationship-keywords-all"
+        select="$TAN-keywords[@affects-element = 'relationship']//tan:item/tan:name" as="xs:string*"/>-->
+
     <xsl:variable name="private-keywords" select="$keys-1st-da/tan:TAN-key/tan:body"/>
     <xsl:variable name="all-keywords" select="$TAN-keywords, $private-keywords"/>
-
 
     <xsl:variable name="quot" select="'&quot;'"/>
 
@@ -70,8 +67,7 @@
         select="
             for $i in (/*/tan:head/tan:key, $inclusions-1st-da/*/tan:head/tan:key)
             return
-                tan:first-loc-available($i, base-uri($i))"
-    />
+                tan:first-loc-available($i, base-uri($i))"/>
     <xsl:variable name="keys-1st-da"
         select="
             for $i in distinct-values($keys-1st-la)
@@ -79,8 +75,7 @@
                 if ($i = '') then
                     $empty-doc
                 else
-                    document($i)"
-    />
+                    document($i)"/>
     <xsl:variable name="head">
         <xsl:variable name="head-pass-1">
             <xsl:apply-templates mode="include" select="/*/tan:head/*"/>
@@ -450,6 +445,37 @@
         />
     </xsl:function>
 
+    <xsl:function name="tan:get-keywords" as="xs:string*">
+        <xsl:param name="element-that-takes-attribute-which" as="item()"/>
+        <xsl:variable name="element-name"
+            select="
+                if ($element-that-takes-attribute-which instance of xs:string) then
+                    $element-that-takes-attribute-which
+                else
+                    name($element-that-takes-attribute-which)"
+        />
+        <xsl:copy-of
+            select="
+                $private-keywords//tan:name[tokenize(ancestor::*[@affects-element][1]/@affects-element, '\s+') = $element-name],
+                $TAN-keywords[tokenize(@affects-element, '\s+') = $element-name]//tan:item/tan:name"
+        />
+    </xsl:function>
+    <xsl:function name="tan:get-keywords" as="xs:string*">
+        <xsl:param name="element-that-takes-attribute-which" as="item()"/>
+        <xsl:param name="group-name-filter" as="xs:string?"></xsl:param>
+        <xsl:variable name="element-name"
+            select="
+                if ($element-that-takes-attribute-which instance of xs:string) then
+                    $element-that-takes-attribute-which
+                else
+                    name($element-that-takes-attribute-which)"/>
+        <xsl:copy-of
+            select="
+                $private-keywords//tan:name[tokenize(ancestor::*[@affects-element][1]/@affects-element, '\s+') = $element-name][ancestor::tan:group/tan:name = $group-name-filter],
+                $TAN-keywords[tokenize(@affects-element, '\s+') = $element-name]//tan:item/tan:name[ancestor::tan:group/tan:name = $group-name-filter]"
+        />
+    </xsl:function>
+
     <!-- CONTEXT DEPENDENT FUNCTIONS -->
     <xsl:function name="tan:get-1st-da-locations" as="xs:string*">
         <xsl:param name="tan-element" as="element()*"/>
@@ -498,7 +524,9 @@
         <!-- one-parameter version of the function, the one to be most commonly used, feeds 
             into the three-parameter version, below -->
         <xsl:param name="TAN-document" as="document-node()"/>
-        <xsl:sequence select="tan:get-inclusions-1st-da($TAN-document, (), (), (), (), $doc-uri)[position() gt 1]"/>
+        <xsl:sequence
+            select="tan:get-inclusions-1st-da($TAN-document, (), (), (), (), $doc-uri)[position() gt 1]"
+        />
     </xsl:function>
     <xsl:function name="tan:get-inclusions-1st-da" as="document-node()*">
         <xsl:param name="TAN-document-currently-being-checked" as="document-node()"/>
@@ -523,8 +551,7 @@
             select="
                 for $i in $new-inclusions-1st-la
                 return
-                    doc($i)"
-        />
+                    doc($i)"/>
         <xsl:variable name="which-docs-are-new"
             select="
                 for $i in (1 to count($new-inclusions-1st-da))
@@ -532,9 +559,9 @@
                     if ($new-inclusions-1st-da[$i]/*/@id = $inclusion-IRIs-so-far) then
                         ()
                     else
-                        $i"
-        />
-        <xsl:variable name="new-set-of-docs-to-be-checked" select="$TAN-documents-yet-to-be-checked, $new-inclusions-1st-da[position() = $which-docs-are-new]"/>
+                        $i"/>
+        <xsl:variable name="new-set-of-docs-to-be-checked"
+            select="$TAN-documents-yet-to-be-checked, $new-inclusions-1st-da[position() = $which-docs-are-new]"/>
         <xsl:choose>
             <xsl:when test="empty($new-set-of-docs-to-be-checked)">
                 <xsl:sequence select="$TAN-included-documents-found-so-far"/>

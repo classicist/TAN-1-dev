@@ -145,6 +145,13 @@
          </sqf:add>
       </sqf:fix>
    </rule>
+   <rule context="@id">
+      <let name="all-agent-uris" value="$head/tan:agent/tan:IRI"/>
+      <let name="matches" value="some $i in $all-agent-uris satisfies matches($i, concat('^tag:', $tan-iri-namespace))"/>
+      <assert test="exists($matches)">To attach responsibility for the TAN file to a person or
+         organization, at least one agent must have an IRI that is a tag URI whose namespace matches
+         that of the URI name (<value-of select="$tan-iri-namespace"/>)</assert>
+   </rule>
    <rule context="text()">
       <let name="this-raw-char-seq" value="tokenize(replace(., '(.)', '$1 '), ' ')"/>
       <let name="this-nfc-char-seq"
@@ -486,13 +493,6 @@
             <value-of select="$these-relationships"/> cannot have the same @id value as this
          file.</report>
    </rule>
-   <rule context="tan:agent">
-      <let name="all-agent-uris" value="$head/tan:agent/tan:IRI"/>
-      <let name="matches" value="$all-agent-uris[matches(., concat('^tag:', $tan-iri-namespace))]"/>
-      <assert test="exists($matches)">To attach responsibility for the TAN file to a person or
-         organization, at least one agent must have an IRI that is a tag URI whose namespace matches
-         that of the URI name (<value-of select="$tan-iri-namespace"/>)</assert>
-   </rule>
    <rule context="@which">
       <let name="these-keywords" value="tan:get-keywords(..)"/>
       <let name="escaped-which" value="tan:escape(.)"/>
@@ -743,6 +743,7 @@
                return
                   $inclusion-errors[number($i)]"
          /></report>
+      <report test="@help" sqf:fix="explicate">Help requested</report>
       <report test="text()" sqf:fix="explicate">Text is not allowed in an element with
          @include.</report>
       <sqf:fix id="explicate">

@@ -39,6 +39,12 @@
                 <name>dependent</name>
                 <desc>Points to a TAN file that uses the current file as a source.</desc>
             </item>
+            <item>
+                <IRI>tag:textalign.net,2015:relationship:different-work-version</IRI>
+                <name>different work version</name>
+                <desc>Used by a class 1 TAN file to point to another that offers the same work but
+                    in a different version.</desc>
+            </item>
             <group>
                 <name>TAN-rdf</name>
                 <desc>Keywords that must point exclusively to the TAN-rdf format.</desc>

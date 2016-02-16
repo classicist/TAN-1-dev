@@ -436,7 +436,7 @@ change-list =
     
     ## declares a change made to the current file. Must credit an <agent>, specified by @who, and a time the change was made, specified by @when.
     
-    ## Collectively, <change> elements form the changelog, the revision history of the document. 
+    ## Collectively, <change> elements are called the changelog, the revision history of the document. 
     
     ## The editor has discretion as to how long or detailed a <change> should be, or how many should be retained in a changelog. Ideally, <change>s documenting every published version should be retained.
     

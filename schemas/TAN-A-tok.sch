@@ -35,9 +35,9 @@
             >Every declaration invoked by the head inclusion must be repeated here (<value-of
                select="$incl-declarations"/>)</assert>-->
          <report test="exists($missing-declarations) and exists($head-inclusion)"
-            sqf:fix="add-declaration">In a TAN-A-tok file, if there is a source/@include, then an
+            sqf:fix="add-declaration">In a TAN-A-tok file, if there is a &lt;source>/@include, then an
             entire set of sources are being imported, and, consequently, every declaration in the
-            inclusion must also be included (missing: <value-of select="$missing-declarations"
+            inclusion must also be explicitly included in the host file (missing: <value-of select="$missing-declarations"
             />)</report>
          <sqf:fix id="add-declaration">
             <sqf:description>

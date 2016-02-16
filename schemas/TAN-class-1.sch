@@ -56,12 +56,12 @@
          value="
             for $i in $this-resolved
             return
-               $i/tan:relationship = 'alternatively divided edition'"/>
+               $i/tan:relationship/@which = 'alternatively divided edition'"/>
       <let name="is-alternatively-normalized-edition"
          value="
             for $i in $this-resolved
             return
-               $i/tan:relationship = 'alternatively normalized edition'"/>
+               $i/tan:relationship/@which = 'alternatively normalized edition'"/>
       <let name="is-strict-alternative"
          value="
             for $i in count($this-resolved)
@@ -153,7 +153,6 @@
             return
                $is-alternatively-divided-edition[$i] and not($is-same-text[$i])"
          >In class 1 files, alternatively divided editions must preserve identical transcriptions.
-            <value-of select="true()"/>
          <value-of
             select="
                if (exists($discrepancies-here)) then
@@ -242,7 +241,7 @@
    </rule>
    <rule context="tan:body | tei:body">
       <let name="duplicate-leafdivs" value="$leafdiv-flatrefs[index-of($leafdiv-flatrefs, .)[2]]"/>
-      <report
+      <report tan:does-not-apply-to="body"
          test="
             if (exists($duplicate-leafdivs)) then
                true()

@@ -727,7 +727,7 @@
          test="if ($first-doc/tan:body/@in-progress = false() or $first-doc/tei:text/tei:body/@in-progress = false()) 
          then false() else true()"
          role="warning">Inclusion is marked as being in progress.</report>-->
-      <report test="$first-doc/*/@id = $doc-id">Inclusion has the same tag id as this
+      <report test="$first-doc/*/@id = $doc-id">Inclusions may not have the same tag id as the host
          document.</report>
    </rule>
    <rule context="*[@include]">

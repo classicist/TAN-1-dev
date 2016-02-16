@@ -925,6 +925,9 @@
    <xsl:template match="fn:match" mode="itemize-param-string-for-docbook">
       <xsl:variable name="list" as="xs:string*">
          <xsl:choose>
+            <xsl:when test=". = '$help-trigger'">
+               <xsl:sequence select="$help-trigger"/>
+            </xsl:when>
             <xsl:when test=". = '$tokenization-errors'">
                <xsl:sequence select="$tokenization-errors"/>
             </xsl:when>
@@ -938,7 +941,7 @@
                <xsl:sequence select="$relationship-keywords-for-tan-editions"/>
             </xsl:when>
             <xsl:when test=". = '$relationship-keywords-for-class-1-editions'">
-               <xsl:sequence select="$relationship-keywords-for-class-1-editions"/>
+               <xsl:sequence select="$relationship-keywords-for-tan-class-1-editions"/>
             </xsl:when>
             <xsl:when test=". = '$relationship-keywords-for-tan-files'">
                <xsl:sequence select="$relationship-keywords-for-tan-files"/>

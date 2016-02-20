@@ -33,7 +33,6 @@
     <xsl:variable name="inclusion-errors"
         select="$errors//tan:group[@affects-attribute = 'include']/tan:error" as="xs:string*"/>
 
-    <xsl:variable name="help-trigger" select="'???'"/>
-    <xsl:variable name="help-trigger-regex" select="tan:escape($help-trigger)"/>
+    <xsl:param name="help-trigger" select="'???'"/>
 
 </xsl:stylesheet>

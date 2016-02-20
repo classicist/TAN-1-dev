@@ -663,7 +663,8 @@
       <xsl:param name="element" as="element()"/>
       <xsl:value-of
          select="
-            if (matches($element/@val, ' \?|\? ') or matches($element/@pos, '\?') or matches($element/@ref, '\?')) then
+            if (some $i in $element/@*
+               satisfies matches($i, $help-trigger-regex)) then
                true()
             else
                false()"

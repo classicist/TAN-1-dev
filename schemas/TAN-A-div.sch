@@ -13,6 +13,8 @@
    <include href="TAN-class-2.sch"/>
    <include href="TAN-A-div-lite.sch"/>
    <pattern>
+      <let name="all-refs" value="$src-1st-da-data/tan:div/@ref"/>
+      <let name="stranded-refs" value="$all-refs[count(index-of($all-refs, .)) = 1]"/>
       <rule context="tan:rename">
          <let name="this-src-list" value="tan:src-ids-to-nos(../@src)"/>
          <let name="this-old" value="@old"/>
@@ -183,7 +185,8 @@
             />)</report>
       </rule>
       <rule context="tan:div-ref | tan:anchor-div-ref">
-         <let name="this" value="."/>
+         <let name="this" value="replace(.,$help-trigger-regex,'')"/>
+         <let name="help-requested" value="tan:help-requested(.)"/>
          <let name="is-being-realigned"
             value="
                if (name(..) = 'realign') then
@@ -197,8 +200,7 @@
                else
                   false()"/>
          <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
-         <let name="these-sources-resolved"
-            value="tan:resolve-doc($src-1st-da[position() = $this-src-list])"/>
+         <let name="these-sources-resolved" value="$src-1st-da-data[position() = $this-src-list]"/>
          <let name="these-srcs-tokenized" value="$this-src-list[. = $tokenized-sources]"/>
          <let name="this-ref" value="@ref"/>
          <let name="this-refs-norm"
@@ -356,6 +358,7 @@
             no more than one source.</report>
          <report test="@cont and not(following-sibling::tan:div-ref)" tan:applies-to="cont">Any
             &lt;div-ref> taking @cont must be followed by at least one other &lt;div-ref>.</report>
+         <report test="$help-requested and parent::tan:realign">Looking for a div to realign? Try <value-of select="$stranded-refs"/></report>
       </rule>
       <rule context="@cont">
          <let name="pos" value="count(../preceding-sibling::*[not(@cont)])"/>

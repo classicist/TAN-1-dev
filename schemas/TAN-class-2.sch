@@ -148,17 +148,19 @@
    </rule>
    <rule context="@ref">
       <let name="these-refs" value="normalize-space(.)"/>
+      <let name="help-requested" value="tan:help-requested(..)"/>
       <let name="this-src-list" value="if (../@src) then tan:src-ids-to-nos(../@src) else 1"/>
       <let name="this-refs-norm"
-         value="for $i in $this-src-list
-         return
-         if ($i = $src-impl-div-types) then
-         tan:normalize-impl-refs(., $i)
-         else
-         tan:normalize-refs(.)"
+         value="
+            for $i in $this-src-list
+            return
+               if ($i = $src-impl-div-types) then
+                  tan:normalize-impl-refs(., $i)
+               else
+                  tan:normalize-refs(.)"
       />
       <let name="possible-divs" value="for $i in $this-src-list, $j in $this-refs-norm, $k in tokenize($j,' [-,] ')
-          return $src-1st-da-data[$i]/tan:div[starts-with(@ref,$j)]"/>
+          return $src-1st-da-data[$i]/tan:div[matches(@ref,tan:escape($j))]"/>
       <let name="possible-refs" value="if ($this-src-list = $src-impl-div-types) then $possible-divs/@impl-ref
          else $possible-divs/@ref"/>
       <let name="ref-range-must-join-siblings"
@@ -167,7 +169,7 @@
          test="$ref-range-must-join-siblings and (some $i in tan:ref-range-check(.) satisfies $i = false())"
          >In any @ref whose values might be distributed, every range (references joined by a hyphen)
          must begin and end with siblings.</report>
-      <report test="matches(.,'\?')" role="info"><!-- If you add a question mark to a partially completed reference, you will get in response a list of all possible valid references -->Help: <value-of select="$possible-refs"/></report>
+      <report test="$help-requested" role="info"><!-- If you add a question mark to a partially completed reference, you will get in response a list of all possible valid references -->Help: <value-of select="$possible-refs"/></report>
    </rule>
    <rule context="tan:tok">
       <let name="src-data-for-this-tok" value="tan:pick-tokenized-prepped-class-1-data(.)"/>

@@ -113,7 +113,8 @@
 
    <!-- DECLARATIONS: tokenization -->
    <xsl:variable name="tokenizations" xml:id="v-tokenizations"
-      select="$head/tan:declarations/tan:tokenization"/>
+      select="$head/tan:declarations/tan:tokenization"
+   />
    <xsl:variable name="tokenizations-per-source" xml:id="v-tokenizations-per-source" as="element()+">
       <!-- Sequence of one node/tree per source listing possible tokenizations, their first
          document-available location, and the languages covered:
@@ -125,18 +126,19 @@
          </tokenization>-->
       <xsl:for-each select="$src-count">
          <xsl:variable name="this-src" select="."/>
+         <xsl:variable name="src-tokenizations" select="$src-1st-da-heads[$this-src]/tan:declarations/tan:recommended-tokenization"/>
          <xsl:element name="tan:source">
             <xsl:for-each
                select="
-                  if ($source-lacks-id) then
-                     $tokenizations
+                  $tokenizations[if (@src) then
+                     $this-src = tan:src-ids-to-nos(@src)
                   else
-                     $tokenizations[$this-src = tan:src-ids-to-nos(@src)]">
+                     true()], $src-tokenizations">
                <xsl:variable name="this-tokz" select="."/>
                <!-- The next variables trace the process used to determine which tokenization should be applied to
                   each source. The local <location> takes precedence, followed by a @which that corresponds to a
                   <recommended-tokenization> in the source, followed by a @which that uses a reserved keyword.-->
-               <xsl:variable name="cl-2-loc" select="tan:first-loc-available(.)"/>
+               <xsl:variable name="cl-2-loc" select="tan:first-loc-available($this-tokz, document-uri($this-tokz))"/>
                <xsl:variable name="cl-2-no-which"
                   select="
                      if ($this-tokz/@which) then

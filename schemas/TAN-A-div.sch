@@ -14,7 +14,7 @@
    <include href="TAN-A-div-lite.sch"/>
    <pattern>
       <let name="all-refs" value="$src-1st-da-data/tan:div/@ref"/>
-      <let name="stranded-refs" value="$all-refs[count(index-of($all-refs, .)) = 1]"/>
+      <let name="stranded-divs" value="$src-1st-da-data/tan:div[count(index-of($all-refs, @ref)) = 1]"/>
       <rule context="tan:rename">
          <let name="this-src-list" value="tan:src-ids-to-nos(../@src)"/>
          <let name="this-old" value="@old"/>
@@ -358,7 +358,15 @@
             no more than one source.</report>
          <report test="@cont and not(following-sibling::tan:div-ref)" tan:applies-to="cont">Any
             &lt;div-ref> taking @cont must be followed by at least one other &lt;div-ref>.</report>
-         <report test="$help-requested and parent::tan:realign">Looking for a div to realign? Try <value-of select="$stranded-refs"/></report>
+         <report test="$help-requested and parent::tan:realign">Looking for a div to realign? Try 
+            <value-of
+               select="
+                  for $i in tokenize(@src, '\s+')
+                  return
+                     concat(
+                     '(', $i, ') ', string-join($stranded-divs[../@id = $i], ' ')
+                     )"
+            /></report>
       </rule>
       <rule context="@cont">
          <let name="pos" value="count(../preceding-sibling::*[not(@cont)])"/>

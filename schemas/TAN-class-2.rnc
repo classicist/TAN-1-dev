@@ -151,9 +151,8 @@ token-list =
 
 ##    Pointer (link) to a div in a TAN-T(EI) file
 pointer-to-div-range =
-    # Move this to class 2?
     
-    ## lists references to one or more <div>s. It consists of one or more atomic references joined with commas or hyphens. An atomic reference is a string value that points to a single <div>
+    ## lists references to one or more <div>s. It consists of one or more atomic references joined with commas or hyphens. An atomic reference is a string value that points to a single <div>. In most cases (i.e., when @distribute is not in force), multiple atomic references are treated collectively, as a single reference to a complex passage, not as multiple references to individual passages. 
     
     ## Examples: 'bk.2:ch.4', '2.4 - 2.7, 2.9', 'poem 5, poem 6:line 6 - poem 7:line 2'
     

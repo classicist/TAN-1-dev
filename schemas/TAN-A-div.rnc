@@ -46,7 +46,9 @@ topic-opt =
    attribute topic { text }
 div-ref-list =
    
-   ## points to one or more <div>s (or segments of <div>s) in one or more sources
+   ## collects one or more <div>s (or segments of <div>s) in one or more sources
+   
+   ## In most cases, the texts pointed to in <div-ref> will be treated as a collective set. If passage A is found three times in X, Y, and Z, then in an <align> four different <div-ref>s should be used. But if A is found once, spanning X, Y, and Z, then the last three should be gathered in a single <div-ref>, or, optionally, in a <div-ref> with a @cont.
    element div-ref { div-ref-pattern }
 div-ref-pattern =
    ed-stamp?, strength-claim?, source-ref, pointer-to-div-range, seg-ref?, continuation?
@@ -57,7 +59,8 @@ work-equiv =
    
    ## Any two <work>s that share at least one <IRI> value will be treated as equivalent; those that do not will be treated as different div types. <equate-works> permits you to make an ad hoc equivalence between one or more <work>s.
    
-   ## <equate-div-types> are assumed to be greedy and transitive. If work X of source A is stated to be equivalent to work Y of source B, then any work in any source identical to X will be identical to any work in any source identical to Y. So to equate two works, each with multiple members, you need declare the equivalence between only one member of each work, not all of them.
+   ## <equate-div-types> are assumed to be greedy and transitive. If this element is used to equate work X with type Y, then any any source with a work identical to X's or Y's IRI values will treated as identical.
+   ## If work X of source A is stated to be equivalent to work Y of source B, then any work in any source identical to X will be identical to any work in any source identical to Y. So to equate two works, each with multiple members, you need declare the equivalence between only one member of each work, not all of them.
    
    ## This element does not imply that the two works are, in reality, one and the same. It merely states that, for the purposes of this alignment, they should be treated as equivalent.
    element equate-works { ed-stamp?, (inclusion | source-ref) }
@@ -67,7 +70,7 @@ div-type-equiv =
    
    ## Any two <div-type>s that share at least one <IRI> value will be treated as equivalent; those that do not will be treated as different div types. <equate-div-types> permits you to make an ad hoc equivalence between one or more <div-type-ref>s.
    
-   ## <equate-div-types> are assumed to be greedy and transitive. If div type X of source A is stated to be equivalent to type Y of source B, then any div type in any source identical to X will be identical to any div type in any source identical to Y. So to equate two div types, each with multiple members, you need declare the equivalence between only one member of each work, not all of them. 
+   ## <equate-div-types> are assumed to be greedy and transitive. If this element is used to equate div type X with type Y, then any div type in any source identical to X's or Y's IRI values will treated as identical. 
    
    ## This element does not imply that the two types of division are, in reality, one and the same. It merely states that, for the purposes of this alignment, they should be treated as equivalent.
    element equate-div-types {
@@ -80,7 +83,9 @@ div-type-ref-cluster =
    element div-type-ref { ed-stamp?, source-ref, div-type-ref }
 split =
    
-   ## creates ad hoc splits in leaf <div>s, to facilitate alignments and realignments of textual units smaller than leaf <div>s. Any leaf div may be split as many times as one wishes, but never smaller than the token level, as defined by <tokenization>s.
+   ## creates ad hoc splits in leaf <div>s, to facilitate alignments and realignments of textual units smaller than leaf <div>s. Any leaf div may be split as many times as there are token, as defined by <tokenization>s.
+   
+   ## Each split creates a segment, a textual subdivision of leaf <div>s introduced by the TAN-A-div file.
    element split-leaf-div-at {
       ed-stamp?,
       (inclusion | (comment* & token-list+))

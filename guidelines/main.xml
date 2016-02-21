@@ -3838,58 +3838,51 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
             files. At present, class 2 files are restricted to alignment or
             lexico-morphology.</para>
          <para>Alignment files come in two different formats, identified by the rootmost element.
-            TAN-A-div is macroscopic; TAN-A-tok, microscopic. TAN-A-div aligns one or more class 1
-            files. It is intended for broad, general alignments of any number of versions of any
-            number of works. TAN-A-tok allows one to declare alignments with detailed specificity,
-            certainty, and type between any two class 1 files. </para>
+            TAN-A-div provides macroscopic alignment; TAN-A-tok, microscopic. TAN-A-div aligns one
+            or more class 1 files. It is intended for broad, general alignments of any number of
+            versions of any number of works. The scope of TAN-A-tok is more restricted, to two class
+            1 files, allowing one to declare alignments with detailed specificity, certainty, and
+            type between words (tokens).</para>
          <para>Lexico-morphology files (also called part-of-speech files), TAN-LM, are used to
             encode the lexical headwords and morphological forms of individual words in class 1
             files.</para>
          <section xml:id="class_2_common">
             <title>Common Elements</title>
-            <para>The class 2 formats have been designed to be very readable to humans. And because
-               that data invariably points to class 1 files, it has been assumed that those
-               references should reflect the way, in ordinary conversation, we refer to specific
-               parts of a text. We like to cite pages, paragraphs, sentences, lines, words, letters,
-               and so forth, and to keep our references managable we include relative keywords, and
-               sometimes portions of the text itself. We might say, for example, "See page 4, second
-               paragraph, the last four words." Or, "See page 4, second paragraph, first sentence,
-               second occurence of 'pull'." </para>
-            <para>We generally find it difficult if not impossible to construct and interpret "See
-               characters 2496-2502, 2504-2509, and 2510-2512." Although it is easy for a computer
-               to parse such numbers, TAN avoids these kinds of constructions.</para>
-            <para>The TAN syntax for referring to portions of text has a few unavoidable
-               constraints. First, the reference system used by each source file must be respected,
-               although some ad hoc alterations are allowed (see below). Second, TAN is commited to
-               XML-based space normalization, which means that editors need to have the freedom to
-               alter indentation and spacing as needed. So it is impossible to point to changable
-               features in a source file such as line or character numbers. So TAN references to
-               class 1 files depend upon fixed features: works, divisions, word tokens, and
-               characters. <emphasis>Works</emphasis>, defined above (see <xref
-                  linkend="conceptual_works"/>), are invoked by virtue of declaring a
-                  <emphasis>source</emphasis> because no source may have more than one work.
-                  <emphasis>Divisions</emphasis> are defined by the <code><link
-                     linkend="element-div">&lt;div></link></code> structure of each class 1
-               transcription. <emphasis>Tokens</emphasis> are words defined according to one or more
-               tokenization rules. And <emphasis>characters</emphasis> are defined, when possible,
-               by the codepoints that make up a particular word token.</para>
-            <para>This fourfold hierarchy—sources, divisions, tokens, and characters—follow a
-               vocabulary that the editor of a class 2 file finds most useful. Sources are given a
-               nickname (e.g., <code><link linkend="attribute-xmlid">xml:id</link> =
+            <para>The class 2 formats have been designed to be human readable. And because that data
+               invariably points to class 1 files, it has been assumed that those references should
+               reflect the way, in ordinary conversation, we refer to specific parts of a text. We
+               like to cite pages, paragraphs, sentences, lines, words, letters, and so forth. We
+               prefer to use relative keywords, and or sometimes parts of the text itself. We might
+               say, for example, "See page 4, second paragraph, the last four words." Or, "See page
+               4, second paragraph, first sentence, second occurence of 'pull'." </para>
+            <para>The TAN pointer syntax differs from other pointer systems (e.g., URLs, XPath, and
+               XPointer) in that it depends upon fixed features that do not change if someone
+               reindents or structurally rearranges a source file: works, divisions, word tokens,
+               and characters. <emphasis>Works</emphasis>, defined above (see <xref
+                  linkend="conceptual_works"/>), are defined by the <emphasis>source</emphasis>
+               (which may not have more than one work). <emphasis>Divisions</emphasis> are defined
+               by the <code><link linkend="element-div">&lt;div></link></code> structure of each
+               source. <emphasis>Tokens</emphasis> are words of those divisions, defined according
+               to one or more tokenization rules. And <emphasis>characters</emphasis> are defined as
+               non-modifying codepoints in a word token.</para>
+            <para>Parts of this fourfold hierarchy—works, divisions, tokens, and characters—are
+               named with vocabulary that the editor of a class 2 file finds most useful. Sources
+               are given a nickname (e.g., <code><link linkend="attribute-xmlid">xml:id</link> =
                   "hamlet-1741"</code>); the identifying labels for division types and labels are
-               adopted from the class 1 sources (e.g., <code><link linkend="attribute-ref"
-                     >ref</link> = "Act I scene 1"</code>), or they can be provisionally adjusted;
-               word tokens can be referred to by position (counting from the beginning or end of a
-                     <code><link linkend="element-div">&lt;div></link></code>) or by its actual
-               value (e.g., <code><link linkend="attribute-pos">ord</link> = "1 - 5" <link
+               either adopted from the class 1 sources (e.g., <code><link linkend="attribute-ref"
+                     >ref</link> = "Act I scene 1"</code>), or are provisionally adjusted; word
+               tokens can be referred to by position, by its actual value, or both (e.g.,
+                     <code><link linkend="attribute-pos">pos</link> = "1 - 5", <link
+                     linkend="attribute-pos">pos</link> = "last-1 - last", <link
                      linkend="attribute-val">val</link> = "hath"</code>; see <xref
                   linkend="attr_pos_and_val"/>). Characters are always identified by number (e.g.,
                      <code><link linkend="attribute-chars">chars</link> = "2, 7"</code>).</para>
             <para>This approach not only makes the syntax human readable, it also mitigates any
                disruptions that corrections or alterations might incur. For example, if an
-               incorrectly duplicated is deleted, disruption to the reference system is restricted
-               to that particular <code><link linkend="element-div">&lt;div></link></code> and does
-               not affect the rest of the document.</para>
+               incorrectly duplicated <code><link linkend="element-div">&lt;div></link></code> is
+               deleted, disruption to the reference system is restricted to that particular
+                     <code><link linkend="element-div">&lt;div></link></code> and does not affect
+               the rest of the document.</para>
             <section xml:id="class_2_metadata">
                <title>Class 2 Metadata (<code><link linkend="element-head"
                   >&lt;head></link></code>)</title>
@@ -3914,11 +3907,10 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                         >&lt;tokenization></link></code>, <xref
                      linkend="preparing_transcriptions_for_tokenization"/>, and <xref
                      linkend="tan-r-tok"/>.</para>
-               <para>There may be some cases where a source has a div type that is extraneous to
-                  referencing the text. A single optional <code><link
-                        linkend="element-suppress-div-types">&lt;suppress-div-types></link></code>
-                  may be used to specify division types that you wish to suppress in
-                  references.</para>
+               <para>There may be some cases where a source has a div type that is unnecessary or
+                  confusing. One or more optional <code><link linkend="element-suppress-div-types"
+                        >&lt;suppress-div-types></link></code>s may be used to specify division
+                  types that you wish to suppress in references.</para>
                <para xml:id="implicit-div-type-refs">Optional <code><link
                         linkend="element-implicit-div-type-refs"
                      >&lt;implicit-div-type-refs></link></code> names sources (via the <code><link
@@ -3964,8 +3956,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                <title>Class 2 Data Patterns (<code><link linkend="element-body"
                      >&lt;body></link></code>)</title>
                <para>The three types of class 2 files treat different kinds of phenomena, so their
-                  data looks quite different. Nevertheless, a few elements and attributes are shared
-                  by two or more formats.</para>
+                  data structures look quite different. Nevertheless, a few elements and attributes
+                  are shared by two or more formats.</para>
                <para>Many class 2 elements take <code><link linkend="attribute-src"
                      >@src</link></code> and <code><link linkend="attribute-ref">@ref</link></code>.
                         <code><link linkend="attribute-src">@src</link></code> points via ID
@@ -4066,26 +4058,22 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
             <title>Alignments: Principles and Assumptions</title>
             <para>At the heart of class 2 are alignment files. TAN distinguishes two types of
                alignment. </para>
-            <para>The first, aiming at breadth and extent, collects multiple versions of a work to
-               facilitate parallel reading or research, much like the Rosetta Stone or Origen's
-                  <emphasis role="italic">Hexapla</emphasis>. This macroscopic alignment is normally
-               constructed to help readers notice and study similarities and differences among
-               multiple versions of texts. </para>
-            <para>The second, aiming at depth and precision, isolates two versions of a work and
-               documents how and why certain letters, words, or phrases in one version were omitted,
-               retained, or changed in the other, much like very precise, detailed commentaries on
-               texts and their translations, or apparatus critici in critical editions.</para>
-            <para>Just as these two types of aligning activities are separate, so they are also in
-               their TAN formats. One, <emphasis role="bold">TAN-A-div</emphasis>, facilitates the
-               general alignment of any number of class 1 files; the other, <emphasis role="bold"
-                  >TAN-A-tok</emphasis>, the detailed alignment of any two. For cases where both
-               precision and breadth are required, one or more of each type of format should be
-               written.</para>
+            <para>The first, <emphasis role="bold">TAN-A-div</emphasis>, aiming at breadth and
+               extent, collects multiple versions of a work to facilitate parallel editions or to
+               generate comparative statistics across multiple versions of related texts.
+               facilitates the general alignment of any number of class 1 files</para>
+            <para>The second, <emphasis role="bold">TAN-A-tok</emphasis>, aiming at depth and
+               precision, concentrates on two versions of a single work and indicates which letters,
+               words, or phrases in one version were omitted, retained, or changed in the other and
+               why.</para>
+            <para>For cases where both precision and breadth are required, one or more files of each
+               format should be written.</para>
             <para>TAN aligments attest to acts of translating, paraphrasing, revising, quoting,
                summarizing, and so forth. All these are treated as types of text reuse, where one or
                more texts, usually called in translation studies the <emphasis>source</emphasis> (or
                   <emphasis>sources</emphasis>), are transformed into a new text, customarily called
-               the <emphasis>target</emphasis>. Text reuse has directionality and is asymmetrical.
+               the <emphasis>target</emphasis>. Text reuse has directionality and is asymmetrical
+               (if I play with a quotation from Homer, it does not change what he originally wrote).
                But many times we deal with texts where the original lines of direction are contested
                or unknown. In those cases, it is hasty or misleading to refer to either of the texts
                as a source or a target. Indeed, the two texts may in fact derive from a common
@@ -4097,17 +4085,11 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
             <para>Consequently, the order of <code><link linkend="element-source"
                   >&lt;source></link></code>s in an alignment file's <code><link
                      linkend="element-head">&lt;head></link></code> does not imply chronological
-               precedence. All the sequence implies is processing order, so the first will be the
+               precedence. The only implication is that of processing order: the first will be the
                foundation or base against which subsequent sources will be aligned. It is usually a
                good idea to list as the first <code><link linkend="element-source"
                      >&lt;source></link></code> the version that is most complete or most important
                to a given alignment.</para>
-            <para>Take for example a work such as the <emphasis role="italic">Chronicle of the
-                  Morea</emphasis>, a fourteenth century history, which survives in both French and
-               Greek versions. The original language of composition is disputed. A TAN-A file that
-               lists the Greek source first and the French second does not imply that the text was
-               written in Greek. All it means is that anyone processing the TAN file should begin
-               with the Greek before going to the Latin.</para>
          </section>
          <section xml:id="tan-a-div">
             <title>Division-Based Alignments (<code><link linkend="element-TAN-A-div"
@@ -4119,26 +4101,26 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
             <para>A TAN-A-div file is technically not an alignment per se. Rather, it is an
                alignment constructor. That is, a TAN-A-div file specifies the core parameters
                necessary in creating an alignment. It is up to a processor to use that TAN-A-div
-               file to generate a byproduct (HTML, pdf, word processing document, etc.) that will be
+               file to generate a byproduct (HTML, pdf, spreadsheet, document, etc.) that will be
                recognizable to most people as an alignment.</para>
             <para>Some independently created transcriptions of the same work will, no matter the
                good intentions of the transcribers, fail to correspond exactly to other versions of
                the same works. Perhaps the works or div types will not be defined identically, or
                perhaps one version follows a reference system at odds with the majority of other
-               versions. TAN-A-div is used to reconcile such inconsistencies, to make special
-               alignments that a computer might not be able to detect automatically, and to refine
-               the alignment of parallel sources, even down to the word level. </para>
-            <para>The assumptions of an aligner are opaque in the TAN-A-div format. A TAN-A-div file
+               versions. Perhaps a source is interpolated or lacunose. TAN-A-div is used to
+               reconcile such inconsistencies, to make special alignments that a computer might not
+               be able to detect automatically, and to refine the alignment of parallel sources,
+               even down to the word level. </para>
+            <para>The motivations of an aligner are opaque in the TAN-A-div format. A TAN-A-div file
                says, in essence, "Please align the following sources," but it does not say why the
                alignment is requested, and it does not indicate what relationship holds between the
                various sources. In fact, a TAN-A-div file could be used to align texts that have no
-               apparent relationship (to what end would be unclear). If it is important to convey
-               assumptions about the rationale for alignment, the TAN-A-tok format should be
-               used.</para>
-            <para>Any processor of a TAN-A-div format should assume greedy alignment. Alignments
-               should be inferred wherever possible, when not explicitly overridden. Alignments are
-               also transitive. If passage A aligns with B, then anything that aligns with A must
-               align with anything that aligns with B.</para>
+               apparent relationship (to what end would be unclear). </para>
+            <para>Processors of a TAN-A-div file will assume greedy alignment. Alignments will be
+               inferred wherever possible, when not explicitly overridden. Alignments are also
+               transitive. If passage A is declared to align with B, then, barring any exceptions,
+               anything that aligns with A will be assumed to align with anything that aligns with
+               B.</para>
             <section>
                <title>Rootmost Element and Header</title>
                <para>The rootmost element of a TAN division-based alignment file is <code><link
@@ -4165,41 +4147,33 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   alignment. That is, it states, in effect, "Take the list of sources in the header.
                   First group (align) them by work, then by <code><link linkend="element-div"
                         >&lt;div></link></code>s according to flattened references." </para>
-               <para>A processor will create groups of works by looking for matches in the sources'
-                        <code><link linkend="element-IRI">&lt;IRI></link></code> values under
-                        <code><link linkend="element-work">&lt;work></link></code>. To those matches
-                  will be added any sources you claim should be treated as being equivalently the
-                  same work. Then within each work group, the processor will standardize the
-                        <code><link linkend="attribute-type">@type</link></code> and <code><link
-                        linkend="attribute-n">@n</link></code> values that make up each leaf
-                        <code><link linkend="element-div">&lt;div></link></code>'s reference, first
-                  by finding common <code><link linkend="element-div-type"
-                     >&lt;div-type></link></code>s through the sources' <code><link
-                        linkend="element-IRI">&lt;IRI></link></code> values, and second by
-                  normalizing any nonstandard numeration systems. The resultant normalization is
-                  then used to create groups of leaf <code><link linkend="element-div"
-                        >&lt;div></link></code>s that share the same flattened reference numbers.
-                  (See <xref linkend="leaf_div_uniqueness_rule"/>.)</para>
-               <para>If sources to be aligned share <code><link linkend="element-IRI"
-                        >&lt;IRI></link></code> values for <code><link linkend="element-work"
-                        >&lt;work></link></code>s and <code><link linkend="element-div-type"
-                        >&lt;div-type></link></code>s, and use a common labeling system (<code><link
-                        linkend="attribute-n">@n</link></code>), then nothing needs to be declared
-                  in a TAN-A-div <code><link linkend="element-body">&lt;body></link></code>. A
-                  TAN-conformant processor will construct an alignment wherever it can. </para>
-               <para><code><link linkend="element-body">&lt;body></link></code>, therefore, is used
-                  exclusively to reconcile unwanted differences between source TAN-T(EI) files, to
-                  realign versions of the same work, and to declare new alignments across works
-                  (quotations). It does so in a five-step process. Each step is optional and
+               <para>A processor will create groups of works according to the <code><link
+                        linkend="element-IRI">&lt;IRI></link></code> values under <code><link
+                        linkend="element-work">&lt;work></link></code> in each source. To those
+                  matches will be added any sources you claim should be treated as being
+                  equivalently the same work. Then within each group of versions of the same work,
+                  the processor will align (group) <code><link linkend="element-div"
+                     >&lt;div></link></code>s based on their values of <code><link
+                        linkend="attribute-type">@type</link></code> and <code><link
+                        linkend="attribute-n">@n</link></code>, after normalization and after taking
+                  into account expections declared in the TAN-A-div file.</para>
+               <para>So if aligned sources already have <code><link linkend="element-div"
+                        >&lt;div></link></code>s whose <code><link linkend="attribute-type"
+                        >@type</link></code> and <code><link linkend="attribute-n">@n</link></code>
+                  match well, then nothing needs to be declared in a TAN-A-div <code><link
+                        linkend="element-body">&lt;body></link></code>. A TAN-conformant processor
+                  will perform the alignment. </para>
+               <para>The <code><link linkend="element-body">&lt;body></link></code> of a TAN-A-div
+                  file, therefore, is used only (1) to reconcile and customize the alignment between
+                  source TAN-T(EI) files and (2) to indicate new alignments where passage x from
+                  work A quotes from passage y  from work B, or where passages x, y, and z all deal
+                  with the same topic. </para>
+               <para>Those procedures follow a five-step process. Each step is optional and
                   sequence-specific. That is, each statement assumes declarations made in previous
-                  siblings have already been taken into account. Each of these steps allow an
-                  optional <xref linkend="edit_stamp"/> (therefore not mentioned in the description
-                  below).</para>
-               <para>The five steps involved in creating the <code><link linkend="element-body"
-                        >&lt;body></link></code> for a TAN-A-div file are, in general, rather
-                  simple. But some of the descriptions that follow may seem unnecessarily detailed
-                  or complex. You are advised to consult examples found in the detailed description
-                  of individual elements and attributes.</para>
+                  siblings have already been taken into account. Although these steps are
+                  fundamentally simple,  some of the descriptions that follow may seem unnecessarily
+                  detailed or complex. You are advised to consult examples found in the detailed
+                  description of individual elements and attributes.</para>
                <section>
                   <title>Step 1: Correlate Works</title>
                   <para>In the first step you may declare an ad hoc equivalence between sources that
@@ -4212,8 +4186,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   <para>Transitive alignment holds: <code>&lt;<link linkend="element-equate-works"
                            >equate-works</link>
                         <link linkend="attribute-src">src</link>="a b"/></code> means that any
-                     source that shares the same work as <code>a</code> will be treated as the same
-                     work as any source defined to be the same work as <code>b</code>.</para>
+                     sources that share the same works as <code>a</code> and <code>b</code> will
+                     also be treated as equivalent.</para>
                   <para>This declaration does not imply that the works are, in reality, one and the
                      same. It merely states that, for the purposes of this alignment, they should be
                      treated as equivalent.</para>
@@ -4222,28 +4196,30 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   <title>Step 2: Correlate Division Types</title>
 
 
-                  <para>This second step does for div types what the first step did for works.
-                     Across all sources, every <code><link linkend="element-div-type"
-                           >&lt;div-type></link></code> that shares an <code><link
-                           linkend="element-IRI">&lt;IRI></link></code> value will be treated as
-                     equivalent. But you may augment that automated alignment through an <code><link
-                           linkend="element-equate-div-types">&lt;equate-div-types></link></code>,
-                     which takes one or more <code><link linkend="element-div-type-ref"
-                           >&lt;div-type-ref></link></code>s, each of which takes a mandatory
-                           <code><link linkend="attribute-src">@src</link></code> and <code><link
-                           linkend="attribute-div-type-ref">@div-type-ref</link></code>, to point to
-                     one or more sources and division types. You must use either the <code><link
-                           linkend="attribute-xmlid">@xml:id</link></code> assigned by the source to
-                     that div type or its renamed value, if there is a corresponding <code><link
-                           linkend="element-rename-div-types">&lt;rename-div-types></link></code>
-                     under <code><link linkend="element-declarations"
-                        >&lt;declarations></link></code> (see <xref linkend="class_2_metadata"
-                     />).</para>
+                  <para>This second step does for div types what the first step did for works, with
+                           <code><link linkend="element-equate-div-types"
+                           >&lt;equate-div-types></link></code>. Across all sources, every
+                           <code><link linkend="element-div-type">&lt;div-type></link></code> that
+                     shares an <code><link linkend="element-IRI">&lt;IRI></link></code> value will
+                     be treated as equivalent. But you may augment that automated alignment through
+                     an <code><link linkend="element-equate-div-types"
+                        >&lt;equate-div-types></link></code>, which takes one or more <code><link
+                           linkend="element-div-type-ref">&lt;div-type-ref></link></code>s, each of
+                     which takes a mandatory <code><link linkend="attribute-src">@src</link></code>
+                     and <code><link linkend="attribute-div-type-ref">@div-type-ref</link></code>,
+                     to point to one or more sources and division types. You must use either the
+                           <code><link linkend="attribute-xmlid">@xml:id</link></code> assigned by
+                     the source to that div type or its renamed value, if there is a corresponding
+                           <code><link linkend="element-rename-div-types"
+                           >&lt;rename-div-types></link></code> under <code><link
+                           linkend="element-declarations">&lt;declarations></link></code> (see <xref
+                        linkend="class_2_metadata"/>).</para>
                   <para>As with <code><link linkend="element-equate-works"
                         >&lt;equate-works></link></code>, <code><link
                            linkend="element-equate-div-types">&lt;equate-div-types></link></code>
-                     assume a greedy, transitive alignment. And this ad hoc declaration does not
-                     imply that the two types of division are, in reality, one and the same.</para>
+                     assume a greedy, transitive alignment. The ad hoc declaration does not imply
+                     that the two types of division are, in reality, one and the same—it just
+                     correlates them for the sake of the alignment.</para>
                </section>
                <section>
                   <title>Step 3: Refine Segmentation</title>
@@ -4255,17 +4231,15 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                            linkend="element-div">&lt;div></link></code> in source B. Or suppose that
                      you wish to break down a leaf <code><link linkend="element-div"
                         >&lt;div></link></code> into smaller constituent parts, to facilitate more
-                     exact alignments (e.g., sentence-to-sentence, phrase-to-phrase, word-to-word).
-                     Before these refined alignments can occur, the source transcriptions must be
-                     refined by first segmenting specific leaf <code><link linkend="element-div"
-                           >&lt;div></link></code> . This is done through <link
-                        linkend="element-split-leaf-div-at">&lt;split-leaf-div-at></link>,
+                     exact alignment against another version that is divided more granularly. Before
+                     these refined alignments can occur, the source transcriptions must be refined
+                     by first segmenting specific leaf <code><link linkend="element-div"
+                           >&lt;div></link></code> . This is done through <code><link
+                           linkend="element-split-leaf-div-at">&lt;split-leaf-div-at></link></code>,
                      containing one ore more <code><link linkend="element-tok"
                         >&lt;tok></link></code>s pointing to individual words (see <xref
                         linkend="attr_pos_and_val"/>) that should begin a new segment in each
-                     reference in each source. Hence the first token in a leaf <code><link
-                           linkend="element-div">&lt;div></link></code> may never be picked as the
-                     start of a new segment.</para>
+                     reference in each source.</para>
                   <para><code><link linkend="attribute-ref">@ref</link></code> must refer only to
                      leaf <code><link linkend="element-div">&lt;div></link></code>s. Any leaf
                            <code><link linkend="element-div">&lt;div></link></code> may be split as
@@ -4284,10 +4258,9 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                      properly aligned. Segments newly created by <code><link
                            linkend="element-split-leaf-div-at">&lt;split-leaf-div-at></link></code>s
                      may need to be realigned. Or perhaps one of the sources uses a reference system
-                     that is out of step with the others. </para>
-                  <para><code><link linkend="element-realign">&lt;realign></link></code> is used to
-                     reconcile the parts of versions of the same work. It is not used for aligning
-                     across works (see step 5, below). </para>
+                     that is out of step with the others. <code><link linkend="element-realign"
+                           >&lt;realign></link></code> is used to reconcile differences. It is not
+                     used for aligning across works (see step 5, below). </para>
                   <para>There are two types of realignment: anchored and unanchored, discussed in
                      detail at <code><link linkend="element-realign"
                      >&lt;realign></link></code>.</para>
@@ -4295,14 +4268,27 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                <section xml:id="tan-a-div_align">
                   <title>Step 5: Add New Alignments</title>
                   <para>At this point, the versions of each work should be aligned. You are now in a
-                     position to indicate places where one work aligns with another, to supplement
-                     the aligments that will be inferred from steps 1 through 4. </para>
-                  <para>In this fifth step, <code><link linkend="element-align"
-                        >&lt;align></link></code> is used to indicate where one work quotes another
-                     or itself. Every group of references, defined by children <code><link
-                           linkend="element-div-ref">&lt;div-ref></link></code>, is to be aligned
-                     with every other group of references, qualified by some optional
-                     attributes:</para>
+                     position to indicate other places where one work aligns with another, to
+                     supplement the aligments that will be inferred from steps 1 through 4. In this
+                     fifth step, <code><link linkend="element-align">&lt;align></link></code> is
+                     used to indicate where one work quotes another or itself. It can also be used
+                     to take a topic and specify the passages that align with that topic. This last
+                     step is particularly helpful as the basis for the creation of indexes, either
+                     of quotations or a general index.</para>
+                  <para>These alignments occur through children <code><link
+                           linkend="element-div-ref">&lt;div-ref></link></code>s, qualified by some
+                     optional attributes:</para>
+                  <para><link linkend="attribute-cont"><code>@cont</code></link> (default = false;
+                     if present must take <code>1</code> or <code>true</code>) indicates that the
+                     present <code><link linkend="element-div-ref">&lt;div-ref></link></code>should
+                     be taken with the next as a single group. By default, i.e., when this attribute
+                     is absent, the current <code><link linkend="element-div-ref"
+                           >&lt;div-ref></link></code> is assumed to be a completely distinct set
+                     from every other sibling <code><link linkend="element-div-ref"
+                           >&lt;div-ref></link></code>. Likewise, if a <code><link
+                           linkend="element-div-ref">&lt;div-ref></link></code> points to multiple
+                     passages in <link linkend="attribute-ref"><code>@ref</code></link>, these are
+                     to be taken collectively.</para>
                   <para><code><link linkend="attribute-strength">@strength</link></code> (default =
                      1) is a rough equivalent to <code><link linkend="attribute-cert"
                         >@cert</link></code>, but makes no claim on doubt. After all, TAN-A-div
@@ -4312,10 +4298,11 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                      for the alignment. </para>
                   <para><code><link linkend="attribute-exclusive">@exclusive</link></code> (default
                      = false) indicates whether an alignment should be excluded or not from
-                     transitive alignments. If transitive alignments are allowed, then each
-                           <code><link linkend="element-div-ref">&lt;div-ref></link></code> may take
-                     only one value for <code><link linkend="attribute-src">@src</link></code>, to
-                     minimize potential confusion in what is, in effect, a redundancy.</para>
+                     transitive inference. If the default false value holds true, then transitive
+                     alignments are allowed and each <code><link linkend="element-div-ref"
+                           >&lt;div-ref></link></code> may take only one value for <code><link
+                           linkend="attribute-src">@src</link></code>, to minimize potential
+                     confusion in what is, in effect, a redundancy.</para>
                   <para xml:id="attr_distribute"><code><link linkend="attribute-distribute"
                            >@distribute</link></code> (default = false), indicates whether the
                      references declared in a <code><link linkend="element-div-ref"

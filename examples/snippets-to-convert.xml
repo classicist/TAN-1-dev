@@ -6,46 +6,6 @@
 -->
 <snippets-to-turn-into-real-TAN-examples>
     <example>
-        <title><code><link linkend="element-split-leaf-div-at">&lt;split-leaf-div-at></link></code>:
-            common use</title>
-        <para>
-            <programlisting>      ...........
-   &lt;split-leaf-div-at>
-      &lt;tok src="eng-1790" ref="line 1" ord="1 | 2" val="a"/>
-   &lt;/split-leaf-div-at>
-      ...........   </programlisting>
-        </para>
-        <caption>
-            <para>This example assumes line 1 reads "Ring a ring a Rosie," and that the text has
-                been tokenized based on spaces. This <code><link linkend="element-tok"
-                        >&lt;tok></link></code> introduces two splits in the leaf <code><link
-                        linkend="element-div">&lt;div></link></code>, starting with the first and
-                second instances of "a" (the second and fourth word-tokens). The overall effect is
-                to create three segments: "Ring" "a ring" "a Rosie". Later in the alignment file
-                file, any reference to <code>line 1</code> will refer to all three segments.
-                        <code><link linkend="attribute-seg">@seg</link></code> would be used to
-                point to one or more specific segments (see below).</para>
-        </caption>
-    </example>
-    <example>
-        <title><code><link linkend="element-split-leaf-div-at">&lt;split-leaf-div-at></link></code>:
-            advanced use</title>
-        <para>
-            <programlisting>      ...........
-   &lt;split-leaf-div-at>
-      &lt;tok src="eng deu heb" ref="bk.Ex.ch.1.v.2 | bk.Ex.ch.1.v.1" ord="2 | 5 - 7 | last-1"/>
-   &lt;/split-leaf-div-at>
-      ...........   </programlisting>
-        </para>
-        <caption>
-            <para>In this example, the <code><link linkend="element-tok">&lt;tok></link></code>
-                states that in each of the three different sources, each of the divisions
-                corresponding to the two references should be split five times, at the second,
-                fifth, sixth, seventh, and penultimate word-tokens. Note, there must be a valid word
-                token for each ref in each source.</para>
-        </caption>
-    </example>
-    <example>
         <title><code><link linkend="element-realign">&lt;realign></link></code>: unanchored
             1</title>
         <para>

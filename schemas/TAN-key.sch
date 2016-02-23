@@ -10,7 +10,7 @@
    <ns prefix="sqf" uri="http://www.schematron-quickfix.com/validator/process"/>
    <!-- common core below -->
    <include href="TAN-core.sch"/>
-   <include href="TAN-class-4.sch"/>
+   <include href="TAN-class-3.sch"/>
 
    <!-- FUNCTIONS -->
    <xsl:include href="../functions/TAN-key-functions.xsl"/>

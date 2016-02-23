@@ -20,19 +20,9 @@ decl-class-2 =
 ## Reserved for declarations specific to individual types of class 2 files 
 decl-non-class-2 = empty
 
-## 
 ## Reserved for modification in different types of Class 2 files, to specify how many tokenization declarations are allowed.
-decl-token-opt = decl-token+
-decl-token =
-    
-    ## specifies a tokenization method to be applied to one or more sources, either by (1) pointing to a TAN-R-tok file, (2) pointing by IDREF to a <recommended-tokenization> in a source, or (3) using a reserved tokenization keyword.
-    
-    ## Class 2 files that do not require tokenization (i.e., TAN-A-div) must include <tokenization> only if the file uses elements (e.g., <split-leaf-div-at>) that assume tokenization. 
-    element tokenization {
-        ed-stamp?,
-        (inclusion
-         | (source-ref, (keyword-ref | entity-digital-tan-other-ref)))
-    }
+## Class 2 files that do not require tokenization (i.e., TAN-A-div) must include <token-definition> only if the file uses elements (e.g., <split-leaf-div-at>) that assume tokenization. 
+decl-token-opt = decl-tok-def+
 
 ## Reserved for modification in different types of Class 2 files, to specify how many suppress-div-type declarations are allowed.
 decl-supp-div-opt = decl-supp-div-type*

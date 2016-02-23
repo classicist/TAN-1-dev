@@ -173,6 +173,18 @@ decl-pattern-language =
     (inclusion
      | (decl-id-ref-opt,
         (comment* & (lang-outside*, entity-nondigital-ref))))
+decl-tok-def =
+    
+    ## defines through a regular expression the definition of a word token. This element will be used to segment a string into token and non-token components. 
+    
+    ## This element takes attributes that function as the parameters for the function xsl:analyze-string (see https://www.w3.org/TR/xslt-30/#element-analyze-string).
+    
+    ## For theoretical background and more information, see main.xml#preparing_transcriptions_for_tokenization
+    element token-definition {
+        ed-stamp?,
+        (inclusion
+         | (comment* & (func-param-pattern, func-param-flags?)))
+    }
 
 ## Editorial stamp: who created or edited the enclosed data and when. 
 ed-stamp = ed-agent, ed-time
@@ -193,7 +205,7 @@ entity-nondigital-ref = (IRI-gen-ref+, metadata-human) | keyword-ref
 func-param-pattern =
     
     ## specifies a regular expression pattern to be searched for or matched
-    element pattern { ed-stamp?, text }
+    attribute regex { text }
 func-param-flags =
     
     ## specifies flags to be applied in an XPath expression using regular expressions.
@@ -201,36 +213,8 @@ func-param-flags =
     ## s = dot-all mode; m = multi-line mode; i = case-insensitive mode; x = remove whitespace characters from regular expression; q = no metacharacters 
     
     ## For more see http://www.w3.org/TR/xpath-functions-30/#flags
-    element flags {
-        ed-stamp?,
+    attribute flags {
         xsd:string { pattern = "[smixq]+" }
-    }
-func-replace =
-    
-    ## contains the equivalent of the XPath replace() function plus parameters, indicating a replacement operation that should be, or has been, applied to a digital file. Used in class 1 and class 3 (TAN-R-tok) files.
-    
-    ## Multiple <replace>s will be implemented in document order.
-    
-    ## The conventions of this element and its children accord with the definition of the function and its parameters provided at http://www.w3.org/TR/xpath-functions-30/#func-replace
-    
-    ## Multiple <replace> values are applied according to the order given.
-    element replace {
-        ed-stamp?,
-        (inclusion
-         | (comment*
-            & (func-param-pattern,
-               
-               ## contains a string used to replace any occurrence of <pattern> 
-               element replacement { ed-stamp?, text },
-               func-param-flags?)))
-    }
-func-tokenize =
-    
-    ## constructs the equivalent of an XPath tokenize() function plus parameters. Used in class 1 and class 3 (TAN-R-tok) files.
-    element tokenize {
-        ed-stamp?,
-        (inclusion
-         | (comment* & (func-param-pattern, func-param-flags?)))
     }
 IRI-gen-ref =
     

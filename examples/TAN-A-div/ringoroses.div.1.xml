@@ -40,7 +40,10 @@
         <declarations>
             <suppress-div-types src="eng-1790" div-type-ref="poem"/>
             <implicit-div-type-refs src="eng-uk eng-us ger eng-1790"/>
-            <tokenization src="eng-us" which="general-1"/>
+            <comment when="2016-02-22-05:00" who="park">The following token definition
+                treats the following as words: sequences of letters, any individual character 
+                that is neither a letter nor a space (i.e., punctuation).</comment>
+            <token-definition src="eng-us" regex="\w+|[^\w\s]"/>
         </declarations>
         <agent xml:id="park" roles="creator">
             <IRI>tag:parkj@textalign.net,2015:self</IRI>

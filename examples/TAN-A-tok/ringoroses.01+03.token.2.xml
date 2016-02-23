@@ -41,7 +41,7 @@
                 <IRI>tag:kalvesmaki@gmail.com,2014:reuse-type:correlation-general</IRI>
                 <name>Texts are generally correlated, but without specifying the relation</name>
             </reuse-type>
-            <tokenization src="eng ger" which="general-1"/>
+            <token-definition src="eng ger" which="letters and punctuation"/>
             <rename-div-ns src="ger" div-type-ref="Zeile">
                 <rename old="#a" new="#1"/>
                 <rename old="e" new="4"/>

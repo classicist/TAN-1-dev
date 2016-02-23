@@ -18,7 +18,6 @@
                 <name>"Ring a Ring o' Roses" or "Ring Around the Rosie"</name>
             </work>
             <div-type xml:id="line" which="half-line (verse)"/>
-            <recommended-tokenization which="general-1"/>
         </declarations>
         <agent xml:id="park" roles="creator">
             <IRI>tag:parkj@textalign.net,2015:self</IRI>

@@ -35,7 +35,7 @@
                 <IRI>tag:textalign.net,2015:reuse-type:adaptation:general</IRI>
                 <name>general adaptation</name>
             </reuse-type>
-            <tokenization src="ring1881 ring1987" which="general-1"/>
+            <token-definition src="ring1881 ring1987" which="letters"/>
         </declarations>
         <agent xml:id="park" roles="creator">
             <IRI>tag:parkj@textalign.net,2015:self</IRI>

@@ -45,7 +45,8 @@
             <rename-div-ns src="ger" div-type-ref="line">
                 <rename old="#a" new="#1"/>
             </rename-div-ns>
-            <tokenization src="eng ger" which="general-1"/>
+            <comment when="2016-02-22-05:00" who="park">The following is equivalent to @which = 'letters'</comment>
+            <token-definition src="eng ger" regex="\w+"/>
         </declarations>
         <agent xml:id="park" roles="creator">
             <IRI>tag:parkj@textalign.net,2015:self</IRI>

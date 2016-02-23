@@ -44,8 +44,6 @@
             <div-type xml:id="par" which="paragraph"/>
             <div-type xml:id="s" which="sentence"/>
             <div-type xml:id="ic" which="clause (grammatical)"/>
-            <recommended-tokenization which="general-1"/>
-            <recommended-tokenization which="general-words-only-1"/>
             <recommended-div-type-refs>implicit</recommended-div-type-refs>
             <filter>
                 <normalization which="no hyphens"/>

@@ -27,7 +27,6 @@
             <IRI>http://dbpedia.org/resource/Line_(poetry)</IRI>
             <name>line</name>
          </div-type>
-         <recommended-tokenization which="general-words-only-1"/>
          <filter>
             <normalization>
                <IRI>tag:textalign.net,2015:normalization:hyphens-discretionary-removed</IRI>

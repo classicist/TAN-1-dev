@@ -28,7 +28,7 @@
                 <IRI>tag:kalvesmaki@gmail.com,2014:lexicon:eng:test</IRI>
                 <name>test lexicon</name>
             </lexicon>
-            <tokenization which="general-1"/>
+            <token-definition which="letters and punctuation"/>
         </declarations>
         <agent xml:id="park" roles="creator">
             <IRI>tag:parkj@textalign.net,2015:self</IRI>

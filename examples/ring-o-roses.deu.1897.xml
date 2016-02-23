@@ -32,7 +32,6 @@
             <IRI>http://dbpedia.org/resource/Gedichtzeile</IRI>
             <name>Gedichtzeile</name>
          </div-type>
-         <recommended-tokenization which="general-1"/>
          <filter>
             <normalization>
                <IRI>tag:kalvesmaki@gmail.com,2014:normalization:hyphens-discretionary-off</IRI>

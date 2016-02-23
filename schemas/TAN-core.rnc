@@ -134,6 +134,7 @@ seq-picker =
         pattern =
             "((last)|(last-\d+)|(\d+))(\s*-\s*((last)|(last-\d+)|(\d+)))?(\s*,?\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*"
     }
+source-ref = empty
 
 ## Tag URN, mandatory pattern for the IRI name of every TAN file 
 URI-tag =
@@ -183,7 +184,8 @@ decl-tok-def =
     element token-definition {
         ed-stamp?,
         (inclusion
-         | (comment* & (func-param-pattern, func-param-flags?)))
+         | (source-ref,
+            (keyword-ref | (func-param-pattern, func-param-flags?))))
     }
 
 ## Editorial stamp: who created or edited the enclosed data and when. 

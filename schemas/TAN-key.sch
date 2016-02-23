@@ -29,7 +29,7 @@
          <report
             test="not($is-reserved-TAN-key) and . = $TAN-keywords//tan:name[tokenize(ancestor::*[@affects-element][1]/@affects-element, '\s+') = $affected-elements]"
             >Names may not duplicate reserved TAN keywords for the affected element.</report>
-         <report test=". = $duplicate-names">Names may not duplicate each other. </report>
+         <report test=". = $duplicate-names">Names may not duplicate each other.</report>
       </rule>
       <rule context="@affects-element">
          <let name="these-elements" value="tokenize(., '\s+')"/>

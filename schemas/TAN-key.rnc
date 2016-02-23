@@ -9,6 +9,8 @@ include "TAN-class-3.rnc" {
     ## all declarations must have ids
     decl-id-ref-opt = internal-id
     source-list = empty
+    ## No sense in having keywords refer by shorthand to other keywords
+    keyword-ref = empty
     decl-non-core = TAN-key-decl
     TAN-body-core = TAN-key-body
 }
@@ -23,7 +25,7 @@ item =
     ## names an item that is being described. The item is assumed to be a species of the type of thing discussed by the TAN element that is affected.
     element item {
         element-scope?,
-        (entity-digital-tan-other-ref | entity-digital-generic-ref | entity-nondigital-ref | entity-regex)
+        (entity-digital-tan-other-ref | entity-digital-generic-ref | entity-nondigital-ref | entity-tok-def)
     }
 
 element-scope =

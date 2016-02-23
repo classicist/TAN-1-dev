@@ -27,7 +27,7 @@
     </head>
     <body in-progress="false" affects-element="token-definition">
         <item>
-            <regex>\w+|[^\w\s]</regex>
+            <token-definition regex="\w+|[^\w\s]"/>
             <name>letters and punctuation</name>
             <name>general-1</name>
             <name>general</name>
@@ -36,7 +36,7 @@
                 are not letters (e.g., punctuation) as word tokens.</desc>
         </item>
         <item>
-            <regex>\w+</regex>
+            <token-definition regex="\w+"/>
             <name>letters</name>
             <name>letters only</name>
             <name>general-words-only-1</name>
@@ -46,7 +46,7 @@
                 punctuation are ignored.</desc>
         </item>
         <item>
-            <regex>[\p{Z}]+</regex>
+            <token-definition regex="[\p{Z}]+"/>
             <name>non-separators</name>
             <name>precise-1</name>
             <name>precise</name>

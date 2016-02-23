@@ -13,7 +13,7 @@
       </xd:desc>
    </xd:doc>
    
-   <xsl:include href="TAN-class-4-functions.xsl"/>
+   <xsl:include href="TAN-class-3-functions.xsl"/>
    <!-- CONTEXT INDEPEDENT FUNCTIONS -->
    <!-- CONTEXT DEPEDENT FUNCTIONS -->
    

@@ -7,7 +7,7 @@
     version="3.0">
     <xd:doc scope="stylesheet">
         <xd:desc>
-            <xd:p><xd:b>Updated </xd:b>Feb 1, 2016</xd:p>
+            <xd:p><xd:b>Updated </xd:b>Feb 23, 2016</xd:p>
             <xd:p>Functions and variables for core TAN files (i.e., applicable to TAN file types of
                 more than one class). Used by Schematron validation, but suitable for general use in
                 other contexts.</xd:p>
@@ -15,10 +15,33 @@
     </xd:doc>
 
     <xsl:include href="TAN-parameters.xsl"/>
+    
+    <!-- Core TAN constants expressed as global variables -->
 
+    <xsl:param name="regex-escaping-characters" as="xs:string"
+        select="'[\.\[\]\\\|\-\^\$\?\*\+\{\}\(\)]'"/><!-- olim: [\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\)] -->
+    
     <xsl:variable name="TAN-namespace" select="'tag:textalign.net,2015'"/>
-
+    
+    <xsl:variable name="errors" select="doc('TAN-errors.xml')"/>
+    <xsl:variable name="id-idrefs" select="doc('TAN-idrefs.xml')"/>
+    <xsl:variable name="tokenization-errors"
+        select="$errors//tan:group[tokenize(@affects-element, '\s+') = 'tokenization']//tan:error"
+        as="xs:string*"/>
+    <xsl:variable name="inclusion-errors"
+        select="$errors//tan:group[@affects-attribute = 'include']/tan:error" as="xs:string*"/>
+    
     <xsl:variable name="help-trigger-regex" select="tan:escape($help-trigger)"/>
+
+    <xsl:param name="separator-type-and-n" select="'.'" as="xs:string"/>
+    <xsl:variable name="separator-type-and-n-regex" select="'\.'" as="xs:string"/>
+    <xsl:param name="separator-hierarchy" select="':'" as="xs:string"/>
+    <xsl:variable name="separator-hierarchy-regex" select="':'" as="xs:string"/>
+    
+    <xsl:param name="schema-version-major" select="1"/>
+    <xsl:param name="schema-version-minor" select="'dev'"/>
+    
+    <xsl:param name="help-trigger" select="'???'"/>
 
     <xsl:variable name="TAN-keywords" as="element()*">
         <xsl:variable name="TAN-keyword-files" as="document-node()+"

@@ -1,0 +1,26 @@
+/* FONTS */
+*:lang(syr){
+    font-family: noto, 'Serto Urhoy', 'Estrangelo Nisibin';
+    text-align: right;
+    font-size: larger;
+}
+*:lang(cop){
+    font-family: antinoou;
+}
+*:lang(grc){
+    font-family: 'Gentium Plus', 'Garamond Premiere Pro', 'Gentium Plus', serif;
+}
+div:before{
+    content: attr(type) '.' attr(n) ' ';
+}
+/* DISPLAY */
+div{
+    display: block;
+}
+comment{
+    display: list-item;
+}
+/* COLORS */
+div:before{
+    color: blue
+}

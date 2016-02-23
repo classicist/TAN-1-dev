@@ -32,8 +32,8 @@
             <name>general-1</name>
             <name>general</name>
             <name>gen</name>
-            <desc>General tokenization pattern for any language, treating individual points of
-                non-letters such as punctuation as word tokens.</desc>
+            <desc>General tokenization pattern for any language, treating individual characters that
+                are not letters (e.g., punctuation) as word tokens.</desc>
         </item>
         <item>
             <regex>\w+</regex>
@@ -46,11 +46,13 @@
                 punctuation are ignored.</desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:tan-r-tok:precise-1</IRI>
+            <regex>[\p{Z}]+</regex>
+            <name>non-separators</name>
             <name>precise-1</name>
             <name>precise</name>
-            <desc>Precise tokenization pattern for any language, words only</desc>
-            <location href="../TAN-R-tok/precise-1.xml" when-accessed="2016-02-02-05:00"/>
+            <desc>Precise tokenization pattern for any language. Presumes that non-separators such
+                as spaces, lines, paragraphs, and specialized typographic spacing characters
+                (U+2000..U+200B) have been used to delimit word tokens. </desc>
         </item>
     </body>
 </TAN-key>

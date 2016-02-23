@@ -163,9 +163,7 @@
 
     <xsl:variable name="elements-that-must-always-refer-to-tan-files"
         select="
-            ('recommended-tokenization',
-            'tokenization',
-            'morphology',
+            ('morphology',
             'inclusion',
             'key')"/>
     <xsl:variable name="tag-urn-regex-pattern"
@@ -174,7 +172,7 @@
     <xsl:variable name="self-keywords" as="element()*"/>
 
     <xsl:variable name="tokenization-which-reserved"
-        select="$TAN-keywords//tan:group[tokenize(@affects-element, '\s+') = 'tokenization']//tan:name"
+        select="$TAN-keywords//tan:group[tokenize(@affects-element, '\s+') = 'token-definition']//tan:name"
         as="xs:string*"/>
     <!-- Reserved URLs for officially supplied TAN-R-tok patterns -->
     <xsl:variable name="tokenization-which-reserved-url"

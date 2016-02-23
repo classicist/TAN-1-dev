@@ -46,20 +46,6 @@
             select="$exists-new-version/* except $exists-new-version/tan:relationship"/>
       </sqf:fix>
    </rule>
-   <rule context="tan:tokenization">
-      <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
-      <let name="pos-per-src"
-         value="for $i in $this-src-list return count(preceding-sibling::tan:tokenization[$i = tan:src-ids-to-nos(@src)]) + 1"/>
-      <let name="this-tokz-per-src"
-         value="for $i in $this-src-list return $tokenizations-per-source[$i]/tan:tokenization[$pos-per-src[index-of($this-src-list,$i)]]"
-      />
-      <let name="these-tokz-errors"
-         value="for $i in (1 to count($this-tokz-per-src)), $j in $this-tokz-per-src[$i] return 
-         if ($j/tan:location[(@href,@error) = $tokenization-errors]) then concat($src-ids[$this-src-list[$i]],': ',$j/tan:location/@href) else ()"
-      />
-      <report test="$these-tokz-errors"><!-- Common errors in <tokenization>: $tokenization-errors -->Error: <value-of select="$these-tokz-errors"/>
-      </report>
-   </rule>
    <rule context="tan:suppress-div-types|tan:div-type-ref|tan:rename-div-ns">
       <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
       <let name="this-div-types" value="tokenize(@div-type-ref,'\s+')"/>

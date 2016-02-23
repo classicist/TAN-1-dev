@@ -142,8 +142,7 @@
          <report test="exists($duplicate-splits) and not($help-requested)">May not be used to split
             a leaf div more than once in the same place (<value-of
                select="string-join($duplicate-splits, ' ')"/>).</report>
-         <assert test="tan:src-ids-to-nos(@src) = $tokenized-sources">Requires a tokenization
-            declaration.</assert>
+         <assert test="tan:src-ids-to-nos(@src) = $token-definitions-per-source">Requires a &lt;token-definition>.</assert>
          <report test="$these-splits//@error" tan:does-not-apply-to="tok">Tokenization error:
                <value-of
                select="
@@ -201,7 +200,7 @@
                   false()"/>
          <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
          <let name="these-sources-resolved" value="$src-1st-da-data[position() = $this-src-list]"/>
-         <let name="these-srcs-tokenized" value="$this-src-list[. = $tokenized-sources]"/>
+         <let name="these-srcs-tokenized" value="$token-definitions-per-source"/>
          <let name="this-ref" value="@ref"/>
          <let name="this-refs-norm"
             value="

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="tag:textalign.net,2015:ns"
    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tan="tag:textalign.net,2015:ns"
    xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:fn="http://www.w3.org/2005/xpath-functions"
-   xmlns:math="http://www.w3.org/2005/xpath-functions/math" xmlns:xi="http://www.w3.org/2001/XInclude"
-   xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" exclude-result-prefixes="xs math xd" version="2.0">
+   xmlns:math="http://www.w3.org/2005/xpath-functions/math"
+   xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl"
+   exclude-result-prefixes="xs math xd" version="2.0">
 
    <xd:doc scope="stylesheet">
       <xd:desc>
@@ -27,8 +28,9 @@
          else
             'i'"
       as="xs:string?"/>
-   <xsl:param name="searches-suppress-what-text" xml:id="p-searches-suppress-what-text" as="xs:string?" select="'[\p{M}]'"/>
-   
+   <xsl:param name="searches-suppress-what-text" xml:id="p-searches-suppress-what-text"
+      as="xs:string?" select="'[\p{M}]'"/>
+
    <!-- GENERAL -->
    <xsl:variable name="reference-errors"
       select="
@@ -111,106 +113,29 @@
 
    <!-- DECLARATIONS -->
 
-   <!-- DECLARATIONS: tokenization -->
-   <xsl:variable name="tokenizations" xml:id="v-tokenizations"
-      select="$head/tan:declarations/tan:tokenization"
-   />
-   <xsl:variable name="tokenizations-per-source" xml:id="v-tokenizations-per-source" as="element()+">
-      <!-- Sequence of one node/tree per source listing possible tokenizations, their first
-         document-available location, and the languages covered:
-         <tokenization via-src='[TRUE/FALSE]'>
-            <location href="[URL or ERROR MESSAGE]"/>
-            <for-lang>[LANG1 or *]<lang>
-            <for-lang>[LANG2]<lang>
-            ...
-         </tokenization>-->
+   <!-- DECLARATIONS: token-definition -->
+   <xsl:variable name="token-definitions-per-source" xml:id="v-tokenizations-per-source"
+      as="element()*">
+      <!-- Sequence of one <token-definition> per source, chosen by whichever comes first:
+         1. <token-definition> in the originating class-2 file;
+         2. <token-definition> in the source file;
+         3. The pre-set general <token-definition> (letters only)
+      -->
       <xsl:for-each select="$src-count">
          <xsl:variable name="this-src" select="."/>
-         <xsl:variable name="src-tokenizations" select="$src-1st-da-heads[$this-src]/tan:declarations/tan:recommended-tokenization"/>
-         <xsl:element name="tan:source">
-            <xsl:for-each
-               select="
-                  $tokenizations[if (@src) then
-                     $this-src = tan:src-ids-to-nos(@src)
-                  else
-                     true()], $src-tokenizations">
-               <xsl:variable name="this-tokz" select="."/>
-               <!-- The next variables trace the process used to determine which tokenization should be applied to
-                  each source. The local <location> takes precedence, followed by a @which that corresponds to a
-                  <recommended-tokenization> in the source, followed by a @which that uses a reserved keyword.-->
-               <xsl:variable name="cl-2-loc" select="tan:first-loc-available($this-tokz, document-uri($this-tokz))"/>
-               <xsl:variable name="cl-2-no-which"
-                  select="
-                     if ($this-tokz/@which) then
-                        ()
-                     else
-                        $tokenization-errors[2]"/>
-               <xsl:variable name="src-rec-tokz-chosen"
-                  select="$src-1st-da-heads[$this-src]/tan:declarations/tan:recommended-tokenization[@xml:id = $this-tokz/@which]"/>
-               <xsl:variable name="cl-1-loc"
-                  select="
-                     if (exists($src-rec-tokz-chosen)) then
-                        ($src-rec-tokz-chosen/tan:location[doc-available(resolve-uri(@href, $src-1st-da-base-uri))],
-                        $tokenization-errors[3])[1]
-                     else
-                        ()"/>
-               <xsl:variable name="not-a-keyword"
-                  select="
-                     if (exists($src-rec-tokz-chosen) or $tokenization-which-reserved = $this-tokz/@which) then
-                        ()
-                     else
-                        $tokenization-errors[4]"/>
-               <xsl:variable name="keyword-loc"
-                  select="$tokenization-which-reserved-doc-available[index-of($tokenization-which-reserved, $this-tokz/@which)]"/>
-               <xsl:variable name="this-tokz-1st-da-location"
-                  select="
-                     if (exists($cl-2-loc)) then
-                        $cl-2-loc
-                     else
-                        if (exists($cl-2-no-which)) then
-                           $cl-2-no-which
-                        else
-                           if (exists($cl-1-loc)) then
-                              $cl-1-loc
-                           else
-                              if (exists($not-a-keyword)) then
-                                 $not-a-keyword
-                              else
-                                 $keyword-loc"/>
-               <xsl:element name="tan:tokenization">
-                  <xsl:attribute name="via-src"
-                     select="
-                        if (exists($src-rec-tokz-chosen)) then
-                           true()
-                        else
-                           false()"/>
-                  <xsl:element name="tan:location">
-                     <xsl:if test="$this-tokz-1st-da-location = $tokenization-errors">
-                        <xsl:attribute name="error"
-                           select="index-of($tokenization-errors, $this-tokz-1st-da-location)"/>
-                     </xsl:if>
-                     <xsl:attribute name="href">
-                        <xsl:value-of select="$this-tokz-1st-da-location"/>
-                     </xsl:attribute>
-                  </xsl:element>
-                  <xsl:if test="doc-available($this-tokz-1st-da-location)">
-                     <xsl:choose>
-                        <xsl:when
-                           test="document($this-tokz-1st-da-location)/tan:TAN-R-tok/tan:head/tan:declarations/tan:for-lang">
-                           <xsl:copy-of
-                              select="document($this-tokz-1st-da-location)/tan:TAN-R-tok/tan:head/tan:declarations/tan:for-lang"
-                           />
-                        </xsl:when>
-                        <xsl:otherwise>
-                           <xsl:element name="tan:for-lang">
-                              <xsl:text>*</xsl:text>
-                           </xsl:element>
-                        </xsl:otherwise>
-                     </xsl:choose>
-                  </xsl:if>
-               </xsl:element>
-            </xsl:for-each>
-         </xsl:element>
+         <xsl:variable name="this-src-id" select="$src-ids[$this-src]"/>
+         <xsl:variable name="first-token-definition"
+            select="
+               $head/tan:declarations/tan:token-definition[if (@src) then
+                  (tokenize(@src, '\s+') = $this-src-id)
+               else
+                  true()][1]"/>
+         <xsl:variable name="src-first-token-definition"
+            select="$src-1st-da-heads[$this-src]/tan:declarations/tan:token-definition[1]"/>
+         <source id="{$this-src-id}">
+            <xsl:copy-of
+               select="($first-token-definition, $src-first-token-definition, $token-definitions-reserved)"/>
+         </source>
       </xsl:for-each>
    </xsl:variable>
    <xsl:variable name="distinct-tokenizations" xml:id="v-distinct-tokenizations" as="element()*">
@@ -220,7 +145,7 @@
          <replace>[REPLACE NODE 2]</replace>
          ...
          <tokenize>[tokenize]</replace>-->
-      <xsl:for-each select="distinct-values($tokenizations-per-source//tan:location/@href)">
+      <xsl:for-each select="distinct-values($token-definitions-per-source//tan:location/@href)">
          <xsl:variable name="this-tokenization-location" select="."/>
          <xsl:element name="tan:tokenization">
             <xsl:element name="tan:location">
@@ -591,8 +516,8 @@
         -->
       <xsl:param name="selector" as="xs:string?"/>
       <xsl:param name="max" as="xs:integer?"/>
-      <xsl:variable name="pass-1" select="replace($selector,'(\d)\s*-\s*(last|\d)','$1 - $2')"/>
-      <xsl:variable name="pass-2" select="replace($pass-1,'(\d)\s+(\d)','$1, $2')"/>
+      <xsl:variable name="pass-1" select="replace($selector, '(\d)\s*-\s*(last|\d)', '$1 - $2')"/>
+      <xsl:variable name="pass-2" select="replace($pass-1, '(\d)\s+(\d)', '$1, $2')"/>
       <xsl:variable name="selector-norm" select="replace($pass-2, 'last', string($max))"/>
       <xsl:variable name="seq-a" select="tokenize(normalize-space($selector-norm), '\s*,\s+')"/>
       <xsl:copy-of
@@ -686,8 +611,7 @@
          select="
             for $i in $att-src
             return
-               normalize-space(replace($i, $help-trigger-regex, ''))"
-      />
+               normalize-space(replace($i, $help-trigger-regex, ''))"/>
       <xsl:choose>
          <xsl:when test="exists($att-src-checked-for-help) and not($source-lacks-id)">
             <xsl:for-each select="$att-src-checked-for-help">
@@ -889,59 +813,24 @@
       <xsl:param name="this-prepped-c1-data" as="element()*"/>
       <xsl:for-each select="$src-count">
          <xsl:variable name="this-src" select="."/>
-         <xsl:element name="tan:source">
-            <xsl:attribute name="id" select="$src-ids[$this-src]"/>
+         <source id="{$src-ids[$this-src]}">
             <xsl:for-each select="$this-prepped-c1-data[$this-src]/tan:div">
-               <xsl:variable name="this-div" select="."/>
-               <xsl:variable name="this-lang" select="@lang"/>
-               <xsl:variable name="this-tokz"
-                  select="
-                     $tokenizations-per-source[$this-src]/tan:tokenization[tan:for-lang = ('*',
-                     $this-lang)][1]/tan:location/@href"/>
-               <xsl:variable name="this-replaces"
-                  select="$distinct-tokenizations[tan:location/@href = $this-tokz]/tan:replace"/>
-               <xsl:variable name="this-tokenize"
-                  select="$distinct-tokenizations[tan:location/@href = $this-tokz]/tan:tokenize"/>
+               <xsl:variable name="this-text" select="normalize-space(string-join(.//text(),''))"/>
+               <xsl:variable name="this-tok-def" select="$token-definitions-per-source[$this-src]"/>
                <xsl:copy>
                   <xsl:copy-of select="@*"/>
-                  <xsl:if test="exists($this-lang)">
-                     <xsl:choose>
-                        <xsl:when test="exists($this-tokenize)">
-                           <xsl:for-each
-                              select="tan:tokenize(tan:replace-sequence($this-div/text(), $this-replaces), $this-tokenize)">
-                              <xsl:element name="tan:tok">
-                                 <xsl:value-of select="."/>
-                              </xsl:element>
-                           </xsl:for-each>
-                           <xsl:sequence select="$this-tokenize/tan:pattern"/>
-                        </xsl:when>
-                        <xsl:otherwise>
-                           <xsl:attribute name="lang" select="$this-lang"/>
-                           <xsl:attribute name="error"
-                              select="
-                                 if ($tokenizations-per-source[$this-src]/tan:tokenization/tan:location/@error)
-                                 then
-                                    $tokenizations-per-source[$this-src]/tan:tokenization/tan:location/@error
-                                 else
-                                    6"
-                           />
-                        </xsl:otherwise>
-                     </xsl:choose>
-                     <xsl:choose>
-                        <!-- Preserves a pre-tokenized copy of the string -->
-                        <xsl:when test="tei:*">
-                           <xsl:sequence select="tei:*"/>
-                        </xsl:when>
-                        <xsl:otherwise>
-                           <xsl:copy>
-                              <xsl:value-of select="$this-div"/>
-                           </xsl:copy>
-                        </xsl:otherwise>
-                     </xsl:choose>
-                  </xsl:if>
+                  <xsl:copy-of select="tan:analyze-string($this-text, $this-tok-def)"/>
+                  <xsl:choose>
+                     <!-- Preserves a pre-tokenized copy of the string -->
+                     <xsl:when test="tei:*">
+                        <tei>
+                           <xsl:copy-of select="*"/>
+                        </tei>
+                     </xsl:when>
+                  </xsl:choose>
                </xsl:copy>
             </xsl:for-each>
-         </xsl:element>
+         </source>
       </xsl:for-each>
    </xsl:function>
    <xsl:function name="tan:pick-tokenized-prepped-class-1-data"
@@ -1190,7 +1079,7 @@
          select="translate($arg, $ucd-decomp/tan:translate/tan:mapString, $ucd-decomp/tan:translate/tan:transString)"
       />
    </xsl:function>
-   
+
    <xsl:function name="tan:expand-search" xml:id="f-expand-search" as="xs:string?">
       <!-- This function takes a string representation of a regular expression pattern and replaces every unescaped
       character with a character class that lists all Unicode characters that would recursively decompose to that base
@@ -1205,14 +1094,17 @@
             <xsl:variable name="pos" select="."/>
             <xsl:variable name="char" select="substring($regex, $pos, 1)"/>
             <xsl:variable name="prev-char" select="substring($regex, $pos - 1, 1)"/>
-            <xsl:variable name="reverse-translate-match" select="$ucd-decomp/tan:translate/tan:reverse/tan:transString[text() = $char]"/>
+            <xsl:variable name="reverse-translate-match"
+               select="$ucd-decomp/tan:translate/tan:reverse/tan:transString[text() = $char]"/>
             <xsl:choose>
                <xsl:when
                   test="$prev-char = '\' or ($prev-char != '\' and matches($char, $regex-escaping-characters))">
                   <xsl:value-of select="$char"/>
                </xsl:when>
                <xsl:when test="$reverse-translate-match">
-                  <xsl:value-of select="concat('[', $char, string-join($reverse-translate-match/tan:mapString,''), ']')"/>
+                  <xsl:value-of
+                     select="concat('[', $char, string-join($reverse-translate-match/tan:mapString, ''), ']')"
+                  />
                </xsl:when>
                <xsl:otherwise>
                   <xsl:value-of select="$char"/>
@@ -1220,7 +1112,7 @@
             </xsl:choose>
          </xsl:for-each>
       </xsl:variable>
-      <xsl:value-of select="string-join($output,'')"/>
+      <xsl:value-of select="string-join($output, '')"/>
    </xsl:function>
 
 </xsl:stylesheet>

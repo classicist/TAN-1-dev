@@ -7,13 +7,13 @@
         <error>Functions based on inclusions must be applied to elements that have the same
             name</error>
     </group>
-    <group affects-element="recommended-tokenization tokenization">
+    <group affects-element="token-definition">
         <error>&lt;location> must point to an available document.</error>
         <error>If there is no &lt;location> then @which must be present.</error>
         <error>If &lt;tokenization> points to a &lt;recommended-tokenization> the latter must point
             to an available document.</error>
         <error>The value of @which must be either in the source or a reserved keyword.</error>
-        <error>If a core TAN-R-tok file is invoked, it must be available.</error>
+        <!--<error>If a core TAN-R-tok file is invoked, it must be available.</error>-->
         <error>Tokenizations must accommodate every language used by a source.</error>
     </group>
 </errors>

@@ -12,7 +12,7 @@
       </xd:desc>
    </xd:doc>
    <xsl:include href="TAN-class-2-functions.xsl"/>
-   <xsl:variable name="tokenized-sources" select="tan:src-ids-to-nos($tokenizations/@src)"/>
+   <xsl:variable name="srcs-whose-tokens-are-defined" select="tan:src-ids-to-nos($head/tan:declarations/tan:token-definition/@src)"/>
    <xsl:variable name="src-1st-da-data-segmented"
       select="tan:segment-tokenized-prepped-class-1-data(tan:tokenize-prepped-class-1-data($src-1st-da-data))"/>
    <xsl:variable name="equate-works" as="xs:integer+">
@@ -163,6 +163,39 @@
          return
             tan:normalize-realign($i)"/>
 
+
+   <!-- CONTEXT INDEPENDENT FUNCTIONS -->
+   
+   <xsl:function name="tan:replace-sequence" as="xs:string?">
+      <!-- Input: single string and a sequence of tan:replace elements.
+         Output: string that results from each tan:replace being sequentially applied to the input string.
+         Used to calculate series of changes to be made to a single flatref. -->
+      <xsl:param name="text" as="xs:string?"/>
+      <xsl:param name="replace" as="element()+"/>
+      <xsl:variable name="newtext">
+         <xsl:choose>
+            <xsl:when test="not($replace[1]/tan:flags)">
+               <xsl:value-of
+                  select="replace($text, $replace[1]/tan:pattern, $replace[1]/tan:replacement)"
+               />
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:value-of
+                  select="replace($text, $replace[1]/tan:pattern, $replace[1]/tan:replacement, $replace[1]/tan:flags)"
+               />
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:variable>
+      <xsl:choose>
+         <xsl:when test="count($replace) = 1">
+            <xsl:value-of select="$newtext"/>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:value-of select="tan:replace-sequence($newtext, $replace except $replace[1])"/>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:function>
+   
    <!-- CONTEXT DEPENDENT FUNCTIONS -->
 
    <xsl:function name="tan:segment-tokenized-prepped-class-1-data" as="element()+">
@@ -615,7 +648,7 @@
          <xsl:otherwise>
             <xsl:sequence
                select="tan:replace-sequence(tan:convert-ns-to-numerals($norm-ref, $src-no), $src-1st-da-div-types-equiv-replace[$src-no]/tan:replace)"/>
-            <xsl:sequence select="$seg-no"/>
+            <xsl:copy-of select="$seg-no"/>
          </xsl:otherwise>
       </xsl:choose>
    </xsl:function>

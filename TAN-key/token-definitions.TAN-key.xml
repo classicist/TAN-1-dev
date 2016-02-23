@@ -4,7 +4,7 @@
 <TAN-key xmlns="tag:textalign.net,2015:ns" TAN-version="1/dev"
     id="tag:textalign.net,2015:tan-key:tokenizations">
     <head>
-        <name>TAN keywords for types of tokenizations</name>
+        <name>TAN keywords for types of token definitions</name>
         <master-location href="http://textalign.net/release/1/dev/TAN-key/tokenizations.TAN-key.xml"/>
         <rights-excluding-sources rights-holder="kalvesmaki">
             <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
@@ -23,24 +23,27 @@
             <name xml:lang="eng">creator</name>
         </role>
         <change when="2016-02-02" who="kalvesmaki">Started file</change>
+        <change when="2016-02-22" who="kalvesmaki">Revised to suit new &lt;token-definition></change>
     </head>
-    <body in-progress="false" affects-element="recommended-tokenization tokenization">
+    <body in-progress="false" affects-element="token-definition">
         <item>
-            <IRI>tag:textalign.net,2015:tan-r-tok:general-1</IRI>
+            <regex>\w+|[^\w\s]</regex>
+            <name>letters and punctuation</name>
             <name>general-1</name>
             <name>general</name>
             <name>gen</name>
-            <desc>General tokenization pattern for any language</desc>
-            <location href="../TAN-R-tok/general-1.xml" when-accessed="2016-02-02-05:00"/>
+            <desc>General tokenization pattern for any language, treating individual points of
+                non-letters such as punctuation as word tokens.</desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:tan-r-tok:general-words-only-1</IRI>
+            <regex>\w+</regex>
+            <name>letters</name>
+            <name>letters only</name>
             <name>general-words-only-1</name>
             <name>general-words-only</name>
             <name>gwo</name>
-            <desc>General tokenization pattern for any language, words only</desc>
-            <location href="../TAN-R-tok/general-words-only-1.xml" when-accessed="2016-02-02-05:00"
-            />
+            <desc>General tokenization pattern for any language, words only. Non-letters such as
+                punctuation are ignored.</desc>
         </item>
         <item>
             <IRI>tag:textalign.net,2015:tan-r-tok:precise-1</IRI>

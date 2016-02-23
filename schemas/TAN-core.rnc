@@ -204,6 +204,11 @@ entity-digital-tan-self-ref = metadata-human, loc-self*
 
 ## Reference to an external non-digital entity (e.g., agents, roles, works, topics)
 entity-nondigital-ref = (IRI-gen-ref+, metadata-human) | keyword-ref
+entity-regex =
+    
+    ## specifies a regular expression pattern to be searched for or matched
+    element regex { text },
+    metadata-human
 func-param-pattern =
     
     ## specifies a regular expression pattern to be searched for or matched

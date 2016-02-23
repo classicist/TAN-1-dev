@@ -6,40 +6,6 @@
    <title>Core tests for class 1 TAN files.</title>
    <let name="leafdiv-flatrefs" value="$prep-body/tan:div/@ref"/>
    <let name="transcription-langs" value="$prep-body//@xml:lang"/>
-   <let name="divs-with-modifiers" value="$prep-body/tan:div[matches(., '\p{M}')]"/>
-   <let name="relevant-tokz" value="$rec-tokz-1st-da-resolved[.//tan:tokenize]"/>
-   <let name="modifier-check-1"
-      value="
-         for $i in $divs-with-modifiers,
-            $j in $relevant-tokz
-         return
-            count(tan:tokenize(tan:replace-sequence(replace($i, '\p{M}', ''), $j//tan:replace), $j//tan:tokenize))
-         "/>
-   <let name="modifier-check-2"
-      value="
-         for $i in $divs-with-modifiers,
-            $j in $relevant-tokz
-         return
-            count(tan:tokenize(tan:replace-sequence(replace($i, '\p{M}', 'M'), $j//tan:replace), $j//tan:tokenize))
-         "/>
-   <let name="this-tokz-fails-modifiers-at-what-div"
-      value="
-         for $i in (1 to count($modifier-check-1))
-         return
-            if ($modifier-check-1[$i] = $modifier-check-2[$i]) then
-               ()
-            else
-               $divs-with-modifiers[$i mod count($relevant-tokz)]"/>
-   <let name="tokz-error-refs"
-      value="
-         for $i in $this-tokz-fails-modifiers-at-what-div
-         return
-            $i/@ref"/>
-   <let name="tokz-error-vals"
-      value="
-         for $i in $this-tokz-fails-modifiers-at-what-div
-         return
-            tan:locate-modifiers($i)"/>
    <rule context="tan:see-also">
       <let name="this-resolved" value="tan:resolve-include(.)"/>
       <let name="first-locs"
@@ -171,51 +137,6 @@
       <report test="count(tokenize(@include, '\s+')) gt 1">No more than one inclusion may be
          invoked.</report>
    </rule>
-   <rule context="tan:recommended-tokenization">
-      <let name="this-resolved" value="tan:resolve-include(.)"/>
-      <let name="this-count" value="(1 to count($this-resolved))"/>
-      <let name="tokz-mismatch-1"
-         value="
-            for $i in $recommended-tokenizations[tan:for-lang]
-            return
-               if ($i/tan:for-lang = '*' or $i/tan:for-lang = $languages-used) then
-                  ()
-               else
-                  $i"/>
-      <!-- START TESTING BLOCK -->
-      <let name="test1" value="count($divs-with-modifiers)"/>
-      <let name="test2" value="$modifier-check-1"/>
-      <let name="test3" value="$modifier-check-2"/>
-      <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
-            select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
-      <!-- END TESTING BLOCK -->
-      <assert
-         test="
-            every $i in $rec-tokz-1st-da
-               satisfies name($i/*) = 'TAN-R-tok'"
-         >Recommended tokenization must point to a TAN-R-tok file. <xsl:value-of
-            select="$recommended-tokenizations"/></assert>
-      <report role="warning" test="exists($tokz-mismatch-1)">If pointing to a TAN-R-tok file meant
-         for specific languages, at least one of them must be used in the body of the transcription
-         (tokenization languages: <value-of select="$tokz-mismatch-1/tan:for-lang"/>; languages
-         used: <value-of select="$languages-used"/>).</report>
-      <report
-         test="not('*' = $recommended-tokenizations/tan:for-lang) and $languages-used[not(. = $recommended-tokenizations/tan:for-lang)]"
-         >Every language used in the transcription must be accommodated by at least one recommended
-         tokenization pattern (unsupported: <value-of
-            select="$transcription-langs[not(. = $recommended-tokenizations/tan:for-lang)]"/>;
-         currently supported: <value-of select="$recommended-tokenizations/tan:for-lang"
-         />).</report>
-      <report test="exists($this-tokz-fails-modifiers-at-what-div)">Tokenization patterns must be
-         able to predictably handle any combining characters (error at <value-of
-            select="
-               for $i in (1 to count($tokz-error-refs))
-               return
-                  concat($tokz-error-refs[$i], ' ', string-join(for $j in $tokz-error-vals[$i]/tan:modifier
-                  return
-                     concat('pos ', $j/@where, ' (U+', $j/@cp, ')'), ' '))"
-         />)</report>
-   </rule>
    <rule context="tan:recommended-div-type-refs">
       <let name="implicit-is-recommended"
          value="
@@ -268,5 +189,8 @@
          >Leaf div references must be unique. </report>
       <report test="$is-leaf-div and not(@include) and not(matches(., '\S'))">Every leaf div must
          have at least some non-space text.</report>
+      <report test="matches(.,'^\p{M}')">No div may begin with a modifying character.</report>
+      <report test="matches(., '\s\p{M}')">No div may have a spacing character followed by a
+         modifying character.</report>
    </rule>
 </pattern>

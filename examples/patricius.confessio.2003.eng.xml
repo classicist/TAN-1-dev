@@ -171,7 +171,6 @@
             <IRI>http://dbpedia.org/page/Paragraph</IRI>
             <name>paragraph</name>
          </div-type>
-         <recommended-tokenization which="general-1"/>
          <filter>
             <normalization>
                <IRI>tag:textalign.net,2015:normalization:annotation-content-removed</IRI>

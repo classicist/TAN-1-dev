@@ -118,11 +118,12 @@
                for $i in tan:tok
                return
                   tan:pick-tokenized-prepped-class-1-data($i)"/>
-         <assert test="//tan:tokenization">If a leaf div is to be split, there must be at least one
+         <assert test="$head//tan:token-definition">If a leaf div is to be split, there must be at least one
             tokenization declared.</assert>
       </rule>
       <rule context="tan:tok">
          <let name="this-pos" value="count(preceding-sibling::tan:tok) + 1"/>
+         <let name="these-sources" value="tokenize(@src,'\s+')"/>
          <let name="help-requested" value="tan:help-requested(.)"/>
          <let name="these-splits"
             value="
@@ -139,10 +140,22 @@
                      concat($i/../../@id, ': ', $i/../@ref, ' tok ', $i/@n)
                   else
                      ()"/>
+         <let name="sources-whose-tokens-are-undefined"
+            value="
+               for $i in $these-sources
+               return
+                  if
+                  ($head/tan:declarations/tan:token-definition[tokenize(@src, '\s+') = $i]) then
+                     ()
+                  else
+                     $i"
+         />
          <report test="exists($duplicate-splits) and not($help-requested)">May not be used to split
             a leaf div more than once in the same place (<value-of
                select="string-join($duplicate-splits, ' ')"/>).</report>
-         <assert test="tan:src-ids-to-nos(@src) = $token-definitions-per-source">Requires a &lt;token-definition>.</assert>
+         <report test="exists($sources-whose-tokens-are-undefined)">Every source to be split requires a
+            &lt;token-definition>. (<value-of select="$sources-whose-tokens-are-undefined"
+            />)</report>
          <report test="$these-splits//@error" tan:does-not-apply-to="tok">Tokenization error:
                <value-of
                select="

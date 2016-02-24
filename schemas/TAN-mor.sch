@@ -104,7 +104,7 @@
       </rule>
 
       <!-- FUNCTIONS -->
-      <xsl:include href="../functions/TAN-R-mor-functions.xsl"/>
+      <xsl:include href="../functions/TAN-mor-functions.xsl"/>
 
    </pattern>
 </schema>

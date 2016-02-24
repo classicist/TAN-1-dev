@@ -70,11 +70,11 @@
     <xsl:variable name="self-resolved" select="tan:resolve-doc($root)" as="document-node()"/>
     <xsl:variable name="head" select="$self-resolved/*/tan:head"/>
     <xsl:variable name="body" select="$self-resolved/*/(tan:body, tei:text/tei:body)"/>
-    
-    <xsl:variable name="inclusions-1st-da" select="tan:get-inclusions-1st-da($self-resolved)"/>
+
+    <xsl:variable name="inclusions-1st-da" select="tan:get-inclusions-1st-da(/)"/>
     <xsl:variable name="keys-1st-la"
         select="
-            for $i in ($head/tan:key, $inclusions-1st-da/*/tan:head/tan:key)
+            for $i in (/*/tan:head/tan:key, $inclusions-1st-da/*/tan:head/tan:key)
             return
                 tan:first-loc-available($i, base-uri($i))"/>
     <xsl:variable name="keys-1st-da"
@@ -275,7 +275,7 @@
         <xsl:copy>
             <xsl:copy-of select="@*"/>
             <xsl:attribute name="max-toks" select="count(tan:tok)"/>
-            <xsl:apply-templates mode="#current"></xsl:apply-templates>
+            <xsl:apply-templates mode="#current"/>
         </xsl:copy>
     </xsl:template>
     <xsl:template match="tan:non-tok" mode="count-tokens">
@@ -691,13 +691,26 @@
         </xsl:if>
     </xsl:template>
 
+
     <xsl:template match="*[@which]" mode="resolve-keyword">
         <xsl:variable name="element-name" select="name(.)"/>
         <xsl:variable name="this-which" select="@which"/>
-        <xsl:copy>
-            <xsl:copy-of select="@*"/>
-            <xsl:copy-of select="$all-keywords//tan:item[tan:name = $this-which]/node()"/>
-        </xsl:copy>
+        <xsl:choose>
+            <xsl:when test="$element-name = 'token-definition'">
+                <xsl:copy>
+                    <xsl:copy-of select="@*"/>
+                    <xsl:copy-of
+                        select="$all-keywords//tan:item[tan:name = $this-which]/tan:token-definition/@*"
+                    />
+                </xsl:copy>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:copy>
+                    <xsl:copy-of select="@*"/>
+                    <xsl:copy-of select="$all-keywords//tan:item[tan:name = $this-which]/node()"/>
+                </xsl:copy>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="*[@href]" mode="resolve-href">

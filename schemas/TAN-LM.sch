@@ -131,9 +131,9 @@
             concat('Confidence ',$i/@cert,' : ',$i/text())"/></report>
          <report test="exists($all-tests[not(@cert)])">All codes must adhere to the rules declared in the underlying TAN-R-mor file (<xsl:value-of select="$all-tests[not(@cert)]/text()"/>)</report>
       </rule>
-
-      <!-- FUNCTIONS -->
-      <xsl:include href="../functions/TAN-LM-functions.xsl"/>
-      
    </pattern>
+
+   <!-- FUNCTIONS -->
+   <xsl:include href="../functions/TAN-LM-functions.xsl"/>
+   
 </schema>

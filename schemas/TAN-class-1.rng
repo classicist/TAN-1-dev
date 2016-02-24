@@ -18,9 +18,9 @@
       <oneOrMore>
         <ref name="decl-div"/>
       </oneOrMore>
-      <oneOrMore>
-        <ref name="decl-tok-rec"/>
-      </oneOrMore>
+      <zeroOrMore>
+        <ref name="decl-tok-def"/>
+      </zeroOrMore>
       <optional>
         <ref name="decl-ref-rec"/>
       </optional>
@@ -72,36 +72,6 @@
       <a:documentation>For more information, see main.xml#reference_system</a:documentation>
       <data type="boolean"/>
     </attribute>
-  </define>
-  <define name="decl-tok-rec">
-    <element name="recommended-tokenization">
-      <a:documentation>suggests an ideal TAN-R-tok pattern to be used to segment a text into word tokens. If no thought has been given to tokenization, this element should be left empty. There are two kinds of tokenization patterns.</a:documentation>
-      <a:documentation>(1) Core: general-1, general-words-only-1, and precise-1 (values of @which). </a:documentation>
-      <a:documentation>(2) Custom: each &lt;recommended-tokenization&gt; must point through an IRI + name pattern a specific TAN-R-tok file, and must take a unique value for @xml:id, to be used by dependent class 2 TAN files.</a:documentation>
-      <a:documentation>You may have as many &lt;recommended-tokenization&gt;s as you like, but the order is important: the optimal tokenizing pattern should be placed first.</a:documentation>
-      <a:documentation>For theoretical background and more information, see main.xml#preparing_transcriptions_for_tokenization</a:documentation>
-      <choice>
-        <empty/>
-        <ref name="inclusion"/>
-        <group>
-          <optional>
-            <ref name="ed-stamp"/>
-          </optional>
-          <interleave>
-            <zeroOrMore>
-              <ref name="comment"/>
-            </zeroOrMore>
-            <choice>
-              <ref name="keyword-ref"/>
-              <group>
-                <ref name="internal-id"/>
-                <ref name="entity-digital-tan-other-ref"/>
-              </group>
-            </choice>
-          </interleave>
-        </group>
-      </choice>
-    </element>
   </define>
   <define name="decl-ref-rec">
     <element name="recommended-div-type-refs">
@@ -173,6 +143,33 @@
   <define name="decl-filt-repl">
     <a:documentation>Replacements that have been made to an XML source file. </a:documentation>
     <ref name="func-replace"/>
+  </define>
+  <define name="func-replace">
+    <element name="replace">
+      <a:documentation>contains the equivalent of the XPath replace() function plus parameters, indicating a replacement operation that should be, or has been, applied to a digital file.</a:documentation>
+      <a:documentation>Multiple &lt;replace&gt;s will be assumed to have been implemented in document order.</a:documentation>
+      <a:documentation>The conventions of this element and its children accord with the definition of the function and its parameters provided at http://www.w3.org/TR/xpath-functions-30/#func-replace</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <interleave>
+          <zeroOrMore>
+            <ref name="comment"/>
+          </zeroOrMore>
+          <group>
+            <ref name="func-param-pattern"/>
+            <attribute name="replacement">
+              <a:documentation>contains a string used to replace any occurrence of &lt;pattern&gt; </a:documentation>
+            </attribute>
+            <optional>
+              <ref name="func-param-flags"/>
+            </optional>
+          </group>
+        </interleave>
+      </choice>
+    </element>
   </define>
   <define name="decl-filt-tlit">
     <element name="transliteration">

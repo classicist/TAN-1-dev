@@ -865,7 +865,7 @@
                            <xsl:copy-of select="$this-tok"/>
                         </xsl:when>
                         <xsl:otherwise>
-                           <tok error="{string-join(($this-val, $this-ord-item),' ')}"/>
+                           <tok error="{string-join(($this-val, string($this-ord-item)),' ')}"/>
                         </xsl:otherwise>
                      </xsl:choose>
                   </xsl:for-each>

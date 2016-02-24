@@ -42,7 +42,7 @@
          <IRI>tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:semantic-refs</IRI>
          <name>Categories, Aristotle, English translation by E. M. Edghill</name>
          <location
-            href="file:/H:/Users-2/Joel/Dropbox/TAN/SERVER/release/1/dev/examples/ar.cat.eng.1926.edghill.sem.xml"
+            href="ar.cat.eng.1926.edghill.sem.xml"
             when-accessed="2016-02-21T09:33:16.107-05:00"/>
       </see-also>
       <declarations>

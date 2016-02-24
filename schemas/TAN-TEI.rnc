@@ -10,7 +10,7 @@ namespace xlink = "http://www.w3.org/1999/xlink"
 
 datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
-# Schema generated from ODD source 2016-02-04T15:04:57Z. .
+# Schema generated from ODD source 2016-02-23T17:09:12Z. .
 # TEI Edition: Version 2.8.0. Last updated on
 #	6th April 2015, revision 13197
 # TEI Edition Location: http://www.tei-c.org/Vault/P5/Version 2.8.0/
@@ -110,6 +110,7 @@ div {
       
       ## refers to the ID of one or more <role>s
       attribute roles { text }
+    source-ref = empty
     when-claim =
       
       ## indicates a date or date and time
@@ -140,6 +141,19 @@ div {
       (inclusion
        | (decl-id-ref-opt,
           (comment* & (lang-outside*, entity-nondigital-ref))))
+    decl-tok-def =
+      
+      ## defines through a regular expression the definition of a word token. This element will be used to segment a string into token and non-token components. 
+      
+      ## This element takes attributes that function as the parameters for the function xsl:analyze-string (see https://www.w3.org/TR/xslt-30/#element-analyze-string).
+      
+      ## For theoretical background and more information, see main.xml#preparing_transcriptions_for_tokenization
+      element token-definition {
+        ed-stamp?,
+        (inclusion
+         | (source-ref,
+            (keyword-ref | (func-param-pattern, func-param-flags?))))
+      }
     
     ## Editorial stamp: who created or edited the enclosed data and when. 
     ed-stamp = ed-agent, ed-time
@@ -160,7 +174,9 @@ div {
     func-param-pattern =
       
       ## specifies a regular expression pattern to be searched for or matched
-      element pattern { ed-stamp?, text }
+      
+      ## For more see https://www.w3.org/TR/xpath-functions-30/#regex-syntax
+      attribute regex { text }
     func-param-flags =
       
       ## specifies flags to be applied in an XPath expression using regular expressions.
@@ -168,28 +184,8 @@ div {
       ## s = dot-all mode; m = multi-line mode; i = case-insensitive mode; x = remove whitespace characters from regular expression; q = no metacharacters 
       
       ## For more see http://www.w3.org/TR/xpath-functions-30/#flags
-      element flags {
-        ed-stamp?,
+      attribute flags {
         xsd:string { pattern = "[smixq]+" }
-      }
-    func-replace =
-      
-      ## contains the equivalent of the XPath replace() function plus parameters, indicating a replacement operation that should be, or has been, applied to a digital file. Used in class 1 and class 3 (TAN-R-tok) files.
-      
-      ## Multiple <replace>s will be implemented in document order.
-      
-      ## The conventions of this element and its children accord with the definition of the function and its parameters provided at http://www.w3.org/TR/xpath-functions-30/#func-replace
-      
-      ## Multiple <replace> values are applied according to the order given.
-      element replace {
-        ed-stamp?,
-        (inclusion
-         | (comment*
-            & (func-param-pattern,
-               
-               ## contains a string used to replace any occurrence of <pattern> 
-               element replacement { ed-stamp?, text },
-               func-param-flags?)))
       }
     IRI-gen-ref =
       
@@ -394,7 +390,7 @@ div {
       
       ## declares a change made to the current file. Must credit an <agent>, specified by @who, and a time the change was made, specified by @when.
       
-      ## Collectively, <change> elements form the changelog, the revision history of the document. 
+      ## Collectively, <change> elements are called the changelog, the revision history of the document. 
       
       ## The editor has discretion as to how long or detailed a <change> should be, or how many should be retained in a changelog. Ideally, <change>s documenting every published version should be retained.
       
@@ -422,7 +418,7 @@ div {
     decl-work
     & decl-vers?
     & decl-div+
-    & decl-tok-rec+
+    & decl-tok-def*
     & decl-ref-rec?
     & decl-filt?
   
@@ -456,25 +452,6 @@ div {
     
     ## For more information, see main.xml#reference_system
     attribute ns-are-numerals { xsd:boolean }
-  decl-tok-rec =
-    
-    ## suggests an ideal TAN-R-tok pattern to be used to segment a text into word tokens. If no thought has been given to tokenization, this element should be left empty. There are two kinds of tokenization patterns.
-    
-    ## (1) Core: general-1, general-words-only-1, and precise-1 (values of @which). 
-    
-    ## (2) Custom: each <recommended-tokenization> must point through an IRI + name pattern a specific TAN-R-tok file, and must take a unique value for @xml:id, to be used by dependent class 2 TAN files.
-    
-    ## You may have as many <recommended-tokenization>s as you like, but the order is important: the optimal tokenizing pattern should be placed first.
-    
-    ## For theoretical background and more information, see main.xml#preparing_transcriptions_for_tokenization
-    element recommended-tokenization {
-      empty
-      | inclusion
-      | (ed-stamp?,
-         (comment*
-          & (keyword-ref
-             | (internal-id, entity-digital-tan-other-ref))))
-    }
   decl-ref-rec =
     
     ## suggests whether div types in references to the transcription should be explicit (e.g., book.John:chapter.3:verse.16) or implicit (e.g., John 3:16). If not present, explicit is assumed.
@@ -512,6 +489,23 @@ div {
   
   ## Replacements that have been made to an XML source file. 
   decl-filt-repl = func-replace
+  func-replace =
+    
+    ## contains the equivalent of the XPath replace() function plus parameters, indicating a replacement operation that should be, or has been, applied to a digital file.
+    
+    ## Multiple <replace>s will be assumed to have been implemented in document order.
+    
+    ## The conventions of this element and its children accord with the definition of the function and its parameters provided at http://www.w3.org/TR/xpath-functions-30/#func-replace
+    element replace {
+      ed-stamp?,
+      (inclusion
+       | (comment*
+          & (func-param-pattern,
+             
+             ## contains a string used to replace any occurrence of <pattern> 
+             attribute replacement { text },
+             func-param-flags?)))
+    }
   decl-filt-tlit =
     
     ## indicates a transliteration scheme that has been applied to a source to convert it from one writing system to another. This element may be useful if it easier to work with a source in the Latin alphabet (for example) rather than a native one. 

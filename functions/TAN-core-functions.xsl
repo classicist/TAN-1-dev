@@ -50,7 +50,7 @@
         <xsl:variable name="TAN-keyword-files" as="document-node()+"
             select="
                 doc('../TAN-key/div-types.TAN-key.xml'), doc('../TAN-key/relationships.TAN-key.xml'),
-                doc('../TAN-key/normalizations.TAN-key.xml'), doc('../TAN-key/tokenizations.TAN-key.xml'),
+                doc('../TAN-key/normalizations.TAN-key.xml'), doc('../TAN-key/token-definitions.TAN-key.xml'),
                 doc('../TAN-key/rights.TAN-key.xml')"/>
         <xsl:apply-templates mode="resolve-href" select="$TAN-keyword-files/tan:TAN-key/tan:body"/>
     </xsl:variable>
@@ -67,10 +67,14 @@
     <xsl:variable name="all-keywords" select="$TAN-keywords, $private-keywords"/>
 
     <xsl:variable name="root" select="/"/>
-    <xsl:variable name="inclusions-1st-da" select="tan:get-inclusions-1st-da(/)"/>
+    <xsl:variable name="self-resolved" select="tan:resolve-doc($root)" as="document-node()"/>
+    <xsl:variable name="head" select="$self-resolved/*/tan:head"/>
+    <xsl:variable name="body" select="$self-resolved/*/(tan:body, tei:text/tei:body)"/>
+    
+    <xsl:variable name="inclusions-1st-da" select="tan:get-inclusions-1st-da($self-resolved)"/>
     <xsl:variable name="keys-1st-la"
         select="
-            for $i in (/*/tan:head/tan:key, $inclusions-1st-da/*/tan:head/tan:key)
+            for $i in ($head/tan:key, $inclusions-1st-da/*/tan:head/tan:key)
             return
                 tan:first-loc-available($i, base-uri($i))"/>
     <xsl:variable name="keys-1st-da"
@@ -81,55 +85,6 @@
                     $empty-doc
                 else
                     document($i)"/>
-    <xsl:variable name="head">
-        <xsl:variable name="head-pass-1">
-            <xsl:apply-templates mode="include" select="/*/tan:head/*"/>
-        </xsl:variable>
-        <xsl:variable name="head-pass-2">
-            <xsl:apply-templates mode="resolve-keyword" select="$head-pass-1"/>
-        </xsl:variable>
-        <xsl:variable name="head-pass-3">
-            <xsl:apply-templates mode="strip-duplicates" select="$head-pass-2"/>
-        </xsl:variable>
-        <xsl:sequence select="$head-pass-3"/>
-    </xsl:variable>
-    <xsl:variable name="body">
-        <xsl:apply-templates select="/*/tan:body | /*/*/tei:body" mode="include"/>
-    </xsl:variable>
-    <xsl:function name="tan:resolve-element" as="node()*">
-        <xsl:param name="tan-element" as="node()*"/>
-        <xsl:for-each select="$tan-element">
-            <xsl:copy>
-                <xsl:copy-of select="@*"/>
-                <xsl:apply-templates mode="include"/>
-            </xsl:copy>
-        </xsl:for-each>
-    </xsl:function>
-    <!-- The following four items seem excessive. Revisit. -->
-    <xsl:variable name="self-expanded" as="document-node()">
-        <xsl:for-each select="/">
-            <xsl:copy>
-                <xsl:apply-templates mode="expand"/>
-            </xsl:copy>
-        </xsl:for-each>
-    </xsl:variable>
-    <xsl:template mode="expand" match="*[not(self::tan:body or self::tan:head)]">
-        <xsl:copy>
-            <xsl:apply-templates mode="#current"/>
-        </xsl:copy>
-    </xsl:template>
-    <xsl:template mode="expand" match="tan:head">
-        <xsl:copy>
-            <xsl:copy-of select="@*"/>
-            <xsl:sequence select="$head"/>
-        </xsl:copy>
-    </xsl:template>
-    <xsl:template mode="expand" match="tan:body">
-        <xsl:copy>
-            <xsl:copy-of select="@*"/>
-            <xsl:sequence select="$body"/>
-        </xsl:copy>
-    </xsl:template>
     <xsl:variable name="doc-id" select="/*/@id"/>
     <xsl:variable name="doc-uri" select="base-uri(/*)"/>
     <xsl:variable name="doc-parent-directory" select="replace($doc-uri, '[^/]+$', '')"/>
@@ -162,7 +117,7 @@
         select="'tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-(0\d|1[0-2]))?(-([0-2]\d|3[01]))?:\S+'"/>
 
     <xsl:variable name="token-definitions-reserved"
-        select="$TAN-keywords//tan:group[tokenize(@affects-element, '\s+') = 'token-definition']//tan:name"/>
+        select="$TAN-keywords//descendant-or-self::*[tokenize(@affects-element, '\s+') = 'token-definition']//tan:token-definition"/>
 
     <!-- If one wishes to see if the an entire string matches the following patterns defined by these 
         variables, they must appear between the regular expression anchors ^ and $. -->
@@ -296,24 +251,42 @@
         corresponding to fn:match and fn:non-match for fn:analyze-string() -->
         <xsl:param name="text" as="xs:string?"/>
         <xsl:param name="tokenize" as="element()?"/>
-        <xsl:variable name="regex" select="$tokenize/@regex"/>
+        <xsl:variable name="regex" select="($tokenize/@regex, '\w+')[1]"/>
         <xsl:variable name="flags" select="$tokenize/@flags"/>
-        <results>
-            <xsl:analyze-string select="$text" regex="{$regex}">
-                <xsl:matching-substring>
-                    <tok>
-                        <xsl:value-of select="."/>
-                    </tok>
-                </xsl:matching-substring>
-                <xsl:non-matching-substring>
-                    <non-tok>
-                        <xsl:value-of select="."/>
-                    </non-tok>
-                </xsl:non-matching-substring>
-            </xsl:analyze-string>
-        </results>
+        <xsl:variable name="results">
+            <results regex="{$regex}" flags="{$flags}">
+                <xsl:analyze-string select="$text" regex="{$regex}">
+                    <xsl:matching-substring>
+                        <tok>
+                            <xsl:value-of select="."/>
+                        </tok>
+                    </xsl:matching-substring>
+                    <xsl:non-matching-substring>
+                        <non-tok>
+                            <xsl:value-of select="."/>
+                        </non-tok>
+                    </xsl:non-matching-substring>
+                </xsl:analyze-string>
+            </results>
+        </xsl:variable>
+        <xsl:apply-templates select="$results" mode="count-tokens"/>
     </xsl:function>
-    
+    <xsl:template match="tan:results" mode="count-tokens">
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:attribute name="max-toks" select="count(tan:tok)"/>
+            <xsl:apply-templates mode="#current"></xsl:apply-templates>
+        </xsl:copy>
+    </xsl:template>
+    <xsl:template match="tan:non-tok" mode="count-tokens">
+        <xsl:copy-of select="."/>
+    </xsl:template>
+    <xsl:template match="tan:tok" mode="count-tokens">
+        <tok pos="{count(preceding-sibling::tan:tok) + 1}">
+            <xsl:value-of select="."/>
+        </tok>
+    </xsl:template>
+
     <xsl:function name="tan:dateTime-to-decimal" as="xs:decimal?">
         <!-- Input: ISO-compliant date or dateTime 
          Output: decimal between 0 and 1 that acts as a proxy for the date and time.
@@ -375,7 +348,7 @@
     </xsl:function>
 
     <xsl:function name="tan:escape" as="xs:string*">
-        <!-- Input: any string; Output: that string prepared for regular expression searches,
+        <!-- Input: any sequence of strings; Output: each string prepared for regular expression searches,
         i.e., with reserved characters escaped out. -->
         <xsl:param name="strings" as="xs:string*"/>
         <xsl:copy-of
@@ -462,7 +435,7 @@
     </xsl:function>
     <xsl:function name="tan:get-inclusions-1st-da" as="document-node()*">
         <!-- one-parameter version of the function, the one to be most commonly used, feeds 
-            into the three-parameter version, below -->
+            into the multi-parameter version, below -->
         <xsl:param name="TAN-document" as="document-node()"/>
         <xsl:sequence
             select="tan:get-inclusions-1st-da($TAN-document, (), (), (), (), $doc-uri)[position() gt 1]"
@@ -570,14 +543,44 @@
         <xsl:variable name="pass-1" as="document-node()*">
             <xsl:for-each select="$TAN-documents">
                 <xsl:copy>
-                    <xsl:copy-of select="processing-instruction()"/>
                     <xsl:apply-templates mode="include"/>
                 </xsl:copy>
             </xsl:for-each>
         </xsl:variable>
-        <xsl:for-each select="$pass-1">
+        <xsl:variable name="pass-2" as="document-node()*">
+            <xsl:for-each select="$pass-1">
+                <xsl:copy>
+                    <xsl:apply-templates mode="resolve-keyword"/>
+                </xsl:copy>
+            </xsl:for-each>
+        </xsl:variable>
+        <xsl:for-each select="$pass-2">
             <xsl:copy>
-                <xsl:copy-of select="processing-instruction()"/>
+                <xsl:apply-templates mode="strip-duplicates"/>
+            </xsl:copy>
+        </xsl:for-each>
+    </xsl:function>
+    <xsl:function name="tan:resolve-element" as="element()*">
+        <xsl:param name="tan-element" as="element()*"/>
+        <xsl:variable name="pass-1" as="element()*">
+            <xsl:for-each select="$tan-element">
+                <xsl:copy>
+                    <xsl:copy-of select="@*"/>
+                    <xsl:apply-templates mode="include"/>
+                </xsl:copy>
+            </xsl:for-each>
+        </xsl:variable>
+        <xsl:variable name="pass-2" as="element()*">
+            <xsl:for-each select="$pass-1">
+                <xsl:copy>
+                    <xsl:copy-of select="@*"/>
+                    <xsl:apply-templates mode="resolve-keyword"/>
+                </xsl:copy>
+            </xsl:for-each>
+        </xsl:variable>
+        <xsl:for-each select="$pass-2">
+            <xsl:copy>
+                <xsl:copy-of select="@*"/>
                 <xsl:apply-templates mode="strip-duplicates"/>
             </xsl:copy>
         </xsl:for-each>
@@ -665,15 +668,14 @@
         </xsl:choose>
     </xsl:function>
 
-    <xsl:template match="*[not(@include)]" mode="include">
+    <xsl:template match="node()" mode="resolve-keyword resolve-href include">
         <xsl:copy>
             <xsl:copy-of select="@*"/>
-            <xsl:apply-templates mode="include"/>
+            <xsl:apply-templates mode="#current"/>
         </xsl:copy>
     </xsl:template>
+
     <xsl:template match="*[@include]" mode="include">
-        <!--<xsl:variable name="pass-1" select="tan:resolve-include(.)" as="element()*"/>
-        <xsl:apply-templates select="$pass-1" mode="resolve-keyword"/>-->
         <xsl:sequence select="tan:resolve-include(.)"/>
     </xsl:template>
 
@@ -687,13 +689,6 @@
                 <xsl:apply-templates mode="#current"/>
             </xsl:copy>
         </xsl:if>
-    </xsl:template>
-
-    <xsl:template match="node()" mode="resolve-keyword resolve-href">
-        <xsl:copy>
-            <xsl:copy-of select="@*"/>
-            <xsl:apply-templates mode="#current"/>
-        </xsl:copy>
     </xsl:template>
 
     <xsl:template match="*[@which]" mode="resolve-keyword">

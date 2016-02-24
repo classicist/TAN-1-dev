@@ -54,8 +54,6 @@
             $sources/@xml:id"/>
    <xsl:variable name="src-1st-da-locations" xml:id="v-src-1st-da-locations"
       select="tan:get-1st-da-locations($sources)"/>
-   <xsl:variable name="src-1st-da-resolved" xml:id="v-src-1st-da-resolved"
-      select="tan:resolve-doc($src-1st-da)"/>
    <xsl:variable name="src-1st-da" xml:id="v-src-1st-da"
       select="
          for $i in $src-1st-da-locations
@@ -74,18 +72,10 @@
          for $i in $src-1st-da
          return
             tan:most-recent-dateTime($i//(@when | @ed-when | @when-accessed))"/>
-   <!--<xsl:variable name="src-1st-da-heads" select="$src-1st-da/*/tan:head"></xsl:variable>-->
-   <xsl:variable name="src-1st-da-heads" xml:id="v-src-1st-da-heads" as="element()*">
-      <xsl:for-each select="$src-1st-da/*/tan:head">
-         <xsl:variable name="pos" select="position()"/>
-         <xsl:copy>
-            <xsl:attribute name="src" select="$src-ids[$pos]"/>
-            <xsl:copy-of select="@*"/>
-            <xsl:apply-templates mode="include"/>
-            <!--<xsl:sequence select="*"/>-->
-         </xsl:copy>
-      </xsl:for-each>
-   </xsl:variable>
+   <xsl:variable name="src-1st-da-resolved" xml:id="v-src-1st-da-resolved"
+      select="tan:resolve-doc($src-1st-da)"/>
+   <xsl:variable name="src-1st-da-heads" xml:id="v-src-1st-da-heads"
+      select="$src-1st-da-resolved/*/tan:head"/>
    <xsl:variable name="src-1st-da-data" xml:id="v-src-1st-da-data"
       select="tan:prep-class-1-data($src-1st-da-resolved)"/>
    <xsl:variable name="src-1st-da-all-div-types" xml:id="v-src-1st-da-all-div-types" as="element()">
@@ -134,7 +124,8 @@
             select="$src-1st-da-heads[$this-src]/tan:declarations/tan:token-definition[1]"/>
          <source id="{$this-src-id}">
             <xsl:copy-of
-               select="($first-token-definition, $src-first-token-definition, $token-definitions-reserved)"/>
+               select="($first-token-definition, $src-first-token-definition, $token-definitions-reserved)"
+            />
          </source>
       </xsl:for-each>
    </xsl:variable>
@@ -666,131 +657,94 @@
    </xsl:function>
 
    <xsl:function name="tan:prep-class-1-data" xml:id="f-prep-class-1-data-1" as="element()*">
-      <!-- one-parameter function for the next, two-parameter function; the one-parameter
-      function assumes that every document should be prepared -->
-      <xsl:param name="class-1-documents" as="document-node()*"/>
-      <xsl:sequence
-         select="tan:prep-class-1-data($class-1-documents, (1 to count($class-1-documents)))"/>
-   </xsl:function>
-   <xsl:function name="tan:prep-class-1-data" xml:id="f-prep-class-1-data-2" as="element()*">
-      <!-- Input: sequence of class 1 TAN documents, sequence of integers pointing to source numbers, to specify
-         which of the documents should be handled
+      <!-- Input: sequence of resolved class 1 TAN documents (the result of tan:resolve-doc())
          Output: sequence of one node/tree per source flattening the data into this form:
-         <div @old-ref="[NORMALIZED, FLATTENED REF]" @ref="[NORMALIZED, FLATTENED 
+         <tan:div @pos="[POSITION, TO AVOID LENGTHY RECALCULATIONS DOWNSTREAM]" 
+         @old-ref="[NORMALIZED, FLATTENED REF]" @ref="[NORMALIZED, FLATTENED 
          REF WITH TYPE AND N SUBSTITUTIONS AND SUPPRESSIONS]" @impl-ref="[AS @ref BUT 
          ONLY @n VALUES, NOT @type]" @lang="[LANG]">[TEXT, IF ANY][2ND COPY WITH ORIGINAL 
          TEI MARKUP, IF ANY]</div>
-         No @lang if not a leaf div
+         No @lang if not a leaf div. Text remains untokenized.
       -->
       <xsl:param name="class-1-documents" as="document-node()*"/>
-      <xsl:param name="srcs-chosen" as="xs:integer*"/>
-      <xsl:for-each select="$srcs-chosen">
-         <xsl:variable name="this-src" select="."/>
-         <xsl:variable name="this-class-1-body-resolved" as="node()?">
-            <xsl:for-each
-               select="$class-1-documents[$this-src]/(tan:TAN-T/tan:body | tei:TEI/tei:text/tei:body)">
-               <xsl:copy>
-                  <xsl:copy-of select="@*"/>
-                  <xsl:apply-templates mode="include"/>
-               </xsl:copy>
+      <xsl:for-each select="$class-1-documents">
+         <xsl:variable name="this-src" select="position()"/>
+         <source
+            id="{if (count($src-ids) = count($class-1-documents)) then $src-ids[$this-src] else ''}">
+            <xsl:for-each select=".//(tan:div, tei:div)">
+               <xsl:apply-templates select="." mode="prep-class-1-data">
+                  <xsl:with-param name="this-src" select="$this-src"/>
+                  <xsl:with-param name="this-pos" select="position()"/>
+               </xsl:apply-templates>
             </xsl:for-each>
-         </xsl:variable>
-         <xsl:element name="source" namespace="tag:textalign.net,2015:ns">
-            <xsl:attribute name="id" select="$src-ids[$this-src]"/>
-            <xsl:for-each select="$this-class-1-body-resolved//(tei:div | tan:div)">
-               <xsl:variable name="this-div" select="."/>
-               <xsl:variable name="this-pos" select="position()"/>
-               <xsl:variable name="is-leaf-div"
-                  select="
-                     if (child::tan:div | child::tei:div) then
-                        false()
-                     else
-                        true()"/>
-               <xsl:variable name="this-flatref" select="tan:flatref($this-div)"/>
-               <xsl:variable name="this-flatref-converted"
-                  select="
-                     if ($src-div-types-to-suppress-reg-ex[$this-src] = '') then
-                        tan:ref-rename($this-flatref, $this-src)
-                     else
-                        replace(tan:ref-rename($this-flatref, $this-src), $src-div-types-to-suppress-reg-ex[$this-src], '')"/>
-               <xsl:variable name="this-flatref-converted-without-div-types"
-                  select="replace($this-flatref-converted, concat('\w+', $separator-type-and-n-regex), '')"/>
-               <xsl:element name="tan:div">
-                  <xsl:attribute name="old-ref" select="$this-flatref"/>
-                  <xsl:attribute name="ref" select="$this-flatref-converted"/>
-                  <xsl:attribute name="impl-ref" select="$this-flatref-converted-without-div-types"/>
-                  <xsl:if test="$is-leaf-div">
-                     <xsl:attribute name="lang"
-                        select="$this-div/ancestor-or-self::*[attribute::xml:lang][1]/@xml:lang"/>
-                  </xsl:if>
-                  <xsl:attribute name="pos" select="$this-pos"/>
-                  <!-- raw text -->
-                  <xsl:copy-of
-                     select="
-                        if ($is-leaf-div)
-                        then
-                           normalize-space(string($this-div))
-                        else
-                           ()"/>
-                  <!-- second copy with TEI markup, if any -->
-                  <xsl:sequence
-                     select="
-                        if ($is-leaf-div and $this-div/descendant-or-self::tei:*) then
-                           $this-div/*
-                        else
-                           ()"
-                  />
-               </xsl:element>
-            </xsl:for-each>
-         </xsl:element>
+         </source>
       </xsl:for-each>
    </xsl:function>
+   <xsl:template match="tan:div | tei:div" mode="prep-class-1-data">
+      <xsl:param name="this-pos" as="xs:integer"/>
+      <xsl:param name="this-src" as="xs:integer"/>
+      <xsl:variable name="this-flatref" select="tan:flatref(.)"/>
+      <xsl:variable name="this-flatref-converted"
+         select="
+            if ($src-div-types-to-suppress-reg-ex[$this-src] = '') then
+               tan:ref-rename($this-flatref, $this-src)
+            else
+               replace(tan:ref-rename($this-flatref, $this-src), $src-div-types-to-suppress-reg-ex[$this-src], '')"/>
+      <xsl:variable name="this-flatref-converted-without-div-types"
+         select="replace($this-flatref-converted, concat('\w+', $separator-type-and-n-regex), '')"/>
+      <div pos="{$this-pos}" old-ref="{$this-flatref}" ref="{$this-flatref-converted}"
+         impl-ref="{$this-flatref-converted-without-div-types}">
+         <xsl:if test="not(tan:div | tei:div)">
+            <xsl:attribute name="lang" select="ancestor-or-self::*[@xml:lang][1]/@xml:lang"/>
+            <xsl:value-of select="normalize-space(string(.))"/>
+            <xsl:copy-of select="tei:*"/>
+         </xsl:if>
+      </div>
+   </xsl:template>
    <xsl:function name="tan:pick-prepped-class-1-data" xml:id="f-pick-prepped-class-1-data"
       as="element()*">
       <!-- Used to create a subset of $src-1st-da-data (the result of tan:prep-class-1-data()) 
-         Input: integer* (source numbers), string* (normalized reference sequences [atoms joined by 
-         hyphens or commas], one per source)
+         Input: integer* (a filter consisting of source numbers), string* (a filter consisting of 
+         normalized reference sequences [atoms joined by 
+         hyphens or commas], one per source chosen)
          Output: nodes, 1 per source, proper subset of tan:prep-class-1-data()
       -->
       <xsl:param name="src-list" as="xs:integer*"/>
       <xsl:param name="refs-norm" as="xs:string*"/>
-      <xsl:for-each select="$src-count">
-         <xsl:variable name="this-src" select="."/>
-         <xsl:element name="tan:source">
-            <xsl:attribute name="id" select="$src-ids[$this-src]"/>
+      <xsl:for-each select="$src-1st-da-data">
+         <xsl:variable name="this-src" select="position()"/>
+         <xsl:variable name="this-data" select="."/>
+         <xsl:copy>
+            <xsl:copy-of select="@*"/>
             <xsl:if test="$this-src = $src-list">
                <xsl:for-each select="tokenize($refs-norm[index-of($src-list, $this-src)], ' , ')">
-                  <xsl:variable name="this-ref" select="."/>
+                  <xsl:variable name="this-ref-atoms" select="tokenize(.,' - ')"/>
+                  <xsl:variable name="this-ref-atoms-regex" select="tan:escape($this-ref-atoms)"/>
                   <xsl:choose>
                      <xsl:when
                         test="
-                           exists(for $i in tokenize($this-ref, ' - ')
-                           return
-                              $src-1st-da-data[$this-src]/tan:div[@ref = $i])">
+                           every $i in $this-ref-atoms
+                              satisfies $this-data/tan:div[@ref = $i]">
                         <xsl:choose>
-                           <xsl:when test="matches($this-ref, ' - ')">
-                              <xsl:variable name="this-first-ref"
-                                 select="tokenize($this-ref, ' - ')[1]"/>
-                              <xsl:variable name="this-second-ref"
-                                 select="tokenize($this-ref, ' - ')[2]"/>
+                           <xsl:when test="count($this-ref-atoms) gt 1">
                               <xsl:copy-of
                                  select="
-                                    $src-1st-da-data[$this-src]/((tan:div[matches(@ref,
-                                    concat('^', $this-first-ref, '$|^', $this-first-ref, '\W'))][1]/(self::node(),
+                                    $this-data/((tan:div[matches(@ref,
+                                    concat('^', $this-ref-atoms-regex[1], '$|^', $this-ref-atoms-regex[1], '\W'))][1]/(self::node(),
                                     following-sibling::tan:div))
-                                    except (tan:div[matches(@ref, concat('^', $this-second-ref, '$|^', $this-second-ref, '\W'))][last()]/following-sibling::tan:div))"
+                                    except (tan:div[matches(@ref, concat('^', $this-ref-atoms-regex[2], '$|^', $this-ref-atoms-regex[2], '\W'))][last()]/following-sibling::tan:div))"
                               />
                            </xsl:when>
                            <xsl:otherwise>
                               <xsl:copy-of
-                                 select="$src-1st-da-data[$this-src]/tan:div[matches(@ref, concat('^', $this-ref, '$|^', $this-ref, '\W'))]"
+                                 select="$this-data/tan:div[matches(@ref, concat('^', $this-ref-atoms-regex, '$|^', $this-ref-atoms-regex, '\W'))]"
                               />
                            </xsl:otherwise>
                         </xsl:choose>
                      </xsl:when>
                      <xsl:otherwise>
                         <xsl:element name="tan:div">
-                           <xsl:attribute name="ref" select="$this-ref"/>
+                           <xsl:attribute name="ref" select="$this-ref-atoms"/>
                            <xsl:attribute name="error" select="2"/>
                            <xsl:value-of select="$reference-errors[2]"/>
                         </xsl:element>
@@ -798,47 +752,49 @@
                   </xsl:choose>
                </xsl:for-each>
             </xsl:if>
-         </xsl:element>
+         </xsl:copy>
       </xsl:for-each>
    </xsl:function>
+
    <xsl:function name="tan:tokenize-prepped-class-1-data" xml:id="f-tokenize-prepped-class-1-data"
       as="element()*">
       <!-- Input: element()+ resulting from tan:pick-prepped-class-1-data() 
          or tan:prep-class-1-data()
-         Output: elements, 1 per source, deep copy of input, but dropping 
-         tan:div/@lang and tokenizing all tan:div content into tokens, delimited 
-         by tan:div/tan:tok. If no tokenization pattern exists for a language, 
-         the node is copied with the @error="true" and an error message replacing 
-         the text of the leaf div.-->
+         Output: Copy of input, but analyzing tan:div content into <tan:tok> and 
+         <tan:non-tok>.-->
       <xsl:param name="this-prepped-c1-data" as="element()*"/>
-      <xsl:for-each select="$src-count">
-         <xsl:variable name="this-src" select="."/>
-         <source id="{$src-ids[$this-src]}">
-            <xsl:for-each select="$this-prepped-c1-data[$this-src]/tan:div">
-               <xsl:variable name="this-text" select="normalize-space(string-join(.//text(),''))"/>
-               <xsl:variable name="this-tok-def" select="$token-definitions-per-source[$this-src]"/>
-               <xsl:copy>
-                  <xsl:copy-of select="@*"/>
-                  <xsl:copy-of select="tan:analyze-string($this-text, $this-tok-def)"/>
-                  <xsl:choose>
-                     <!-- Preserves a pre-tokenized copy of the string -->
-                     <xsl:when test="tei:*">
-                        <tei>
-                           <xsl:copy-of select="*"/>
-                        </tei>
-                     </xsl:when>
-                  </xsl:choose>
-               </xsl:copy>
-            </xsl:for-each>
-         </source>
-      </xsl:for-each>
+      <xsl:apply-templates select="$this-prepped-c1-data" mode="tokenize-prepped-class-1-data"/>
    </xsl:function>
+   <xsl:template match="tan:source" mode="tokenize-prepped-class-1-data">
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:apply-templates mode="#current">
+            <xsl:with-param name="this-src" select="index-of($src-ids, @id)"/>
+         </xsl:apply-templates>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tei:*" mode="tokenize-prepped-class-1-data">
+      <xsl:copy-of select="."/>
+   </xsl:template>
+   <xsl:template match="tan:div" mode="tokenize-prepped-class-1-data">
+      <xsl:param name="this-src" as="xs:integer"/>
+      <xsl:variable name="this-tok-def" select="$token-definitions-per-source[$this-src]/tan:token-definition[1]"/>
+      <xsl:variable name="this-text" select="normalize-space(string-join(text(), ''))"/>
+      <xsl:variable name="this-analyzed" select="tan:analyze-string($this-text, $this-tok-def)"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:copy-of select="$this-analyzed/@max-toks"/>
+         <!--<xsl:copy-of select="$this-analyzed/@*"/>-->
+         <xsl:copy-of select="$this-analyzed/*"/>
+         <xsl:apply-templates select="*" mode="#current"/>
+      </xsl:copy>
+   </xsl:template>
+
    <xsl:function name="tan:pick-tokenized-prepped-class-1-data"
       xml:id="f-pick-tokenized-prepped-class-1-data" as="element()*">
       <!-- Input: tan:tok, complete with @src, @ref, @pos|@val 
          Output: elements, 1 per source, deep copy of appropriate tree generated 
-         by tan:tokenize-prepped-class-1-data(), except that <tok> now takes
-         @n (digit specifying original token number in the leaf div) -->
+         by tan:tokenize-prepped-class-1-data() -->
       <xsl:param name="tok-element" as="element()"/>
       <xsl:variable name="this-src-list" select="tan:src-ids-to-nos($tok-element/@src)"/>
       <xsl:variable name="help-requested" select="tan:help-requested($tok-element)"/>
@@ -875,15 +831,13 @@
          select="tan:pick-prepped-class-1-data($this-src-list, $this-refs-norm)"/>
       <xsl:variable name="src-ref-subset-tokenized"
          select="tan:tokenize-prepped-class-1-data($src-ref-subset)"/>
-      <xsl:for-each select="$src-count">
-         <xsl:variable name="this-src" select="."/>
-         <xsl:element name="tan:source">
-            <xsl:attribute name="id" select="$src-ids[$this-src]"/>
-            <xsl:for-each select="$src-ref-subset-tokenized[$this-src]/tan:div">
+      <xsl:for-each select="$src-ref-subset-tokenized">
+         <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:for-each select="tan:div">
                <xsl:variable name="this-div" select="."/>
-               <xsl:element name="tan:div">
+               <xsl:copy>
                   <xsl:copy-of select="@*"/>
-                  <xsl:attribute name="max-toks" select="count($this-div/tan:tok)"/>
                   <xsl:variable name="this-last"
                      select="
                         if (exists($this-val))
@@ -900,36 +854,24 @@
                         else
                            1">
                      <xsl:variable name="this-ord-item" select="."/>
+                     <xsl:variable name="this-tok"
+                        select="
+                           if (exists($this-val)) then
+                              $this-div/tan:tok[matches(., $this-val)][$this-ord-item]
+                           else
+                              $this-div/tan:tok[$this-ord-item]"/>
                      <xsl:choose>
-                        <xsl:when test="exists($this-val)">
-                           <xsl:variable name="this-tok"
-                              select="$this-div/tan:tok[matches(., $this-val)][$this-ord-item]"/>
-                           <xsl:element name="tan:tok">
-                              <xsl:attribute name="n"
-                                 select="count($this-tok/preceding-sibling::tan:tok) + 1"/>
-                              <xsl:if test="not(exists($this-tok))">
-                                 <xsl:attribute name="error"
-                                    select="concat($this-val, ' ', $this-ord-item)"/>
-                              </xsl:if>
-                              <xsl:value-of select="$this-tok"/>
-                           </xsl:element>
+                        <xsl:when test="exists($this-tok)">
+                           <xsl:copy-of select="$this-tok"/>
                         </xsl:when>
                         <xsl:otherwise>
-                           <xsl:variable name="this-tok" select="$this-div/tan:tok[$this-ord-item]"/>
-                           <xsl:element name="tan:tok">
-                              <xsl:attribute name="n" select="$this-ord-item"/>
-                              <xsl:if test="not(exists($this-tok))">
-                                 <xsl:attribute name="error" select="$this-ord-item"/>
-                                 <xsl:attribute name="test" select="$this-div/tan:tok"/>
-                              </xsl:if>
-                              <xsl:value-of select="$this-tok"/>
-                           </xsl:element>
+                           <tok error="{string-join(($this-val, $this-ord-item),' ')}"/>
                         </xsl:otherwise>
                      </xsl:choose>
                   </xsl:for-each>
-               </xsl:element>
+               </xsl:copy>
             </xsl:for-each>
-         </xsl:element>
+         </xsl:copy>
       </xsl:for-each>
    </xsl:function>
    <xsl:function name="tan:itemize-leaf-refs" xml:id="f-itemize-leaf-refs" as="xs:string*">

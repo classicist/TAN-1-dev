@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="tag:textalign.net,2015:ns"
    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tan="tag:textalign.net,2015:ns"
    xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tei="http://www.tei-c.org/ns/1.0"
    xmlns:math="http://www.w3.org/2005/xpath-functions/math"
@@ -203,13 +203,11 @@
       Output: elements, one per source, deep copy of input, but inserting <tan:seg> between 
       <tan:div> and <tan:tok>, reflecting all <split-leaf-div-at>s-->
       <xsl:param name="this-tokd-prepped-c1-data" as="element()+"/>
-      <xsl:for-each select="$src-count">
-         <xsl:variable name="this-src" select="."/>
-         <xsl:variable name="this-src-id" select="$src-ids[$this-src]"/>
-         <xsl:element name="tan:source">
-            <xsl:attribute name="id" select="$this-src-id"/>
-            <xsl:for-each select="$this-tokd-prepped-c1-data[$this-src]/tan:div">
-               <!--<xsl:variable name="div-pos" select="position()"/>-->
+      <xsl:for-each select="$this-tokd-prepped-c1-data">
+         <xsl:variable name="this-src-id" select="@id"/>
+         <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:for-each select="tan:div">
                <xsl:choose>
                   <xsl:when test="@lang and tan:tok">
                      <xsl:variable name="this-div" select="."/>
@@ -230,39 +228,26 @@
                            count($this-div/tan:tok))"/>
                      <xsl:copy>
                         <xsl:copy-of select="@*"/>
-                        <!--<xsl:attribute name="pos" select="$div-pos"/>-->
                         <xsl:for-each select="(1 to count($this-div-splits) + 1)">
                            <xsl:variable name="pos" select="."/>
                            <xsl:variable name="start" select="$this-div-seg-starts[$pos]"/>
                            <xsl:variable name="end" select="$this-div-seg-ends[$pos]"/>
-                           <xsl:element name="tan:seg">
-                              <xsl:copy-of select="$this-div/tan:tok[position() = ($start to $end)]"
+                           <seg n="{position()}">
+                              <xsl:copy-of
+                                 select="$this-div/tan:tok[$start]/(self::*, following-sibling::*) 
+                                 except $this-div/tan:tok[$end]/following-sibling::tan:tok[1]/(self::*, following-sibling::*)"
                               />
-                           </xsl:element>
+                           </seg>
                         </xsl:for-each>
-                        <xsl:sequence select="tan:pattern | tei:* | tan:div"/>
-                     </xsl:copy>
-                  </xsl:when>
-                  <xsl:when test="@lang and not(tan:tok)">
-                     <!-- Even when not tokenized, allow the tan:seg to wrap the text -->
-                     <xsl:copy>
-                        <xsl:copy-of select="@*"/>
-                        <!--<xsl:attribute name="pos" select="$div-pos"/>-->
-                        <tan:seg>
-                           <xsl:value-of select="tei:* | tan:div"/>
-                        </tan:seg>
                         <xsl:sequence select="tei:*"/>
                      </xsl:copy>
                   </xsl:when>
                   <xsl:otherwise>
-                     <xsl:copy>
-                        <xsl:copy-of select="@*"/>
-                        <!--<xsl:attribute name="pos" select="$div-pos"/>-->
-                     </xsl:copy>
+                     <xsl:copy-of select="."/>
                   </xsl:otherwise>
                </xsl:choose>
             </xsl:for-each>
-         </xsl:element>
+         </xsl:copy>
       </xsl:for-each>
    </xsl:function>
    <xsl:function name="tan:expand-div-ref" as="element()*">

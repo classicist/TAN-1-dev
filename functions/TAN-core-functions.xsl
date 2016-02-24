@@ -282,7 +282,7 @@
         <xsl:copy-of select="."/>
     </xsl:template>
     <xsl:template match="tan:tok" mode="count-tokens">
-        <tok pos="{count(preceding-sibling::tan:tok) + 1}">
+        <tok n="{count(preceding-sibling::tan:tok) + 1}">
             <xsl:value-of select="."/>
         </tok>
     </xsl:template>

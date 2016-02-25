@@ -147,7 +147,10 @@
    </rule>
    <rule context="@id">
       <let name="all-agent-uris" value="$head/tan:agent/tan:IRI"/>
-      <let name="matches" value="some $i in $all-agent-uris satisfies matches($i, concat('^tag:', $tan-iri-namespace))"/>
+      <let name="matches"
+         value="
+            some $i in $all-agent-uris
+               satisfies matches($i, concat('^tag:', $tan-iri-namespace))"/>
       <assert test="exists($matches)">To attach responsibility for the TAN file to a person or
          organization, at least one agent must have an IRI that is a tag URI whose namespace matches
          that of the URI name (<value-of select="$tan-iri-namespace"/>)</assert>
@@ -344,7 +347,7 @@
                false()"
          tan:does-not-apply-to="master-location"
          ><!-- If a referenced file is marked as being in progress, a warning will be returned -->Underlying
-         TAN file is marked as being in progress (checked only against first document
+         TAN file is marked as being in progress (checked only against the first document
          available)</report>
       <report sqf:fix="replace-with-current-date"
          test="
@@ -368,13 +371,6 @@
                      return
                         concat(name($j), '[', string(count($j/preceding-sibling::node()[name(.) = name($j)]) + 1), ']'), '/'))"
          /></report>
-      <report
-         test="
-            tan:must-refer-to-external-tan-file(.) and not(preceding-sibling::tan:IRI/text() and preceding-sibling::tan:name/text())
-            and exists($loc-doc)"
-         role="warning" sqf:fix="replace-IRI-and-name"
-         ><!-- If a sibling <name> or <IRI> is missing, a warning will be returned -->IRI or name
-         missing.</report>
       <sqf:fix id="change-to-current-file-rel-uri" use-when="self::tan:master-location">
          <sqf:description>
             <sqf:title>Replace with local uri</sqf:title>
@@ -489,13 +485,14 @@
             for $i in count($this-resolved)
             return
                $these-relationships[$i] = $relationship-keywords-for-tan-editions and $doc-id = $first-docs[$i]/*/@id"
-         ><!-- If <relationship> keyword is  $relationship-keywords-for-tan-editions then the current file and the see-also file cannot have the same @id value. -->The
+         ><!-- If <relationship> keyword is $relationship-keywords-for-tan-editions then the current file and the see-also file cannot have the same @id value. -->The
             <value-of select="$these-relationships"/> cannot have the same @id value as this
          file.</report>
    </rule>
    <rule context="@which">
       <let name="these-keywords" value="tan:get-keywords(..)"/>
-      <let name="escaped-which" value="tan:escape(.)"/>
+      <let name="help-requested" value="matches(.,$help-trigger-regex)"/>
+      <let name="escaped-which" value="tan:escape(replace(.,$help-trigger-regex,''))"/>
       <let name="close-matches" value="$these-keywords[matches(., $escaped-which)]"/>
       <let name="feedback"
          value="
@@ -506,10 +503,11 @@
                if (exists($these-keywords)) then
                   concat('try: ', string-join($these-keywords, ', '))
                else
-                  'no keywords have been defined for this element'"
-      />
+                  'no keywords have been defined for this element'"/>
+      <let name="self-resolved" value="tan:resolve-keyword(..)"/>
       <assert sqf:fix="get-first-keyword get-all-keywords" test=". = $these-keywords">@which must
          contain a reserved or privately defined keyword (<value-of select="$feedback"/>)</assert>
+      <report test="$help-requested = true()" sqf:fix="explicate">Help requested.</report>
       <sqf:fix id="get-first-keyword">
          <sqf:description>
             <sqf:title>Get first valid keyword</sqf:title>
@@ -522,6 +520,20 @@
          </sqf:description>
          <sqf:replace match="." node-type="attribute" target="which"
             select="string-join($close-matches, ' ')"/>
+      </sqf:fix>
+      <sqf:fix id="explicate">
+         <sqf:description>
+            <sqf:title>Replace with keyword definition</sqf:title>
+            <sqf:p>Any element that has a @which with the value of $help-trigger will trigger this
+               quick fix. Choose it to comment out the original element and add after it the
+               complete definition of the keyword. This is especially helpful for cases where you
+               wish to know the meaning of a keyword, or you wish to edit the definition of a
+               keyword.</sqf:p>
+         </sqf:description>
+         <sqf:add match="." position="before">
+            <xsl:comment>&lt;<xsl:value-of select="name(..)"/> which="<xsl:value-of select="."/>"/></xsl:comment>
+         </sqf:add>
+         <sqf:replace match=".." select="$self-resolved"/>
       </sqf:fix>
    </rule>
    <rule context="@when[parent::tan:*] | @ed-when | @when-accessed">
@@ -644,8 +656,8 @@
          trusted by the validation engine.</assert>
       <assert test="parent::tan:location or parent::tan:master-location" sqf:fix="get-metadata"
          sqf:default-fix="get-metadata">If not a child of tan:location or tan:master-location, then
-         used only for Schematron Quick Fixes, to populate an element with &lt;IRI>, &lt;name>, and
-         &lt;location> values. </assert>
+         @href will invoke Schematron Quick Fixes to populate an element with &lt;IRI>, &lt;name>, and
+         &lt;location> values for the TAN file identified by @href. </assert>
       <sqf:fix id="get-metadata">
          <sqf:description>
             <sqf:title>Delete @href and insert IRI, name, and location</sqf:title>
@@ -723,10 +735,14 @@
          a duplicate @xml:id (<value-of select="$duplicate-ids"/>)</report>
       <assert test="exists($first-loc-avail)" role="fatal">Every inclusion must have at least one
          location that leads to an available document.</assert>
-      <!--<report
-         test="if ($first-doc/tan:body/@in-progress = false() or $first-doc/tei:text/tei:body/@in-progress = false()) 
-         then false() else true()"
-         role="warning">Inclusion is marked as being in progress.</report>-->
+      <report
+         test="
+            if ($first-doc/(tan:body, tei:text/tei:body)/@in-progress = false())
+            then
+               false()
+            else
+               true()"
+         role="warning"><!-- If an inclusion is not marked as being no longer in progress, a warning will be returned. -->Inclusion is marked as being in progress.</report>
       <report test="$first-doc/*/@id = $doc-id">Inclusions may not have the same tag id as the host
          document.</report>
    </rule>
@@ -743,7 +759,11 @@
                return
                   $inclusion-errors[number($i)]"
          /></report>
-      <report test="@help" sqf:fix="explicate">Help requested</report>
+      <report
+         test="
+            @help or (some $i in (@*, text())
+               satisfies matches($i, $help-trigger-regex))"
+         sqf:fix="explicate">Help requested</report>
       <report test="text()" sqf:fix="explicate">Text is not allowed in an element with
          @include.</report>
       <sqf:fix id="explicate">
@@ -762,7 +782,4 @@
          <sqf:replace match="." select="$self-resolved"/>
       </sqf:fix>
    </rule>
-   <!-- xsl:include provided below, commented out, in case validity needs to be checked; these
-      fuctions are otherwise invoked through the master schematron files -->
-   <!--<xsl:include href="TAN-core-functions.xsl"/>-->
 </pattern>

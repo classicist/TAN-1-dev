@@ -29,7 +29,7 @@
          </info>
          <revision>
             <revnumber>1/dev</revnumber>
-            <date>2016-02-04</date>
+            <date>2016-02-24</date>
             <revdescription>
                <para>Prepublication working draft, under construction and for circulation among
                   those interested in helping to develop TAN. Corrections are actively solicited and
@@ -44,9 +44,8 @@
                      to these guidelines, and then to the Schematron schemas.</para>
                   <para>Chapters 1, 4-8 are relatively accurate. Chapter 2 was drafted in mid-2015,
                      before major changes to the schemas. Chapter 3 remains unwritten until the
-                     format reaches some maturity. Chapter 8 reflects formats that need to be tested
-                     and refined against real-life examples. Chapter 9 covers highly experimental
-                     material, and is included only for the sake of completeness.</para>
+                     format reaches some maturity. Chapter 9 is intended to cover areas that explore
+                     advance use of the format.</para>
                   <para>TAN is meant to encourage collaboration and distributed scholarship. If you
                      are part of a project that would like to use and help develop the TAN format,
                      please contact the author (see above).</para>
@@ -3166,7 +3165,7 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
          <xi:include href="inclusions/TAN-core.xml"/>
       </chapter>
       <chapter xml:id="class_1">
-         <title>Class 1 TAN Files, Representations of Textual Objects</title>
+         <title>Class-1 TAN Files, Representations of Textual Objects</title>
          <para>Class 1 TAN files preserve segmented representations of textual objects. This class
             consists solely of transcriptions, the foundation of any TAN-compliant project. No class
             2 files (e.g., alignment, morphology) can be created without class 1 files. </para>
@@ -3833,7 +3832,7 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
          <xi:include href="inclusions/TAN-T.xml"/>
       </chapter>
       <chapter xml:id="class_2">
-         <title>Class 2 TAN Files, Annotations of Texts</title>
+         <title>Class-2 TAN Files, Annotations of Texts</title>
          <para>This chapter is devoted to the class 2 format, which treats annotations of class 1
             files. At present, class 2 files are restricted to alignment or
             lexico-morphology.</para>
@@ -4166,12 +4165,12 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                <para>The <code><link linkend="element-body">&lt;body></link></code> of a TAN-A-div
                   file, therefore, is used only (1) to reconcile and customize the alignment between
                   source TAN-T(EI) files and (2) to indicate new alignments where passage x from
-                  work A quotes from passage y  from work B, or where passages x, y, and z all deal
+                  work A quotes from passage y from work B, or where passages x, y, and z all deal
                   with the same topic. </para>
                <para>Those procedures follow a five-step process. Each step is optional and
                   sequence-specific. That is, each statement assumes declarations made in previous
                   siblings have already been taken into account. Although these steps are
-                  fundamentally simple,  some of the descriptions that follow may seem unnecessarily
+                  fundamentally simple, some of the descriptions that follow may seem unnecessarily
                   detailed or complex. You are advised to consult examples found in the detailed
                   description of individual elements and attributes.</para>
                <section>
@@ -4566,10 +4565,10 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
          <xi:include href="inclusions/TAN-LM.xml"/>
       </chapter>
       <chapter xml:id="class_3">
-         <title>Class 3 TAN Files, Language and Script</title>
-         <para>This chapter discusses class 3 TAN files, which make declare rules about languages
-            and scripts. This class, at present, consists of rules pertaining to tokenization and
-            morphology.</para>
+         <title>Class-3 TAN Files, Varia</title>
+         <para>This chapter discusses class 3 TAN formats, which are those that do not fit either
+            class 1 or 2. This class, at present, consists of rules pertaining to morphology, of
+            keywords, and of RDF-friendly statements.</para>
          <section xml:id="tan-r-tok">
             <title>Tokenization Patterns</title>
             <para>The term <emphasis role="italic">word</emphasis> is notoriously difficult to
@@ -4832,14 +4831,6 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   returned only if the test proves true.</para>
             </section>
          </section>
-         <xi:include href="inclusions/TAN-class-3.xml"/>
-         <xi:include href="inclusions/TAN-R-tok.xml"/>
-         <xi:include href="inclusions/TAN-R-mor.xml"/>
-      </chapter>
-      <chapter xml:id="class-4">
-         <title>Class 4: Keyword Vocabulary, General RDF-friendly Statements</title>
-         <para>[This chapter has not been drafted. Individual sections may contain ideas in the rough
-               that will later be developed into comprehensive prose.]</para>
          <section xml:id="tan-key">
             <title>Keyword Vocabulary (<code>TAN-key</code>)</title>
             <para>All too often, a project has a set of vocabulary it draws from time and again for
@@ -4866,22 +4857,26 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
             <para>Many projects using the TAN format will find the need to include in their workflow
                declarations about related concepts, and to include that in their workflow. In many
                cases, there are adequate formats that are available. At other times, you may want to
-               encode your information in a format much like your other TAN files. For those cases, an
-               experimental format, TAN-rdf, is provided.</para>
+               encode your information in a format much like your other TAN files. For those cases,
+               an experimental format, TAN-rdf, is provided.</para>
             <para>The concept is relatively simple: allow a user to make RDF-compliant declarations
-               about concepts invoked, but never defined in the TAN format. Take, for example, two TAN
-               files, where one is a commentary or set of notes on the other. Properly speaking, each
-               TAN-T(EI) file should define the work differently. But you want to be able to indicate
-               that one work is a set of annotations or comments to the other. In such a case, you
-               would write a separate TAN-rdf file that declares this relationship, and you would point
-               to that TAN-rdf file in the two transcription files, via a computer-readable form of
-               <code><link linkend="element-desc">&lt;desc></link></code> under <code><link
-                  linkend="element-work">&lt;work></link></code>.</para>
+               about concepts invoked, but never defined in the TAN format. Take, for example, two
+               TAN files, where one is a commentary or set of notes on the other. Properly speaking,
+               each TAN-T(EI) file should define the work differently. But you want to be able to
+               indicate that one work is a set of annotations or comments to the other. In such a
+               case, you would write a separate TAN-rdf file that declares this relationship, and
+               you would point to that TAN-rdf file in the two transcription files, via a
+               computer-readable form of <code><link linkend="element-desc">&lt;desc></link></code>
+               under <code><link linkend="element-work">&lt;work></link></code>.</para>
             <xi:include href="inclusions/TAN-rdf.xml"/>
          </section>
+         <xi:include href="inclusions/TAN-class-3.xml"/>
+         <xi:include href="inclusions/TAN-mor.xml"/>
+         <xi:include href="inclusions/TAN-key.xml"/>
+         <xi:include href="inclusions/TAN-rdf.xml"/>
       </chapter>
    </part>
-   
+
    <part>
       <title>Working with the Text Alignment Network</title>
       <partintro>

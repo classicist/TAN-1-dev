@@ -41,22 +41,22 @@
    <xsl:param name="docbook-alert"
       select="('important', 'important', 'warning', 'warning', 'note', 'note')"/>
 
-   <xsl:variable name="sequence" select="//tan:section/@which"/>
+   <!--<xsl:variable name="sequence" select="//tan:section/@which"/>-->
    <xsl:variable name="string-delimiter"
       select="concat('\(', $apos, '?|', $apos, '?,\s+', $apos, '?|', $apos, '?\)|^', $apos, '|', $apos, '$')"/>
 
    <xsl:variable name="ex-collection"
       select="
          collection('../examples/?select=*.xml;recurse=yes'),
-         collection('../TAN-R-tok/?select=*.xml;recurse=yes')"/>
+         collection('../TAN-key/?select=*.xml;recurse=yes')"/>
    <xsl:variable name="sch-collection"
       select="collection('../schemas/?select=*.sch;recurse=yes')"/>
    <xsl:variable name="fn-collection"
       select="collection('../functions/?select=*.xsl;recurse=yes')"/>
-   <xsl:variable name="element-names-excl-TEI-and-experiments"
-      select="$rng-collection[not(matches(base-uri(.), 'TAN-X|TAN-TEI'))]//rng:element/@name"/>
-   <xsl:variable name="attribute-names-excl-TEI-and-experiments"
-      select="$rng-collection[not(matches(base-uri(.), 'TAN-X|TAN-TEI'))]//rng:attribute/@name"/>
+   <xsl:variable name="element-names-excl-TEI"
+      select="$rng-collection[not(matches(base-uri(.), 'TAN-TEI'))]//rng:element/@name"/>
+   <xsl:variable name="attribute-names-excl-TEI"
+      select="$rng-collection[not(matches(base-uri(.), 'TAN-TEI'))]//rng:attribute/@name"/>
 
    <xsl:variable name="apos" select='"&#x27;"'/>
    <xsl:variable name="lf" select="'&#xA;'"/>
@@ -108,10 +108,10 @@
       <xsl:result-document href="inclusions/index.xml">
          <appendix version="'5.0'">
             <title>Index of Elements and Attributes</title>
-            <para>The <xsl:value-of select="count($element-names-excl-TEI-and-experiments)"/> elements and
-                  <xsl:value-of select="count($attribute-names-excl-TEI-and-experiments)"/> attributes in TAN are:</para>
+            <para>The <xsl:value-of select="count($element-names-excl-TEI)"/> elements and
+                  <xsl:value-of select="count($attribute-names-excl-TEI)"/> attributes in TAN are:</para>
             <para>
-               <xsl:for-each select="($element-names-excl-TEI-and-experiments,$attribute-names-excl-TEI-and-experiments)">
+               <xsl:for-each select="($element-names-excl-TEI,$attribute-names-excl-TEI)">
                   <xsl:sort select="lower-case(.)"/>
                   <xsl:variable name="text"
                      select="
@@ -126,8 +126,7 @@
                   <xsl:text> </xsl:text>
                </xsl:for-each>
             </para>
-            <para>This list excludes elements and attributes defined either by the TEI or by the TAN
-               experimental format (TAN-X)</para>
+            <para>This list excludes elements and attributes defined by the TEI (see <!--<link xlink:href="http://tei-c.org">official TEI documentation</link>-->).</para>
          </appendix>
       </xsl:result-document>
    </xsl:template>
@@ -692,14 +691,22 @@
          <xsl:when test=".. = $example-elements and position() = $qty-contextual-children + 1">
             <xsl:value-of select="concat(tan:indent(.), $ellipses)"/>
          </xsl:when>
+         <!-- the following alternative has been supplied 2/25 because of an internal Saxon error. Not sure if I diagnosed this correctly -->
          <xsl:when
+            test="
+               some $i in ((preceding-sibling::*[position() = (1 to $qty-contextual-siblings)],
+               following-sibling::*[position() = (1 to $qty-contextual-siblings)]) = $example-elements)
+                  satisfies $i = true()">
+            <xsl:value-of select="tan:shallow-copy(.)"/>
+         </xsl:when>
+         <!--<xsl:when
             test="
                for $i in (1 to $qty-contextual-siblings)
                return
                   ((preceding-sibling::*[$i],
                   following-sibling::*[$i]) = $example-elements)">
             <xsl:value-of select="tan:shallow-copy(.)"/>
-         </xsl:when>
+         </xsl:when>-->
          <xsl:when
             test="
                (preceding-sibling::*[$qty-contextual-siblings + 1],

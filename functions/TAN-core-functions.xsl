@@ -359,6 +359,21 @@
         />
     </xsl:function>
 
+    <xsl:function name="tan:resolve-keyword" as="element()?">
+        <xsl:param name="element-that-takes-attribute-which" as="element()"/>
+        <xsl:variable name="this-element" select="$element-that-takes-attribute-which"/>
+        <xsl:variable name="this-which-normalized"
+            select="replace($this-element/@which, $help-trigger-regex, '')"/>
+        <xsl:variable name="first-matched-keyword-item"
+            select="
+            ($private-keywords//tan:item[tokenize(ancestor::*[@affects-element][1]/@affects-element, '\s+') = name($this-element)][tan:name = $this-which-normalized],
+                $TAN-keywords[tokenize(@affects-element, '\s+') = name($this-element)]//tan:item[tan:name = $this-which-normalized])[1]"
+        />
+        <xsl:element name="{name($this-element)}">
+            <xsl:copy-of select="$this-element/@*[not(name() = 'which')]"/>
+            <xsl:copy-of select="$first-matched-keyword-item/*"/>
+        </xsl:element>
+    </xsl:function>
     <xsl:function name="tan:get-keywords" as="xs:string*">
         <xsl:param name="element-that-takes-attribute-which" as="item()"/>
         <xsl:variable name="element-name"
@@ -598,7 +613,8 @@
         <xsl:param name="urls-so-far" as="xs:anyURI*"/>
         <xsl:variable name="new-urls">
             <xsl:for-each select="$elements-to-be-checked-for-inclusion">
-                <xsl:variable name="incl-refs" select="tokenize(current()/@include, '\s+')"/>
+                <xsl:variable name="normalized-inclusion-name" select="replace(@include,$help-trigger-regex,'')"/>
+                <xsl:variable name="incl-refs" select="tokenize($normalized-inclusion-name, '\s+')"/>
                 <xsl:if test="@include">
                     <xsl:value-of
                         select="root()/*/tan:head/tan:inclusion[@xml:id = $incl-refs]/tan:location/@href"
@@ -610,7 +626,8 @@
             <xsl:for-each select="$elements-to-be-checked-for-inclusion">
                 <xsl:choose>
                     <xsl:when test="@include">
-                        <xsl:variable name="incl-refs" select="tokenize(current()/@include, '\s+')"/>
+                        <xsl:variable name="normalized-inclusion-name" select="replace(@include,$help-trigger-regex,'')"/>
+                        <xsl:variable name="incl-refs" select="tokenize($normalized-inclusion-name, '\s+')"/>
                         <xsl:variable name="these-inclusions"
                             select="root(current())/*/tan:head/tan:inclusion[@xml:id = $incl-refs]"/>
                         <xsl:variable name="these-inclusion-1st-las"

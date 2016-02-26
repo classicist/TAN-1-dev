@@ -77,7 +77,7 @@
    <xsl:variable name="src-1st-da-heads" xml:id="v-src-1st-da-heads"
       select="$src-1st-da-resolved/*/tan:head"/>
    <xsl:variable name="src-1st-da-data" xml:id="v-src-1st-da-data"
-      select="tan:prep-class-1-data($src-1st-da-resolved)"/>
+      select="tan:prep-class-1-data($src-1st-da-resolved)" as="element()*"/>
    <xsl:variable name="src-1st-da-all-div-types" xml:id="v-src-1st-da-all-div-types" as="element()">
       <xsl:variable name="all" select="$src-1st-da-heads/tan:declarations/tan:div-type"/>
       <xsl:variable name="div-seq" as="element()*">
@@ -396,20 +396,61 @@
       />
    </xsl:function>
    <xsl:function name="tan:normalize-ref-punctuation" xml:id="f-normalize-ref-punctuation"
-      as="xs:string">
+      as="xs:string?">
       <!-- Input: reference where pattern = "\w+\W\w*(\W\w+\W\w*)*" (i.e., div types are explicit)
         Output: first \W (type + n separator) - > . and second \W (hierarchy separator) - > :
         E.g., bk/Gen 2.1 epigraph.  ->  bk.Gen:2.1:epigraph. 
         -->
-      <xsl:param name="in" as="xs:string"/>
-      <xsl:variable name="seq" select="tokenize($in, '\W')"/>
+      <xsl:param name="raw-ref" as="xs:string?"/>
+      <xsl:variable name="prepped-ref"
+         select="replace($raw-ref, $help-trigger-regex, '')"/>
+      <xsl:variable name="analyzed-ref">
+         <analyzed-ref>
+            <xsl:analyze-string select="$prepped-ref" regex="\W">
+               <xsl:matching-substring>
+                  <match>
+                     <xsl:value-of select="."/>
+                  </match>
+               </xsl:matching-substring>
+               <xsl:non-matching-substring>
+                  <non-match>
+                     <xsl:value-of select="."/>
+                  </non-match>
+               </xsl:non-matching-substring>
+            </xsl:analyze-string>
+         </analyzed-ref>
+      </xsl:variable>
+      <xsl:variable name="converted-ref">
+         <xsl:apply-templates select="$analyzed-ref" mode="normalize-ref"/>
+      </xsl:variable>
+      <xsl:value-of select="$converted-ref//text()"/>
+      <!--<xsl:variable name="seq" select="tokenize($raw-ref, '\W')"/>
       <xsl:copy-of
          select="
             string-join(for $i in (1 to (count($seq) idiv 2))
             return
                concat($seq[($i * 2) - 1], '.', $seq[($i * 2)]), ':')"
-      />
+      />-->
    </xsl:function>
+   <xsl:template match="*" mode="normalize-ref" xml:id="t-normalize-ref-1">
+      <xsl:copy>
+         <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:match[count(preceding-sibling::tan:match) mod 2 = 0]"
+      mode="normalize-ref" xml:id="t-normalize-ref-2">
+      <xsl:copy>
+         <xsl:value-of select="$separator-type-and-n"/>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:match[count(preceding-sibling::tan:match) mod 2 = 1]"
+      mode="normalize-ref" xml:id="t-normalize-ref-3">
+      <xsl:copy>
+         <xsl:value-of select="$separator-hierarchy"/>
+      </xsl:copy>
+   </xsl:template>
+   
+   
    <!-- The next function is context-dependent, but is here to be close to its context-indepedent peer -->
    <xsl:function name="tan:normalize-impl-refs" xml:id="f-normalize-impl-refs" as="xs:string?">
       <!-- Input: (1) string value of @ref where div types are implicit; (2) source number
@@ -656,7 +697,7 @@
       />
    </xsl:function>
 
-   <xsl:function name="tan:prep-class-1-data" xml:id="f-prep-class-1-data-1" as="element()*">
+   <xsl:function name="tan:prep-class-1-data" xml:id="f-prep-class-1-data" as="element()*">
       <!-- Input: sequence of resolved class 1 TAN documents (the result of tan:resolve-doc())
          Output: sequence of one node/tree per source flattening the data into this form:
          <tan:div @pos="[POSITION, TO AVOID LENGTHY RECALCULATIONS DOWNSTREAM]" 
@@ -680,7 +721,7 @@
          </source>
       </xsl:for-each>
    </xsl:function>
-   <xsl:template match="tan:div | tei:div" mode="prep-class-1-data">
+   <xsl:template match="tan:div | tei:div" mode="prep-class-1-data" xml:id="t-prep-class-1-data">
       <xsl:param name="this-pos" as="xs:integer"/>
       <xsl:param name="this-src" as="xs:integer"/>
       <xsl:variable name="this-flatref" select="tan:flatref(.)"/>

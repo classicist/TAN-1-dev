@@ -4,7 +4,8 @@
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
    <title>Schematron light tests for TAN-A-div files, included by both TAN-A-div.sch and
       TAN-A-div-edit.sch. Represents lightweight, SQF-friendly helps for editing, without any tests
-      that would be time-consuming on long documents. No tests in this file should invoke tokenization.</title>
+      that would be time-consuming on long documents. No tests in this file should invoke
+      tokenization.</title>
    <rule context="tan:TAN-A-div">
       <let name="this-schematron-pi"
          value="/processing-instruction()[matches(., 'TAN-A-div(-edit)?\.sch')]"/>
@@ -23,7 +24,9 @@
                doc($this-schematron-resolved-url)
             else
                ()"/>
-      <report test="true()" role="info"><!-- Information about elements that support editing help will be listed at the rootmost element -->Help available: <xsl:value-of
+      <report test="true()" role="info"
+         ><!-- Information about elements that support editing help will be listed at the rootmost element -->Help
+         available: <xsl:value-of
             select="
                for $i in $this-schematron//sch:rule,
                   $j in $i/@context,
@@ -61,17 +64,16 @@
                tokenize($i, ' [-,] '))"/>
       <let name="ref-identifies-what-divs"
          value="$these-sources-resolved/tan:div[@ref = $these-atomic-refs]"/>
-      <let name="refs-that-fail" value="$these-atomic-refs[not(. = $ref-identifies-what-divs/@ref)]"/>
       <let name="possible-corrected-refs"
          value="
-            if ($is-implicit = true()) then
-               for $i in $refs-that-fail
-               return
+            for $i in $these-refs-norm
+            return
+               if ($is-implicit = true()) then
                   $these-sources-resolved/tan:div[matches(@impl-ref, $i)]/@impl-ref
-            else
-               for $i in $refs-that-fail
-               return
-                  $these-sources-resolved/tan:div[matches(@ref, $i)]/@ref"/>
+               else
+                  $these-sources-resolved/tan:div[matches(@ref, $i)]/@ref"
+      />
+      <!--<let name="refs-that-fail" value="$these-atomic-refs[not(. = $ref-identifies-what-divs/@ref)]"/>-->
       <let name="possible-common-corrected-refs"
          value="distinct-values($possible-corrected-refs[count(index-of($possible-corrected-refs, .)) ge count($this-src-list)])"/>
       <let name="search-report"
@@ -111,8 +113,8 @@
                      $matched-refs[../@id = $i]/@ref, ' '),
                   ' (', $i, ') ')"
          /></report>
-      <report test="$ref-help-requested = true() and exists($ref-identifies-what-divs)" sqf:fix="fetch-content"
-         ><!-- Putting $help-trigger in @ref with an exact match on a div ref will return either the text of the chosen div or the references to children div refs -->
+      <report test="$ref-help-requested = true() and exists($ref-identifies-what-divs)"
+         sqf:fix="fetch-content"><!-- Putting $help-trigger in @ref with an exact match on a div ref will return either the text of the chosen div or the references to children div refs -->
          <xsl:value-of
             select="
                for $i in $ref-identifies-what-divs
@@ -127,8 +129,8 @@
                         $these-sources-resolved/tan:div[@ref = $i/@ref]/following-sibling::*[matches(@ref, $i/@ref)]/@ref, ' '
                      ), ' ')"
          /></report>
-      <report test="$src-help-requested">Sources available: 
-         <xsl:value-of select="$src-ids"/></report>
+      <report test="$src-help-requested">Sources available: <xsl:value-of select="$src-ids"
+         /></report>
 
       <!-- SCHEMATRON QUICK FIXES -->
       <sqf:fix id="fetch-content" use-when="exists($ref-identifies-what-divs)">
@@ -180,11 +182,5 @@
          </sqf:add>
       </sqf:fix>
 
-      <!-- Testing -->
-      <let name="test-var" value="tan:string-base('ἀνθρὠρους')"/>
-      <report test="false()"><xsl:value-of select="$test-var"/></report>
-
    </rule>
-
-
 </pattern>

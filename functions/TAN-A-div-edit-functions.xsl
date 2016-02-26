@@ -17,7 +17,6 @@
    <xi:include href="TAN-class-2-functions.xsl" xpointer="p-searches-are-case-sensitive"/>
    <xi:include href="TAN-class-2-functions.xsl" xpointer="p-searches-suppress-what-text"/>
    
-   
    <xi:include href="TAN-class-2-functions.xsl" xpointer="v-match-flags"/>
    <xi:include href="TAN-class-2-functions.xsl" xpointer="v-sources"/>
    <xi:include href="TAN-class-2-functions.xsl" xpointer="v-src-count"/>
@@ -37,15 +36,19 @@
    <xi:include href="TAN-class-2-functions.xsl" xpointer="v-ucd-decomp"/>
 
    <xi:include href="TAN-class-2-functions.xsl" xpointer="f-src-ids-to-nos"/>
-   <xi:include href="TAN-class-2-functions.xsl" xpointer="f-prep-class-1-data-1"/>
-   <xi:include href="TAN-class-2-functions.xsl" xpointer="f-prep-class-1-data-2"/>
+   <xi:include href="TAN-class-2-functions.xsl" xpointer="f-prep-class-1-data"/>
    <xi:include href="TAN-class-2-functions.xsl" xpointer="f-ref-rename"/>
    <xi:include href="TAN-class-2-functions.xsl" xpointer="f-normalize-refs"/>
    <xi:include href="TAN-class-2-functions.xsl" xpointer="f-normalize-ref-punctuation"/>
    <xi:include href="TAN-class-2-functions.xsl" xpointer="f-normalize-impl-refs"/>
    <xi:include href="TAN-class-2-functions.xsl" xpointer="f-string-base"/>
    <xi:include href="TAN-class-2-functions.xsl" xpointer="f-expand-search"/>
-
+   
+   <xi:include href="TAN-class-2-functions.xsl" xpointer="t-prep-class-1-data"/>
+   <xi:include href="TAN-class-2-functions.xsl" xpointer="t-normalize-ref-1"/>
+   <xi:include href="TAN-class-2-functions.xsl" xpointer="t-normalize-ref-2"/>
+   <xi:include href="TAN-class-2-functions.xsl" xpointer="t-normalize-ref-3"/>
+   
    <xsl:variable name="src-1st-da-data-prepped-for-search"
       select="tan:prep-for-search($src-1st-da-data)" xml:id="test"/>
 

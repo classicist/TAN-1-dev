@@ -119,7 +119,7 @@
             return
                $is-alternatively-divided-edition[$i] and not($is-same-text[$i])"
          >In class 1 files, alternatively divided editions must preserve identical transcriptions.
-         <value-of
+            <value-of
             select="
                if (exists($discrepancies-here)) then
                   concat('Discrepancies here: ', string-join(($discrepancies-here), ', '), '. ')
@@ -189,8 +189,29 @@
          >Leaf div references must be unique. </report>
       <report test="$is-leaf-div and not(@include) and not(matches(., '\S'))">Every leaf div must
          have at least some non-space text.</report>
-      <report test="matches(.,'^\p{M}')">No div may begin with a modifying character.</report>
-      <report test="matches(., '\s\p{M}')">No div may have a spacing character followed by a
-         modifying character.</report>
+      <report test="
+            some $i in text()
+               satisfies matches($i, '^\p{M}')"
+         sqf:fix="remove-modifiers-starting-divs">No div may begin with a modifying
+         character.</report>
+      <report test="matches(string-join(text(), ''), '\s\p{M}')"
+         sqf:fix="remove-space-preceding-modifiers">No div may have a spacing character followed by
+         a modifying character.</report>
+      <sqf:fix id="remove-modifiers-starting-divs">
+         <sqf:description>
+            <sqf:title>Remove modifiers starting divs</sqf:title>
+            <sqf:p>If an element's text begins with modifiers, a Schematron Quick Fix will be
+               available to remove those initial modifiers.</sqf:p>
+         </sqf:description>
+         <sqf:replace match="text()" select="replace(., '^\p{M}+', '')"/>
+      </sqf:fix>
+      <sqf:fix id="remove-space-preceding-modifiers">
+         <sqf:description>
+            <sqf:title>Remove space preceding modifiers</sqf:title>
+            <sqf:p>If a text is seen to have modifiers following a spacing character, a Schematron
+               Quick Fix will be available to remove any space that precedes modifiers.</sqf:p>
+         </sqf:description>
+         <sqf:replace match="text()" select="replace(., '\s+(\p{M})', '$1')"/>
+      </sqf:fix>
    </rule>
 </pattern>

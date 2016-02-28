@@ -4,7 +4,7 @@
 <pattern xmlns="http://purl.oclc.org/dsdl/schematron" xmlns:tan="tag:textalign.net,2015:ns"
    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
    xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="core">
    <title>Core Schematron tests for all TAN files.</title>
    <let name="now" value="tan:dateTime-to-decimal(current-dateTime())"/>
    <rule context="/*" tan:applies-to="TAN-A-div TAN-A-tok">
@@ -586,9 +586,9 @@
       <assert test="$when-to gt $when-from">Start date must precede end date.</assert>
    </rule>
    <rule
-      context="@who | @ed-who | @roles | @src | @type[parent::tan:div | parent::tei:div] | @lexicon | @morphology | @reuse-type | @bitext-relation | @feature | @include">
+      context="@who | @ed-who | @roles | @src | @lexicon | @morphology | @reuse-type | @bitext-relation | @feature | @include">
       <let name="this-attribute-name" value="name(.)"/>
-      <let name="this-attribute-value" value="."/>
+      <let name="this-attribute-value" value="tan:normalize-text(.)"/>
       <let name="should-refer-to-which-element"
          value="$id-idrefs//tan:id[tan:idrefs/@attribute = $this-attribute-name]/@element"/>
       <let name="valid-values" value="$head//*[name(.) = $should-refer-to-which-element]/@xml:id"/>
@@ -636,7 +636,7 @@
          </sqf:add>
       </sqf:fix>
    </rule>
-   <rule context="@regex-test | tan:pattern">
+   <!--<rule context="@regex-test | tan:pattern">
       <report test="matches(., '\\[^nrtpPsSiIcCdDwW\\|.?*+(){}#x2D#x5B#x5D#x5E\]\[\^\-]')">Every
          escape sequence must be recognized by XML schema. See
          http://www.w3.org/TR/xmlschema-2/#regexs for details.</report>
@@ -651,7 +651,7 @@
             else
                ()"/>
       <assert role="warning" test="$href-is-available = true()"
-         ><!-- An @href will be flagged with a warning if the document is either unavailable, is not valid XML, or is at a URL trusted by a validation engine -->@href
+         ><!-\- An @href will be flagged with a warning if the document is either unavailable, is not valid XML, or is at a URL trusted by a validation engine -\->@href
          points to file that is either (1) not available, (2) not valid XML, or (3) at a server not
          trusted by the validation engine.</assert>
       <assert test="parent::tan:location or parent::tan:master-location" sqf:fix="get-metadata"
@@ -707,30 +707,30 @@
          </sqf:stringReplace>
       </sqf:fix>
    </rule>
-   <!-- Rules above relevant to inclusions dealt with here -->
+   <!-\- Rules above relevant to inclusions dealt with here -\->
    <rule context="tan:inclusion">
       <let name="first-loc-avail" value="tan:first-loc-available(.)"/>
       <let name="first-doc" value="doc(resolve-uri($first-loc-avail, $doc-uri))"/>
       <let name="first-doc-resolved" value="tan:resolve-doc($first-doc)"/>
-      <!-- If TAN ever permits inclusions to themselves be included, the filter below will need to change -->
+      <!-\- If TAN ever permits inclusions to themselves be included, the filter below will need to change -\->
       <let name="included-elements-with-ids"
          value="$first-doc-resolved//*[@xml:id][not(self::tan:inclusion)]"/>
-      <!--<let name="duplicate-ids"
+      <!-\-<let name="duplicate-ids"
          value="
             for $i in $included-elements-with-ids
             return
                if ($root//*[@xml:id = $i/@xml:id and not(deep-equal(., $i))]) then
                   $i/@xml:id
                else
-                  ()"/>-->
+                  ()"/>-\->
       <let name="duplicate-ids" value="$all-ids[index-of($all-ids, .)[2]]"/>
-      <!-- START TESTING BLOCK -->
+      <!-\- START TESTING BLOCK -\->
       <let name="test1" value="$duplicate-ids"/>
       <let name="test2" value="true()"/>
       <let name="test3" value="true()"/>
       <report test="false()">Testing. var1: <value-of select="$test1"/> var2: <value-of
             select="$test2"/> var3: <value-of select="$test3"/></report>
-      <!-- END TESTING BLOCK -->
+      <!-\- END TESTING BLOCK -\->
       <report test="$duplicate-ids = $included-elements-with-ids/@xml:id">No inclusion may introduce
          a duplicate @xml:id (<value-of select="$duplicate-ids"/>)</report>
       <assert test="exists($first-loc-avail)" role="fatal">Every inclusion must have at least one
@@ -742,7 +742,7 @@
                false()
             else
                true()"
-         role="warning"><!-- If an inclusion is not marked as being no longer in progress, a warning will be returned. -->Inclusion is marked as being in progress.</report>
+         role="warning"><!-\- If an inclusion is not marked as being no longer in progress, a warning will be returned. -\->Inclusion is marked as being in progress.</report>
       <report test="$first-doc/*/@id = $doc-id">Inclusions may not have the same tag id as the host
          document.</report>
    </rule>
@@ -752,7 +752,7 @@
       <assert test="$self-resolved-text = normalize-unicode($self-resolved-text)">All included text
          needs to be normalized (NFC; open inclusion, validate, and resolve). </assert>
       <report test="$self-resolved//@error" role="fatal"
-         ><!-- Possible validation errors: $inclusion-errors -->Inclusion error: <value-of
+         ><!-\- Possible validation errors: $inclusion-errors -\->Inclusion error: <value-of
             select="
                for $i
                in $self-resolved//@error
@@ -781,5 +781,5 @@
          </sqf:add>
          <sqf:replace match="." select="$self-resolved"/>
       </sqf:fix>
-   </rule>
+   </rule>-->
 </pattern>

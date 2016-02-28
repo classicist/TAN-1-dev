@@ -346,6 +346,16 @@
                     normalize-space(replace($i, '([\(\),\|])', ' $1 '))"
         />
     </xsl:function>
+    <xsl:function name="tan:normalize-text" as="xs:string*">
+        <!-- Used to normalize a string before being checked. Removes any help requested and normalizes space -->
+        <xsl:param name="text" as="xs:string*"/>
+        <xsl:copy-of
+            select="
+                for $i in $text
+                return
+                    normalize-space(replace($i, $help-trigger-regex, ''))"
+        />
+    </xsl:function>
 
     <xsl:function name="tan:escape" as="xs:string*">
         <!-- Input: any sequence of strings; Output: each string prepared for regular expression searches,

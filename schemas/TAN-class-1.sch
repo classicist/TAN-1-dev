@@ -6,6 +6,7 @@
    <title>Core tests for class 1 TAN files.</title>
    <let name="leafdiv-flatrefs" value="$prep-body/tan:div/@ref"/>
    <let name="transcription-langs" value="$prep-body//@xml:lang"/>
+   <let name="div-types" value="$head/tan:declarations/tan:div-type/@xml:id"/>
    <rule context="tan:see-also">
       <let name="this-resolved" value="tan:resolve-include(.)"/>
       <let name="first-locs"
@@ -137,7 +138,7 @@
       <report test="count(tokenize(@include, '\s+')) gt 1">No more than one inclusion may be
          invoked.</report>
    </rule>
-   <rule context="tan:recommended-div-type-refs">
+   <!--<rule context="tan:recommended-div-type-refs">
       <let name="implicit-is-recommended"
          value="
             if (. = 'implicit') then
@@ -159,8 +160,8 @@
          cannot be recommended if any flattened refs result in duplicates (<value-of
             select="string-join($prep-body/tan:div[@impl-ref = $duplicate-implicit-refs]/@ref, ', ')"
          /> would equally resolve to <value-of select="$duplicate-implicit-refs"/>). </report>
-   </rule>
-   <rule context="tan:body | tei:body">
+   </rule>-->
+   <!--<rule context="tan:body | tei:body">
       <let name="duplicate-leafdivs" value="$leafdiv-flatrefs[index-of($leafdiv-flatrefs, .)[2]]"/>
       <report tan:does-not-apply-to="body"
          test="
@@ -170,8 +171,8 @@
                false()"
          >In class 1 files, leaf div references must be unique (violations at <value-of
             select="distinct-values($duplicate-leafdivs)"/>)</report>
-   </rule>
-   <rule context="tei:div | tan:div">
+   </rule>-->
+   <!--<rule context="tei:div | tan:div">
       <let name="this-type" value="@type"/>
       <let name="this-n" value="@n"/>
       <let name="is-leaf-div"
@@ -187,6 +188,8 @@
             else
                false()"
          >Leaf div references must be unique. </report>
+      <report test="not(@type = $div-types)">@type must match the @xml:id of a &lt;div-type> (
+         <value-of select="$div-types"/>)</report>
       <report test="$is-leaf-div and not(@include) and not(matches(., '\S'))">Every leaf div must
          have at least some non-space text.</report>
       <report test="
@@ -213,5 +216,5 @@
          </sqf:description>
          <sqf:replace match="text()" select="replace(., '\s+(\p{M})', '$1')"/>
       </sqf:fix>
-   </rule>
+   </rule>-->
 </pattern>

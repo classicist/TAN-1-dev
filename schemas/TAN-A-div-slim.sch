@@ -11,11 +11,55 @@
    <ns prefix="xsl" uri="http://www.w3.org/1999/XSL/Transform"/>
 
    <include href="TAN-core.sch"/>
-   <include href="TAN-class-2.sch"/>
-   <include href="TAN-A-div-lite.sch"/>
-   <pattern id="standard">
-      <let name="all-refs" value="$src-1st-da-data/tan:div/@ref"/>
-      <let name="stranded-divs" value="$src-1st-da-data/tan:div[count(index-of($all-refs, @ref)) = 1]"/>
+   <!--<include href="TAN-class-2.sch"/>
+   <include href="TAN-A-div-lite.sch"/>-->
+   <phase id="quarter">
+      <active pattern="core"/>
+      <active pattern="self"/>
+   </phase>
+   <phase id="half">
+      <!--<active pattern="core"/>-->
+      <active pattern="self"/>
+      <active pattern="sources-simple"/>
+   </phase>
+   <phase id="full">
+      <!--<active pattern="core"/>-->
+      <active pattern="self"/>
+      <active pattern="sources-simple"/>
+      <active pattern="sources-tokenized"/>
+   </phase>
+   <pattern id="self">
+      <!--<rule context="/tan:TAN-A-div/tan:head">
+         <report test="true()" subject="tan:source[1]">using pattern: don't check sources</report>
+      </rule>-->
+      <rule context="tan:equate-div-types">
+         <let name="div-types-per-source"
+            value="
+               for $i in *,
+                  $j in tan:src-ids-to-nos($i/@src),
+                  $k in tokenize(tan:normalize-text($i/@div-type-ref), '\s+')
+               return
+                  concat($src-ids[$j], ':', $k)"/>
+         <let name="duplicates" value="$div-types-per-source[index-of($div-types-per-source, .)[2]]"/>
+         <report test="exists($duplicates)">Div-type-refs may not be duplicated (<value-of
+               select="string-join($duplicates, ', ')"/>).</report>
+      </rule>
+      <rule context="tan:split-leaf-div-at">
+         <let name="these-srcs" value="tan:src-ids-to-nos(tan:tok/@src)"/>
+         <let name="defined-tokens" value="tan:src-ids-to-nos($head//tan:token-definition/@src)"/>
+         <let name="undefined-splits" value="$these-srcs[not(. = $defined-tokens)]"/>
+         <report test="exists($undefined-splits)">If a leaf div is to be split, there must be at
+            least one tokenization declared (<value-of
+               select="$src-ids[position() = $undefined-splits]"/>).</report>
+      </rule>
+   </pattern>
+   
+   <pattern id="sources-simple">
+      <let name="src-1st-da-resolved" value="tan:get-src-1st-da-resolved()"/>
+      <let name="src-heads" value="$src-1st-da-resolved/*/tan:head"/>
+      <!--<rule context="/tan:TAN-A-div/tan:body">
+         <report test="true()">using pattern: check sources</report>
+      </rule>-->
       <rule context="tan:rename">
          <let name="this-src-list" value="tan:src-ids-to-nos(../@src)"/>
          <let name="this-old" value="@old"/>
@@ -26,22 +70,26 @@
             value="(preceding-sibling::tan:rename, following-sibling::tan:rename)/@new"/>
          <report test="$this-old = $sibling-olds">Old values may not be duplicated</report>
          <report test="$this-new = $sibling-news">New values may not be duplicated</report>
-         <report
-            test="
-               for $i in $this-src-list
+      </rule>
+      <rule context="tan:rename-div-types">
+         <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
+         <let name="bad-renames"
+            value="tan:rename[@new = $src-heads[position() = $this-src-list]/tan:declarations/tan:div-type/@xml:id]"/>
+         <let name="bad-rename-pos"
+            value="
+               for $i in $bad-renames
                return
-                  $src-1st-da-all-div-types/tan:source[$i]/tan:div-type[@xml:id = $this-new]"
-            > You may not change a name into one that is already in use by the source as a div-type
-            id. </report>
+                  (count(preceding-sibling::tan:rename) + 1)"/>
+         <report test="exists($bad-renames)">A div type name may not be changed to one that is
+            reserved by the source as a div-type id. (@new = <value-of select="$bad-renames/@new"
+            />)</report>
       </rule>
       <rule context="tan:equate-works">
          <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
          <let name="this-work-iris"
-            value="
-               for $i in $this-src-list
-               return
-                  $src-1st-da-heads[$i]/tan:declarations/tan:work/tan:IRI"/>
+            value="$src-heads[position() = $this-src-list]/tan:declarations/tan:work/tan:IRI"/>
          <let name="repeated-works" value="$this-work-iris[index-of($this-work-iris, .)[2]]"/>
+         <let name="equate-works" value="tan:get-work-equivalents()"/>
          <report test="exists($repeated-works)" role="warning">Works that already have at least one
             shared IRI need not be equated. <value-of select="$repeated-works"/></report>
          <report test="matches(@src, '\?')" role="info"
@@ -76,7 +124,7 @@
                for $i in (2 to count($this-src-list)),
                   $j in (1 to ($i - 1))
                return
-                  if ($src-1st-da-heads[$this-src-list[$i]]/tan:declarations/tan:div-type[@xml:id = $this-div-type-list[$i]]/tan:IRI/text() = $src-1st-da-heads[$this-src-list[$j]]/tan:declarations/tan:div-type[@xml:id = $this-div-type-list[$j]]/tan:IRI/text())
+                  if ($src-heads[$this-src-list[$i]]/tan:declarations/tan:div-type[@xml:id = $this-div-type-list[$i]]/tan:IRI/text() = $src-heads[$this-src-list[$j]]/tan:declarations/tan:div-type[@xml:id = $this-div-type-list[$j]]/tan:IRI/text())
                   then
                      concat($src-ids[$this-src-list[$i]], ' : ', $this-div-type-list[$i], ' = ', $src-ids[$this-src-list[$j]], ' : ', $this-div-type-list[$j])
                   else
@@ -85,46 +133,22 @@
             at least one shared IRI need not be equated. <value-of
                select="string-join($this-src-div-type-equivs, ', ')"/></report>
       </rule>
-      <rule context="tan:div-type-ref">
-         <let name="this-src-list"
-            value="
-               for $i in tan:src-ids-to-nos(@src),
-                  $j in tokenize(@div-type-ref, '\s+')
-               return
-                  $i"/>
-         <let name="this-div-type-list"
-            value="
-               for $i in $this-src-list,
-                  $j in tokenize(@div-type-ref, '\s+')
-               return
-                  $j"/>
-         <let name="this-is-duplicate"
-            value="
-               for $i in (1 to count($this-src-list))
-               return
-                  if ((preceding-sibling::tan:div-type-ref,
-                  following-sibling::tan:div-type-ref,
-                  ../preceding-sibling::tan:equate-div-types/tan:div-type-ref,
-                  ../following-sibling::tan:equate-div-types/tan:div-type-ref)[tokenize(@src, '\s+') = $src-ids[$this-src-list[$i]]][tokenize(@div-type-ref, '\s+') = $this-div-type-list[$i]])
-                  then
-                     concat($src-ids[$this-src-list[$i]], ' : ', $this-div-type-list[$i])
-                  else
-                     ()"/>
-         <report test="exists($this-is-duplicate)">Div-type-refs may not be duplicated (<value-of
-               select="string-join($this-is-duplicate, ', ')"/>).</report>
-      </rule>
-      <rule context="tan:split-leaf-div-at">
-         <let name="all-splits"
-            value="
-               for $i in tan:tok
-               return
-                  tan:pick-tokenized-prepped-class-1-data($i)"/>
-         <assert test="$head//tan:token-definition">If a leaf div is to be split, there must be at least one
-            tokenization declared.</assert>
-      </rule>
+   </pattern>
+   
+   <pattern id="sources-tokenized">
+      <!--<let name="src-data" value="tan:prep-class-1-data($src-1st-da-resolved)"/>
+      <let name="src-data-tokenized" value="tan:tokenize-prepped-class-1-data($src-data)"/>-->
+      <let name="src-1st-da-picked" value="tan:pick-src-1st-da-resolved($body//(tan:div-ref, tan:tok))"/>
+      <!--<let name="src-1st-da-picked-data-prepped" value="tan:prep-class-1-data($src-1st-da-picked)"/>-->
+      <!--<let name="src-1st-da-picked-data-tokenized" value="tan:tokenize-prepped-class-1-data($src-1st-da-picked-data-prepped)"/>-->
       <rule context="tan:tok">
+         <report test="true()">test variable: <value-of select="count($src-1st-da-picked/*/*)"/></report>
+      </rule>
+      <!--<let name="src-1st-da-tokenized"
+         value="tan:tokenize-prepped-class-1-data(tan:prep-class-1-data($src-1st-da))"/>-->
+      <!--<rule context="tan:tok">
          <let name="this-pos" value="count(preceding-sibling::tan:tok) + 1"/>
-         <let name="these-sources" value="tokenize(@src,'\s+')"/>
+         <let name="these-sources" value="tokenize(@src, '\s+')"/>
          <let name="help-requested" value="tan:help-requested(.)"/>
          <let name="these-splits"
             value="
@@ -136,27 +160,14 @@
             value="
                for $i in $these-splits//tan:tok
                return
-                  if ($leaf-div-splits-raw[position() ne $this-pos]/tan:source[@id = $i/../../@id]/tan:div[@ref = $i/../@ref]/tan:tok[@n = $i/@n])
+                  if (tan:get-leaf-div-splits-raw()[position() ne $this-pos]/tan:source[@id = $i/../../@id]/tan:div[@ref = $i/../@ref]/tan:tok[@n = $i/@n])
                   then
                      concat($i/../../@id, ': ', $i/../@ref, ' tok ', $i/@n)
                   else
                      ()"/>
-         <let name="sources-whose-tokens-are-undefined"
-            value="
-               for $i in $these-sources
-               return
-                  if
-                  ($head/tan:declarations/tan:token-definition[tokenize(@src, '\s+') = $i]) then
-                     ()
-                  else
-                     $i"
-         />
          <report test="exists($duplicate-splits) and not($help-requested)">May not be used to split
             a leaf div more than once in the same place (<value-of
                select="string-join($duplicate-splits, ' ')"/>).</report>
-         <report test="exists($sources-whose-tokens-are-undefined)">Every source to be split requires a
-            &lt;token-definition>. (<value-of select="$sources-whose-tokens-are-undefined"
-            />)</report>
          <report test="$these-splits//@error" tan:does-not-apply-to="tok">Tokenization error:
                <value-of
                select="
@@ -164,7 +175,16 @@
                   return
                      $tokenization-errors[$i]"
             /></report>
-      </rule>
+      </rule>-->
+   </pattern>
+   <!--<pattern id="standard">
+      <let name="src-1st-da-heads" value="tan:get-src-1st-da-heads()"/>
+      <let name="src-1st-da-data" value="tan:get-src-1st-da-data()"/>
+      <let name="src-1st-da-all-div-types" value="tan:get-src-1st-da-all-div-types()"/>
+      <let name="equate-works" value="tan:get-work-equivalents()"/>
+      <let name="all-refs" value="$src-1st-da-data/tan:div/@ref"/>
+      <let name="stranded-divs" value="$src-1st-da-data/tan:div[count(index-of($all-refs, @ref)) = 1]"/>
+
       <rule context="tan:realign">
          <let name="these-srcs" value="tan:src-ids-to-nos(.//@src)"/>
          <let name="these-works"
@@ -214,8 +234,9 @@
                   false()"/>
          <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
          <let name="these-sources-resolved" value="$src-1st-da-data[position() = $this-src-list]"/>
-         <let name="these-srcs-tokenized" value="$token-definitions-per-source"/>
+         <let name="these-srcs-tokenized" value="tan:get-token-definitions-per-source()"/>
          <let name="this-ref" value="@ref"/>
+         <let name="src-impl-div-types" value="tan:get-src-impl-div-types()"/>
          <let name="this-refs-norm"
             value="
                for $i in $this-src-list
@@ -267,6 +288,7 @@
                   tan:normalize-realign(..)
                else
                   tan:normalize-align(..)"/>
+         <let name="realigns-normalized" value="tan:get-realigns-normalized()"/>
          <let name="anchor-is-realigned"
             value="
                for $i in $this-parent-normalized/tan:anchor-div-ref
@@ -310,13 +332,13 @@
                   tan:min-last($this-segs, $seg-ceiling)
                else
                   1"/>
-         <!-- START TESTING BLOCK -->
+         <!-\- START TESTING BLOCK -\->
          <let name="test1" value="$this-src-list"/>
          <let name="test2" value="$src-impl-div-types"/>
          <let name="test3" value="tan:normalize-impl-refs(@ref, 3)"/>
          <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
                select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
-         <!-- END TESTING BLOCK -->
+         <!-\- END TESTING BLOCK -\->
          <report test="$ref-has-errors">Every ref cited must be found in every source ( <value-of
                select="
                   if (exists($div-type-mismatches) and count($qty-of-srcs-with-implicit-div-types) = 0) then
@@ -398,20 +420,12 @@
          <report test="count(distinct-values($this-work-list)) gt 1">@cont may not be used to join
             sources that belong to more than one work.</report>
       </rule>
-   </pattern>
-   <!--<pattern id="test">
-      <let name="test-var" value="count($src-1st-da-data//*)"/>
-      <rule context="/">
-         <report test="true()">
-            <xsl:value-of select="$test-var"/>
-         </report>
-      </rule>
    </pattern>-->
 
    <!-- FUNCTIONS -->
    <!--<xsl:include href="../functions/TAN-core-functions.xsl"/>-->
    <!--<xsl:include href="../functions/TAN-class-2-functions.xsl"/>-->
    <!--<xsl:include href="../functions/TAN-class-2-functions-slim.xsl"/>-->
-   <!--<xsl:include href="../functions/TAN-A-div-functions-slim.xsl"/>-->
-   <xsl:include href="../functions/TAN-A-div-functions.xsl"/>
+   <xsl:include href="../functions/TAN-A-div-functions-slim.xsl"/>
+   <!--<xsl:include href="../functions/TAN-A-div-functions.xsl"/>-->
 </schema>

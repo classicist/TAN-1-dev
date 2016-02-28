@@ -10,7 +10,11 @@
    <ns prefix="tei" uri="http://www.tei-c.org/ns/1.0"/>
    <ns prefix="xs" uri="http://www.w3.org/2001/XMLSchema"/>
    <ns prefix="xsl" uri="http://www.w3.org/1999/XSL/Transform"/>
-
-   <include href="TAN-A-div-lite.sch"/>
-   <xsl:include href="../functions/TAN-A-div-edit-functions.xsl"/>
+   
+   <include href="TAN-core.sch"/>
+   <!--<xsl:include href="../functions/TAN-core-functions.xsl"/>-->
+   <include href="TAN-class-2.sch"/>
+   <xsl:include href="../functions/TAN-class-2-functions.xsl"/>
+   <!--<include href="TAN-A-div-lite.sch"/>
+   <xsl:include href="../functions/TAN-A-div-edit-functions.xsl"/>-->
 </schema>

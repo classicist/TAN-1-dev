@@ -750,4 +750,16 @@
         </xsl:copy>
     </xsl:template>
 
+    <xsl:function name="tan:is-flat-class-1" as="xs:boolean">
+        <xsl:param name="doc-or-element" as="item()"/>
+        <xsl:value-of
+            select="
+                if (root($doc-or-element)/(tei:TEI/tei:text/tei:body/tei:div/tei:div, tan:TAN-T/tan:body/tan:div/tan:div))
+                then
+                    false()
+                else
+                    true()"
+        />
+    </xsl:function>
+
 </xsl:stylesheet>

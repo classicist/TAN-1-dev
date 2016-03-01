@@ -4,10 +4,11 @@
    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
    <title>Core tests for class 1 TAN files.</title>
+   <let name="self-is-flat" value="tan:is-flat-class-1($self-resolved)"/>
+   <let name="prep-body" value="tan:prep-body()"/>
    <let name="leafdiv-flatrefs" value="$prep-body/tan:div/@ref"/>
-   <let name="transcription-langs" value="$prep-body//@xml:lang"/>
+   <!--<let name="transcription-langs" value="$prep-body//@xml:lang"/>-->
    <let name="div-types" value="$head/tan:declarations/tan:div-type/@xml:id"/>
-   <let name="self-is-flat" value="tan:is-flat-class-1(/)"/>
    <rule context="tan:see-also">
       <let name="this-resolved" value="tan:resolve-include(.)"/>
       <let name="first-locs"
@@ -139,44 +140,11 @@
       <report test="count(tokenize(@include, '\s+')) gt 1">No more than one inclusion may be
          invoked.</report>
    </rule>
-   <rule context="tan:recommended-div-type-refs">
-      <let name="implicit-is-recommended"
-         value="
-            if (. = 'implicit') then
-               true()
-            else
-               false()"/>
-      <let name="divs-with-empty-ns"
-         value="
-            for $i in //(tan:div, tei:div)[@n = '']
-            return
-               tan:flatref($i)"/>
-      <let name="all-implicit-refs" value="$prep-body/tan:div/@impl-ref"/>
-      <let name="duplicate-implicit-refs"
-         value="$all-implicit-refs[index-of($all-implicit-refs, .)[2]]"/>
-      <report test="$implicit-is-recommended and exists($divs-with-empty-ns)">Implicit div refs
-         cannot be recommended if any @n have empty values (<value-of select="$divs-with-empty-ns"
-         />). </report>
-      <report test="$implicit-is-recommended and exists($duplicate-implicit-refs)">Implicit div refs
-         cannot be recommended if any flattened refs result in duplicates (<value-of
-            select="string-join($prep-body/tan:div[@impl-ref = $duplicate-implicit-refs]/@ref, ', ')"
-         /> would equally resolve to <value-of select="$duplicate-implicit-refs"/>). </report>
-   </rule>
-   <rule context="tan:body | tei:body">
-      <let name="duplicate-leafdivs" value="$leafdiv-flatrefs[index-of($leafdiv-flatrefs, .)[2]]"/>
-      <report tan:does-not-apply-to="body"
-         test="
-            if (exists($duplicate-leafdivs)) then
-               true()
-            else
-               false()"
-         >In class 1 files, leaf div references must be unique (violations at <value-of
-            select="distinct-values($duplicate-leafdivs)"/>)</report>
-   </rule>
    <rule context="tei:div | tan:div">
       <let name="these-types" value="tokenize(tan:normalize-text(@type),' ')"/>
       <let name="these-ns" value="tokenize(tan:normalize-text(@n),' ')"/>
       <let name="faulty-types" value="$these-types[not(. = $div-types)]"/>
+      <let name="this-ref" value="tan:flatref(.)"/>
       <let name="is-leaf-div"
          value="
             if ($self-is-flat = true()) then
@@ -189,11 +157,8 @@
       />
       <report
          test="
-            if ($is-leaf-div) then
-               if ($self-is-flat = true()) then
-                  (preceding-sibling::*, following-sibling::*)[@n = current()/@n]
-               else
-                  (preceding-sibling::*, following-sibling::*)[@n = $these-ns][@type = $these-types]
+            if ($is-leaf-div = true()) then
+               index-of($leafdiv-flatrefs, $this-ref)[2]
             else
                false()"
          >Leaf div references must be unique. </report>

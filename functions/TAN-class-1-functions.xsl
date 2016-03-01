@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+<xsl:stylesheet xmlns="tag:textalign.net,2015:ns" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tan="tag:textalign.net,2015:ns"
    xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:fn="http://www.w3.org/2005/xpath-functions"
    xmlns:math="http://www.w3.org/2005/xpath-functions/math"
@@ -13,9 +13,30 @@
       </xd:desc>
    </xd:doc>
 
-   <xsl:variable name="prep-body" as="element()*">
-      <xsl:element name="tan:body">
-         <xsl:attribute name="xml:lang" select="/tan:TAN-T/tan:body/@xml:lang | /tei:TEI/tei:text/tei:body/@xml:lang"></xsl:attribute>
+   <xsl:function name="tan:prep-body" as="element()*">
+      <xsl:for-each select="$body">
+         <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:for-each
+               select="
+                  if (tan:is-flat-class-1($self-resolved) = true()) then
+                     (tei:div, tan:div)
+                  else
+                     (.//(tei:div, tan:div))"
+            >
+               <xsl:variable name="this-flatref" select="tan:flatref(.)"/>
+               <xsl:copy>
+                  <xsl:copy-of select="@*"/>
+                  <xsl:attribute name="ref" select="$this-flatref"/>
+                  <xsl:attribute name="impl-ref" select="$this-flatref"/>
+                  <xsl:copy-of select="normalize-space(string-join(text(), ''))"/>
+               </xsl:copy>
+            </xsl:for-each>
+         </xsl:copy>
+         
+      </xsl:for-each>
+      <!--<xsl:element name="tan:body">
+         <xsl:attribute name="xml:lang" select="$self-resolved/tan:TAN-T/tan:body/@xml:lang | $self-resolved/tei:TEI/tei:text/tei:body/@xml:lang"></xsl:attribute>
          <xsl:for-each
             select="
                $body//(tan:div,
@@ -30,10 +51,9 @@
                <xsl:copy-of select="normalize-space(string-join(.//text(), ''))"/>
             </xsl:element>
          </xsl:for-each>
-      </xsl:element>
-   </xsl:variable>
-   <xsl:variable name="languages-used" select="distinct-values(($prep-body/@xml:lang,$body//@xml:lang))"/>
-   <!-- In light of TAN-key format, the following variable needs to be retired -->
+      </xsl:element>-->
+   </xsl:function>
+   <!--<xsl:variable name="languages-used" select="distinct-values($body//@xml:lang)"/>-->
 
    <xsl:function name="tan:locate-modifiers" as="element()?">
       <!-- Locates all modifying letters in a string

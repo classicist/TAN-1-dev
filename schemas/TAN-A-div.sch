@@ -14,8 +14,8 @@
    <include href="TAN-class-2.sch"/>
    <include href="TAN-A-div-lite.sch"/>
    <pattern id="standard">
-      <let name="all-refs" value="$src-1st-da-data/tan:div/@ref"/>
-      <let name="stranded-divs" value="$src-1st-da-data/tan:div[count(index-of($all-refs, @ref)) = 1]"/>
+      <let name="all-refs" value="$src-1st-da-data-prepped/tan:div/@ref"/>
+      <let name="stranded-divs" value="$src-1st-da-data-prepped/tan:div[count(index-of($all-refs, @ref)) = 1]"/>
       <rule context="tan:rename">
          <let name="this-src-list" value="tan:src-ids-to-nos(../@src)"/>
          <let name="this-old" value="@old"/>
@@ -172,13 +172,13 @@
                for $i in $these-srcs
                return
                   $equate-works[$i]"/>
-         <let name="this-normalized" value="tan:normalize-realign(.)"/>
+         <let name="this-normalized" value="tan:expand-realign(.)"/>
          <report test="count(distinct-values($these-works)) ne 1">realign sources must all share the
             same work (<value-of select="count(distinct-values($these-works))"/> works currently
             referred to)</report>
          <report test="$this-normalized/@error">Distribution enforced: each source must have the
             same number of single references (unmatched: <value-of
-               select="$this-normalized[@error]/tan:div-ref/@*"/>) </report>
+               select="$this-normalized[@error]/*/@ref"/>) </report>
       </rule>
       <rule context="tan:align">
          <let name="this-src-list" value="tan:src-ids-to-nos(tan:div-ref/@src)"/>
@@ -187,13 +187,13 @@
                for $i in $this-src-list
                return
                   $equate-works[$i]"/>
-         <let name="this-align-normalized" value="tan:normalize-align(.)"/>
+         <let name="this-align-normalized" value="tan:expand-align(.)"/>
          <report test="@distribute and count(tan:div-ref) eq 1">@distribute has no effect on an
             align that has only one &lt;div-ref>.</report>
          <report test="$this-align-normalized/@error">@distribute requires one-to-one correlation
             between each atomic ref in each work / source (uncorrelated: <value-of
                select="
-                  $this-align-normalized[@error]/tan:div-ref/(@ref,
+                  $this-align-normalized[@error]//tan:div-ref/(@ref,
                   @seg)"
             />)</report>
       </rule>
@@ -213,32 +213,30 @@
                else
                   false()"/>
          <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
-         <let name="these-sources-resolved" value="$src-1st-da-data[position() = $this-src-list]"/>
+         <let name="these-sources-resolved" value="$src-1st-da-data-prepped[position() = $this-src-list]"/>
          <let name="these-srcs-tokenized" value="$token-definitions-per-source"/>
          <let name="this-ref" value="@ref"/>
          <let name="this-refs-norm"
             value="
                for $i in $this-src-list
                return
-                  if ($i = $src-impl-div-types) then
-                     tan:normalize-impl-refs(@ref, $i)
-                  else
-                     tan:normalize-refs(@ref)"/>
-         <let name="these-div-types"
+                  tan:normalize-refs(@ref)"/>
+         <!-- div-type stuff that should probably be deleted -->
+         <!--<let name="these-div-types"
             value="
                distinct-values(for $i in $this-refs-norm,
                   $j in tokenize($i, ' [-,] '),
                   $k in tokenize($j, $separator-hierarchy-regex)
                return
-                  tokenize($k, $separator-type-and-n-regex)[1])"/>
-         <let name="valid-div-types"
+                  tokenize($k, $separator-type-and-n-regex)[1])"/>-->
+         <!--<let name="valid-div-types"
             value="
                distinct-values(for $i in $this-src-list
                return
-                  $src-1st-da-all-div-types/tan:source[$i]//@xml:id)"/>
-         <let name="qty-of-srcs-with-implicit-div-types"
-            value="count($this-src-list[. = $src-impl-div-types])"/>
-         <let name="these-sources-div-refs"
+                  $src-1st-da-all-div-types/tan:source[$i]//@xml:id)"/>-->
+         <!--<let name="qty-of-srcs-with-implicit-div-types"
+            value="count($this-src-list[. = $src-impl-div-types])"/>-->
+         <!--<let name="these-sources-div-refs"
             value="
                for $i in $these-sources-resolved//(tan:div,
                tei:div)[not((tan:div,
@@ -247,11 +245,11 @@
                   if ($qty-of-srcs-with-implicit-div-types = 0) then
                      tan:flatref($i)
                   else
-                     replace(tan:flatref($i), concat('\w+', $separator-type-and-n-regex), '')"/>
+                     replace(tan:flatref($i), concat('\w+', $separator-type-and-n-regex), '')"/>-->
          <let name="src-data-for-this-div-ref"
             value="tan:pick-prepped-class-1-data($this-src-list, $this-refs-norm)"/>
          <let name="src-segmented-data-for-this-div-ref"
-            value="tan:segment-tokenized-prepped-class-1-data(tan:tokenize-prepped-class-1-data($src-data-for-this-div-ref))"/>
+            value="tan:segment-tokenized-prepped-class-1-data(tan:tokenize-prepped-class-1-doc($src-data-for-this-div-ref))"/>
          <let name="duplicate-sibling"
             value="
                for $i in (preceding-sibling::node(),
@@ -262,11 +260,7 @@
                   else
                      ()"/>
          <let name="this-parent-normalized"
-            value="
-               if ($is-being-realigned) then
-                  tan:normalize-realign(..)
-               else
-                  tan:normalize-align(..)"/>
+            value="tan:expand-align-or-realign(..)"/>
          <let name="anchor-is-realigned"
             value="
                for $i in $this-parent-normalized/tan:anchor-div-ref
@@ -277,14 +271,14 @@
                      false()"/>
          <let name="div-ref-is-anchored"
             value="
-               for $i in tan:expand-div-ref(., true())
+            for $i in tan:distribute-src-and-ref(., true())
                return
                   if ($realigns-normalized/tan:anchor-div-ref[@src = $i/@src][@ref = $i/@ref][(@seg = $i/@seg) or not(@seg)]) then
                      true()
                   else
                      false()"/>
-         <let name="ref-has-errors" value="$src-data-for-this-div-ref/tan:div/@error"/>
-         <let name="div-type-mismatches" value="$these-div-types[not(. = $valid-div-types)]"/>
+         <let name="ref-has-errors" value="$src-data-for-this-div-ref/tan:div[@error]"/>
+         <!--<let name="div-type-mismatches" value="$these-div-types[not(. = $valid-div-types)]"/>-->
          <let name="this-segs"
             value="
                if (@seg) then
@@ -310,25 +304,11 @@
                   tan:min-last($this-segs, $seg-ceiling)
                else
                   1"/>
-         <!-- START TESTING BLOCK -->
-         <let name="test1" value="$this-src-list"/>
-         <let name="test2" value="$src-impl-div-types"/>
-         <let name="test3" value="tan:normalize-impl-refs(@ref, 3)"/>
-         <report test="false()">Testing. [VAR1: <value-of select="$test1"/>] [VAR2: <value-of
-               select="$test2"/>] [VAR3: <value-of select="$test3"/>]</report>
-         <!-- END TESTING BLOCK -->
-         <report test="$ref-has-errors">Every ref cited must be found in every source ( <value-of
-               select="
-                  if (exists($div-type-mismatches) and count($qty-of-srcs-with-implicit-div-types) = 0) then
-                     concat('faulty div types:', string-join($div-type-mismatches, ' '), '; acceptable values: ', string-join($valid-div-types, ' '))
-                  else
-                     distinct-values($these-sources-div-refs[count(index-of($these-sources-div-refs, .)) ge count($this-src-list)])
-                  "
-            />).</report>
-         <report
-            test="$qty-of-srcs-with-implicit-div-types gt 0 and $qty-of-srcs-with-implicit-div-types ne count($this-src-list)"
-            >Sources that take implicit div type references may not be mixed with those that take
-            explicit ones.</report>
+         <let name="preceding-src" value="preceding-sibling::*[1]/@src"/>
+         <report sqf:fix="use-prev-src-attr" test="preceding-sibling::*[1]/@cont and not(@src = $preceding-src)">Any
+            element that follows a continuation (@cont) must have an identical value for @src</report>
+         <report test="exists($ref-has-errors)">Every ref cited must be found in every source ( 
+            <value-of select="$ref-has-errors[@error]"/>).</report>
          <report test="exists($duplicate-sibling)" tan:does-not-apply-to="anchor-div-ref">Sibling
             div-refs may not duplicate each other.</report>
          <report
@@ -380,6 +360,14 @@
                      '(', $i, ') ', string-join($stranded-divs[../@id = $i], ' ')
                      )"
             /></report>
+         <sqf:fix id="use-prev-src-attr">
+            <sqf:description>
+               <sqf:title>Replace @src with the @src value of preceding sibling</sqf:title>
+            </sqf:description>
+            <sqf:replace match="@src" node-type="attribute" target="src">
+               <value-of select="$preceding-src"/>
+            </sqf:replace>
+         </sqf:fix>
       </rule>
       <rule context="@cont">
          <let name="pos" value="count(../preceding-sibling::*[not(@cont)])"/>

@@ -71,19 +71,6 @@
          <report test="$this-old = $sibling-olds">Old values may not be duplicated</report>
          <report test="$this-new = $sibling-news">New values may not be duplicated</report>
       </rule>
-      <rule context="tan:rename-div-types">
-         <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
-         <let name="bad-renames"
-            value="tan:rename[@new = $src-heads[position() = $this-src-list]/tan:declarations/tan:div-type/@xml:id]"/>
-         <let name="bad-rename-pos"
-            value="
-               for $i in $bad-renames
-               return
-                  (count(preceding-sibling::tan:rename) + 1)"/>
-         <report test="exists($bad-renames)">A div type name may not be changed to one that is
-            reserved by the source as a div-type id. (@new = <value-of select="$bad-renames/@new"
-            />)</report>
-      </rule>
       <rule context="tan:equate-works">
          <let name="this-src-list" value="tan:src-ids-to-nos(@src)"/>
          <let name="this-work-iris"

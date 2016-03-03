@@ -10,7 +10,7 @@ namespace xlink = "http://www.w3.org/1999/xlink"
 
 datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
-# Schema generated from ODD source 2016-02-23T17:09:12Z. .
+# Schema generated from ODD source 2016-02-24T22:36:02Z. .
 # TEI Edition: Version 2.8.0. Last updated on
 #	6th April 2015, revision 13197
 # TEI Edition Location: http://www.tei-c.org/Vault/P5/Version 2.8.0/

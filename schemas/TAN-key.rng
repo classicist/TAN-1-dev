@@ -6,12 +6,16 @@
       <ref name="TAN-root"/>
     </element>
   </start>
-  <include href="TAN-class-4.rng">
+  <include href="TAN-class-3.rng">
     <define name="decl-id-ref-opt">
       <a:documentation>all declarations must have ids</a:documentation>
       <ref name="internal-id"/>
     </define>
     <define name="source-list">
+      <empty/>
+    </define>
+    <define name="keyword-ref">
+      <a:documentation>No sense in having keywords refer by shorthand to other keywords</a:documentation>
       <empty/>
     </define>
     <define name="decl-non-core">
@@ -58,6 +62,7 @@
         <ref name="entity-digital-tan-other-ref"/>
         <ref name="entity-digital-generic-ref"/>
         <ref name="entity-nondigital-ref"/>
+        <ref name="entity-tok-def"/>
       </choice>
     </element>
   </define>

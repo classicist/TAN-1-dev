@@ -141,19 +141,42 @@
          invoked.</report>
    </rule>
    <rule context="tei:div | tan:div">
-      <let name="these-types" value="tokenize(tan:normalize-text(@type),' ')"/>
-      <let name="these-ns" value="tokenize(tan:normalize-text(@n),' ')"/>
+      <let name="these-types" value="tokenize(tan:normalize-text(@type),$separator-hierarchy-regex)"/>
+      <let name="these-ns" value="tokenize(tan:normalize-text(@n),$separator-hierarchy-regex)"/>
       <let name="faulty-types" value="$these-types[not(. = $div-types)]"/>
       <let name="this-ref" value="tan:flatref(.)"/>
       <let name="is-leaf-div"
          value="
             if ($self-is-flat = true()) then
-               text()
+               exists(text())
             else
                if (not(tei:div | tan:div)) then
                   true()
                else
                   false()"
+      />
+      <!-- variables for checking flat transcriptions -->
+      <let name="prec-ns"
+         value="tokenize(tan:normalize-text(preceding-sibling::*[1]/@n), $separator-hierarchy-regex)"
+      />
+      <let name="foll-ns"
+         value="tokenize(tan:normalize-text(following-sibling::*[1]/@n), $separator-hierarchy-regex)"
+      />
+      <let name="this-hierarchy-level" value="count($these-ns)"/>
+      <let name="first-ancestor-common-with-prev"
+         value="
+            for $i in (1 to $this-hierarchy-level)
+            return
+               if ($prec-ns[$i] = $these-ns[$i]) then
+                  $prec-ns[$i]
+               else
+                  ()"
+      />
+      <let name="foll-is-child"
+         value="
+            ($this-hierarchy-level + 1 = count($foll-ns)) and (every $i in (1 to count($this-hierarchy-level))
+               satisfies
+               $these-ns[$i] = $foll-ns[$i])"
       />
       <report
          test="
@@ -181,6 +204,24 @@
       <report test="matches(string-join(text(), ''), '\s\p{M}')"
          sqf:fix="remove-space-preceding-modifiers">No div may have a spacing character followed by
          a modifying character.</report>
+      <!-- reports specific to flat transcriptions -->
+      <assert test="count($these-types) = count($these-ns)">Flat transcriptions must have an identical number of values for @n and @type.</assert>
+      <assert
+         test="
+            if ($self-is-flat = true()) then
+               ($this-hierarchy-level = 1 or exists($first-ancestor-common-with-prev))
+            else
+               true()"
+         >In a flat transcription every div must either be at the top of a hierarchy or have an
+         ancestor in common with the preceding div.</assert>
+      <assert
+         test="
+            if ($self-is-flat = true() and not($is-leaf-div)) then
+               $foll-is-child
+            else
+               true()"
+         >In a flat transcription any non-leaf-div must be followed by a child div.</assert>
+      <!-- SQFixes -->
       <sqf:fix id="remove-modifiers-starting-divs">
          <sqf:description>
             <sqf:title>Remove modifiers starting divs</sqf:title>

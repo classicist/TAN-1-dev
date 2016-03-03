@@ -17,7 +17,7 @@ decl-id-ref-opt = empty
 div-range-ref =
     xsd:string {
         pattern =
-            "(\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*)((\s*,|\s+-)\s+(\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*))*|.*\?\?\?.*"
+            "(\w+(\W\w+)*)((\s*,|\s+-)\s+(\w+(\W\w+)*))*|.*\?\?\?.*"
     }
 ed-agent =
     

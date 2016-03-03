@@ -1,5 +1,5 @@
 # TO DO:
-# [priority low] allow @src to take * and * - [names] to allow blanket statements, esp. for implict div types
+# [priority low] allow @src to take * and * - [names] to allow blanket statements
 
 namespace ns1 = "tag:textalign.net,2015:ns"
 
@@ -8,20 +8,14 @@ include "TAN-core.rnc" inherit = ns1 {
     
     ## All sources are TAN files, so no source rights should be declared--they're already stated
     source-rights = empty
-
-source-ref =
-    
-    ## refers to the ID of one or more <source>s 
-    attribute src { text }
-
+    source-ref =
+        
+        ## refers to the ID of one or more <source>s 
+        attribute src { text }
 }
 
 ## Reserved for declarations common to all class 2 files
-decl-class-2 =
-    decl-token-opt
-    & decl-supp-div-opt
-    & decl-implicit-div-type-refs-opt
-    & (decl-rename-type-opt, decl-rename-n-opt)
+decl-class-2 = decl-token-opt & decl-supp-div-opt & decl-rename-n-opt
 
 ## Reserved for declarations specific to individual types of class 2 files 
 decl-non-class-2 = empty
@@ -40,26 +34,6 @@ decl-supp-div-type =
     element suppress-div-types {
         ed-stamp?,
         (inclusion | (source-ref, div-type-ref))
-    }
-decl-implicit-div-type-refs-opt =
-    
-    ## indicates references to <div>s in that source will be exclusively through @n values; @type values will be suppressed.
-    
-    ## This element must be explicitly declared for every source, even those that already have a <recommended-div-type-refs> value of implicit.
-    
-    ## Although implicitation is not allowed for sources with any @n that is empty, exceptions are made where <rename-div-ns> is used to convert a numeration system to Arabic numerals; in those cases n="" will be interpreted to mean n="0". 
-    element implicit-div-type-refs { ed-stamp?, (inclusion | source-ref) }*
-decl-rename-type-opt = decl-rename-div-type*
-decl-rename-div-type =
-    
-    ## provisionally reassigns @type values for <div>s of a certain type in one or more sources. This feature is strictly speaking a convenience and applies only to the current file. It does not change the underlying definiton of the div-type.
-    
-    ## This element can be especially helpful to synthesize multiple versions that use different abbreviations for the same type of <div>. Changing the div type does not affect the underlying definition, which based on <IRI> values. Equating <div> types that do not have common <IRI> values is effected through <equate-div-types> (TAN-A-div only).
-    
-    ## For more inforrmation see main.xml#class_2_metadata
-    element rename-div-types {
-        ed-stamp?,
-        (inclusion | (source-ref, name-change+))
     }
 decl-rename-n-opt = decl-rename-div-n*
 decl-rename-div-n =
@@ -124,7 +98,6 @@ alignment-attributes-non-class-2 = empty
 alignment-content-non-class-2 = empty
 alignment-inclusion-opt = inclusion
 div-type-ref =
-    # Moved from core on 2015-11-03; delete by 2016 if everything's ok.
     
     ## is used by class-2 files to point to one or more <div-type>s in class-1 files. Permits multiple values separated by spaces.
     attribute div-type-ref { text }

@@ -30,7 +30,7 @@
     <define name="decl-token-opt">
       <a:documentation>TAN-A-div files do not require a tokenization choice within a filter (choice enforced by Schematron)</a:documentation>
       <zeroOrMore>
-        <ref name="decl-token"/>
+        <ref name="decl-tok-def"/>
       </zeroOrMore>
     </define>
     <define name="TAN-body-core">
@@ -107,7 +107,8 @@
   </define>
   <define name="div-ref-list">
     <element name="div-ref">
-      <a:documentation>points to one or more &lt;div&gt;s (or segments of &lt;div&gt;s) in one or more sources</a:documentation>
+      <a:documentation>collects one or more &lt;div&gt;s (or segments of &lt;div&gt;s) in one or more sources</a:documentation>
+      <a:documentation>In most cases, the texts pointed to in &lt;div-ref&gt; will be treated as a collective set. If passage A is found three times in X, Y, and Z, then in an &lt;align&gt; four different &lt;div-ref&gt;s should be used. But if A is found once, spanning X, Y, and Z, then the last three should be gathered in a single &lt;div-ref&gt;, or, optionally, in a &lt;div-ref&gt; with a @cont.</a:documentation>
       <ref name="div-ref-pattern"/>
     </element>
   </define>
@@ -132,7 +133,8 @@
     <element name="equate-works">
       <a:documentation>declares an ad hoc equivalence between works that are not defined by their sources as being identical.</a:documentation>
       <a:documentation>Any two &lt;work&gt;s that share at least one &lt;IRI&gt; value will be treated as equivalent; those that do not will be treated as different div types. &lt;equate-works&gt; permits you to make an ad hoc equivalence between one or more &lt;work&gt;s.</a:documentation>
-      <a:documentation>&lt;equate-div-types&gt; are assumed to be greedy and transitive. If work X of source A is stated to be equivalent to work Y of source B, then any work in any source identical to X will be identical to any work in any source identical to Y. So to equate two works, each with multiple members, you need declare the equivalence between only one member of each work, not all of them.</a:documentation>
+      <a:documentation>&lt;equate-div-types&gt; are assumed to be greedy and transitive. If this element is used to equate work X with type Y, then any any source with a work identical to X's or Y's IRI values will treated as identical.
+If work X of source A is stated to be equivalent to work Y of source B, then any work in any source identical to X will be identical to any work in any source identical to Y. So to equate two works, each with multiple members, you need declare the equivalence between only one member of each work, not all of them.</a:documentation>
       <a:documentation>This element does not imply that the two works are, in reality, one and the same. It merely states that, for the purposes of this alignment, they should be treated as equivalent.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
@@ -147,7 +149,7 @@
     <element name="equate-div-types">
       <a:documentation>declares an ad hoc equivalence between div types that are not defined by their sources as being identical.</a:documentation>
       <a:documentation>Any two &lt;div-type&gt;s that share at least one &lt;IRI&gt; value will be treated as equivalent; those that do not will be treated as different div types. &lt;equate-div-types&gt; permits you to make an ad hoc equivalence between one or more &lt;div-type-ref&gt;s.</a:documentation>
-      <a:documentation>&lt;equate-div-types&gt; are assumed to be greedy and transitive. If div type X of source A is stated to be equivalent to type Y of source B, then any div type in any source identical to X will be identical to any div type in any source identical to Y. So to equate two div types, each with multiple members, you need declare the equivalence between only one member of each work, not all of them. </a:documentation>
+      <a:documentation>&lt;equate-div-types&gt; are assumed to be greedy and transitive. If this element is used to equate div type X with type Y, then any div type in any source identical to X's or Y's IRI values will treated as identical. </a:documentation>
       <a:documentation>This element does not imply that the two types of division are, in reality, one and the same. It merely states that, for the purposes of this alignment, they should be treated as equivalent.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
@@ -175,7 +177,8 @@
   </define>
   <define name="split">
     <element name="split-leaf-div-at">
-      <a:documentation>creates ad hoc splits in leaf &lt;div&gt;s, to facilitate alignments and realignments of textual units smaller than leaf &lt;div&gt;s. Any leaf div may be split as many times as one wishes, but never smaller than the token level, as defined by &lt;tokenization&gt;s.</a:documentation>
+      <a:documentation>creates ad hoc splits in leaf &lt;div&gt;s, to facilitate alignments and realignments of textual units smaller than leaf &lt;div&gt;s. Any leaf div may be split as many times as there are token, as defined by &lt;tokenization&gt;s.</a:documentation>
+      <a:documentation>Each split creates a segment, a textual subdivision of leaf &lt;div&gt;s introduced by the TAN-A-div file.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>

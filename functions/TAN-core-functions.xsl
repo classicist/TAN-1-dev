@@ -7,36 +7,11 @@
     version="3.0">
     <xd:doc scope="stylesheet">
         <xd:desc>
-            <xd:p><xd:b>Updated </xd:b>Feb 23, 2016</xd:p>
+            <xd:p><xd:b>Updated </xd:b>Mar 1, 2016</xd:p>
             <xd:p>Variables, functions, and templates for all TAN files. Written primarily for
                 Schematron validation, but suitable for general use in other contexts.</xd:p>
         </xd:desc>
     </xd:doc>
-
-    <xsl:function name="functx:distinct-deep" as="node()*" xmlns:functx="http://www.functx.com">
-        <xsl:param name="nodes" as="node()*"/>
-
-        <xsl:sequence
-            select="
-                for $seq in (1 to count($nodes))
-                return
-                    $nodes[$seq][not(functx:is-node-in-sequence-deep-equal(
-                    ., $nodes[position() &lt; $seq]))]
-                "/>
-
-    </xsl:function>
-    <xsl:function name="functx:is-node-in-sequence-deep-equal" as="xs:boolean"
-        xmlns:functx="http://www.functx.com">
-        <xsl:param name="node" as="node()?"/>
-        <xsl:param name="seq" as="node()*"/>
-
-        <xsl:sequence
-            select="
-                some $nodeInSeq in $seq
-                    satisfies deep-equal($nodeInSeq, $node)
-                "/>
-
-    </xsl:function>
 
     <!-- Core TAN constants expressed as global variables -->
 
@@ -44,15 +19,11 @@
         select="'[\.\[\]\\\|\-\^\$\?\*\+\{\}\(\)]'"/>
     <xsl:variable name="quot" select="'&quot;'"/>
     <xsl:variable name="empty-doc" as="document-node()">
-        <xsl:for-each select="/">
-            <xsl:copy/>
-        </xsl:for-each>
+        <xsl:document/>
     </xsl:variable>
 
     <xsl:variable name="TAN-namespace" select="'tag:textalign.net,2015'"/>
-
     <xsl:variable name="id-idrefs" select="doc('TAN-idrefs.xml')"/>
-
     <xsl:variable name="errors" select="doc('TAN-errors.xml')"/>
     <xsl:variable name="tokenization-errors"
         select="$errors//tan:group[tokenize(@affects-element, '\s+') = 'token-definition']//tan:error"
@@ -63,10 +34,8 @@
     <xsl:param name="help-trigger" select="'???'"/>
     <xsl:variable name="help-trigger-regex" select="tan:escape($help-trigger)"/>
 
-    <xsl:param name="separator-type-and-n" select="'.'" as="xs:string"/>
-    <xsl:variable name="separator-type-and-n-regex" select="'\.'" as="xs:string"/>
-    <xsl:param name="separator-hierarchy" select="':'" as="xs:string"/>
-    <xsl:variable name="separator-hierarchy-regex" select="':'" as="xs:string"/>
+    <xsl:param name="separator-hierarchy" select="' '" as="xs:string"/>
+    <xsl:variable name="separator-hierarchy-regex" select="' '" as="xs:string"/>
 
     <xsl:param name="schema-version-major" select="1"/>
     <xsl:param name="schema-version-minor" select="'dev'"/>
@@ -425,6 +394,31 @@
         />
     </xsl:function>
 
+    <!-- I'm not confident that we need the next two functions. -->
+    <xsl:function name="functx:distinct-deep" as="node()*" xmlns:functx="http://www.functx.com">
+        <xsl:param name="nodes" as="node()*"/>
+        <xsl:sequence
+            select="
+            for $seq in (1 to count($nodes))
+            return
+            $nodes[$seq][not(functx:is-node-in-sequence-deep-equal(
+            ., $nodes[position() &lt; $seq]))]
+            "/>
+        
+    </xsl:function>
+    <xsl:function name="functx:is-node-in-sequence-deep-equal" as="xs:boolean"
+        xmlns:functx="http://www.functx.com">
+        <xsl:param name="node" as="node()?"/>
+        <xsl:param name="seq" as="node()*"/>
+        
+        <xsl:sequence
+            select="
+            some $nodeInSeq in $seq
+            satisfies deep-equal($nodeInSeq, $node)
+            "/>
+        
+    </xsl:function>
+    
     <!-- CONTEXT DEPENDENT FUNCTIONS -->
     <xsl:function name="tan:get-1st-da-locations" as="xs:string*">
         <xsl:param name="tan-element" as="element()*"/>
@@ -556,7 +550,8 @@
     </xsl:function>
 
     <xsl:function name="tan:flatref" as="xs:string?">
-        <!-- Input: div node in a TAN-T(EI) document. Output: string value concatenating the reference values 
+        <!-- Input: div node in a TAN-T(EI) document. 
+            Output: string value concatenating the reference values 
          from the topmost div ancestor to the node. -->
         <xsl:param name="node" as="element()?"/>
       <xsl:value-of
@@ -885,5 +880,55 @@
                     true()"
         />
     </xsl:function>
+    
+    <xsl:function name="tan:flatten-class-1-doc" as="document-node()*">
+        <xsl:param name="class-1-doc-resolved" as="document-node()*"/>
+        <xsl:for-each select="$class-1-doc-resolved">
+            <xsl:choose>
+                <xsl:when
+                    test="tan:is-flat-class-1(.)">
+                    <xsl:copy-of select="."/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:copy>
+                        <xsl:for-each select="node()">
+                            <xsl:text>&#xA;</xsl:text>
+                            <xsl:apply-templates select="." mode="flatten-class-1"/>
+                        </xsl:for-each>
+                    </xsl:copy>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:for-each>
+    </xsl:function>
+    <xsl:template match="/" mode="flatten-class-1">
+        <xsl:copy>
+            <xsl:apply-templates mode="flatten-class-1"/>
+        </xsl:copy>
+    </xsl:template>
+    <xsl:template match="comment() | processing-instruction() | text()" mode="flatten-class-1">
+        <xsl:copy-of select="."/>
+    </xsl:template>
+    <xsl:template match="*" mode="flatten-class-1">
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:apply-templates mode="#current"/>
+        </xsl:copy>
+    </xsl:template>
+    <xsl:template match="tan:div | tei:div" mode="flatten-class-1">
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:attribute name="n" select="string-join((ancestor-or-self::*/@n), ' ')"/>
+            <xsl:attribute name="type" select="string-join(ancestor-or-self::*/@type, ' ')"/>
+            <xsl:if test="(ancestor-or-self::tan:div, ancestor-or-self::tei:div)/@xml:lang">
+                <xsl:attribute name="xml:lang"
+                    select="((ancestor-or-self::tan:div, ancestor-or-self::tei:div)/@xml:lang)[1]"/>
+            </xsl:if>
+            <xsl:if test="not(tan:div | tei:div)">
+                <xsl:copy-of select="node()"/>
+            </xsl:if>
+        </xsl:copy>
+        <xsl:apply-templates mode="#current" select="tan:div | tei:div | text()[not(matches(., '\S'))] | comment()"
+        />
+    </xsl:template>
 
 </xsl:stylesheet>

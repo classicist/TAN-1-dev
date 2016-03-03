@@ -15,6 +15,11 @@
       <a:documentation>All sources are TAN files, so no source rights should be declared--they're already stated</a:documentation>
       <empty/>
     </define>
+    <define name="source-ref">
+      <attribute name="src">
+        <a:documentation>refers to the ID of one or more &lt;source&gt;s </a:documentation>
+      </attribute>
+    </define>
   </include>
   <define name="decl-class-2">
     <a:documentation>Reserved for declarations common to all class 2 files</a:documentation>
@@ -33,30 +38,11 @@
     <empty/>
   </define>
   <define name="decl-token-opt">
-    <a:documentation>
-Reserved for modification in different types of Class 2 files, to specify how many tokenization declarations are allowed.</a:documentation>
+    <a:documentation>Reserved for modification in different types of Class 2 files, to specify how many tokenization declarations are allowed.
+Class 2 files that do not require tokenization (i.e., TAN-A-div) must include &lt;token-definition&gt; only if the file uses elements (e.g., &lt;split-leaf-div-at&gt;) that assume tokenization. </a:documentation>
     <oneOrMore>
-      <ref name="decl-token"/>
+      <ref name="decl-tok-def"/>
     </oneOrMore>
-  </define>
-  <define name="decl-token">
-    <element name="tokenization">
-      <a:documentation>specifies a tokenization method to be applied to one or more sources, either by (1) pointing to a TAN-R-tok file, (2) pointing by IDREF to a &lt;recommended-tokenization&gt; in a source, or (3) using a reserved tokenization keyword.</a:documentation>
-      <a:documentation>Class 2 files that do not require tokenization (i.e., TAN-A-div) must include &lt;tokenization&gt; only if the file uses elements (e.g., &lt;split-leaf-div-at&gt;) that assume tokenization. </a:documentation>
-      <optional>
-        <ref name="ed-stamp"/>
-      </optional>
-      <choice>
-        <ref name="inclusion"/>
-        <group>
-          <ref name="source-ref"/>
-          <choice>
-            <ref name="keyword-ref"/>
-            <ref name="entity-digital-tan-other-ref"/>
-          </choice>
-        </group>
-      </choice>
-    </element>
   </define>
   <define name="decl-supp-div-opt">
     <a:documentation>Reserved for modification in different types of Class 2 files, to specify how many suppress-div-type declarations are allowed.</a:documentation>
@@ -148,11 +134,6 @@ Reserved for modification in different types of Class 2 files, to specify how ma
       </choice>
     </element>
   </define>
-  <define name="source-ref">
-    <attribute name="src">
-      <a:documentation>refers to the ID of one or more &lt;source&gt;s </a:documentation>
-    </attribute>
-  </define>
   <define name="name-change">
     <element name="rename">
       <a:documentation>indicates the name of a &lt;div&gt; @n or @type that should be changed, and the name to which it should be changed.</a:documentation>
@@ -242,9 +223,8 @@ Reserved for modification in different types of Class 2 files, to specify how ma
   </define>
   <define name="pointer-to-div-range">
     <a:documentation>   Pointer (link) to a div in a TAN-T(EI) file</a:documentation>
-    <!-- Move this to class 2? -->
     <attribute name="ref">
-      <a:documentation>lists references to one or more &lt;div&gt;s. It consists of one or more atomic references joined with commas or hyphens. An atomic reference is a string value that points to a single &lt;div&gt;</a:documentation>
+      <a:documentation>lists references to one or more &lt;div&gt;s. It consists of one or more atomic references joined with commas or hyphens. An atomic reference is a string value that points to a single &lt;div&gt;. In most cases (i.e., when @distribute is not in force), multiple atomic references are treated collectively, as a single reference to a complex passage, not as multiple references to individual passages. </a:documentation>
       <a:documentation>Examples: 'bk.2:ch.4', '2.4 - 2.7, 2.9', 'poem 5, poem 6:line 6 - poem 7:line 2'</a:documentation>
       <a:documentation>Any hyphen used as a range should be preceded and followed by at least one space character.</a:documentation>
       <a:documentation>For more, see main.xml#class_2_body </a:documentation>

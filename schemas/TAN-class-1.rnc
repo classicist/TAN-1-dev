@@ -5,7 +5,7 @@ include "TAN-core.rnc" {
 }
 
 ## Class 1 files must declare a single work, perhaps one version, one or more divisions, one or more recommended tokenizations, perhaps one filter, and perhaps one 
-decl-class-1 = decl-work & decl-vers? & decl-div+ & decl-tok-def* & decl-ref-rec? & decl-filt?
+decl-class-1 = decl-work & decl-vers? & decl-div+ & decl-tok-def* & decl-filt?
 
 ## Reserved for declarations specific to individual types of class 1 files
 decl-non-class-1 = empty
@@ -36,18 +36,6 @@ ns-are-numerals =
     ## For more information, see main.xml#reference_system
     attribute ns-are-numerals { xsd:boolean }
 
-decl-ref-rec =
-    
-    ## suggests whether div types in references to the transcription should be explicit (e.g., book.John:chapter.3:verse.16) or implicit (e.g., John 3:16). If not present, explicit is assumed.
-    
-    ## Anyone using your file need not adhere to your recommendation. If you mark the value as implicit, someone who prefers the verbose syntax is welcome to do so. But the converse is not true: explicit means only the verbose form may be used.
-    
-    ## Although this element is optional, it is suggested especially for long files, because it will reduce the time to validate any dependent files.
-    element recommended-div-type-refs {
-        ed-stamp?,
-        (inclusion
-         | xsd:string { pattern = "implicit|explicit" })
-    }
 decl-filt =
     
     ## declares alterations that have been made to the source.

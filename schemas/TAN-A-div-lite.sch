@@ -37,26 +37,13 @@
       </report>
    </rule>
    <rule context="tan:div-ref | tan:anchor-div-ref">
-      <let name="this-ref" value="normalize-space(replace(@ref, $help-trigger-regex, ''))"/>
-      <let name="this-src" value="normalize-space(replace(@src, $help-trigger-regex, ''))"/>
+      <let name="this-ref" value="tan:normalize-text(@ref)"/>
+      <let name="this-src" value="tan:normalize-text(@src)"/>
       <let name="this-src-list" value="tan:src-ids-to-nos($this-src)"/>
       <let name="src-help-requested" value="matches(@src, $help-trigger-regex)"/>
       <let name="ref-help-requested" value="matches(@ref, $help-trigger-regex)"/>
-      <let name="these-sources-resolved" value="$src-1st-da-data[position() = $this-src-list]"/>
-      <let name="is-implicit"
-         value="
-            if ($this-src-list = $src-impl-div-types) then
-               true()
-            else
-               false()"/>
-      <let name="these-refs-norm"
-         value="
-            for $i in $this-src-list
-            return
-               if ($i = $src-impl-div-types) then
-                  tan:normalize-impl-refs($this-ref, $i)
-               else
-                  tan:normalize-refs($this-ref)"/>
+      <let name="these-sources-resolved" value="$src-1st-da-data-prepped[position() = $this-src-list]"/>
+      <let name="these-refs-norm" value="tan:normalize-refs($this-ref)"/>
       <let name="these-atomic-refs"
          value="
             distinct-values(for $i in $these-refs-norm
@@ -68,10 +55,7 @@
          value="
             for $i in $these-refs-norm
             return
-               if ($is-implicit = true()) then
-                  $these-sources-resolved/tan:div[matches(@impl-ref, $i)]/@impl-ref
-               else
-                  $these-sources-resolved/tan:div[matches(@ref, $i)]/@ref"
+               $these-sources-resolved/tan:div[matches(@ref, $i)]/@ref"
       />
       <!--<let name="refs-that-fail" value="$these-atomic-refs[not(. = $ref-identifies-what-divs/@ref)]"/>-->
       <let name="possible-common-corrected-refs"
@@ -101,16 +85,13 @@
       <report
          test="not(exists($ref-identifies-what-divs)) and not(exists($possible-common-corrected-refs))"
          sqf:fix="get-div-text-from-search"
-            ><!-- @ref with no match on a div ref will return suggested divs whose texts match the value of @ref (treated as a regular expression) --><xsl:value-of
-            select="$this-ref"/>
+            ><!-- @ref with no match on a div ref will return suggested divs whose texts match the value of @ref (treated as a regular expression) -->
+         <xsl:value-of select="$this-ref"/>
          <xsl:value-of select="$search-report"/> found in: <xsl:value-of
             select="
                for $i in $src-ids[position() = $this-src-list]
                return
-                  concat(string-join(if ($is-implicit = true()) then
-                     $matched-refs[../@id = $i]/@impl-ref
-                  else
-                     $matched-refs[../@id = $i]/@ref, ' '),
+                  concat(string-join($matched-refs[../@id = $i]/@ref, ' '),
                   ' (', $i, ') ')"
          /></report>
       <report test="$ref-help-requested = true() and exists($ref-identifies-what-divs)"
@@ -123,10 +104,7 @@
                      concat('(', $i/@ref, ':) ', $i/text(), ' ')
                   else
                      concat('(', $i/@ref, ':) ',
-                     string-join(if ($is-implicit = true()) then
-                        $these-sources-resolved/tan:div[@ref = $i/@ref]/following-sibling::*[matches(@ref, $i/@ref)]/@impl-ref
-                     else
-                        $these-sources-resolved/tan:div[@ref = $i/@ref]/following-sibling::*[matches(@ref, $i/@ref)]/@ref, ' '
+                     string-join($these-sources-resolved/tan:div[@ref = $i/@ref]/following-sibling::*[matches(@ref, $i/@ref)]/@ref, ' '
                      ), ' ')"
          /></report>
       <report test="$src-help-requested">Sources available: <xsl:value-of select="$src-ids"
@@ -170,11 +148,7 @@
          <sqf:add match="." position="after">
             <xsl:for-each select="$matched-refs">
                <xsl:text>&#xA;</xsl:text>
-               <tan:div-ref src="{../@id}"
-                  ref="{if ($is-implicit = true()) then
-                     @impl-ref
-                     else
-                     @ref}"/>
+               <tan:div-ref src="{../@id}" ref="{@ref}"/>
                <xsl:text>&#xA;</xsl:text>
                <tan:comment when="{current-date()}" who="{$head/tan:agent[1]/@xml:id}"><xsl:value-of
                      select="./text()"/></tan:comment>

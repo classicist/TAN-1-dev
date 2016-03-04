@@ -137,7 +137,9 @@
          </xml:source>
       </xsl:for-each>
    </xsl:function>
-   <xsl:function name="tan:get-leaf-div-splits-raw" as="element()*">
+   <!-- March 2016: let's see if we can't get rid of this and calculate leaf div splits
+   during the tan:segment-tokenized-prepped-class-1-doc() operation. -->
+   <!--<xsl:function name="tan:get-leaf-div-splits-raw" as="element()*">
       <xsl:for-each select="$body/tan:split-leaf-div-at/tan:tok">
          <xsl:copy>
             <xsl:copy-of
@@ -166,7 +168,7 @@
             </xsl:for-each-group>
          </tan:source>
       </xsl:for-each-group>
-   </xsl:function>
+   </xsl:function>-->
    <xsl:function name="tan:get-realigns-normalized">
       <xsl:copy-of select="tan:expand-realign($body/tan:realign)"/>
    </xsl:function>
@@ -340,48 +342,64 @@
       Output: elements, one per source, deep copy of input, but inserting <tan:seg> between 
       <tan:div> and <tan:tok>, reflecting all <split-leaf-div-at>s-->
       <xsl:param name="these-tokd-prepped-c1-doc" as="document-node()*"/>
+      <xsl:variable name="all-leaf-div-splits"
+         select="tan:distribute-src-and-ref($body/tan:split-leaf-div-at/tan:tok, false())"
+      />
       <xsl:for-each select="$these-tokd-prepped-c1-doc">
+         <xsl:variable name="this-src" select="index-of($src-ids, /*/@src)"/>
          <xsl:copy>
-            <xsl:apply-templates mode="segment-tokd-prepped-class-1"/>
+            <xsl:apply-templates mode="segment-tokd-prepped-class-1">
+               <xsl:with-param name="all-leaf-div-splits"
+                  select="$all-leaf-div-splits[@src = $this-src]"/>
+            </xsl:apply-templates>
          </xsl:copy>
       </xsl:for-each>
    </xsl:function>
    <xsl:template match="node()" mode="segment-tokd-prepped-class-1">
+      <xsl:param name="all-leaf-div-splits" as="element()*"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
-         <xsl:apply-templates mode="#current"/>
+         <xsl:apply-templates mode="#current">
+            <xsl:with-param name="all-leaf-div-splits" select="$all-leaf-div-splits"/>
+         </xsl:apply-templates>
       </xsl:copy>
    </xsl:template>
    <xsl:template match="tan:div[tan:tok]" mode="segment-tokd-prepped-class-1">
-      <xsl:variable name="leaf-div-splits-grouped" select="tan:group-leaf-div-splits()"/>
+      <xsl:param name="all-leaf-div-splits" as="element()*"/>
+      <!--<xsl:variable name="leaf-div-splits-grouped" select="tan:group-leaf-div-splits()"/>-->
       <xsl:variable name="this-div" select="."/>
-      <xsl:variable name="this-src-id" select="root()/*/@src"/>
-      <xsl:variable name="this-div-splits"
+      <xsl:variable name="this-ref" select="@ref"/>
+      <xsl:variable name="this-max-toks" select="xs:integer(@max-toks)"/>
+      <xsl:variable name="relevant-leaf-div-splits" select="$all-leaf-div-splits[@ref = $this-ref]"/>
+      <xsl:variable name="splits-at" select="tan:get-tok-nos($this-div, $relevant-leaf-div-splits)"
+      />
+      <!--<xsl:variable name="this-div-splits"
          select="
             for $i in $leaf-div-splits-grouped[@id = $this-src-id]/tan:div[@ref = $this-div/@ref]/tan:tok[not(@error)]/@n
             return
-               xs:integer($i)"/>
-      <xsl:variable name="this-div-seg-starts"
-         select="
+               xs:integer($i)"/>-->
+      <xsl:variable name="this-div-seg-starts" select="
             (1,
-            $this-div-splits)"/>
+            $splits-at)"
+         as="xs:integer+"/>
       <xsl:variable name="this-div-seg-ends"
          select="
-            ((for $i in $this-div-splits
+            ((for $i in $splits-at
             return
                $i - 1),
-            count($this-div/tan:tok))"/>
+            $this-max-toks)"
+         as="xs:integer+"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
-         <xsl:for-each select="(1 to count($this-div-splits) + 1)">
+         <xsl:attribute name="splits-at" select="$splits-at"/>
+         <xsl:for-each select="(1 to count($splits-at) + 1)">
             <xsl:variable name="pos" select="."/>
             <xsl:variable name="start" select="$this-div-seg-starts[$pos]"/>
             <xsl:variable name="end" select="$this-div-seg-ends[$pos]"/>
-            <seg n="{position()}">
+            <seg n="{$pos}">
                <xsl:copy-of
                   select="
-                     $this-div/tan:tok[$start]/(self::*, following-sibling::*)
-                     except $this-div/tan:tok[$end]/following-sibling::tan:tok[1]/(self::*, following-sibling::*)"
+                     $this-div/tan:tok[position() = ($start to $end)]/(self::*, following-sibling::*[1][self::tan:non-tok])"
                />
             </seg>
          </xsl:for-each>

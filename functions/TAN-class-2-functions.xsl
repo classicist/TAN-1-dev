@@ -794,6 +794,42 @@
          <xsl:apply-templates select="*" mode="#current"/>
       </xsl:copy>
    </xsl:template>
+   
+   <xsl:function name="tan:get-tok-nos" as="xs:integer*">
+      <!-- returns the integer values of tokens in a given <div>
+         Input: (1) any <div> with <tok> and <non-tok> children (result of tan:tokenize-prepped-1st-da())
+         (2) any number of <tok> that are deemed to relate to the <div> chosen (i.e., @src and @ref will 
+         be ignored)
+         Output: integers calculated by determining where each @val and @pos are found; when not found,
+         -1 will be returned.
+      -->
+      <xsl:param name="tokenized-div" as="element()?"/>
+      <xsl:param name="tok-elements" as="element()*"/>
+      <xsl:variable name="max-toks" select="count($tokenized-div/tan:tok)"/>
+      <xsl:for-each select="$tok-elements">
+         <!-- if no @val then use the regex escape charactor for anything -->
+         <xsl:variable name="this-val" select="(@val, '.')[1]"/>
+         <xsl:variable name="these-pos-itemized"
+            select="
+               if (@pos) then
+                  tan:sequence-expand(@pos, $max-toks)
+               else
+                  1"/>
+         <xsl:variable name="these-matches" select="$tokenized-div/tan:tok[matches(., $this-val)]"/>
+         <xsl:for-each select="$these-pos-itemized">
+            <xsl:variable name="this-pos" select="."/>
+            <xsl:choose>
+               <xsl:when test="count($these-matches) lt $this-pos">
+                  <xsl:copy-of select="-1"/>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:copy-of
+                     select="count($these-matches[$this-pos]/preceding-sibling::tan:tok) + 1"/>
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:for-each>
+      </xsl:for-each>
+   </xsl:function>
 
    <!--<xsl:function name="tan:pick-tokenized-prepped-class-1-data"
       xml:id="f-pick-tokenized-prepped-class-1-data" as="element()*">

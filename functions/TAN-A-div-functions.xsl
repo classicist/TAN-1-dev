@@ -168,14 +168,12 @@
       </xsl:for-each-group>
    </xsl:function>
    <xsl:function name="tan:get-realigns-normalized">
-      <xsl:copy-of
-         select="
-            for $i in $body/tan:realign
-            return
-               tan:expand-realign($i)"
-      />
+      <xsl:copy-of select="tan:expand-realign($body/tan:realign)"/>
    </xsl:function>
-
+   <xsl:function name="tan:get-aligns-normalized">
+      <xsl:copy-of select="tan:expand-align($body/tan:align)"/>
+   </xsl:function>
+   
 
    <!-- CONTEXT INDEPENDENT FUNCTIONS -->
 

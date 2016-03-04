@@ -22,13 +22,6 @@
                return
                   name($i))"/>
          <let name="missing-declarations" value="$incl-declarations[not(. = $children-names)]"/>
-         <!-- START TESTING BLOCK -->
-         <let name="test1" value="$children-names"/>
-         <let name="test2" value="$missing-declarations"/>
-         <let name="test3" value="true()"/>
-         <report test="false()">Testing. var1: <value-of select="$test1"/> var2: <value-of
-               select="$test2"/> var3: <value-of select="$test3"/></report>
-         <!-- END TESTING BLOCK -->
          <!--<assert
             test="every $i in $incl-declarations
                   satisfies *[name(.) = $i]"

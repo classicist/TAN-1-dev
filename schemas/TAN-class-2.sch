@@ -15,7 +15,10 @@
    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
    <title>Schematron tests for class 2 TAN files.</title>
-
+   <let name="src-1st-da-prepped" value="tan:get-src-1st-da-prepped()"/>
+   <let name="src-1st-da-heads" value="$src-1st-da-prepped/*/tan:head"/>
+   <let name="src-1st-da-data-prepped" value="$src-1st-da-prepped/*/tan:body"/>
+   <let name="div-type-ord-check" value="tan:get-div-type-ord-check()"/>
    <rule context="tan:source">
       <let name="self-resolved" value="tan:resolve-include(.)"/>
       <let name="this-pos"

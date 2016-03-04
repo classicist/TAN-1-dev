@@ -121,7 +121,7 @@
         select="'a+|b+|c+|d+|e+|f+|g+|h+|i+|j+|k+|l+|m+|n+|o+|p+|q+|r+|s+|t+|u+|v+|w+|x+|y+|z+'"/>
 
     <xsl:variable name="context-1st-da-locations"
-        select="tan:get-1st-da-locations($head/tan:see-also[tan:relationship/@which = 'context'])"/>
+        select="tan:first-loc-available($head/tan:see-also[tan:relationship/@which = 'context'])"/>
     <xsl:variable name="context-1st-da"
         select="
             for $i in $context-1st-da-locations
@@ -420,7 +420,7 @@
     </xsl:function>
     
     <!-- CONTEXT DEPENDENT FUNCTIONS -->
-    <xsl:function name="tan:get-1st-da-locations" as="xs:string*">
+    <!--<xsl:function name="tan:get-1st-da-locations" as="xs:string*">
         <xsl:param name="tan-element" as="element()*"/>
         <xsl:copy-of
             select="
@@ -431,19 +431,19 @@
                     else
                         ''"
         />
-    </xsl:function>
-    <xsl:function name="tan:first-loc-available" as="xs:string?">
+    </xsl:function>-->
+    <xsl:function name="tan:first-loc-available" as="xs:string*">
         <!-- One-parameter version of the function below, using the default, $doc-uri
         -->
-        <xsl:param name="element-that-is-parent-of-location" as="element()?"/>
-        <xsl:copy-of select="tan:first-loc-available($element-that-is-parent-of-location, $doc-uri)"
+        <xsl:param name="elements-that-are-parents-of-locations" as="element()*"/>
+        <xsl:copy-of select="tan:first-loc-available($elements-that-are-parents-of-locations, $doc-uri)"
         />
     </xsl:function>
-    <xsl:function name="tan:first-loc-available" as="xs:string?">
+    <xsl:function name="tan:first-loc-available" as="xs:string*">
         <!-- Input: An element that contains one or more tan:location elements
             Output: the value of the first tan:location/@href to point to a document available, resolved
         -->
-        <xsl:param name="element-that-is-parent-of-location" as="element()?"/>
+        <xsl:param name="elements-that-are-parents-of-locations" as="element()*"/>
         <xsl:param name="base-uri" as="xs:anyURI?"/>
         <xsl:variable name="norm-uri"
             select="
@@ -452,16 +452,18 @@
                 else
                     $base-uri"
             as="xs:anyURI"/>
-        <xsl:copy-of
-            select="
-                (for $i in $element-that-is-parent-of-location/tan:location/@href,
-                    $j in resolve-uri($i, $norm-uri)
-                return
-                    if (doc-available($j)) then
-                        $j
-                    else
-                        ())[1]"
-        />
+        <xsl:for-each select="$elements-that-are-parents-of-locations">
+            <xsl:copy-of
+                select="
+                    (for $i in tan:location/@href,
+                        $j in resolve-uri($i, $norm-uri)
+                    return
+                        if (doc-available($j)) then
+                            $j
+                        else
+                            ())[1]"
+            />
+        </xsl:for-each>
     </xsl:function>
     <xsl:function name="tan:get-inclusions-1st-da" as="document-node()*">
         <!-- one-parameter version of the function, the one to be most commonly used, feeds 

@@ -905,22 +905,24 @@
       <!-- takes any elements that have @src (as xml:id) and @ref. Returns one copy per element
          per source per ref, replacing @src with numerical value, @ref with normalized single reference, and
          copies of all other attributes. Applicable to <div-ref>, <anchor-div-ref>, and <tok>.
-      E.g., (<div-ref src="A B" ref="1 - 2" seg="1, last"/>, true()) - > (<div-ref work="1" src="1" ref="1" seg="1"/>, 
-      <div-ref work="1" src="1" ref="1" seg="7"/>, <div-ref work="1" src="1" ref="2" seg="1"/>,
-      <div-ref work="1" src="1" ref="1" seg="3"/>, <div-ref work="1" src="2" ref="1" seg="1"/>, ...) 
-      The parameter $shallow-picks indicates whether a range of references should return every possible div, or stay
-      on the hierarchy of each atomic referenc. See tan:itemize-refs() for details.
+      E.g., (<div-ref src="A B" ref="1 - 2" seg="1, last"/>, true()) - > 
+      (<div-ref src="1" ref="1" seg="1, last"/>, <div-ref src="1" ref="2" seg="1, last"/>,
+      <div-ref src="2" ref="1" seg="1, last"/>, <div-ref src="2" ref="2" seg="1, last"/>) 
+      The parameter $shallow-picks indicates whether a range of references should return every possible 
+      ref including all descendents, or stay on the hierarchy of each atomic reference. See tan:itemize-refs() for details.
       -->
-      <xsl:param name="element-with-src-and-ref" as="element()*"/>
+      <xsl:param name="elements-with-src-and-ref" as="element()*"/>
       <xsl:param name="shallow-picks" as="xs:boolean"/>
-      <xsl:for-each select="$element-with-src-and-ref">
+      <xsl:variable name="src-1st-da-prepped" select="tan:get-src-1st-da-prepped()"/>
+      <xsl:for-each select="$elements-with-src-and-ref">
          <xsl:variable name="this-element" select="."/>
          <xsl:variable name="these-srcs" select="tan:src-ids-to-nos(@src)"/>
          <xsl:for-each select="$these-srcs">
             <xsl:variable name="this-src" select="."/>
             <xsl:variable name="this-ref-norm" select="tan:normalize-refs($this-element/@ref)"/>
             <xsl:variable name="this-ref-expand"
-               select="tan:itemize-refs($this-ref-norm, $this-src, $shallow-picks)"/>
+               select="tan:itemize-refs($this-ref-norm, $this-src, $shallow-picks, $src-1st-da-prepped)"
+            />
             <xsl:for-each select="$this-ref-expand">
                <xsl:element name="{name($this-element)}">
                   <xsl:copy-of select="$this-element/@*"/>
@@ -960,6 +962,14 @@
          </xsl:choose>
       </xsl:for-each>
    </xsl:function>
+   <xsl:function name="tan:itemize-refs" as="xs:string*">
+      <!-- 3-parameter function of the complete, 4-parameter one, below. -->
+      <xsl:param name="ref-range-norm" as="xs:string"/>
+      <xsl:param name="src" as="xs:integer"/>
+      <xsl:param name="shallow-picks" as="xs:boolean"/>
+      <xsl:variable name="src-1st-da-prepped" select="tan:get-src-1st-da-prepped()"/>
+      <xsl:copy-of select="tan:itemize-refs($ref-range-norm, $src, $shallow-picks, $src-1st-da-prepped)"/>
+   </xsl:function>
    <xsl:function name="tan:itemize-refs" xml:id="f-itemize-bare-refs" as="xs:string*">
       <!-- Turns a compound ref string into a sequence of atomized refs to divs in the source provided,
          calculated conservatively in the case of ranges. Only peers on the hierarchy will be returned. 
@@ -973,7 +983,8 @@
       <xsl:param name="ref-range-norm" as="xs:string"/>
       <xsl:param name="src" as="xs:integer"/>
       <xsl:param name="shallow-picks" as="xs:boolean"/>
-      <xsl:variable name="src-1st-da-data-prepped" select="tan:get-src-1st-da-data-prepped()"/>
+      <xsl:param name="src-1st-da-prepped" as="document-node()*"/>
+      <xsl:variable name="src-1st-da-data-prepped" select="$src-1st-da-prepped/*/tan:body"/>
       <xsl:variable name="ref-range-seq-1" select="tokenize($ref-range-norm, ' , ')"/>
       <xsl:for-each select="$ref-range-seq-1">
          <xsl:variable name="start" select="tokenize(., ' - ')[1]"/>
@@ -1053,14 +1064,22 @@
                               />
                            </xsl:otherwise>
                         </xsl:choose>
-
                      </xsl:otherwise>
                   </xsl:choose>
                </xsl:variable>
                <xsl:copy-of select="$full-div-selection/@ref"/>
             </xsl:when>
             <xsl:otherwise>
-               <xsl:copy-of select="."/>
+               <xsl:choose>
+                  <xsl:when test="$shallow-picks = true()">
+                     <xsl:copy-of select="."/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:copy-of
+                        select="$src-1st-da-data-prepped[$src]/tan:div[@ref = $start or matches(@ref, concat('^', $start, $separator-hierarchy-regex))]/@ref"
+                     />
+                  </xsl:otherwise>
+               </xsl:choose>
             </xsl:otherwise>
          </xsl:choose>
       </xsl:for-each>

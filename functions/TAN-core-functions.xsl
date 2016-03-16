@@ -733,7 +733,7 @@
                         <xsl:variable name="incl-refs"
                             select="tokenize(tan:normalize-text(@include), ' ')"/>
                         <xsl:variable name="these-inclusions"
-                            select="doc($this-base-uri)/*/tan:head/tan:inclusion[@xml:id = $this-element/@include]"/>
+                            select="doc($this-base-uri)/*/tan:head/tan:inclusion[@xml:id = $incl-refs]"/>
                         <xsl:variable name="these-inclusion-1st-las"
                             select="
                                 for $i in $these-inclusions

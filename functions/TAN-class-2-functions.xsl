@@ -55,7 +55,7 @@
       Each transformation results in a document node, conducted in a sequence of steps:
       TAN-class-2        TAN-class-1           Comments   
       ===========        ===========           ===============================
-      self-expanded-1                          Expand @src, @div-type-ref; add @xml:id to TAN-LM <source>; start <equate-work> expansion
+      self-expanded-1                          Expand @src (but not for <equate-works>), @div-type-ref; add @xml:id to TAN-LM <source>
                          src-1st-da            Get first document available for each source chosen
                          src-1st-da-resolved   Resolve each source document: add @src to root element, get inclusions, keywords, strip duplicates
       self-expanded-2                          Expand <token-definition> and (TAN-A-div) <equate-works>, <equate-div-types>
@@ -70,7 +70,8 @@
    -->
 
    <!-- STEP SELF-EXPANDED-1: First expansion of class-2 file: expand @src, @div-type-ref; add @src to <source> in TAN-LM file; start <equate-work> expansion -->
-   <xsl:variable name="self-expanded-1" select="tan:get-self-expanded-1()"/>
+   <!-- commented this out March 2016; let's see if we can't get rid of it. -->
+   <!--<xsl:variable name="self-expanded-1" select="tan:get-self-expanded-1()"/>-->
    <xsl:function name="tan:get-self-expanded-1" as="document-node()?">
       <xsl:document>
          <xsl:apply-templates mode="self-expanded-1" select="$self-resolved"/>
@@ -105,7 +106,14 @@
       mode="self-expanded-1">
       <xsl:variable name="this-element" select="."/>
       <xsl:variable name="this-element-name" select="name($this-element)"/>
-      <xsl:variable name="these-sources" select="tokenize(tan:normalize-text(@src), '\s+')"/>
+      <xsl:variable name="srcs-pass-1" select="tokenize(tan:normalize-text(@src), '\s+')"/>
+      <xsl:variable name="these-sources"
+         select="
+            if ($srcs-pass-1 = '*') then
+               $src-ids
+            else
+               $srcs-pass-1"
+      />
       <xsl:variable name="these-div-types"
          select="tokenize(tan:normalize-text(@div-type-ref), '\W+')"/>
       <xsl:for-each
@@ -134,7 +142,7 @@
    </xsl:template>
 
    <!-- Results of step -->
-   <xsl:variable name="src-elements" select="$self-expanded-1/*/tan:head/tan:source"/>
+   <xsl:variable name="src-elements" select="$head/tan:source"/>
    <xsl:variable name="src-ids" select="$src-elements/@xml:id" as="xs:string+"/>
 
    <!-- Resultant functions -->
@@ -214,6 +222,7 @@
 
    <xsl:function name="tan:get-self-expanded-2">
       <!-- zero parameter function of the next -->
+      <xsl:variable name="self-expanded-1" select="tan:get-self-expanded-1()"/>
       <xsl:copy-of select="tan:get-self-expanded-2($self-expanded-1, tan:get-src-1st-da-resolved())"
       />
    </xsl:function>
@@ -499,57 +508,65 @@
          SUBSTITUTIONS AND SUPPRESSIONS]">[COPY OF CONTENT, INCLUDING TEI MARKUP, IF ANY]</div>
          Text remains untokenized.
       -->
-      <xsl:param name="self-expanded-2" as="document-node()?"/>
+      <xsl:param name="self-expanded-2" as="document-node()"/>
       <xsl:param name="flattened-class-1-documents" as="document-node()*"/>
-      <xsl:variable name="work-equivs" as="element()*"
+      <!--<xsl:variable name="work-equivs" as="element()*"
          select="$self-expanded-2/*/tan:body/tan:group[tan:work]"/>
       <xsl:variable name="div-type-equivs" as="element()*"
-         select="$self-expanded-2/*/tan:body/tan:group[tan:div-type]"/>
+         select="$self-expanded-2/*/tan:body/tan:group[tan:div-type]"/>-->
       <xsl:for-each select="$flattened-class-1-documents">
          <xsl:variable name="pos" select="position()"/>
          <xsl:copy>
             <xsl:apply-templates mode="prep-class-1" select="node()">
-               <xsl:with-param name="work-equivs" select="$work-equivs"/>
-               <xsl:with-param name="div-type-equivs" select="$div-type-equivs"/>
+               <xsl:with-param name="self-expanded-2" select="$self-expanded-2"/>
+               <!--<xsl:with-param name="work-equivs" select="$work-equivs"/>
+               <xsl:with-param name="div-type-equivs" select="$div-type-equivs"/>-->
             </xsl:apply-templates>
          </xsl:copy>
       </xsl:for-each>
    </xsl:function>
    <xsl:template match="node()" mode="prep-class-1">
-      <xsl:param name="work-equivs" as="element()*"/>
-      <xsl:param name="div-type-equivs" as="element()*"/>
+      <!--<xsl:param name="work-equivs" as="element()*"/>
+      <xsl:param name="div-type-equivs" as="element()*"/>-->
+      <xsl:param name="self-expanded-2" as="document-node()"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:apply-templates mode="#current">
-            <xsl:with-param name="work-equivs" select="$work-equivs"/>
-            <xsl:with-param name="div-type-equivs" select="$div-type-equivs"/>
+            <xsl:with-param name="self-expanded-2" select="$self-expanded-2"/>
+            <!--<xsl:with-param name="work-equivs" select="$work-equivs"/>
+            <xsl:with-param name="div-type-equivs" select="$div-type-equivs"/>-->
          </xsl:apply-templates>
       </xsl:copy>
    </xsl:template>
    <xsl:template match="tan:TAN-T | tei:TEI" mode="prep-class-1">
       <!-- Homogenize tei:TEI to tan:TAN-T -->
-      <xsl:param name="work-equivs" as="element()*"/>
-      <xsl:param name="div-type-equivs" as="element()*"/>
+      <!--<xsl:param name="work-equivs" as="element()*"/>
+      <xsl:param name="div-type-equivs" as="element()*"/>-->
+      <xsl:param name="self-expanded-2" as="document-node()"/>
       <xsl:variable name="this-root-id" select="@id"/>
       <xsl:variable name="src-id" select="$head/tan:source[tan:IRI = $this-root-id]/@xml:id"/>
       <TAN-T>
          <xsl:copy-of select="@*"/>
          <xsl:attribute name="src" select="$src-id"/>
-         <xsl:attribute name="work" select="($work-equivs[tan:work/@src = $src-id]/@n, 1)[1]"/>
+         <xsl:attribute name="work" select="($self-expanded-2/tan:TAN-A-div/tan:body/tan:group[tan:work/@src = $src-id]/@n, 1)[1]"/>
          <xsl:apply-templates mode="#current">
-            <xsl:with-param name="div-type-equivs" select="$div-type-equivs"/>
+            <xsl:with-param name="self-expanded-2" select="$self-expanded-2"/>
+            <!--<xsl:with-param name="div-type-equivs" select="$div-type-equivs"/>-->
          </xsl:apply-templates>
       </TAN-T>
    </xsl:template>
    <xsl:template match="tei:text" mode="prep-class-1">
       <!-- This template makes sure the tei:body drops rootward one level, as is customary in TAN and HTML -->
-      <xsl:param name="div-type-equivs" as="element()*"/>
+      <xsl:param name="self-expanded-2" as="document-node()"/>
+      <!--<xsl:param name="div-type-equivs" as="element()*"/>-->
       <xsl:apply-templates mode="#current">
-         <xsl:with-param name="div-type-equivs" select="$div-type-equivs"/>
+         <xsl:with-param name="self-expanded-2" select="$self-expanded-2"/>
+         <!--<xsl:with-param name="div-type-equivs" select="$div-type-equivs"/>-->
       </xsl:apply-templates>
    </xsl:template>
    <xsl:template match="tan:body | tei:body" mode="prep-class-1" xml:id="t-prep-class-1-data">
-      <xsl:param name="div-type-equivs" as="element()*"/>
+      <xsl:param name="self-expanded-2" as="document-node()"/>
+      <!--<xsl:param name="div-type-equivs" as="element()*"/>-->
       <xsl:variable name="this-root-id" select="root(.)/*/@id"/>
       <xsl:variable name="this-src-id" select="$head/tan:source[tan:IRI = $this-root-id]/@xml:id"/>
       <!-- Homogenize tei:body element to tan:body -->
@@ -558,13 +575,13 @@
          <xsl:for-each select="*">
             <xsl:variable name="pos" select="position()"/>
             <xsl:variable name="this-after-div-types-suppressed"
-               select="tan:suppress-div-types(., $this-src-id)"/>
+               select="tan:suppress-div-types(., $this-src-id,$self-expanded-2)"/>
             <xsl:variable name="this-after-ns-renamed"
-               select="tan:add-ref-to-div($this-after-div-types-suppressed, $this-src-id)"/>
+               select="tan:add-ref-to-div($this-after-div-types-suppressed, $this-src-id,$self-expanded-2)"/>
             <xsl:variable name="this-after-types-equated"
                select="
                   if ($fetch-type-eq = true()) then
-                     tan:add-type-eq-to-div($this-after-ns-renamed, $this-src-id, $div-type-equivs)
+                     tan:add-type-eq-to-div($this-after-ns-renamed, $this-src-id, $self-expanded-2)
                   else
                      $this-after-ns-renamed"/>
             <xsl:copy-of select="$this-after-types-equated"/>
@@ -576,8 +593,9 @@
    <xsl:function name="tan:suppress-div-types" as="element()">
       <xsl:param name="flattened-div" as="element()"/>
       <xsl:param name="src-id" as="xs:string"/>
+      <xsl:param name="self-expanded-2" as="document-node()"/>
       <xsl:variable name="div-types-to-suppress"
-         select="$self-expanded-1/*/tan:head/tan:declarations/tan:suppress-div-types[@src = $src-id]/@div-type-ref"/>
+         select="$self-expanded-2/*/tan:head/tan:declarations/tan:suppress-div-types[@src = $src-id]/@div-type-ref"/>
       <xsl:variable name="type-seq"
          select="tokenize($flattened-div/@type, $separator-hierarchy-regex)"/>
       <xsl:variable name="n-seq" select="tokenize($flattened-div/@n, $separator-hierarchy-regex)"/>
@@ -606,8 +624,9 @@
       -->
       <xsl:param name="flattened-div" as="element()"/>
       <xsl:param name="src-id" as="xs:string"/>
+      <xsl:param name="self-expanded-2" as="document-node()"/>
       <xsl:variable name="rename-div-ns"
-         select="$self-expanded-1/*/tan:head/tan:declarations/tan:rename-div-ns[@src = $src-id]"/>
+         select="$self-expanded-2/*/tan:head/tan:declarations/tan:rename-div-ns[@src = $src-id]"/>
       <xsl:variable name="type-seq"
          select="tokenize($flattened-div/@type, $separator-hierarchy-regex)"/>
       <xsl:variable name="ref-seq" select="tokenize($flattened-div/@n, $separator-hierarchy-regex)"/>
@@ -650,14 +669,17 @@
       -->
       <xsl:param name="flattened-div" as="element()"/>
       <xsl:param name="src-id" as="xs:string"/>
-      <xsl:param name="div-type-equivs" as="element()*"/>
+      <xsl:param name="self-expanded-2" as="document-node()"/>
       <xsl:variable name="type-seq"
          select="tokenize($flattened-div/@type, $separator-hierarchy-regex)"/>
+      <xsl:variable name="div-type-equivs"
+         select="$self-expanded-2/tan:TAN-A-div/tan:body/tan:group[tan:div-type]"/>
       <xsl:variable name="type-eq-seq"
          select="
             for $i in $type-seq
             return
-               $div-type-equivs[tan:div-type[@src = $src-id and @xml:id = $i]]/@n"/>
+               $div-type-equivs[tan:div-type[@src = $src-id and @xml:id = $i]]/@n"
+      />
       <xsl:for-each select="$flattened-div">
          <div>
             <xsl:copy-of select="@*"/>

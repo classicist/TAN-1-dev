@@ -11,9 +11,13 @@
    <ns prefix="xsl" uri="http://www.w3.org/1999/XSL/Transform"/>
 
    <include href="TAN-core.sch"/>
+   <include href="TAN-class-2-edit.sch"/>
    <include href="TAN-class-2-quarter.sch"/>
    <include href="TAN-class-2-half.sch"/>
    <include href="TAN-class-2-full.sch"/>
+   <phase id="edit">
+      <active pattern="class-2-edit"/>
+   </phase>
    <phase id="quarter">
       <active pattern="core"/>
       <active pattern="class-2-quarter"/>

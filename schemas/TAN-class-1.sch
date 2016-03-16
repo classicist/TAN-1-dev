@@ -5,8 +5,10 @@
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
    <title>Core tests for class 1 TAN files.</title>
    <let name="self-is-flat" value="tan:is-flat-class-1($self-resolved)"/>
-   <let name="prep-body" value="tan:prep-body()"/>
-   <let name="leafdiv-flatrefs" value="$prep-body/tan:div/@ref"/>
+   <let name="self-flattened" value="tan:flatten-class-1-doc(/)"/>
+   <!--<let name="prep-body" value="tan:prep-body()"/>-->
+   <let name="self-flattened-body" value="$self-flattened/(tei:TEI/tei:text/tei:body, tan:TAN-T/tan:body)"/>
+   <let name="leafdiv-flatrefs" value="$self-flattened-body/(tan:div, tei:div)/@n"/>
    <!--<let name="transcription-langs" value="$prep-body//@xml:lang"/>-->
    <let name="div-types" value="$head/tan:declarations/tan:div-type/@xml:id"/>
    <rule context="tan:see-also">

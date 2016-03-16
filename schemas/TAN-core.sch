@@ -490,6 +490,7 @@
          file.</report>
    </rule>
    <rule context="@which">
+      <let name="this-which" value="."/>
       <let name="these-keywords" value="tan:get-keywords(..)"/>
       <let name="help-requested" value="matches(.,$help-trigger-regex)"/>
       <let name="escaped-which" value="tan:escape(replace(.,$help-trigger-regex,''))"/>
@@ -530,10 +531,16 @@
                wish to know the meaning of a keyword, or you wish to edit the definition of a
                keyword.</sqf:p>
          </sqf:description>
-         <sqf:add match="." position="before">
-            <xsl:comment>&lt;<xsl:value-of select="name(..)"/> which="<xsl:value-of select="."/>"/></xsl:comment>
+         <sqf:add match=".." position="before">
+            <xsl:comment>&lt;<xsl:value-of select="name(..)"/> which="<xsl:value-of select="$this-which"/>"/></xsl:comment>
          </sqf:add>
-         <sqf:replace match=".." select="$self-resolved"/>
+         <sqf:replace match="..">
+            <xsl:for-each select="$self-resolved">
+               <xsl:text>&#xA;</xsl:text><xsl:copy>
+                  <xsl:copy-of select="@xml:id, *"/>
+               </xsl:copy>
+            </xsl:for-each>
+         </sqf:replace>
       </sqf:fix>
    </rule>
    <rule context="@when[parent::tan:*] | @ed-when | @when-accessed">

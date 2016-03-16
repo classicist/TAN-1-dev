@@ -6,7 +6,7 @@
 <TAN-T xmlns="tag:textalign.net,2015:ns" TAN-version="1" id="tag:hans@beispiel.com,2014:ringel">
    <head>
       <name>TAN Transkription, Ringelreihen mit Riederfallen</name>
-      <!--<master-location href="http://beispiel.com/TAN-T/ringel.xml"/>-->
+      <master-location href="http://beispiel.com/TAN-T/ringel.xml"/>
       <rights-excluding-sources rights-holder="schmidt">
          <IRI>http://creativecommons.org/licenses/by/4.0/</IRI>
          <name>Creative Commons Namensnennung 4.0 International Lizenz</name>

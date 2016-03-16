@@ -3,7 +3,7 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tan="tag:textalign.net,2015:ns"
     xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tei="http://www.tei-c.org/ns/1.0"
     xmlns:math="http://www.w3.org/2005/xpath-functions/math" xmlns:functx="http://www.functx.com"
-    xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" exclude-result-prefixes="xs math xd tan"
+    xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" exclude-result-prefixes="xs math xd tan fn tei functx"
     version="3.0">
     <xd:doc scope="stylesheet">
         <xd:desc>
@@ -33,7 +33,17 @@
 
     <xsl:param name="help-trigger" select="'???'"/>
     <xsl:variable name="help-trigger-regex" select="tan:escape($help-trigger)"/>
-
+    <xsl:function name="tan:help-requested" as="xs:boolean">
+        <xsl:param name="node" as="node()"/>
+        <xsl:value-of
+            select="
+                if ((some $i in ($node, $node/@*)
+                    satisfies matches($i, $help-trigger-regex)) or $node/@help) then
+                    true()
+                else
+                    false()"
+        />
+    </xsl:function>
     <xsl:param name="separator-hierarchy" select="' '" as="xs:string"/>
     <xsl:variable name="separator-hierarchy-regex" select="' '" as="xs:string"/>
 
@@ -244,9 +254,9 @@
          Output: <tan:result> containing a sequence of elements, <tan:tok> and <tan:non-tok>,
         corresponding to fn:match and fn:non-match for fn:analyze-string() -->
         <xsl:param name="text" as="xs:string?"/>
-        <xsl:param name="tokenize" as="element()?"/>
-        <xsl:variable name="regex" select="($tokenize/@regex, '\w+')[1]"/>
-        <xsl:variable name="flags" select="$tokenize/@flags"/>
+        <xsl:param name="token-definition" as="element()?"/>
+        <xsl:variable name="regex" select="($token-definition/@regex, '\w+')[1]"/>
+        <xsl:variable name="flags" select="$token-definition/@flags"/>
         <xsl:variable name="results">
             <results regex="{$regex}" flags="{$flags}">
                 <xsl:analyze-string select="$text" regex="{$regex}">
@@ -281,6 +291,15 @@
         </tok>
     </xsl:template>
 
+    <xsl:function name="tan:doc-version" xml:id="f-doc-version">
+        <xsl:param name="tan-doc" as="document-node()*"/>
+        <xsl:copy-of
+            select="
+            for $i in $tan-doc
+            return
+            tan:most-recent-dateTime($i//(@when | @ed-when | @when-accessed))"
+        />
+    </xsl:function>
     <xsl:function name="tan:dateTime-to-decimal" as="xs:decimal?">
         <!-- Input: ISO-compliant date or dateTime 
          Output: decimal between 0 and 1 that acts as a proxy for the date and time.
@@ -363,6 +382,10 @@
         />
     </xsl:function>
 
+    <xsl:function name="tan:duplicate-values" as="item()*">
+        <xsl:param name="sequence" as="item()*"/>
+        <xsl:copy-of select="$sequence[index-of($sequence, .)[2]]"/>
+    </xsl:function>
 
     <xsl:function name="tan:get-keywords" as="xs:string*">
         <xsl:param name="element-that-takes-attribute-which" as="item()"/>
@@ -420,18 +443,6 @@
     </xsl:function>
     
     <!-- CONTEXT DEPENDENT FUNCTIONS -->
-    <!--<xsl:function name="tan:get-1st-da-locations" as="xs:string*">
-        <xsl:param name="tan-element" as="element()*"/>
-        <xsl:copy-of
-            select="
-                for $i in $tan-element
-                return
-                    if (exists(tan:first-loc-available($i))) then
-                        resolve-uri(tan:first-loc-available($i), $doc-uri)
-                    else
-                        ''"
-        />
-    </xsl:function>-->
     <xsl:function name="tan:first-loc-available" as="xs:string*">
         <!-- One-parameter version of the function below, using the default, $doc-uri
         -->
@@ -562,13 +573,6 @@
             return
                replace($i, '\W+', $separator-hierarchy), $separator-hierarchy)"
       />
-       <!-- revised Feb 2016 in light of new ref rules; delete if all is ok --> 
-       <!--<xsl:value-of
-            select="
-                string-join(for $j in ($node/ancestor-or-self::tan:div | $node/ancestor-or-self::tei:div)
-                return
-                    concat($j/@type, $separator-type-and-n, $j/@n), $separator-hierarchy)"
-        />-->
     </xsl:function>
 
     <xsl:function name="tan:element-to-comment" as="comment()">
@@ -580,7 +584,28 @@
 
     <xsl:function name="tan:resolve-doc" as="document-node()*">
         <xsl:param name="TAN-documents" as="document-node()*"/>
-        <xsl:for-each select="$TAN-documents">
+        <xsl:copy-of select="tan:resolve-doc($TAN-documents, (), false())"/>
+    </xsl:function>
+    <xsl:function name="tan:resolve-doc" as="document-node()*">
+        <xsl:param name="TAN-documents" as="document-node()*"/>
+        <xsl:param name="src-ids" as="xs:string*"/>
+        <xsl:param name="leave-breadcrumbs" as="xs:boolean"/>
+        <xsl:variable name="docs-breadcrumbed" as="document-node()*">
+            <xsl:choose>
+                <xsl:when test="$leave-breadcrumbs = true()">
+                    <xsl:for-each select="$TAN-documents">
+                        <xsl:copy>
+                            <xsl:apply-templates mode="leave-breadcrumbs"/>
+                        </xsl:copy>
+                    </xsl:for-each>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:sequence select="$TAN-documents"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+        <xsl:for-each select="$docs-breadcrumbed">
+            <xsl:variable name="pos" select="position()"/>
             <xsl:variable name="included-elements" select=".//*[@include]"/>
             <xsl:variable name="names-of-included-elements"
                 select="
@@ -588,23 +613,27 @@
                     return
                         name($i)"
                 as="xs:string*"/>
+            
             <xsl:choose>
                 <xsl:when test="exists($included-elements)">
                     <xsl:copy>
+                        <!--<xsl:copy-of select="$doc-uri"/>-->
+                        <!--<xsl:copy-of select="tan:include(.)"/>-->
                         <xsl:copy-of
-                            select="tan:strip-duplicates(tan:resolve-keyword(tan:include(*)), $names-of-included-elements)"
+                            select="tan:strip-duplicates(tan:resolve-keyword(tan:include(.), $src-ids[$pos]), $names-of-included-elements)"
                         />
                     </xsl:copy>
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:copy>
-                        <xsl:copy-of select="tan:resolve-keyword(*)"/>
+                        <xsl:copy-of select="tan:resolve-keyword(., $src-ids[$pos])"/>
                     </xsl:copy>
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:for-each>
     </xsl:function>
-    <xsl:function name="tan:resolve-element" as="element()*">
+    <!-- items slated for deletion March 2016 -->
+    <!--<xsl:function name="tan:resolve-element" as="element()*">
         <xsl:param name="TAN-elements" as="element()*"/>
         <xsl:variable name="included-elements"
             select="$TAN-elements/descendant-or-self::*[@include]"/>
@@ -624,7 +653,7 @@
                 <xsl:copy-of select="tan:resolve-keyword($TAN-elements)"/>
             </xsl:otherwise>
         </xsl:choose>
-    </xsl:function>
+    </xsl:function>-->
     <!--<xsl:function name="tan:resolve-doc" as="document-node()*">
         <xsl:param name="TAN-documents" as="document-node()*"/>
         <xsl:variable name="pass-1" as="document-node()*">
@@ -685,9 +714,8 @@
         <xsl:param name="urls-so-far" as="xs:anyURI*"/>
         <xsl:variable name="new-urls">
             <xsl:for-each select="$elements-to-be-checked-for-inclusion">
-                <xsl:variable name="normalized-inclusion-name"
-                    select="replace(@include, $help-trigger-regex, '')"/>
-                <xsl:variable name="incl-refs" select="tokenize($normalized-inclusion-name, '\s+')"/>
+                <xsl:variable name="incl-refs" select="tokenize(tan:normalize-text(@include), ' ')"
+                />
                 <xsl:if test="@include">
                     <xsl:value-of
                         select="root()/*/tan:head/tan:inclusion[@xml:id = $incl-refs]/tan:location/@href"
@@ -697,25 +725,27 @@
         </xsl:variable>
         <xsl:variable name="new-sequence" as="node()*">
             <xsl:for-each select="$elements-to-be-checked-for-inclusion">
+                <xsl:variable name="this-base-uri" select="(root()/*/@uri, base-uri(.))[1]" as="xs:anyURI"/>
+                <xsl:variable name="this-root" select="root(.)"/>
+                <xsl:variable name="this-element" select="."/>
                 <xsl:choose>
                     <xsl:when test="@include">
-                        <xsl:variable name="normalized-inclusion-name"
-                            select="replace(@include, $help-trigger-regex, '')"/>
                         <xsl:variable name="incl-refs"
-                            select="tokenize($normalized-inclusion-name, '\s+')"/>
+                            select="tokenize(tan:normalize-text(@include), ' ')"/>
                         <xsl:variable name="these-inclusions"
-                            select="root(current())/*/tan:head/tan:inclusion[@xml:id = $incl-refs]"/>
+                            select="doc($this-base-uri)/*/tan:head/tan:inclusion[@xml:id = $this-element/@include]"
+                        />
                         <xsl:variable name="these-inclusion-1st-las"
                             select="
                                 for $i in $these-inclusions
                                 return
-                                    tan:first-loc-available($i, base-uri($i))"/>
+                                    tan:first-loc-available($i, $this-base-uri)"/>
                         <xsl:variable name="this-name" select="name()"/>
                         <xsl:variable name="these-replacement-elements"
                             select="
                                 for $i in $these-inclusion-1st-las
                                 return
-                                    doc(resolve-uri($i, base-uri(.)))//*[name(.) = $this-name][not(parent::tan:div)]"/>
+                                    doc(resolve-uri($i, $this-base-uri))//*[name(.) = $this-name][not(parent::tan:div)]"/>
                         <xsl:variable name="these-errors" as="xs:integer?">
                             <xsl:choose>
                                 <xsl:when test="not(exists($these-replacement-elements))">
@@ -736,7 +766,12 @@
                                 </xsl:copy>
                             </xsl:when>
                             <xsl:otherwise>
-                                <xsl:sequence select="$these-replacement-elements"/>
+                                <xsl:for-each select="$these-replacement-elements">
+                                    <xsl:copy>
+                                        <xsl:copy-of select="@*, $this-element/@q"/>
+                                        <xsl:copy-of select="*"/>
+                                    </xsl:copy>
+                                </xsl:for-each>
                             </xsl:otherwise>
                         </xsl:choose>
                     </xsl:when>
@@ -763,10 +798,19 @@
     <!-- TRANSFORMATIVE TEMPLATES -->
     <!-- Default templates -->
 
-    <xsl:template match="node()" mode="resolve-keyword resolve-href include">
+    <xsl:template match="node()" mode="resolve-href include">
         <xsl:copy>
             <xsl:copy-of select="@*"/>
             <xsl:apply-templates mode="#current"/>
+        </xsl:copy>
+    </xsl:template>
+    <xsl:template match="node()" mode="resolve-keyword">
+        <xsl:param name="src-id" as="xs:string?"/>
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:apply-templates mode="#current">
+                <xsl:with-param name="src-id" select="$src-id"/>
+            </xsl:apply-templates>
         </xsl:copy>
     </xsl:template>
     <xsl:template match="node()" mode="strip-duplicates">
@@ -780,21 +824,41 @@
     </xsl:template>
 
     <!-- Mode-specific templates -->
-
-    <xsl:function name="tan:include" as="node()*">
-        <xsl:param name="tan-nodes" as="node()*"/>
-        <xsl:apply-templates mode="include" select="$tan-nodes"/>
+    <xsl:template match="node()" mode="leave-breadcrumbs">
+        <xsl:variable name="this-element-name" select="name(.)"/>
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:attribute name="q"
+                select="count(preceding-sibling::*[name() = $this-element-name]) + 1"/>
+            <xsl:if test="not(parent::*)">
+                <xsl:attribute name="uri" select="base-uri(.)"/>
+            </xsl:if>
+            <xsl:apply-templates mode="#current"/>
+        </xsl:copy>
+    </xsl:template>
+    
+    <xsl:function name="tan:include" as="document-node()*">
+        <xsl:param name="tan-docs" as="document-node()*"/>
+        <xsl:for-each select="$tan-docs">
+            <xsl:copy>
+                <xsl:apply-templates mode="include"/>
+            </xsl:copy>
+        </xsl:for-each>
     </xsl:function>
     <xsl:template match="*[@include]" mode="include">
         <xsl:sequence select="tan:resolve-include(.)"/>
     </xsl:template>
 
-    <xsl:function name="tan:strip-duplicates" as="node()*">
-        <xsl:param name="tan-nodes" as="node()*"/>
+    <xsl:function name="tan:strip-duplicates" as="document-node()*">
+        <xsl:param name="tan-docs" as="document-node()*"/>
         <xsl:param name="element-names-to-check" as="xs:string*"/>
-        <xsl:apply-templates mode="strip-duplicates" select="$tan-nodes">
-            <xsl:with-param name="element-names-to-check" select="$element-names-to-check"/>
-        </xsl:apply-templates>
+        <xsl:for-each select="$tan-docs">
+            <xsl:copy>
+                <xsl:apply-templates mode="strip-duplicates">
+                    <xsl:with-param name="element-names-to-check" select="$element-names-to-check"/>
+                </xsl:apply-templates>
+            </xsl:copy>
+        </xsl:for-each>
     </xsl:function>
     <xsl:template match="tan:* | tei:*" mode="strip-duplicates">
         <xsl:param name="element-names-to-check" as="xs:string*"/>
@@ -824,11 +888,35 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-
-    <xsl:function name="tan:resolve-keyword" as="node()*">
-        <xsl:param name="tan-nodes" as="node()*"/>
-        <xsl:apply-templates mode="resolve-keyword" select="$tan-nodes"/>
+    
+    <xsl:function name="tan:resolve-keyword" as="document-node()*">
+        <!-- one-parameter version of the next -->
+        <xsl:param name="tan-docs" as="document-node()*"/>
+        <xsl:copy-of select="tan:resolve-keyword($tan-docs,())"/>
     </xsl:function>
+    <xsl:function name="tan:resolve-keyword" as="document-node()*">
+        <xsl:param name="tan-docs" as="document-node()*"/>
+        <xsl:param name="src-ids" as="xs:string*"/>
+        <xsl:for-each select="$tan-docs">
+            <xsl:variable name="pos" select="position()"/>
+            <xsl:copy>
+                <xsl:apply-templates mode="resolve-keyword">
+                    <xsl:with-param name="src-id" select="$src-ids[$pos]"/>
+                </xsl:apply-templates>
+            </xsl:copy>
+        </xsl:for-each>
+    </xsl:function>
+    
+    <xsl:template match="/*" mode="resolve-keyword">
+        <xsl:param name="src-id" as="xs:string?"/>
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:if test="exists($src-id)">
+                <xsl:attribute name="src" select="$src-id"/>
+            </xsl:if>
+            <xsl:apply-templates mode="#current"/>
+        </xsl:copy>
+    </xsl:template>
     <xsl:template match="tei:*[@which] | tan:*[@which]" mode="resolve-keyword">
         <xsl:variable name="this-element" select="."/>
         <xsl:variable name="element-name" select="name(.)"/>

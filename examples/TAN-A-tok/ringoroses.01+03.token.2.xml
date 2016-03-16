@@ -46,7 +46,6 @@
                 <rename old="#a" new="#1"/>
                 <rename old="e" new="4"/>
             </rename-div-ns>
-            <implicit-div-type-refs src="eng ger"/>
         </declarations>
         <agent xml:id="park" roles="creator">
             <IRI>tag:parkj@textalign.net,2015:self</IRI>

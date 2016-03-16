@@ -44,7 +44,7 @@
             <div-type xml:id="par" which="paragraph"/>
             <div-type xml:id="s" which="sentence"/>
             <div-type xml:id="ic" which="clause (grammatical)"/>
-            <recommended-div-type-refs>implicit</recommended-div-type-refs>
+            
             <filter>
                 <normalization which="no hyphens"/>
             </filter>

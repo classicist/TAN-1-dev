@@ -6,7 +6,7 @@
       TAN-A-div-edit.sch. Represents lightweight, SQF-friendly helps for editing, without any tests
       that would be time-consuming on long documents. No tests in this file should invoke
       tokenization.</title>
-   <rule context="tan:TAN-A-div">
+   <!--<rule context="tan:TAN-A-div">
       <let name="this-schematron-pi"
          value="/processing-instruction()[matches(., 'TAN-A-div(-edit)?\.sch')]"/>
       <let name="cited-schematron-url"
@@ -25,7 +25,7 @@
             else
                ()"/>
       <report test="true()" role="info"
-         ><!-- Information about elements that support editing help will be listed at the rootmost element -->Help
+         ><!-\- Information about elements that support editing help will be listed at the rootmost element -\->Help
          available: <xsl:value-of
             select="
                for $i in $this-schematron//sch:rule,
@@ -35,8 +35,8 @@
                   concat('(', $j, ':) ', replace($k, '\$help-trigger', $help-trigger), ' ')"
          />
       </report>
-   </rule>
-   <rule context="tan:div-ref | tan:anchor-div-ref">
+   </rule>-->
+   <!--<rule context="tan:div-ref | tan:anchor-div-ref">
       <let name="this-ref" value="tan:normalize-text(@ref)"/>
       <let name="this-src" value="tan:normalize-text(@src)"/>
       <let name="this-src-list" value="tan:src-ids-to-nos($this-src)"/>
@@ -57,7 +57,7 @@
             return
                $these-sources-resolved/tan:div[matches(@ref, $i)]/@ref"
       />
-      <!--<let name="refs-that-fail" value="$these-atomic-refs[not(. = $ref-identifies-what-divs/@ref)]"/>-->
+      <!-\-<let name="refs-that-fail" value="$these-atomic-refs[not(. = $ref-identifies-what-divs/@ref)]"/>-\->
       <let name="possible-common-corrected-refs"
          value="distinct-values($possible-corrected-refs[count(index-of($possible-corrected-refs, .)) ge count($this-src-list)])"/>
       <let name="search-report"
@@ -80,12 +80,12 @@
 
       <report test="$ref-help-requested and exists($possible-common-corrected-refs)"
          sqf:fix="get-div-refs-from-hints get-div-text-from-search fetch-content"
-         ><!-- Putting $help-trigger in @ref with a partial match on a div ref will return suggested alternatives -->Perhaps
+         ><!-\- Putting $help-trigger in @ref with a partial match on a div ref will return suggested alternatives -\->Perhaps
          you mean: <xsl:value-of select="$possible-common-corrected-refs"/></report>
       <report
          test="not(exists($ref-identifies-what-divs)) and not(exists($possible-common-corrected-refs))"
          sqf:fix="get-div-text-from-search"
-            ><!-- @ref with no match on a div ref will return suggested divs whose texts match the value of @ref (treated as a regular expression) -->
+            ><!-\- @ref with no match on a div ref will return suggested divs whose texts match the value of @ref (treated as a regular expression) -\->
          <xsl:value-of select="$this-ref"/>
          <xsl:value-of select="$search-report"/> found in: <xsl:value-of
             select="
@@ -95,7 +95,7 @@
                   ' (', $i, ') ')"
          /></report>
       <report test="$ref-help-requested = true() and exists($ref-identifies-what-divs)"
-         sqf:fix="fetch-content"><!-- Putting $help-trigger in @ref with an exact match on a div ref will return either the text of the chosen div or the references to children div refs -->
+         sqf:fix="fetch-content"><!-\- Putting $help-trigger in @ref with an exact match on a div ref will return either the text of the chosen div or the references to children div refs -\->
          <xsl:value-of
             select="
                for $i in $ref-identifies-what-divs
@@ -110,7 +110,7 @@
       <report test="$src-help-requested">Sources available: <xsl:value-of select="$src-ids"
          /></report>
 
-      <!-- SCHEMATRON QUICK FIXES -->
+      <!-\- SCHEMATRON QUICK FIXES -\->
       <sqf:fix id="fetch-content" use-when="exists($ref-identifies-what-divs)">
          <sqf:description>
             <sqf:title>Append text content of the divs being referred to</sqf:title>
@@ -156,5 +156,5 @@
          </sqf:add>
       </sqf:fix>
 
-   </rule>
+   </rule>-->
 </pattern>

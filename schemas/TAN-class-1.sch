@@ -60,11 +60,9 @@
             return
                $body/@xml:lang = $first-docs[$i]//(tan:body, tei:body)/@xml:lang"/>
       <let name="this-text" value="normalize-space(string-join($body//text(), ''))"/>
+      <let name="resolved-docs" value="tan:resolve-doc($first-docs)"/>
       <let name="resolved-bodies"
-         value="
-            for $i in $first-docs/(tan:TAN-T/tan:body)
-            return
-               tan:resolve-element($i)"/>
+         value="$resolved-docs/(tei:TEI/tei:text/tei:body, tan:TAN-T/tan:body)"/>
       <let name="alternative-text"
          value="
             for $i in $resolved-bodies
@@ -204,8 +202,8 @@
       <report test="matches(string-join(text(), ''), '\s\p{M}')"
          sqf:fix="remove-space-preceding-modifiers">No div may have a spacing character followed by
          a modifying character.</report>
+      <assert test="count($these-types) = count($these-ns)">The values of @n and @type must balance.</assert>
       <!-- reports specific to flat transcriptions -->
-      <assert test="count($these-types) = count($these-ns)">Flat transcriptions must have an identical number of values for @n and @type.</assert>
       <assert
          test="
             if ($self-is-flat = true()) then

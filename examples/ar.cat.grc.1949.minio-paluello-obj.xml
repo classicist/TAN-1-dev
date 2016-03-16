@@ -44,7 +44,7 @@
                 <IRI>tag:textalign.net,2015:div-type:line:physical</IRI>
                 <name>physical line</name>
             </div-type>
-            <recommended-div-type-refs>implicit</recommended-div-type-refs>
+            
             <filter>
                 <normalization>
                     <IRI>tag:textalign.net,2015:normalization:hyphens-discretionary-removed</IRI>

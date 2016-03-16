@@ -14,11 +14,7 @@ decl-id-ref-opt = empty
 ## String that specifies a range of divs using the div-ref pattern joined by a hyphen or a comma.
 
 ## For more see main.xml#leaf_div_uniqueness_rule
-div-range-ref =
-    xsd:string {
-        pattern =
-            "(\w+(\W\w+)*)((\s*,|\s+-)\s+(\w+(\W\w+)*))*|.*\?\?\?.*"
-    }
+div-range-ref = xsd:string { pattern = "(\w+(\W\w+)*)((\s*,|\s+-)\s+(\w+(\W\w+)*))*|.*\?\?\?.*" }
 ed-agent =
     
     ## refers to one or more <agent>s who have edited (added or modified) an element or its content.
@@ -46,6 +42,10 @@ cert-claim =
     attribute cert {
         xsd:string { pattern = "(high)|(low)|(0\.\d+)" }
     }
+help-opt =
+    
+    ## requests help on the context element
+    attribute help { empty }
 href-opt =
     
     ## points to the location of a file, either as part of <location> or in elements that refer to TAN files, to be used to invoke a schematron quick fix to populate the <IRI> and <location> child elements.
@@ -54,7 +54,7 @@ href-opt =
     
     ## The second use of this attribute is pragmatic, used only as a convenience to TAN users who wish to include the metadata of another TAN file without leaving the current file. It is associated with a warning message that is linked to a Schematron Quick Fix that will supply the correct metadata and remove the attribute.
     attribute href { text }
-inclusion =
+inclusion-att =
     
     ## signals that the parent element is to be replaced by all elements of the same name found in the referred <inclusion>.
     attribute include { d:IDREFS }
@@ -132,7 +132,7 @@ role-ref =
 seq-picker =
     xsd:string {
         pattern =
-            "((last)|(last-\d+)|(\d+))(\s*-\s*((last)|(last-\d+)|(\d+)))?(\s*,?\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*"
+            "((last)|(last-\d+)|(\d+))(\s*-\s*((last)|(last-\d+)|(\d+)))?(\s*,?\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*|.*\?\?\?.*"
     }
 source-ref = empty
 
@@ -221,6 +221,7 @@ func-param-flags =
     attribute flags {
         xsd:string { pattern = "[smixq]+" }
     }
+inclusion = inclusion-att, help-opt?
 IRI-gen-ref =
     
     ## contains an International Resource Identifier that serves as a name for the a concept, person, or thing referred to by the parent element. IRIs are explained at main.xml#IRIs_and_linked_data.

@@ -193,7 +193,7 @@
    </head>
    <text>
       <body xml:lang="eng">
-         <div type="title" n="" part="N" org="uniform" sample="complete"><head>
+         <div type="title" n="title" part="N" org="uniform" sample="complete"><head>
             <title>The Confession of St Patrick</title>
          </head></div>
          <div xml:id="C01_eng" n="01" part="I" corresp="C01_lat" type="sect" org="uniform" sample="complete">

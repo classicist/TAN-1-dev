@@ -108,8 +108,7 @@ token-list =
         certainty-stamp,
         source-ref,
         pointer-to-div-range,
-        token-value-ref?,
-        item-pos-ref?,
+        (token-value-ref | item-pos-ref | (token-value-ref, item-pos-ref)),
         char-ref,
         continuation-opt?
     }

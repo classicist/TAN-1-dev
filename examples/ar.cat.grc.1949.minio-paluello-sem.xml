@@ -48,7 +48,7 @@
                 <desc>used to identify two or more sentence parts that have a subject and predicate
                     and function as a sentence.</desc>
             </div-type>
-            <recommended-div-type-refs>implicit</recommended-div-type-refs>
+            
             <filter>
                 <normalization which="no hyphens"/>
             </filter>

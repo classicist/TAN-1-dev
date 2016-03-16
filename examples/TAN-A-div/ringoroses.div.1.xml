@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="../../schemas/TAN-A-div.rnc" type="application/relax-ng-compact-syntax"?>
-<?xml-model href="../../schemas/TAN-A-div.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<?xml-model href="../../schemas/TAN-A-div.sch" phase="full" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
 <!--<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-div.rnc" type="application/relax-ng-compact-syntax"?>
 <?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-div.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>-->
 <TAN-A-div xmlns="tag:textalign.net,2015:ns" TAN-version="1" id="tag:parkj@textalign.net,2015:ring01-TAN-A-ring02">
@@ -39,7 +39,6 @@
         </source>
         <declarations>
             <suppress-div-types src="eng-1790" div-type-ref="poem"/>
-            <implicit-div-type-refs src="eng-uk eng-us ger eng-1790"/>
             <comment when="2016-02-22-05:00" who="park">The following token definition
                 treats the following as words: sequences of letters, any individual character 
                 that is neither a letter nor a space (i.e., punctuation).</comment>

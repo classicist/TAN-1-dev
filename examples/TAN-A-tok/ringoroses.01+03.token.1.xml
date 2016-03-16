@@ -39,10 +39,7 @@
                 <IRI>tag:kalvesmaki@gmail.com,2014:reuse-type:correlation-general</IRI>
                 <name>Texts are generally correlated, but without specifying the relation</name>
             </reuse-type>
-            <rename-div-types src="ger">
-                <rename old="Zeile" new="line"/>
-            </rename-div-types>
-            <rename-div-ns src="ger" div-type-ref="line">
+            <rename-div-ns src="ger" div-type-ref="Zeile">
                 <rename old="#a" new="#1"/>
             </rename-div-ns>
             <comment when="2016-02-22-05:00" who="park">The following is equivalent to @which = 'letters'</comment>

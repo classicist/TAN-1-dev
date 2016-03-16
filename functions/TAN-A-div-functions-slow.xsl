@@ -16,7 +16,7 @@
    <xsl:variable name="srcs-whose-tokens-are-defined"
       select="tan:src-ids-to-nos($head/tan:declarations/tan:token-definition/@src)"/>
    <xsl:variable name="src-1st-da-data-segmented"
-      select="tan:segment-tokenized-prepped-class-1-data(tan:tokenize-prepped-class-1-doc($src-1st-da-prepped))"
+      select="tan:segment-tokenized-prepped-class-1-doc(tan:tokenize-prepped-class-1-doc($src-1st-da-prepped))"
       as="document-node()*"/>
    <xsl:variable name="equate-works" as="xs:integer+">
       <!-- this variable retains a list of integers, one per source, indicating groups of works -->
@@ -192,7 +192,7 @@
 
    <!-- CONTEXT DEPENDENT FUNCTIONS -->
 
-   <xsl:function name="tan:segment-tokenized-prepped-class-1-data" as="document-node()*">
+   <xsl:function name="tan:segment-tokenized-prepped-class-1-doc" as="document-node()*">
       <!-- Input: document()* resulting from tan:tokenize-prepped-class-1-data()
       Output: elements, one per source, deep copy of input, but inserting <tan:seg> between 
       <tan:div> and <tan:tok>, reflecting all <split-leaf-div-at>s-->

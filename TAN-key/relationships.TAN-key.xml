@@ -142,6 +142,7 @@
                 <item>
                     <IRI>tag:textalign.net,2015:relationship:new-version</IRI>
                     <name>new version</name>
+                    <name>update</name>
                     <desc>TAN file that supersedes the present file, and part of the same editorial
                         stream. The alterations have not been significant enough to warrant a new
                         @id in the rootmost element. This is useful for officially deprecating a TAN

@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <errors xmlns="tag:textalign.net,2015:ns">
     <group affects-attribute="include" affects-element="inclusion">
-        <error>Inclusion must be supported in parent element</error>
-        <error>Replacement element must be found in target inclusion</error>
-        <error>Inclusion may not be circular</error>
-        <error>Functions based on inclusions must be applied to elements that have the same
+        <error xml:id="inc01">Inclusion must be supported in parent element</error>
+        <error xml:id="inc02">Replacement element must be found in target inclusion</error>
+        <error xml:id="inc03">Inclusion may not be circular</error>
+        <error xml:id="inc04">Functions based on inclusions must be applied to elements that have the same
             name</error>
     </group>
-    <group affects-element="token-definition">
-        <error>&lt;location> must point to an available document.</error>
-        <error>If there is no &lt;location> then @which must be present.</error>
-        <error>If &lt;tokenization> points to a &lt;recommended-tokenization> the latter must point
-            to an available document.</error>
-        <error>The value of @which must be either in the source or a reserved keyword.</error>
-        <!--<error>If a core TAN-R-tok file is invoked, it must be available.</error>-->
-        <error>Tokenizations must accommodate every language used by a source.</error>
+    <group affects-attribute="which">
+        <error xml:id="whi01">The value of @which must be either in the source or a reserved keyword.</error>
+    </group>
+    <group affects-element="location">
+        <error xml:id="loc01">&lt;location> must point to an available document.</error>
+        <error xml:id="loc02">If there is no &lt;location> then @which must be present.</error>
+    </group>
+    <group affects-attribute="ref">
+        <error xml:id="ref01">Reference cannot be found in source</error>
+        <error xml:id="ref02">References must be atomic (no ranges, or atomic references joined by commas).</error>
+    </group>
+    <group affects-element="tok">
+        <error xml:id="tok01">&lt;tok> cannot be found in leaf &lt;div>.</error>
+        <error xml:id="tok02">&lt;tok> does not reference a leaf &lt;div>.</error>
+        <error xml:id="tok03">&lt;tok> does not reference &lt;div>.</error>
+    </group>
+    <group affects-element="equate-works equate-div-types">
+        <error xml:id="equ01">Item has been equated more than once.</error>
+        <error xml:id="equ02">Items that share IRI values are being equated.</error>
     </group>
 </errors>

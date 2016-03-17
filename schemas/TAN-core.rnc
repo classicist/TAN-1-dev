@@ -281,7 +281,8 @@ TAN-root =
     TAN-ver,
     ed-stamp?,
     TAN-head,
-    TAN-body
+    TAN-body,
+    TAN-tail
 # 2nd level of any TAN file.
 TAN-head =
     
@@ -306,6 +307,15 @@ TAN-body =
     ## contains the data
     element body { progress?, ed-stamp?, (comment* & TAN-body-core) }
 TAN-body-core = empty
+
+TAN-tail = 
+
+   ## permits any arbitrary content. Suitable as a placeholder for temporary data, especially to facilitate time-consuming validation routines. 
+element tail { any_content }?
+
+any_content = any_element* & text
+any_element = element * { any_attribute*, any_content }
+any_attribute = attribute * { text }
 # 
 # 3rd level of any TAN file, head metadata only (the body, which differs widely across TAN file types, are defined in other schema files)
 nonsource-rights =

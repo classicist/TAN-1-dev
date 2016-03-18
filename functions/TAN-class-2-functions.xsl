@@ -492,38 +492,21 @@
       />
    </xsl:function>
 
-   <!-- STEP SRC-1ST-DA-FLATTENED: flatten source documents -->
-   <!-- 2016-03-17 moved to eliminate this step -->
-   <xsl:function name="tan:get-src-1st-da-flattened" xml:id="v-src-1st-da-prepped"
-      as="document-node()*">
-      <!-- zero-parameter version of the next function -->
-      <xsl:copy-of select="tan:get-src-1st-da-flattened(tan:resolve-doc(tan:get-src-1st-da()))"/>
-   </xsl:function>
-   <xsl:function name="tan:get-src-1st-da-flattened" as="document-node()*">
-      <!-- Input: resolved class 1 document; output: same document flattened -->
-      <xsl:param name="resolved-class-1-doc" as="document-node()*"/>
-      <xsl:copy-of select="$resolved-class-1-doc"/>
-   </xsl:function>
-
    <!-- STEP SRC-1ST-DA-PREPPED: add to source documents work id, renamed ns, suppressed div types -->
    <xsl:function name="tan:get-src-1st-da-prepped" as="document-node()*">
       <!-- zero-parameter version of the next function -->
       <xsl:copy-of
-         select="tan:get-src-1st-da-prepped(tan:get-self-expanded-2(), tan:get-src-1st-da-flattened())"
+         select="tan:get-src-1st-da-prepped(tan:get-self-expanded-2(), tan:get-src-1st-da-resolved())"
       />
    </xsl:function>
    <xsl:function name="tan:get-src-1st-da-prepped" as="document-node()*">
-      <!-- March 17, 2016: slating @type-eq for deletion (no longer needed); @pos for
-      deletion (not needed with flattening being removed); perhaps these can be restored 
-      later as optional features. -->
       <!-- Input: sequence of flattened class 1 TAN documents 
          Output: sequence of documents with these changes:
          /*   - >   @work="[DIGIT DRAWN FROM TAN-A-div //tan:group[tan:work]/@id]"
          tei:TEI - > tan:TAN-T
          tei:text/tei:body   - >   tan:body
          tei:div  - >  tan:div
-         <div [copy of @*] @pos="[POSITION, TO AVOID LENGTHY RECALCULATIONS DOWNSTREAM]" 
-         @type-eq="[DIV-TYPE EQUIVALENCES]" @ref="[NORMALIZED, FLATTENED REF WITH N 
+         <div [copy of @*] @ref="[NORMALIZED, FLATTENED REF WITH N 
          SUBSTITUTIONS AND SUPPRESSIONS]">[COPY OF CONTENT, INCLUDING TEI MARKUP, IF ANY]</div>
          Text remains untokenized.
       -->

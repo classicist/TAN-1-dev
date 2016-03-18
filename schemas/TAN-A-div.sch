@@ -166,7 +166,7 @@
    <pattern id="A-div-full">
       <let name="srcs-segmented"
          value="tan:get-src-1st-da-segmented($self-expanded-4, $srcs-tokenized)"/>
-      <let name="self-expanded-5" value="tan:get-self-expanded-5($self-expanded-4, $srcs-segmented)"/>
+      <let name="self-expanded-5" value="tan:get-self-expanded-5($self-expanded-4)"/>
       <let name="srcs-realigned"
          value="tan:get-src-1st-da-realigned($self-expanded-5, $srcs-segmented)"/>
       <rule context="tan:align | tan:realign">

@@ -11,7 +11,7 @@
             for $i in $srcs-prepped,
                $j in $i/tan:TAN-T/tan:body
             return
-               ($j/tan:div[text() | tei:*])[index-of($j/tan:div[text() | tei:*]/@ref, @ref)[2]]"/>
+            tan:duplicate-values($j/tan:div[not(tan:div)]/@ref)"/>
       <report test="exists($duplicate-leafdiv-flatrefs)" subject="tan:source">Class 1 sources must
          preserve the leaf div uniqueness rule (violations at <value-of
             select="

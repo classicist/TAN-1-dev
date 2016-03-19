@@ -542,7 +542,7 @@
       <TAN-T>
          <xsl:copy-of select="@*"/>
          <xsl:attribute name="work"
-            select="($key-to-this-src/tan:TAN-A-div/tan:body/tan:group[tan:work/@src = $src-id]/@n, 1)[1]"/>
+            select="($key-to-this-src/tan:group[tan:work/@src = $src-id]/@n, 1)[1]"/>
          <xsl:apply-templates mode="#current">
             <xsl:with-param name="key-to-this-src" select="$key-to-this-src"/>
          </xsl:apply-templates>
@@ -715,12 +715,13 @@
    <xsl:template match="tan:realign | tan:align | tan:split-leaf-div-at" mode="self-expanded-3">
       <xsl:param name="self-expanded-2" as="document-node()?"/>
       <xsl:param name="src-1st-da-prepped" as="document-node()*"/>
-      <xsl:variable name="shallow-picks"
+      <!--<xsl:variable name="shallow-picks"
          select="
             if (@distribute = true()) then
                true()
             else
-               false()"/>
+               false()"/>-->
+      <xsl:variable name="shallow-picks" select="true()"/>
       <xsl:variable name="distribute-for-works"
          select="self::tan:align and (not(@exclusive = true()))"/>
       <xsl:copy>
@@ -764,11 +765,12 @@
    <!-- functions for step -->
    <xsl:function name="tan:expand-ref" as="element()*">
       <!-- takes any elements that has compound values for @ref. Returns one copy per element
-         per ref, replacing @ref with normalized single reference, @cont
+         per ref, replacing @ref with normalized single reference, putting the original value
+         of @ref into @orig-ref, adding @cont
          for all but the last element for a group of elements that correspond to a single element, and
          copies of all other attributes. Applicable to <div-ref>, <anchor-div-ref>, and <tok>.
       E.g., (<div-ref src="A" ref="1 - 2" seg="1, last"/>, true()) - > 
-      (<div-ref src="A" ref="1" seg="1, last"/>, <div-ref src="A" ref="2" seg="1, last"/>) 
+      (<div-ref src="A" orig-ref="1 - 2" ref="1" seg="1, last"/>, <div-ref src="A" orig-ref="1 - 2" ref="2" seg="1, last"/>) 
       The parameter $shallow-picks indicates whether a range of references should return every possible 
       ref including all descendents, or stay on the hierarchy of each atomic reference. See tan:itemize-refs() 
       for details. 
@@ -780,12 +782,12 @@
          <xsl:variable name="this-element" select="."/>
          <xsl:variable name="these-divs-picked"
             select="tan:select-divs($this-element, $shallow-picks, $src-1st-da-prepped)"/>
-         <!--<xsl:copy-of select="$these-divs-picked"/>-->
          <xsl:choose>
             <xsl:when test="exists($these-divs-picked)">
                <xsl:for-each select="$these-divs-picked/*">
                   <xsl:element name="{name($this-element)}">
                      <xsl:copy-of select="$this-element/@*"/>
+                     <xsl:attribute name="orig-ref" select="$this-element/@ref"/>
                      <xsl:copy-of select="@ref"/>
                      <xsl:if test="position() lt count($these-divs-picked/*)">
                         <!-- This ensures that groups are retained -->

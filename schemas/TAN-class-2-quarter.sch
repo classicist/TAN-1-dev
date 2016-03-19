@@ -6,7 +6,6 @@
    <!-- variables as document-node() -->
    <let name="srcs-1st-da" value="tan:get-src-1st-da()"/>
    <let name="srcs-resolved" value="tan:get-src-1st-da-resolved($srcs-1st-da, $src-ids)"/>
-   <let name="srcs-flattened" value="tan:get-src-1st-da-flattened($srcs-resolved)"/>
    <let name="self-expanded-2" value="tan:get-self-expanded-2(tan:get-self-expanded-1(true()), $srcs-resolved)"/>
    <!-- derived global variables -->
    <let name="new-src-versions"

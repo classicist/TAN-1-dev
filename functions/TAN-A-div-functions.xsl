@@ -167,10 +167,6 @@
             </group>
          </xsl:for-each-group>
       </xsl:variable>
-      <xsl:copy>
-         <xsl:copy-of select="@*"/>
-         <xsl:copy-of select="$div-refs-grouped"/>
-      </xsl:copy>
       <xsl:choose>
          <xsl:when test="$to-be-distributed = true() and self::tan:realign">
             <xsl:variable name="div-refs-redistributed"
@@ -389,5 +385,4 @@
          </xsl:if>
       </xsl:for-each-group>
    </xsl:function>
-
 </xsl:stylesheet>

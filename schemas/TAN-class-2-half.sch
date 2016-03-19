@@ -3,7 +3,7 @@
    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="class-2-half">
    <title>Schematron tests for class 2 TAN files, second level of expansion.</title>
-   <let name="srcs-prepped" value="tan:get-src-1st-da-prepped($self-expanded-2, $srcs-flattened)"/>
+   <let name="srcs-prepped" value="tan:get-src-1st-da-prepped($self-expanded-2, $srcs-resolved)"/>
    <let name="self-expanded-3" value="tan:get-self-expanded-3($self-expanded-2, $srcs-prepped)"/>
    <rule context="tan:head">
       <let name="duplicate-leafdiv-flatrefs"

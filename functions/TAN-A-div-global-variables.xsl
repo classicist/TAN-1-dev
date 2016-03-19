@@ -14,10 +14,10 @@
       </xd:desc>
    </xd:doc>
 
-   <xsl:variable name="doc6" select="tan:get-src-1st-da-segmented($self4, $srcs-tokenized)"
+   <xsl:variable name="srcs-segmented" select="tan:get-src-1st-da-segmented($self4, $srcs-tokenized)"
       as="document-node()*"/>
    <xsl:variable name="self5" select="tan:get-self-expanded-5($self4)"/>
-   <xsl:variable name="doc7" select="tan:get-src-1st-da-realigned($self5, $doc6)"
+   <xsl:variable name="srcs-realigned" select="tan:get-src-1st-da-realigned($self5, $srcs-segmented)"
       as="document-node()*"/>
 
 </xsl:stylesheet>

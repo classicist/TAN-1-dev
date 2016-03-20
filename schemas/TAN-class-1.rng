@@ -22,9 +22,6 @@
         <ref name="decl-tok-def"/>
       </zeroOrMore>
       <optional>
-        <ref name="decl-ref-rec"/>
-      </optional>
-      <optional>
         <ref name="decl-filt"/>
       </optional>
     </interleave>
@@ -72,22 +69,6 @@
       <a:documentation>For more information, see main.xml#reference_system</a:documentation>
       <data type="boolean"/>
     </attribute>
-  </define>
-  <define name="decl-ref-rec">
-    <element name="recommended-div-type-refs">
-      <a:documentation>suggests whether div types in references to the transcription should be explicit (e.g., book.John:chapter.3:verse.16) or implicit (e.g., John 3:16). If not present, explicit is assumed.</a:documentation>
-      <a:documentation>Anyone using your file need not adhere to your recommendation. If you mark the value as implicit, someone who prefers the verbose syntax is welcome to do so. But the converse is not true: explicit means only the verbose form may be used.</a:documentation>
-      <a:documentation>Although this element is optional, it is suggested especially for long files, because it will reduce the time to validate any dependent files.</a:documentation>
-      <optional>
-        <ref name="ed-stamp"/>
-      </optional>
-      <choice>
-        <ref name="inclusion"/>
-        <data type="string">
-          <param name="pattern">implicit|explicit</param>
-        </data>
-      </choice>
-    </element>
   </define>
   <define name="decl-filt">
     <element name="filter">

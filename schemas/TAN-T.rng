@@ -47,7 +47,7 @@
   <define name="n">
     <attribute name="n">
       <a:documentation>contains the name of the &lt;div&gt;. Consists of a string of word characters.</a:documentation>
-      <a:documentation>Examples: '4', '', 'Psalms'</a:documentation>
+      <a:documentation>Examples: '4', 'pr', 'Psalms'</a:documentation>
       <ref name="n-val"/>
     </attribute>
   </define>

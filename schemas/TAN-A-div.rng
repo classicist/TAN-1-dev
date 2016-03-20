@@ -64,9 +64,9 @@
     </define>
     <define name="alignment-content-non-class-2">
       <a:documentation>alignments must contain either one or more div-refs or a list of IDREFS to other alignments</a:documentation>
-      <oneOrMore>
+      <optional>
         <ref name="align-div-list"/>
-      </oneOrMore>
+      </optional>
     </define>
     <define name="decl-non-class-2">
       <zeroOrMore>
@@ -167,7 +167,7 @@ If work X of source A is stated to be equivalent to work Y of source B, then any
   </define>
   <define name="div-type-ref-cluster">
     <element name="div-type-ref">
-      <a:documentation>points to a &lt;div-type&gt; in one or more sources. You must use either the @xml:id assigned by the source to that div type or its renamed value, if renamed under &lt;rename-div-types&gt;. </a:documentation>
+      <a:documentation>points to a &lt;div-type&gt; in one or more sources, using the @xml:id assigned by the source to that div type. </a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -226,11 +226,14 @@ If work X of source A is stated to be equivalent to work Y of source B, then any
           </zeroOrMore>
           <group>
             <optional>
+              <ref name="distribute-claim"/>
+            </optional>
+            <optional>
               <ref name="anchor"/>
             </optional>
-            <oneOrMore>
+            <optional>
               <ref name="realign-div-list"/>
-            </oneOrMore>
+            </optional>
           </group>
         </interleave>
       </choice>
@@ -246,7 +249,9 @@ If work X of source A is stated to be equivalent to work Y of source B, then any
     </element>
   </define>
   <define name="realign-div-list">
-    <ref name="div-ref-list"/>
+    <oneOrMore>
+      <ref name="div-ref-list"/>
+    </oneOrMore>
   </define>
   <define name="exclusive-claim">
     <attribute name="exclusive">
@@ -258,14 +263,20 @@ If work X of source A is stated to be equivalent to work Y of source B, then any
   </define>
   <define name="distribute-claim">
     <attribute name="distribute">
-      <a:documentation>indicates whether values should be matched one-to-one, or grouped. If this attribute is not present, then each set of references in a single &lt;div-ref&gt; will be treated as a set and aligned against every other &lt;div-ref&gt; set. If @distribute is present, then every nth ref in every set (defined by a single &lt;div-ref&gt;, taking into account any continuations defined by @cont) will be aligned with the nth ref in every other set. Therefore the number of references derived from @refs must be identical. Value must be 1 or true, implied by the very presence of the attribute. If you wish to decare it to be false, delete the attribute altogether.</a:documentation>
+      <a:documentation>indicates whether values should be matched one-to-one, or grouped. </a:documentation>
+      <a:documentation>If this attribute is not present (= default / false()), then each set of references in a single &lt;div-ref&gt; will be treated as a set and aligned against every other &lt;div-ref&gt; set. </a:documentation>
+      <a:documentation>If @distribute is present (= true()), then every nth ref in every set (defined by a single &lt;div-ref&gt;, taking into account any continuations defined by @cont) will be aligned with the nth ref in every other set. Therefore the number of references derived from @refs must be identical.</a:documentation>
+      <a:documentation>If @distribute is true() then any ranges in @ref will be resolved shallowly, e.g., @ref="2 b - 4" would be resolved something like ("2 b", "2  c", "3", "4"), even if there are further subdivisions of "3" and "4".</a:documentation>
+      <a:documentation>Value must be 1 or true, implied by the very presence of the attribute. If you wish to decare it to be false, delete the attribute altogether.</a:documentation>
       <data type="boolean">
         <param name="pattern">true|1</param>
       </data>
     </attribute>
   </define>
   <define name="align-div-list">
-    <ref name="div-ref-list"/>
+    <oneOrMore>
+      <ref name="div-ref-list"/>
+    </oneOrMore>
   </define>
   <define name="seg-ref">
     <attribute name="seg">

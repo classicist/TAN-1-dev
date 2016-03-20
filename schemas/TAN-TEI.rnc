@@ -10,7 +10,7 @@ namespace xlink = "http://www.w3.org/1999/xlink"
 
 datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
-# Schema generated from ODD source 2016-02-24T22:36:02Z. .
+# Schema generated from ODD source 2016-03-19T23:11:53Z. .
 # TEI Edition: Version 2.8.0. Last updated on
 #	6th April 2015, revision 13197
 # TEI Edition Location: http://www.tei-c.org/Vault/P5/Version 2.8.0/
@@ -40,6 +40,10 @@ div {
       
       ## Along with @ed-who, this forms the Edit Stamp pattern. See main.xml#edit_stamp
       attribute ed-when { xsd:dateTime | xsd:date }
+    help-opt =
+      
+      ## requests help on the context element
+      attribute help { empty }
     href-opt =
       
       ## points to the location of a file, either as part of <location> or in elements that refer to TAN files, to be used to invoke a schematron quick fix to populate the <IRI> and <location> child elements.
@@ -48,7 +52,7 @@ div {
       
       ## The second use of this attribute is pragmatic, used only as a convenience to TAN users who wish to include the metadata of another TAN file without leaving the current file. It is associated with a warning message that is linked to a Schematron Quick Fix that will supply the correct metadata and remove the attribute.
       attribute href { text }
-    inclusion =
+    inclusion-att =
       
       ## signals that the parent element is to be replaced by all elements of the same name found in the referred <inclusion>.
       attribute include { d:IDREFS }
@@ -187,6 +191,7 @@ div {
       attribute flags {
         xsd:string { pattern = "[smixq]+" }
       }
+    inclusion = inclusion-att, help-opt?
     IRI-gen-ref =
       
       ## contains an International Resource Identifier that serves as a name for the a concept, person, or thing referred to by the parent element. IRIs are explained at main.xml#IRIs_and_linked_data.
@@ -258,6 +263,9 @@ div {
       ## contains the data
       element body { progress?, ed-stamp?, (comment* & TAN-body-core) }
     TAN-body-core = empty
+    any_content = any_element* & text
+    any_element = element * { any_attribute*, any_content }
+    any_attribute = attribute * { text }
     nonsource-rights =
       
       ## states the license under which the data is distributed and the rights associated with it, EXCLUSIVE of any rights attached to the source.
@@ -415,12 +423,7 @@ div {
   
   ## Class 1 files must declare a single work, perhaps one version, one or more divisions, one or more recommended tokenizations, perhaps one filter, and perhaps one 
   decl-class-1 =
-    decl-work
-    & decl-vers?
-    & decl-div+
-    & decl-tok-def*
-    & decl-ref-rec?
-    & decl-filt?
+    decl-work & decl-vers? & decl-div+ & decl-tok-def* & decl-filt?
   
   ## Reserved for declarations specific to individual types of class 1 files
   decl-non-class-1 = empty
@@ -452,18 +455,6 @@ div {
     
     ## For more information, see main.xml#reference_system
     attribute ns-are-numerals { xsd:boolean }
-  decl-ref-rec =
-    
-    ## suggests whether div types in references to the transcription should be explicit (e.g., book.John:chapter.3:verse.16) or implicit (e.g., John 3:16). If not present, explicit is assumed.
-    
-    ## Anyone using your file need not adhere to your recommendation. If you mark the value as implicit, someone who prefers the verbose syntax is welcome to do so. But the converse is not true: explicit means only the verbose form may be used.
-    
-    ## Although this element is optional, it is suggested especially for long files, because it will reduce the time to validate any dependent files.
-    element recommended-div-type-refs {
-      ed-stamp?,
-      (inclusion
-       | xsd:string { pattern = "implicit|explicit" })
-    }
   decl-filt =
     
     ## declares alterations that have been made to the source.

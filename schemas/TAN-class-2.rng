@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   TO DO:
-  [priority low] allow @src to take * and * - [names] to allow blanket statements, esp. for implict div types
+  [priority low] allow @src to take * and * - [names] to allow blanket statements
 -->
 <grammar xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:ns1="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <include href="TAN-core.rng" ns="tag:textalign.net,2015:ns">
@@ -26,11 +26,7 @@
     <interleave>
       <ref name="decl-token-opt"/>
       <ref name="decl-supp-div-opt"/>
-      <ref name="decl-implicit-div-type-refs-opt"/>
-      <group>
-        <ref name="decl-rename-type-opt"/>
-        <ref name="decl-rename-n-opt"/>
-      </group>
+      <ref name="decl-rename-n-opt"/>
     </interleave>
   </define>
   <define name="decl-non-class-2">
@@ -62,46 +58,6 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) must include &l
         <group>
           <ref name="source-ref"/>
           <ref name="div-type-ref"/>
-        </group>
-      </choice>
-    </element>
-  </define>
-  <define name="decl-implicit-div-type-refs-opt">
-    <zeroOrMore>
-      <element name="implicit-div-type-refs">
-        <a:documentation>indicates references to &lt;div&gt;s in that source will be exclusively through @n values; @type values will be suppressed.</a:documentation>
-        <a:documentation>This element must be explicitly declared for every source, even those that already have a &lt;recommended-div-type-refs&gt; value of implicit.</a:documentation>
-        <a:documentation>Although implicitation is not allowed for sources with any @n that is empty, exceptions are made where &lt;rename-div-ns&gt; is used to convert a numeration system to Arabic numerals; in those cases n="" will be interpreted to mean n="0". </a:documentation>
-        <optional>
-          <ref name="ed-stamp"/>
-        </optional>
-        <choice>
-          <ref name="inclusion"/>
-          <ref name="source-ref"/>
-        </choice>
-      </element>
-    </zeroOrMore>
-  </define>
-  <define name="decl-rename-type-opt">
-    <zeroOrMore>
-      <ref name="decl-rename-div-type"/>
-    </zeroOrMore>
-  </define>
-  <define name="decl-rename-div-type">
-    <element name="rename-div-types">
-      <a:documentation>provisionally reassigns @type values for &lt;div&gt;s of a certain type in one or more sources. This feature is strictly speaking a convenience and applies only to the current file. It does not change the underlying definiton of the div-type.</a:documentation>
-      <a:documentation>This element can be especially helpful to synthesize multiple versions that use different abbreviations for the same type of &lt;div&gt;. Changing the div type does not affect the underlying definition, which based on &lt;IRI&gt; values. Equating &lt;div&gt; types that do not have common &lt;IRI&gt; values is effected through &lt;equate-div-types&gt; (TAN-A-div only).</a:documentation>
-      <a:documentation>For more inforrmation see main.xml#class_2_metadata</a:documentation>
-      <optional>
-        <ref name="ed-stamp"/>
-      </optional>
-      <choice>
-        <ref name="inclusion"/>
-        <group>
-          <ref name="source-ref"/>
-          <oneOrMore>
-            <ref name="name-change"/>
-          </oneOrMore>
         </group>
       </choice>
     </element>
@@ -198,7 +154,6 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) must include &l
     <ref name="inclusion"/>
   </define>
   <define name="div-type-ref">
-    <!-- Moved from core on 2015-11-03; delete by 2016 if everything's ok. -->
     <attribute name="div-type-ref">
       <a:documentation>is used by class-2 files to point to one or more &lt;div-type&gt;s in class-1 files. Permits multiple values separated by spaces.</a:documentation>
     </attribute>
@@ -209,12 +164,14 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) must include &l
       <ref name="certainty-stamp"/>
       <ref name="source-ref"/>
       <ref name="pointer-to-div-range"/>
-      <optional>
+      <choice>
         <ref name="token-value-ref"/>
-      </optional>
-      <optional>
         <ref name="item-pos-ref"/>
-      </optional>
+        <group>
+          <ref name="token-value-ref"/>
+          <ref name="item-pos-ref"/>
+        </group>
+      </choice>
       <ref name="char-ref"/>
       <optional>
         <ref name="continuation-opt"/>

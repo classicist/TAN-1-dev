@@ -14,7 +14,7 @@
     <a:documentation>String that specifies a range of divs using the div-ref pattern joined by a hyphen or a comma.</a:documentation>
     <a:documentation>For more see main.xml#leaf_div_uniqueness_rule</a:documentation>
     <data type="string">
-      <param name="pattern">(\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*)((\s*,|\s+-)\s+(\w+\W\w*(\W\w+\W\w*)*|\w+(\W\w+)*))*|.*\?\?\?.*</param>
+      <param name="pattern">(\w+(\W\w+)*)((\s*,|\s+-)\s+(\w+(\W\w+)*))*|.*\?\?\?.*</param>
     </data>
   </define>
   <define name="ed-agent">
@@ -53,6 +53,12 @@
       </data>
     </attribute>
   </define>
+  <define name="help-opt">
+    <attribute name="help">
+      <a:documentation>requests help on the context element</a:documentation>
+      <empty/>
+    </attribute>
+  </define>
   <define name="href-opt">
     <attribute name="href">
       <a:documentation>points to the location of a file, either as part of &lt;location&gt; or in elements that refer to TAN files, to be used to invoke a schematron quick fix to populate the &lt;IRI&gt; and &lt;location&gt; child elements.</a:documentation>
@@ -60,7 +66,7 @@
       <a:documentation>The second use of this attribute is pragmatic, used only as a convenience to TAN users who wish to include the metadata of another TAN file without leaving the current file. It is associated with a warning message that is linked to a Schematron Quick Fix that will supply the correct metadata and remove the attribute.</a:documentation>
     </attribute>
   </define>
-  <define name="inclusion">
+  <define name="inclusion-att">
     <attribute name="include">
       <a:documentation>signals that the parent element is to be replaced by all elements of the same name found in the referred &lt;inclusion&gt;.</a:documentation>
       <data type="IDREFS" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
@@ -83,7 +89,7 @@
   <define name="n-val">
     <a:documentation>Acceptable values of @n, used by class 1 and class 2 files</a:documentation>
     <data type="string">
-      <param name="pattern">\w*</param>
+      <param name="pattern">\w+</param>
     </data>
   </define>
   <define name="TAN-ver">
@@ -157,7 +163,7 @@
   <define name="seq-picker">
     <a:documentation>   String that specifies a range of tokens: digits or "last(-digit)?" joined by space-delimited hyphens or vertical lines (pipe character)</a:documentation>
     <data type="string">
-      <param name="pattern">((last)|(last-\d+)|(\d+))(\s*-\s*((last)|(last-\d+)|(\d+)))?(\s*,?\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*</param>
+      <param name="pattern">((last)|(last-\d+)|(\d+))(\s*-\s*((last)|(last-\d+)|(\d+)))?(\s*,?\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*|.*\?\?\?.*</param>
     </data>
   </define>
   <define name="source-ref">
@@ -348,6 +354,12 @@
       </data>
     </attribute>
   </define>
+  <define name="inclusion">
+    <ref name="inclusion-att"/>
+    <optional>
+      <ref name="help-opt"/>
+    </optional>
+  </define>
   <define name="IRI-gen-ref">
     <element name="IRI">
       <a:documentation>contains an International Resource Identifier that serves as a name for the a concept, person, or thing referred to by the parent element. IRIs are explained at main.xml#IRIs_and_linked_data.</a:documentation>
@@ -438,6 +450,7 @@
     </optional>
     <ref name="TAN-head"/>
     <ref name="TAN-body"/>
+    <ref name="TAN-tail"/>
   </define>
   <!-- 2nd level of any TAN file. -->
   <define name="TAN-head">
@@ -497,6 +510,36 @@
   </define>
   <define name="TAN-body-core">
     <empty/>
+  </define>
+  <define name="TAN-tail">
+    <optional>
+      <element name="tail">
+        <a:documentation>permits any arbitrary content. Suitable as a placeholder for temporary data, especially to facilitate time-consuming validation routines. </a:documentation>
+        <ref name="any_content"/>
+      </element>
+    </optional>
+  </define>
+  <define name="any_content">
+    <interleave>
+      <zeroOrMore>
+        <ref name="any_element"/>
+      </zeroOrMore>
+      <text/>
+    </interleave>
+  </define>
+  <define name="any_element">
+    <element>
+      <anyName/>
+      <zeroOrMore>
+        <ref name="any_attribute"/>
+      </zeroOrMore>
+      <ref name="any_content"/>
+    </element>
+  </define>
+  <define name="any_attribute">
+    <attribute>
+      <anyName/>
+    </attribute>
   </define>
   <!--
     

@@ -170,7 +170,7 @@
             </code>
          </title>
          <xsl:apply-templates select="a:documentation"/>
-         <xsl:copy-of select="tan:keyword-documentation($this-name)"/>
+         <xsl:copy-of select="tan:keyword-documentation(($this-name, '*')[1])"/>
          <xsl:variable name="formaldef" as="item()*">
             <xsl:apply-templates select="rng:*" mode="formaldef">
                <xsl:with-param name="current-indent" select="$indent"/>

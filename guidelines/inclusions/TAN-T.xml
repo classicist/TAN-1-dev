@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-T elements and attributes summarized</title><section xml:id="element-div"><title><code>&lt;div&gt;</code></title><para>The element <code>div</code> marks a textual unit. Contains other <code><link linkend="element-div">&lt;div&gt;</link></code>s or text, but not both (no mixed content).</para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-   <code><link linkend="attribute-include">@include</link></code> |
+   (<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
       (<code><link linkend="attribute-type">@type</link></code>,
       <code><link linkend="attribute-n">@n</link></code>,
       <code><link linkend="attribute-xmllang">@xml:lang</link></code>?,
          (<code><link linkend="element-div">&lt;div&gt;</link></code>+ |
-text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-div">&lt;div&gt;</link></code> </para><caution><itemizedlist><listitem><para>Leaf div references must be unique.</para></listitem><listitem><para>Every leaf div must have at least some non-space text.</para></listitem><listitem><para>Must point to <code><link linkend="attribute-xmlid">@xml:id</link></code> value of &lt;&gt;</para></listitem><listitem><para>Must not contain duplicates</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Replace content of attribute with all valid values </emphasis>To see a list of all possible valid values, add any invalid content, then choose
-               this quick fix to replace all content with every possible value.</para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Add div-type element invoking keyword </emphasis>If you are editing a class 1 file, and you wish to use a div type that has a TAN
-               keyword and has not been invoked in the declarations, you may simply use the div type
-               keyword in the context of <code><link linkend="attribute-type">@type</link></code>, then invoke this quick fix to automatically add a
-               standardized <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> to the <code><link linkend="element-declarations">&lt;declarations&gt;</link></code>. </para></tip><example><title><code>&lt;div&gt;</code></title><programlisting>   &lt;body xml:lang="eng"&gt;
+text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-div">&lt;div&gt;</link></code> </para><caution><itemizedlist><listitem><para>Leaf div references must be unique.</para></listitem><listitem><para><code><link linkend="attribute-type">@type</link></code> must match the <code><link linkend="attribute-xmlid">@xml:id</link></code> of a <code><link linkend="element-div-type">&lt;div-type&gt;</link></code></para></listitem><listitem><para>Every leaf div in non-flat class 1 files must have at least some non-space text.</para></listitem><listitem><para>No div may begin with a modifying character.</para></listitem><listitem><para>No div may have a spacing character followed by a modifying character.</para></listitem><listitem><para>The values of <code><link linkend="attribute-n">@n</link></code> and <code><link linkend="attribute-type">@type</link></code> must balance.</para></listitem><listitem><para>In a flat transcription every div must either be at the top of a hierarchy or have an ancestor in common with the preceding div.</para></listitem><listitem><para>In a flat transcription any non-leaf-div must be followed by a child div.</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Remove modifiers starting divs </emphasis>If an element's text begins with modifiers, a Schematron Quick Fix will be
+               available to remove those initial modifiers.</para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Remove space preceding modifiers </emphasis>If a text is seen to have modifiers following a spacing character, a Schematron
+               Quick Fix will be available to remove any space that precedes modifiers.</para></tip><example><title><code>&lt;div&gt;</code></title><programlisting>   &lt;body xml:lang="eng"&gt;
       <emphasis role="bold">&lt;div type="p" n="1"&gt;</emphasis>
          <emphasis role="bold">&lt;div type="c" n="a"&gt;</emphasis>
             <emphasis role="bold">&lt;div type="l" n="1"&gt;</emphasis> SECTION 1 Part 1 Things are said to<emphasis role="bold">&lt;/div&gt;</emphasis>
@@ -35,7 +34,8 @@ text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;<
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
    <code><link linkend="element-head">&lt;head&gt;</link></code>,
-   <code><link linkend="element-body">&lt;body&gt;</link></code></synopsis><para>Used by: none</para><example><title><code>&lt;TAN-T&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs" TAN-version="1"&gt;</emphasis>
+   <code><link linkend="element-body">&lt;body&gt;</link></code>,
+   <code><link linkend="element-tail">&lt;tail&gt;</link></code>?</synopsis><para>Used by: none</para><example><title><code>&lt;TAN-T&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs" TAN-version="1"&gt;</emphasis>
    &lt;head&gt;
       .........
    &lt;/head&gt;
@@ -43,7 +43,7 @@ text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;<
       .........
    &lt;/body&gt;
 <emphasis role="bold">&lt;/TAN-T&gt;</emphasis>
-</programlisting></example><example><title><code>&lt;TAN-T&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:sem-divs" TAN-version="1"&gt;</emphasis>
+</programlisting></example><example><title><code>&lt;TAN-T&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:semantic-refs-resegmented-2016-02-21T09:33:16.107-05:00" TAN-version="1"&gt;</emphasis>
    &lt;head&gt;
       .........
    &lt;/head&gt;
@@ -67,8 +67,8 @@ text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;<
       .........
    &lt;/body&gt;
 <emphasis role="bold">&lt;/TAN-T&gt;</emphasis>
-</programlisting></example></section><section xml:id="attribute-n"><title><code>@n</code></title><para>The attribute <code>n</code> contains the name of the <code><link linkend="element-div">&lt;div&gt;</link></code>. Consists of a string of word characters.</para><para>Examples: '4', '', 'Psalms'</para><synopsis><emphasis>Definition:</emphasis>
-string (pattern \w*)</synopsis><para>Used by: <code><link linkend="element-div">&lt;div&gt;</link></code> </para><example><title><code>@n</code></title><programlisting>   &lt;body xml:lang="eng"&gt;
+</programlisting></example></section><section xml:id="attribute-n"><title><code>@n</code></title><para>The attribute <code>n</code> contains the name of the <code><link linkend="element-div">&lt;div&gt;</link></code>. Consists of a string of word characters.</para><para>Examples: '4', 'pr', 'Psalms'</para><synopsis><emphasis>Definition:</emphasis>
+string (pattern \w+)</synopsis><para>Used by: <code><link linkend="element-div">&lt;div&gt;</link></code> </para><example><title><code>@n</code></title><programlisting>   &lt;body xml:lang="eng"&gt;
       &lt;div type="p"<emphasis role="bold"> n="1"</emphasis>&gt;
          &lt;div type="c"<emphasis role="bold"> n="a"</emphasis>&gt;
             &lt;div type="l"<emphasis role="bold"> n="1"</emphasis>&gt; SECTION 1 Part 1 Things are said to&lt;/div&gt;
@@ -88,8 +88,7 @@ string (pattern \w*)</synopsis><para>Used by: <code><link linkend="element-div">
       .........
    &lt;/body&gt;
 </programlisting></example></section><section xml:id="attribute-type"><title><code>@type</code></title><para>The attribute <code>type</code> indicates what type of textual unit <code><link linkend="element-div">&lt;div&gt;</link></code> marks. Points to a <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> declared in <code><link linkend="element-declarations">&lt;declarations&gt;</link></code>.</para><synopsis><emphasis>Definition:</emphasis>
-IDREFS </synopsis><para>Used by: <code><link linkend="element-div">&lt;div&gt;</link></code> </para><caution><itemizedlist><listitem><para>Must point to <code><link linkend="attribute-xmlid">@xml:id</link></code> value of <code><link linkend="element-div-type">&lt;div-type&gt;</link></code></para></listitem><listitem><para>Must not contain duplicates</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Replace content of attribute with all valid values </emphasis>To see a list of all possible valid values, add any invalid content, then choose
-               this quick fix to replace all content with every possible value.</para></tip><example><title><code>@type</code></title><programlisting>   &lt;body xml:lang="eng"&gt;
+IDREFS </synopsis><para>Used by: <code><link linkend="element-div">&lt;div&gt;</link></code> </para><example><title><code>@type</code></title><programlisting>   &lt;body xml:lang="eng"&gt;
       &lt;div<emphasis role="bold"> type="p"</emphasis> n="1"&gt;
          &lt;div<emphasis role="bold"> type="c"</emphasis> n="a"&gt;
             &lt;div<emphasis role="bold"> type="l"</emphasis> n="1"&gt; SECTION 1 Part 1 Things are said to&lt;/div&gt;

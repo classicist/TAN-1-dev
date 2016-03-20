@@ -1,7 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-core elements and attributes summarized</title><section xml:id="element-agent"><title><code>&lt;agent&gt;</code></title><para>The element <code>agent</code> specifies a person or organization that played a direct or indirect role in preparing, creating, or editing the data.</para><para>At least one <code><link linkend="element-agent">&lt;agent&gt;</link></code> must have an <code><link linkend="element-IRI">&lt;IRI&gt;</link></code> that is a tag URN whose namespace matches that of the IRI name. By default, the first such <code><link linkend="element-agent">&lt;agent&gt;</link></code> is taken to be the person or organization ultimately responsible for the current file. </para><para>May also be applied to a computer or algorithm that performed a task. This feature is useful for crediting software, e.g., an OCR program used to convert an image, or an algorithm that estimates word-to-word alignments.</para><synopsis><emphasis>Definition:</emphasis>
+<?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-core elements and attributes summarized</title><section xml:id="element-"><title><code>&lt;&gt;</code></title><synopsis><emphasis>Definition:</emphasis>
+   <code><link linkend="attribute-">@</link></code>*,
+      (<code><link linkend="element-">&lt;&gt;</link></code>* &amp;
+text)</synopsis><para>Used by: &lt;&gt; <code><link linkend="element-tail">&lt;tail&gt;</link></code> </para><caution><itemizedlist><listitem><para>Future dates are not allowed.</para></listitem><listitem><para>Must be date or dateTime</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Change date to today's date </emphasis>If value is invalid, this quick fix will be made available, to replace the
+               content of with the current date.</para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Change date to today's date-time </emphasis>If value is invalid, this quick fix will be made available, to replace the
+               content of with the current dateTime.</para></tip></section><section xml:id="element-agent"><title><code>&lt;agent&gt;</code></title><para>The element <code>agent</code> specifies a person or organization that played a direct or indirect role in preparing, creating, or editing the data.</para><para>At least one <code><link linkend="element-agent">&lt;agent&gt;</link></code> must have an <code><link linkend="element-IRI">&lt;IRI&gt;</link></code> that is a tag URN whose namespace matches that of the IRI name. By default, the first such <code><link linkend="element-agent">&lt;agent&gt;</link></code> is taken to be the person or organization ultimately responsible for the current file. </para><para>May also be applied to a computer or algorithm that performed a task. This feature is useful for crediting software, e.g., an OCR program used to convert an image, or an algorithm that estimates word-to-word alignments.</para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-   <code><link linkend="attribute-include">@include</link></code> |
+   (<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
       (<code><link linkend="attribute-roles">@roles</link></code>?,
       <code><link linkend="attribute-xmlid">@xml:id</link></code>,
          (<code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
@@ -30,7 +36,7 @@
       .........
    &lt;/head&gt;
 &lt;/TAN-T&gt;
-</programlisting></example><example><title><code>&lt;agent&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:sem-divs" TAN-version="1"&gt;
+</programlisting></example><example><title><code>&lt;agent&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:semantic-refs-resegmented-2016-02-21T09:33:16.107-05:00" TAN-version="1"&gt;
    &lt;head&gt;
       .........
       &lt;declarations&gt;
@@ -53,7 +59,8 @@
    &lt;/head&gt;
 &lt;/TAN-T&gt;
 </programlisting></example></section><section xml:id="element-agentrole"><title><code>&lt;agentrole&gt;</code></title><para>The element <code>agentrole</code> specifies a time period when one or more <code><link linkend="element-agent">&lt;agent&gt;</link></code>s held one or more <code><link linkend="element-role">&lt;role&gt;</link></code>s.</para><synopsis><emphasis>Definition:</emphasis>
-   <code><link linkend="attribute-include">@include</link></code> |
+   (<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
       ((<code><link linkend="attribute-ed-who">@ed-who</link></code>,
 <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
       <code><link linkend="attribute-who">@who</link></code>,
@@ -86,16 +93,11 @@
    <code><link linkend="attribute-morphology">@morphology</link></code>,
    <code><link linkend="element-ana">&lt;ana&gt;</link></code>+
 <emphasis>  ~OR~</emphasis>
-<emphasis>TAN-R-mor.rng:</emphasis>
+<emphasis>TAN-mor.rng:</emphasis>
       (<code><link linkend="element-assert">&lt;assert&gt;</link></code>* &amp;
       <code><link linkend="element-report">&lt;report&gt;</link></code>* &amp;
       <code><link linkend="element-category">&lt;category&gt;</link></code>* &amp;
       <code><link linkend="element-option">&lt;option&gt;</link></code>*)
-<emphasis>  ~OR~</emphasis>
-<emphasis>TAN-R-tok.rng:</emphasis>
-   <code><link linkend="element-replace">&lt;replace&gt;</link></code>*,
-   <code><link linkend="element-tokenize">&lt;tokenize&gt;</link></code>,
-   <code><link linkend="element-example">&lt;example&gt;</link></code>+
 <emphasis>  ~OR~</emphasis>
 <emphasis>TAN-rdf.rng:</emphasis>
    <code><link linkend="attribute-claimant">@claimant</link></code>,
@@ -105,7 +107,7 @@
 <emphasis>TAN-T.rng:</emphasis>
    <code><link linkend="attribute-xmllang">@xml:lang</link></code>,
    <code><link linkend="element-div">&lt;div&gt;</link></code>+
-</synopsis><para>Used by: <code><link linkend="element-TAN-A-div">&lt;TAN-A-div&gt;</link></code> <code><link linkend="element-TAN-A-tok">&lt;TAN-A-tok&gt;</link></code> <code><link linkend="element-TAN-LM">&lt;TAN-LM&gt;</link></code> <code><link linkend="element-TAN-R-mor">&lt;TAN-R-mor&gt;</link></code> <code><link linkend="element-TAN-R-tok">&lt;TAN-R-tok&gt;</link></code> <code><link linkend="element-TAN-T">&lt;TAN-T&gt;</link></code> <code><link linkend="element-TAN-key">&lt;TAN-key&gt;</link></code> <code><link linkend="element-TAN-rdf">&lt;TAN-rdf&gt;</link></code> </para><example><title><code>&lt;body&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs" TAN-version="1"&gt;
+</synopsis><para>Used by: <code><link linkend="element-TAN-A-div">&lt;TAN-A-div&gt;</link></code> <code><link linkend="element-TAN-A-tok">&lt;TAN-A-tok&gt;</link></code> <code><link linkend="element-TAN-LM">&lt;TAN-LM&gt;</link></code> <code><link linkend="element-TAN-T">&lt;TAN-T&gt;</link></code> <code><link linkend="element-TAN-key">&lt;TAN-key&gt;</link></code> <code><link linkend="element-TAN-mor">&lt;TAN-mor&gt;</link></code> <code><link linkend="element-TAN-rdf">&lt;TAN-rdf&gt;</link></code> </para><caution><itemizedlist><listitem><para>This editing phase depends upon preparation of each source document, which can be time-consuming and inefficient if done every single time. Select the associated Quick Fix to create a /*/tan:tail with a copy of the prepared source documents, to speed up editing. Alternatively, use the official TAN stylesheet found at stylesheets/speed-validation</para></listitem><listitem><para/></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Create tail with content of prepped sources (time-consuming) </emphasis></para></tip><example><title><code>&lt;body&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs" TAN-version="1"&gt;
    &lt;head&gt;
       .........
    &lt;/head&gt;
@@ -122,7 +124,7 @@
       .........
    <emphasis role="bold">&lt;/body&gt;</emphasis>
 &lt;/TAN-T&gt;
-</programlisting></example><example><title><code>&lt;body&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:sem-divs" TAN-version="1"&gt;
+</programlisting></example><example><title><code>&lt;body&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:semantic-refs-resegmented-2016-02-21T09:33:16.107-05:00" TAN-version="1"&gt;
    &lt;head&gt;
       .........
    &lt;/head&gt;
@@ -1584,7 +1586,7 @@ ones have all been enumerated.
       .........
    <emphasis role="bold">&lt;/body&gt;</emphasis>
 &lt;/TAN-T&gt;
-</programlisting></example></section><section xml:id="element-change"><title><code>&lt;change&gt;</code></title><para>The element <code>change</code> declares a change made to the current file. Must credit an <code><link linkend="element-agent">&lt;agent&gt;</link></code>, specified by <code><link linkend="attribute-who">@who</link></code>, and a time the change was made, specified by <code><link linkend="attribute-when">@when</link></code>.</para><para>Collectively, <code><link linkend="element-change">&lt;change&gt;</link></code> elements form the changelog, the revision history of the document. </para><para>The editor has discretion as to how long or detailed a <code><link linkend="element-change">&lt;change&gt;</link></code> should be, or how many should be retained in a changelog. Ideally, <code><link linkend="element-change">&lt;change&gt;</link></code>s documenting every published version should be retained.</para><para><code><link linkend="element-change">&lt;change&gt;</link></code> elements may appear in any order, but it is good practice to put the most recent at the top.</para><synopsis><emphasis>Definition:</emphasis>
+</programlisting></example></section><section xml:id="element-change"><title><code>&lt;change&gt;</code></title><para>The element <code>change</code> declares a change made to the current file. Must credit an <code><link linkend="element-agent">&lt;agent&gt;</link></code>, specified by <code><link linkend="attribute-who">@who</link></code>, and a time the change was made, specified by <code><link linkend="attribute-when">@when</link></code>.</para><para>Collectively, <code><link linkend="element-change">&lt;change&gt;</link></code> elements are called the changelog, the revision history of the document. </para><para>The editor has discretion as to how long or detailed a <code><link linkend="element-change">&lt;change&gt;</link></code> should be, or how many should be retained in a changelog. Ideally, <code><link linkend="element-change">&lt;change&gt;</link></code>s documenting every published version should be retained.</para><para><code><link linkend="element-change">&lt;change&gt;</link></code> elements may appear in any order, but it is good practice to put the most recent at the top.</para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
    <code><link linkend="attribute-when">@when</link></code>,
@@ -1605,9 +1607,8 @@ text</synopsis><para>Used by: <code><link linkend="element-head">&lt;head&gt;</l
          .........
       &lt;/role&gt;
       <emphasis role="bold">&lt;change when="2016-01-26-04:00" who="kalvesmaki"&gt;</emphasis>Started new file.<emphasis role="bold">&lt;/change&gt;</emphasis>
-      &lt;comment when="2016-02-11-05:00" who="kalvesmaki"&gt;Automatically generated by stylesheet using
-         ratios of a model file to predict where the breaks should be. Needs human correction now.
-      &lt;/comment&gt;
+      &lt;comment when="2016-02-21-05:00" who="kalvesmaki"&gt;Edited division boundaries through chapter
+         2.&lt;/comment&gt;
    &lt;/head&gt;
 </programlisting></example><example><title><code>&lt;change&gt;</code></title><programlisting>   &lt;head&gt;
       .........
@@ -1628,7 +1629,7 @@ text</synopsis><para>Used by: <code><link linkend="element-head">&lt;head&gt;</l
    <code><link linkend="element-name">&lt;name&gt;</link></code>+,
    <code><link linkend="element-desc">&lt;desc&gt;</link></code>*) |
       <code><link linkend="attribute-which">@which</link></code>),
-   <code><link linkend="element-value">&lt;value&gt;</link></code></synopsis><para>Used by: <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-tokenization">&lt;tokenization&gt;</link></code> </para><example><title><code>&lt;checksum&gt;</code></title><programlisting>      &lt;source&gt;
+   <code><link linkend="element-value">&lt;value&gt;</link></code></synopsis><para>Used by: <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> </para><example><title><code>&lt;checksum&gt;</code></title><programlisting>      &lt;source&gt;
          .........
          &lt;name&gt;The Saint Patrick's Confessio Hypertext Stack Project edition&lt;/name&gt;
          <emphasis role="bold">&lt;checksum&gt;</emphasis>
@@ -1641,7 +1642,7 @@ text</synopsis><para>Used by: <code><link linkend="element-head">&lt;head&gt;</l
 </programlisting></example></section><section xml:id="element-comment"><title><code>&lt;comment&gt;</code></title><para>The element <code>comment</code> discusses issues relevant to nearby data. Must credit an <code><link linkend="element-agent">&lt;agent&gt;</link></code>, specified by <code><link linkend="attribute-who">@who</link></code>, and a time the comment was made, specified by <code><link linkend="attribute-when">@when</link></code>.</para><synopsis><emphasis>Definition:</emphasis>
    <code><link linkend="attribute-when">@when</link></code>,
    <code><link linkend="attribute-who">@who</link></code>,
-text</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-align">&lt;align&gt;</link></code> <code><link linkend="element-ana">&lt;ana&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-category">&lt;category&gt;</link></code> <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-example">&lt;example&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-filter">&lt;filter&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-lm">&lt;lm&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-realign">&lt;realign&gt;</link></code> <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code> <code><link linkend="element-replace">&lt;replace&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources&gt;</link></code> <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-split-leaf-div-at">&lt;split-leaf-div-at&gt;</link></code> <code><link linkend="element-tokenize">&lt;tokenize&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para><example><title><code>&lt;comment&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs" TAN-version="1"&gt;
+text</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-align">&lt;align&gt;</link></code> <code><link linkend="element-ana">&lt;ana&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-category">&lt;category&gt;</link></code> <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-filter">&lt;filter&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-lm">&lt;lm&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-realign">&lt;realign&gt;</link></code> <code><link linkend="element-replace">&lt;replace&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources&gt;</link></code> <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-split-leaf-div-at">&lt;split-leaf-div-at&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para><example><title><code>&lt;comment&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs" TAN-version="1"&gt;
    &lt;head&gt;
       <emphasis role="bold">&lt;comment who="sysadmin" when="2016-02-11-05:00"&gt;</emphasis>This is a revised version of the text, using
          the first alternatively divided edition as a template by which to resegment the
@@ -1655,18 +1656,16 @@ text</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;<
       <emphasis role="bold">&lt;/comment&gt;</emphasis>
    &lt;/head&gt;
 &lt;/TAN-T&gt;
-</programlisting></example><example><title><code>&lt;comment&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:sem-divs" TAN-version="1"&gt;
+</programlisting></example><example><title><code>&lt;comment&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:semantic-refs-resegmented-2016-02-21T09:33:16.107-05:00" TAN-version="1"&gt;
    &lt;head&gt;
-      <emphasis role="bold">&lt;comment who="sysadmin" when="2016-02-11-05:00"&gt;</emphasis>This is a revised version of the text, using
-         the first alternatively divided edition as a template by which to resegment the
-         text.<emphasis role="bold">&lt;/comment&gt;</emphasis>
+      <emphasis role="bold">&lt;comment who="sysadmin" when="2016-02-21-05:00"&gt;</emphasis>This is a revised version of the text, using
+         the first different work version as a template by which to resegment the text.<emphasis role="bold">&lt;/comment&gt;</emphasis>
       &lt;name&gt;Categories, Aristotle, English translation by E. M. Edghill&lt;/name&gt;
       .........
       .........
       &lt;change when="2016-01-26-04:00" who="kalvesmaki"&gt;Started new file.&lt;/change&gt;
-      <emphasis role="bold">&lt;comment when="2016-02-11-05:00" who="kalvesmaki"&gt;</emphasis>Automatically generated by stylesheet using
-         ratios of a model file to predict where the breaks should be. Needs human correction now.
-      <emphasis role="bold">&lt;/comment&gt;</emphasis>
+      <emphasis role="bold">&lt;comment when="2016-02-21-05:00" who="kalvesmaki"&gt;</emphasis>Edited division boundaries through chapter
+         2.<emphasis role="bold">&lt;/comment&gt;</emphasis>
    &lt;/head&gt;
 &lt;/TAN-T&gt;
 </programlisting></example></section><section xml:id="element-declarations"><title><code>&lt;declarations&gt;</code></title><para>The element <code>declarations</code> contains assumptions or decisions made that materially affect the interpretation of the data in <code><link linkend="element-body">&lt;body&gt;</link></code></para><synopsis><emphasis>Definition:</emphasis>
@@ -1679,18 +1678,17 @@ text</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;<
          (   (<code><link linkend="element-work">&lt;work&gt;</link></code> &amp;
    <code><link linkend="element-version">&lt;version&gt;</link></code>? &amp;
    <code><link linkend="element-div-type">&lt;div-type&gt;</link></code>+ &amp;
-   <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code>+ &amp;
-   <code><link linkend="element-recommended-div-type-refs">&lt;recommended-div-type-refs&gt;</link></code>? &amp;
+   <code><link linkend="element-token-definition">&lt;token-definition&gt;</link></code>* &amp;
    <code><link linkend="element-filter">&lt;filter&gt;</link></code>?) &amp;
 )
 <emphasis>  ~OR~</emphasis>
 <emphasis>TAN-class-2.rng:</emphasis>
          (   (
 <emphasis>TAN-A-div.rng:</emphasis>
-<code><link linkend="element-tokenization">&lt;tokenization&gt;</link></code>*
+<code><link linkend="element-token-definition">&lt;token-definition&gt;</link></code>*
 <emphasis>  ~OR~</emphasis>
 <emphasis>TAN-class-2.rng:</emphasis>
-<code><link linkend="element-tokenization">&lt;tokenization&gt;</link></code>+
+<code><link linkend="element-token-definition">&lt;token-definition&gt;</link></code>+
  &amp;
 
    <emphasis>TAN-class-2.rng:</emphasis>
@@ -1699,9 +1697,7 @@ text</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;<
 <emphasis>TAN-LM.rng:</emphasis>
    <code><link linkend="element-suppress-div-types">&lt;suppress-div-types&gt;</link></code>?
  &amp;
-   <code><link linkend="element-implicit-div-type-refs">&lt;implicit-div-type-refs&gt;</link></code>* &amp;
-      (<code><link linkend="element-rename-div-types">&lt;rename-div-types&gt;</link></code>*,
-      <code><link linkend="element-rename-div-ns">&lt;rename-div-ns&gt;</link></code>*)) &amp;
+   <code><link linkend="element-rename-div-ns">&lt;rename-div-ns&gt;</link></code>*) &amp;
 
          <emphasis>TAN-A-div.rng:</emphasis>
          <code><link linkend="element-topic">&lt;topic&gt;</link></code>*
@@ -1717,18 +1713,8 @@ text</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;<
 <emphasis>  ~OR~</emphasis>
 <emphasis>TAN-class-3.rng:</emphasis>
          ( &amp;
-
-         <emphasis>TAN-R-mor.rng:</emphasis>
             (<code><link linkend="element-for-lang">&lt;for-lang&gt;</link></code>+ &amp;
-            <code><link linkend="element-feature">&lt;feature&gt;</link></code>+)
-<emphasis>  ~OR~</emphasis>
-<emphasis>TAN-R-tok.rng:</emphasis>
-         <code><link linkend="element-for-lang">&lt;for-lang&gt;</link></code>*
-)
-<emphasis>  ~OR~</emphasis>
-<emphasis>TAN-class-4.rng:</emphasis>
-         ( &amp;
-)
+            <code><link linkend="element-feature">&lt;feature&gt;</link></code>+))
 <emphasis>  ~OR~</emphasis>
 <emphasis>TAN-key.rng:</emphasis>
 
@@ -1835,14 +1821,14 @@ text</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;<
             <code><link linkend="element-name">&lt;name&gt;</link></code>+,
             <code><link linkend="element-desc">&lt;desc&gt;</link></code>*,
             <code><link linkend="element-checksum">&lt;checksum&gt;</link></code>*,
-            <code><link linkend="element-location">&lt;location&gt;</link></code>+)))</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-checksum">&lt;checksum&gt;</link></code> <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-group">&lt;group&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code> <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources&gt;</link></code> <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-tokenization">&lt;tokenization&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para><example><title><code>&lt;desc&gt;</code></title><programlisting>      &lt;rights-excluding-sources rights-holder="kalvesmaki"&gt;
+            <code><link linkend="element-location">&lt;location&gt;</link></code>+)))</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-checksum">&lt;checksum&gt;</link></code> <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-group">&lt;group&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources&gt;</link></code> <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para><example><title><code>&lt;desc&gt;</code></title><programlisting>      &lt;rights-excluding-sources rights-holder="kalvesmaki"&gt;
          .........
          &lt;name&gt;Creative Commons Attribution 4.0 International License&lt;/name&gt;
          <emphasis role="bold">&lt;desc&gt;</emphasis>Exclusive of rights held and licenses offered by rightsholders of the source or
             sources listed below, this data file, insofar as it constitutes an independent work, is
             licensed under a Creative Commons Attribution 4.0 International License.<emphasis role="bold">&lt;/desc&gt;</emphasis>
       &lt;/rights-excluding-sources&gt;
-</programlisting></example><example><title><code>&lt;desc&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:sem-divs" TAN-version="1"&gt;
+</programlisting></example><example><title><code>&lt;desc&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:semantic-refs-resegmented-2016-02-21T09:33:16.107-05:00" TAN-version="1"&gt;
    &lt;head&gt;
       &lt;rights-excluding-sources rights-holder="kalvesmaki"&gt;
          .........
@@ -1868,10 +1854,7 @@ text</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;<
                 sources listed below, this data file, insofar as it constitutes an independent work,
                 is licensed under a Creative Commons Attribution 4.0 International License.<emphasis role="bold">&lt;/desc&gt;</emphasis>
       &lt;/rights-excluding-sources&gt;
-</programlisting></example></section><section xml:id="element-flags"><title><code>&lt;flags&gt;</code></title><para>The element <code>flags</code> specifies flags to be applied in an XPath expression using regular expressions.</para><para>s = dot-all mode; m = multi-line mode; i = case-insensitive mode; x = remove whitespace characters from regular expression; q = no metacharacters </para><para>For more see http://www.w3.org/TR/xpath-functions-30/#flags</para><synopsis><emphasis>Definition:</emphasis>
-   (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
-   <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-string (pattern [smixq]+)</synopsis><para>Used by: <code><link linkend="element-replace">&lt;replace&gt;</link></code> <code><link linkend="element-tokenize">&lt;tokenize&gt;</link></code> </para></section><section xml:id="element-for-lang"><title><code>&lt;for-lang&gt;</code></title><para>The element <code>for-lang</code> specifies a language that is being discussed. This element does NOT name the language of the text enclosed by the parent element, which is the province of <code><link linkend="attribute-xmllang">@xml:lang</link></code>.</para><para>Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see <xref linkend="language"/>.</para><para>Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin). For more see <xref linkend="language"/></para><synopsis><emphasis>Definition:</emphasis>
+</programlisting></example></section><section xml:id="element-for-lang"><title><code>&lt;for-lang&gt;</code></title><para>The element <code>for-lang</code> specifies a language that is being discussed. This element does NOT name the language of the text enclosed by the parent element, which is the province of <code><link linkend="attribute-xmllang">@xml:lang</link></code>.</para><para>Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see <xref linkend="language"/>.</para><para>Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin). For more see <xref linkend="language"/></para><synopsis><emphasis>Definition:</emphasis>
 language </synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> </para><example><title><code>&lt;for-lang&gt;</code></title><programlisting>      &lt;declarations ed-when="2015-03-03" ed-who="kalvesmaki"&gt;
          <emphasis role="bold">&lt;for-lang&gt;</emphasis>eng<emphasis role="bold">&lt;/for-lang&gt;</emphasis>
          &lt;feature xml:id="quote-cl"&gt;
@@ -1914,7 +1897,7 @@ language </synopsis><para>Used by: <code><link linkend="element-declarations">&l
       <code><link linkend="element-agent">&lt;agent&gt;</link></code>+,
       <code><link linkend="element-role">&lt;role&gt;</link></code>+,
       <code><link linkend="element-agentrole">&lt;agentrole&gt;</link></code>*,
-      <code><link linkend="element-change">&lt;change&gt;</link></code>+)</synopsis><para>Used by: <code><link linkend="element-TAN-A-div">&lt;TAN-A-div&gt;</link></code> <code><link linkend="element-TAN-A-tok">&lt;TAN-A-tok&gt;</link></code> <code><link linkend="element-TAN-LM">&lt;TAN-LM&gt;</link></code> <code><link linkend="element-TAN-R-mor">&lt;TAN-R-mor&gt;</link></code> <code><link linkend="element-TAN-R-tok">&lt;TAN-R-tok&gt;</link></code> <code><link linkend="element-TAN-T">&lt;TAN-T&gt;</link></code> <code><link linkend="element-TAN-key">&lt;TAN-key&gt;</link></code> <code><link linkend="element-TAN-rdf">&lt;TAN-rdf&gt;</link></code> </para><caution><itemizedlist><listitem><para>Any TAN file marked as being no longer in progress must have at least one master-location.</para></listitem><listitem><para>No duplication of <code><link linkend="attribute-xmlids">@xml:ids</link></code> is permitted</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Add master-location element after &lt;name&gt; with fixed URL </emphasis>Choosing this option will insert a master-location immediately after name, with
+      <code><link linkend="element-change">&lt;change&gt;</link></code>+)</synopsis><para>Used by: <code><link linkend="element-TAN-A-div">&lt;TAN-A-div&gt;</link></code> <code><link linkend="element-TAN-A-tok">&lt;TAN-A-tok&gt;</link></code> <code><link linkend="element-TAN-LM">&lt;TAN-LM&gt;</link></code> <code><link linkend="element-TAN-T">&lt;TAN-T&gt;</link></code> <code><link linkend="element-TAN-key">&lt;TAN-key&gt;</link></code> <code><link linkend="element-TAN-mor">&lt;TAN-mor&gt;</link></code> <code><link linkend="element-TAN-rdf">&lt;TAN-rdf&gt;</link></code> </para><caution><itemizedlist><listitem><para>Class 1 sources must preserve the leaf div uniqueness rule.</para></listitem><listitem><para>Any TAN file marked as being no longer in progress must have at least one master-location.</para></listitem><listitem><para>No duplication of <code><link linkend="attribute-xmlids">@xml:ids</link></code> is permitted</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Add master-location element after &lt;name&gt; with fixed URL </emphasis>Choosing this option will insert a master-location immediately after name, with
                the absolute value of the current file's URL.</para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Add master-location element after &lt;name&gt; with relative URL </emphasis>Choosing this option will insert a master-location immediately after name, with
                the simple filename current file (i.e., no path).</para></tip><example><title><code>&lt;head&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs" TAN-version="1"&gt;
    <emphasis role="bold">&lt;head&gt;</emphasis>
@@ -1931,11 +1914,10 @@ language </synopsis><para>Used by: <code><link linkend="element-declarations">&l
       .........
    &lt;/body&gt;
 &lt;/TAN-T&gt;
-</programlisting></example><example><title><code>&lt;head&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:sem-divs" TAN-version="1"&gt;
+</programlisting></example><example><title><code>&lt;head&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:semantic-refs-resegmented-2016-02-21T09:33:16.107-05:00" TAN-version="1"&gt;
    <emphasis role="bold">&lt;head&gt;</emphasis>
-      &lt;comment who="sysadmin" when="2016-02-11-05:00"&gt;This is a revised version of the text, using
-         the first alternatively divided edition as a template by which to resegment the
-         text.&lt;/comment&gt;
+      &lt;comment who="sysadmin" when="2016-02-21-05:00"&gt;This is a revised version of the text, using
+         the first different work version as a template by which to resegment the text.&lt;/comment&gt;
       &lt;name&gt;Categories, Aristotle, English translation by E. M. Edghill&lt;/name&gt;
       &lt;rights-excluding-sources rights-holder="kalvesmaki"&gt;
          .........
@@ -1986,10 +1968,10 @@ language </synopsis><para>Used by: <code><link linkend="element-declarations">&l
          <code><link linkend="element-name">&lt;name&gt;</link></code>+,
          <code><link linkend="element-desc">&lt;desc&gt;</link></code>*,
          <code><link linkend="element-checksum">&lt;checksum&gt;</link></code>*,
-         <code><link linkend="element-location">&lt;location&gt;</link></code>+))</synopsis><para>Used by: <code><link linkend="element-head">&lt;head&gt;</link></code> </para><caution><itemizedlist><listitem><para>No inclusion may introduce a duplicate <code><link linkend="attribute-xmlid">@xml:id</link></code></para></listitem><listitem><para>Inclusions may not have the same tag id as the host document.</para></listitem></itemizedlist></caution><warning><itemizedlist><listitem><para>Every inclusion must have at least one location that leads to an available document.</para></listitem></itemizedlist></warning></section><section xml:id="element-IRI"><title><code>&lt;IRI&gt;</code></title><para>The element <code>IRI</code> contains an International Resource Identifier that serves as a name for the a concept, person, or thing referred to by the parent element. IRIs are explained at <xref linkend="IRIs_and_linked_data"/>.</para><para>Any kind of IRIs are allowed: URLs, tag URNs, UUIDs, etc. For names of well-known resources, a URL identifier might be preferred (http://...), to facilitate linked data. If an entity/resource lacks a suitable URL-type name, you may use or coin any other valid IRI, such as a UUID, a tag URN, or an OID. Some concepts may be difficult to find IRIs for. See <link xlink:href="iris.xml">IRIs.xml</link> for guidance.</para><para>Sibling <code><link linkend="element-IRI">&lt;IRI&gt;</link></code>s are to be treated as names for the same thing, not as names of different things. Nevertheless, they are not synonymous, only poecilonymic. In the terms of Web Ontology Language (http://www.w3.org/TR/owl-ref/), sibling <code><link linkend="element-IRI">&lt;IRI&gt;</link></code>s cannot be assumed to share the relationship owl:sameAs, because they will draw from independent vocabularies that may define similar concepts differently. An element defined with multiple <code><link linkend="element-IRI">&lt;IRI&gt;</link></code>s is to be understood as being within the intersection of those definitions.</para><para>The element is named IRI instead of URI to encourage internationalization. Alphabets other than the Latin are welcome. </para><synopsis><emphasis>Definition:</emphasis>
+         <code><link linkend="element-location">&lt;location&gt;</link></code>+))</synopsis><para>Used by: <code><link linkend="element-head">&lt;head&gt;</link></code> </para><caution><itemizedlist><listitem><para>No inclusion may introduce a duplicate <code><link linkend="attribute-xmlid">@xml:id</link></code></para></listitem><listitem><para>Inclusions may not have the same tag id as the host document.</para></listitem></itemizedlist></caution><warning><itemizedlist><listitem><para>Every inclusion must have at least one location that leads to an available document.</para></listitem></itemizedlist></warning><important><itemizedlist><listitem><para> If an inclusion is not marked as being no longer in progress, a warning will be returned. </para></listitem></itemizedlist></important></section><section xml:id="element-IRI"><title><code>&lt;IRI&gt;</code></title><para>The element <code>IRI</code> contains an International Resource Identifier that serves as a name for the a concept, person, or thing referred to by the parent element. IRIs are explained at <xref linkend="IRIs_and_linked_data"/>.</para><para>Any kind of IRIs are allowed: URLs, tag URNs, UUIDs, etc. For names of well-known resources, a URL identifier might be preferred (http://...), to facilitate linked data. If an entity/resource lacks a suitable URL-type name, you may use or coin any other valid IRI, such as a UUID, a tag URN, or an OID. Some concepts may be difficult to find IRIs for. See <link xlink:href="iris.xml">IRIs.xml</link> for guidance.</para><para>Sibling <code><link linkend="element-IRI">&lt;IRI&gt;</link></code>s are to be treated as names for the same thing, not as names of different things. Nevertheless, they are not synonymous, only poecilonymic. In the terms of Web Ontology Language (http://www.w3.org/TR/owl-ref/), sibling <code><link linkend="element-IRI">&lt;IRI&gt;</link></code>s cannot be assumed to share the relationship owl:sameAs, because they will draw from independent vocabularies that may define similar concepts differently. An element defined with multiple <code><link linkend="element-IRI">&lt;IRI&gt;</link></code>s is to be understood as being within the intersection of those definitions.</para><para>The element is named IRI instead of URI to encourage internationalization. Alphabets other than the Latin are welcome. </para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-anyURI (pattern [a-zA-Z][\-.+a-zA-Z0-9]+:\S+)</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-checksum">&lt;checksum&gt;</link></code> <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code> <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources&gt;</link></code> <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-tokenization">&lt;tokenization&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para><caution><itemizedlist><listitem><para>No duplication allowed: an IRI should appear only once in a file.</para></listitem><listitem><para>If referring to a TAN file, the value must be a tag URN that matches exactly the TAN id</para></listitem><listitem><para>Every IRI in invoked in the body of a TAN-key should be unique within the body.</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Replace with TAN id of 1st document available </emphasis>Choosing this option will replace the content of an IRI element with the value of
+anyURI (pattern [a-zA-Z][\-.+a-zA-Z0-9]+:\S+)</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-checksum">&lt;checksum&gt;</link></code> <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources&gt;</link></code> <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para><caution><itemizedlist><listitem><para>No duplication allowed: an IRI should appear only once in a file.</para></listitem><listitem><para>If referring to a TAN file, the value must be a tag URN that matches exactly the TAN id</para></listitem><listitem><para>Every IRI in invoked in the body of a TAN-key should be unique within the body.</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Replace with TAN id of 1st document available </emphasis>Choosing this option will replace the content of an IRI element with the value of
                the TAN id</para></tip><example><title><code>&lt;IRI&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs" TAN-version="1"&gt;
    &lt;head&gt;
       &lt;rights-excluding-sources rights-holder="kalvesmaki"&gt;
@@ -2031,7 +2013,7 @@ anyURI (pattern [a-zA-Z][\-.+a-zA-Z0-9]+:\S+)</synopsis><para>Used by: <code><li
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
    <code><link linkend="attribute-when-accessed">@when-accessed</link></code>,
-   <code><link linkend="attribute-href">@href</link></code></synopsis><para>Used by: <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-tokenization">&lt;tokenization&gt;</link></code> </para><important><itemizedlist><listitem><para> If a file that is referenced is either unavailable or not valid XML, a warning will be returned </para></listitem><listitem><para> If a referenced file is marked as being in progress, a warning will be returned </para></listitem><listitem><para> If a TAN file has been updated since it was last accessed, a warning will be returned </para></listitem><listitem><para> If a sibling <code><link linkend="element-name">&lt;name&gt;</link></code> or <code><link linkend="element-IRI">&lt;IRI&gt;</link></code> is missing, a warning will be returned </para></listitem></itemizedlist></important><tip><para><emphasis role="bold">Schematron Quick Fix: Replace with local uri </emphasis>Choosing this option replace the content with the current filename (without
+   <code><link linkend="attribute-href">@href</link></code></synopsis><para>Used by: <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> </para><important><itemizedlist><listitem><para> If a file that is referenced is either unavailable or not valid XML, a warning will be returned </para></listitem><listitem><para> If a referenced file is marked as being in progress, a warning will be returned </para></listitem><listitem><para> If a TAN file has been updated since it was last accessed, a warning will be returned </para></listitem></itemizedlist></important><tip><para><emphasis role="bold">Schematron Quick Fix: Replace with local uri </emphasis>Choosing this option replace the content with the current filename (without
                path)</para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Change date to today's date </emphasis>Choosing this option will replace the content of <code><link linkend="attribute-when-accessed">@when-accessed</link></code> with the current
                date</para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Replace IRI and name with target values </emphasis>Choosing this option for a TAN file will replace the content of the IRI and name
                elements with the values found in the first document available.</para></tip><example><title><code>&lt;location&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs" TAN-version="1"&gt;
@@ -2052,16 +2034,9 @@ anyURI (pattern [a-zA-Z][\-.+a-zA-Z0-9]+:\S+)</synopsis><para>Used by: <code><li
          &lt;relationship which="alternatively divided edition"/&gt;
          &lt;IRI&gt;tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:semantic-refs&lt;/IRI&gt;
          &lt;name&gt;Categories, Aristotle, English translation by E. M. Edghill&lt;/name&gt;
-         <emphasis role="bold">&lt;location href="file:/H:/Users-2/Joel/Dropbox/TAN/SERVER/release/1/dev/examples/ar.cat.eng.1926.edghill.sem.xml" when-accessed="2016-02-11T13:45:52.194-05:00"/&gt;</emphasis>
+         <emphasis role="bold">&lt;location href="ar.cat.eng.1926.edghill.sem.xml" when-accessed="2016-02-11T13:45:52.194-05:00"/&gt;</emphasis>
       &lt;/see-also&gt;
       &lt;declarations&gt;
-         .........
-         &lt;div-type xml:id="l"&gt;
-            .........
-         &lt;/div-type&gt;
-         &lt;recommended-tokenization which="general-1"/&gt;
-         &lt;recommended-tokenization which="general-words-only-1"/&gt;
-         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
          &lt;filter&gt;
             &lt;normalization which="no hyphens"/&gt;
          &lt;/filter&gt;
@@ -2077,7 +2052,7 @@ anyURI (pattern [a-zA-Z][\-.+a-zA-Z0-9]+:\S+)</synopsis><para>Used by: <code><li
 </programlisting></example></section><section xml:id="element-master-location"><title><code>&lt;master-location&gt;</code></title><para>The element <code>master-location</code> points to a location where a master copy of the file is to be found. When you use <code><link linkend="element-master-location">&lt;master-location&gt;</link></code> you commit yourself to updating the TAN file in those locations. Similarly, if you have completed work on a TAN file and signal that through <code><link linkend="attribute-in-progress">@in-progress</link></code>, you must commit yourself to a <code><link linkend="element-master-location">&lt;master-location&gt;</link></code>.</para><para>The URL may be absolute or relative to the current document. </para><para><code><link linkend="element-master-location">&lt;master-location&gt;</link></code> does not disallow the file from being published or distributed elsewhere. It merely points to the main locations where an authoritative version of the file is to be found. </para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-   <code><link linkend="attribute-href">@href</link></code></synopsis><para>Used by: <code><link linkend="element-head">&lt;head&gt;</link></code> </para><important><itemizedlist><listitem><para> If file version does not match that found in a master location, a warning will be returned </para></listitem><listitem><para> If a file that is referenced is either unavailable or not valid XML, a warning will be returned </para></listitem><listitem><para> If the current file does not match one found in a master location, a warning will be returned </para></listitem><listitem><para> If a sibling <code><link linkend="element-name">&lt;name&gt;</link></code> or <code><link linkend="element-IRI">&lt;IRI&gt;</link></code> is missing, a warning will be returned </para></listitem></itemizedlist></important><caution><itemizedlist><listitem><para>Any TAN file marked as being no longer in progress must have at least one master-location.</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Replace with local uri </emphasis>Choosing this option replace the content with the current filename (without
+   <code><link linkend="attribute-href">@href</link></code></synopsis><para>Used by: <code><link linkend="element-head">&lt;head&gt;</link></code> </para><important><itemizedlist><listitem><para> If file version does not match that found in a master location, a warning will be returned </para></listitem><listitem><para> If a file that is referenced is either unavailable or not valid XML, a warning will be returned </para></listitem><listitem><para> If the current file does not match one found in a master location, a warning will be returned </para></listitem></itemizedlist></important><caution><itemizedlist><listitem><para>Any TAN file marked as being no longer in progress must have at least one master-location.</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Replace with local uri </emphasis>Choosing this option replace the content with the current filename (without
                path)</para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Replace with base uri </emphasis>Choosing this option will replace the content with the absolute URL to the
                current file</para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Change date to today's date </emphasis>Choosing this option will replace the content of <code><link linkend="attribute-when-accessed">@when-accessed</link></code> with the current
                date</para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Replace current tan:head and tan:body with tan:head and tan:body from file at
@@ -2090,19 +2065,14 @@ anyURI (pattern [a-zA-Z][\-.+a-zA-Z0-9]+:\S+)</synopsis><para>Used by: <code><li
          .........
       &lt;/rights-excluding-sources&gt;
       .........
-      &lt;declarations&gt;
+   &lt;/head&gt;
+</programlisting></example><example><title><code>&lt;master-location&gt;</code></title><programlisting>   &lt;head&gt;
+      &lt;name&gt;TAN Transkription, Ringelreihen mit Riederfallen&lt;/name&gt;
+      <emphasis role="bold">&lt;master-location href="http://beispiel.com/TAN-T/ringel.xml"/&gt;</emphasis>
+      &lt;rights-excluding-sources rights-holder="schmidt"&gt;
          .........
-         &lt;div-type xml:id="para"&gt;
-            .........
-         &lt;/div-type&gt;
-         &lt;recommended-tokenization which="general-1"/&gt;
-         &lt;recommended-tokenization xml:id="penn"&gt;
-            .........
-            &lt;name&gt;Tokenization pattern for English, in Penn Treebank style&lt;/name&gt;
-            &lt;location href="../../../../../library/class-3/TAN-R-tok/tok.eng.1.xml" when-accessed="2016-01-26T16:00:08.229-05:00"/&gt;
-         &lt;/recommended-tokenization&gt;
-         .........
-      &lt;/declarations&gt;
+      &lt;/rights-excluding-sources&gt;
+      .........
    &lt;/head&gt;
 </programlisting></example><example><title><code>&lt;master-location&gt;</code></title><programlisting>   &lt;head&gt;
       &lt;name&gt;TAN transcription of Ring a Ring o' Roses&lt;/name&gt;
@@ -2116,7 +2086,6 @@ anyURI (pattern [a-zA-Z][\-.+a-zA-Z0-9]+:\S+)</synopsis><para>Used by: <code><li
             .........
          &lt;/work&gt;
          &lt;div-type xml:id="line" which="half-line (verse)"/&gt;
-         &lt;recommended-tokenization which="general-1"/&gt;
       &lt;/declarations&gt;
    &lt;/head&gt;
 </programlisting></example><example><title><code>&lt;master-location&gt;</code></title><programlisting>   &lt;head&gt;
@@ -2135,32 +2104,13 @@ anyURI (pattern [a-zA-Z][\-.+a-zA-Z0-9]+:\S+)</synopsis><para>Used by: <code><li
          &lt;div-type xml:id="l"&gt;
             .........
          &lt;/div-type&gt;
-         &lt;recommended-tokenization which="general-1"/&gt;
-      &lt;/declarations&gt;
-   &lt;/head&gt;
-</programlisting></example><example><title><code>&lt;master-location&gt;</code></title><programlisting>   &lt;head&gt;
-      &lt;name&gt;TAN transcription of Ring around the Rosie&lt;/name&gt;
-      <emphasis role="bold">&lt;master-location href="ring-o-roses.eng.1987.xml"/&gt;</emphasis>
-      &lt;rights-excluding-sources rights-holder="park"&gt;
-         .........
-      &lt;/rights-excluding-sources&gt;
-      .........
-      &lt;declarations ed-who="park" ed-when="2015-10-31"&gt;
-         .........
-         &lt;div-type xml:id="l"&gt;
-            .........
-         &lt;/div-type&gt;
-         &lt;recommended-tokenization which="general-words-only-1"/&gt;
-         &lt;filter&gt;
-            .........
-         &lt;/filter&gt;
       &lt;/declarations&gt;
    &lt;/head&gt;
 </programlisting></example></section><section xml:id="element-name"><title><code>&lt;name&gt;</code></title><para>The element <code>name</code> provides a human-readable name of a concept, person, or thing referred to by the parent element (or the current document, if the parent element is <code><link linkend="element-head">&lt;head&gt;</link></code>)</para><para>Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with <code><link linkend="attribute-xmllang">@xml:lang</link></code>), in any Unicode-compliant script.</para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
 <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
       (<code><link linkend="attribute-xmllang">@xml:lang</link></code>?,
-      string (pattern (.|\n)+))</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-checksum">&lt;checksum&gt;</link></code> <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-group">&lt;group&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code> <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources&gt;</link></code> <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-tokenization">&lt;tokenization&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para><caution><itemizedlist><listitem><para>Names may not duplicate reserved TAN keywords for the affected element.</para></listitem><listitem><para>Names may not duplicate each other.</para></listitem></itemizedlist></caution><example><title><code>&lt;name&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs" TAN-version="1"&gt;
+      string (pattern (.|\n)+))</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-checksum">&lt;checksum&gt;</link></code> <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-group">&lt;group&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources&gt;</link></code> <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para><caution><itemizedlist><listitem><para>Names may not duplicate reserved TAN keywords for the affected element.</para></listitem><listitem><para>Names may not duplicate each other.</para></listitem></itemizedlist></caution><example><title><code>&lt;name&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs" TAN-version="1"&gt;
    &lt;head&gt;
       &lt;comment who="sysadmin" when="2016-02-11-05:00"&gt;This is a revised version of the text, using
          the first alternatively divided edition as a template by which to resegment the
@@ -2195,40 +2145,15 @@ anyURI (pattern [a-zA-Z][\-.+a-zA-Z0-9]+:\S+)</synopsis><para>Used by: <code><li
          .........
          &lt;IRI&gt;tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:semantic-refs&lt;/IRI&gt;
          <emphasis role="bold">&lt;name&gt;</emphasis>Categories, Aristotle, English translation by E. M. Edghill<emphasis role="bold">&lt;/name&gt;</emphasis>
-         &lt;location href="file:/H:/Users-2/Joel/Dropbox/TAN/SERVER/release/1/dev/examples/ar.cat.eng.1926.edghill.sem.xml" when-accessed="2016-02-11T13:45:52.194-05:00"/&gt;
+         &lt;location href="ar.cat.eng.1926.edghill.sem.xml" when-accessed="2016-02-11T13:45:52.194-05:00"/&gt;
       &lt;/see-also&gt;
    &lt;/head&gt;
 &lt;/TAN-T&gt;
-</programlisting></example></section><section xml:id="element-pattern"><title><code>&lt;pattern&gt;</code></title><para>The element <code>pattern</code> specifies a regular expression pattern to be searched for or matched</para><synopsis><emphasis>Definition:</emphasis>
-   (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
-   <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-text</synopsis><para>Used by: <code><link linkend="element-replace">&lt;replace&gt;</link></code> <code><link linkend="element-tokenize">&lt;tokenize&gt;</link></code> </para><caution><itemizedlist><listitem><para>Every escape sequence must be recognized by XML schema. See http://www.w3.org/TR/xmlschema-2/#regexs for details.</para></listitem></itemizedlist></caution><example><title><code>&lt;pattern&gt;</code></title><programlisting>&lt;TAN-R-tok TAN-version="1/dev" id="tag:textalign.net,2015:tan-r-tok:general-1"&gt;
-   &lt;body in-progress="false"&gt;
-      &lt;replace&gt;
-         &lt;comment when="2015-03-16" who="kalvesmaki"&gt;Pad every cluster of non-word characters with
-            space.&lt;/comment&gt;
-         <emphasis role="bold">&lt;pattern&gt;</emphasis>(\W)<emphasis role="bold">&lt;/pattern&gt;</emphasis>
-         &lt;replacement&gt; $1 &lt;/replacement&gt;
-      &lt;/replace&gt;
-      &lt;replace&gt;
-         &lt;comment when="2015-03-16" who="kalvesmaki"&gt;Delete end spaces.&lt;/comment&gt;
-         <emphasis role="bold">&lt;pattern&gt;</emphasis>^\s+|\s+$<emphasis role="bold">&lt;/pattern&gt;</emphasis>
-         &lt;replacement/&gt;
-      &lt;/replace&gt;
-      &lt;tokenize&gt;
-         <emphasis role="bold">&lt;pattern&gt;</emphasis>\s+<emphasis role="bold">&lt;/pattern&gt;</emphasis>
-      &lt;/tokenize&gt;
-   &lt;/body&gt;
-&lt;/TAN-R-tok&gt;
-</programlisting></example><example><title><code>&lt;pattern&gt;</code></title><programlisting>      &lt;replace&gt;
-         &lt;comment when="2015-03-16" who="kalvesmaki"&gt;Remove end nonword characters&lt;/comment&gt;
-         <emphasis role="bold">&lt;pattern&gt;</emphasis>^\W+|\W+$<emphasis role="bold">&lt;/pattern&gt;</emphasis>
-         &lt;replacement/&gt;
-      &lt;/replace&gt;
 </programlisting></example></section><section xml:id="element-relationship"><title><code>&lt;relationship&gt;</code></title><para>The element <code>relationship</code> specifies the role that the item named by the parent <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> played. This may be either a reserved keyword or an IRI + name pattern that identifies a specific kind of relationship.</para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-   <code><link linkend="attribute-include">@include</link></code> |
+   (<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
       (   (<code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
    <code><link linkend="element-name">&lt;name&gt;</link></code>+,
    <code><link linkend="element-desc">&lt;desc&gt;</link></code>*) |
@@ -2250,16 +2175,9 @@ text</synopsis><para>Used by: <code><link linkend="element-replace">&lt;replace&
          <emphasis role="bold">&lt;relationship which="alternatively divided edition"/&gt;</emphasis>
          &lt;IRI&gt;tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:semantic-refs&lt;/IRI&gt;
          &lt;name&gt;Categories, Aristotle, English translation by E. M. Edghill&lt;/name&gt;
-         &lt;location href="file:/H:/Users-2/Joel/Dropbox/TAN/SERVER/release/1/dev/examples/ar.cat.eng.1926.edghill.sem.xml" when-accessed="2016-02-11T13:45:52.194-05:00"/&gt;
+         &lt;location href="ar.cat.eng.1926.edghill.sem.xml" when-accessed="2016-02-11T13:45:52.194-05:00"/&gt;
       &lt;/see-also&gt;
       &lt;declarations&gt;
-         .........
-         &lt;div-type xml:id="l"&gt;
-            .........
-         &lt;/div-type&gt;
-         &lt;recommended-tokenization which="general-1"/&gt;
-         &lt;recommended-tokenization which="general-words-only-1"/&gt;
-         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
          &lt;filter&gt;
             &lt;normalization which="no hyphens"/&gt;
          &lt;/filter&gt;
@@ -2272,108 +2190,11 @@ text</synopsis><para>Used by: <code><link linkend="element-replace">&lt;replace&
          &lt;name&gt;Categories, Aristotle, Greek text by Minio-Paluello&lt;/name&gt;
          &lt;location href="ar.cat.grc.1949.minio-paluello-sem.xml" when-accessed="2016-02-10T14:08:52.058-05:00"/&gt;
       &lt;/see-also&gt;
-</programlisting></example></section><section xml:id="element-replace"><title><code>&lt;replace&gt;</code></title><para>The element <code>replace</code> contains the equivalent of the XPath replace() function plus parameters, indicating a replacement operation that should be, or has been, applied to a digital file. Used in class 1 and class 3 (TAN-R-tok) files.</para><para>Multiple <code><link linkend="element-replace">&lt;replace&gt;</link></code>s will be implemented in document order.</para><para>The conventions of this element and its children accord with the definition of the function and its parameters provided at http://www.w3.org/TR/xpath-functions-30/#func-replace</para><para>Multiple <code><link linkend="element-replace">&lt;replace&gt;</link></code> values are applied according to the order given.</para><synopsis><emphasis>Definition:</emphasis>
-   (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
-   <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-   <code><link linkend="attribute-include">@include</link></code> |
-      (<code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
-         (<code><link linkend="element-pattern">&lt;pattern&gt;</link></code>,
-         <code><link linkend="element-replacement">&lt;replacement&gt;</link></code>,
-         <code><link linkend="element-flags">&lt;flags&gt;</link></code>?))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-filter">&lt;filter&gt;</link></code> </para><example><title><code>&lt;replace&gt;</code></title><programlisting>&lt;TAN-R-tok TAN-version="1/dev" id="tag:textalign.net,2015:tan-r-tok:general-1"&gt;
-   &lt;body in-progress="false"&gt;
-      <emphasis role="bold">&lt;replace&gt;</emphasis>
-         &lt;comment when="2015-03-16" who="kalvesmaki"&gt;Pad every cluster of non-word characters with
-            space.&lt;/comment&gt;
-         &lt;pattern&gt;(\W)&lt;/pattern&gt;
-         &lt;replacement&gt; $1 &lt;/replacement&gt;
-      <emphasis role="bold">&lt;/replace&gt;</emphasis>
-      <emphasis role="bold">&lt;replace&gt;</emphasis>
-         &lt;comment when="2015-03-16" who="kalvesmaki"&gt;Delete end spaces.&lt;/comment&gt;
-         &lt;pattern&gt;^\s+|\s+$&lt;/pattern&gt;
-         &lt;replacement/&gt;
-      <emphasis role="bold">&lt;/replace&gt;</emphasis>
-      &lt;tokenize&gt;
-         .........
-      &lt;/tokenize&gt;
-      .........
-   &lt;/body&gt;
-&lt;/TAN-R-tok&gt;
-</programlisting></example><example><title><code>&lt;replace&gt;</code></title><programlisting>   &lt;body in-progress="false"&gt;
-      <emphasis role="bold">&lt;replace&gt;</emphasis>
-         &lt;comment when="2015-03-16" who="kalvesmaki"&gt;Remove end nonword characters&lt;/comment&gt;
-         &lt;pattern&gt;^\W+|\W+$&lt;/pattern&gt;
-         &lt;replacement/&gt;
-      <emphasis role="bold">&lt;/replace&gt;</emphasis>
-      &lt;tokenize&gt;
-         .........
-      &lt;/tokenize&gt;
-      .........
-   &lt;/body&gt;
-</programlisting></example><example><title><code>&lt;replace&gt;</code></title><programlisting>   &lt;body in-progress="false"&gt;
-      <emphasis role="bold">&lt;replace&gt;</emphasis>
-         &lt;comment when="2015-03-18" who="kalvesmaki"&gt;Delete end spaces.&lt;/comment&gt;
-         &lt;pattern&gt;^\s+|\s+$&lt;/pattern&gt;
-         &lt;replacement/&gt;
-      <emphasis role="bold">&lt;/replace&gt;</emphasis>
-      &lt;tokenize&gt;
-         .........
-      &lt;/tokenize&gt;
-      .........
-   &lt;/body&gt;
-</programlisting></example></section><section xml:id="element-replacement"><title><code>&lt;replacement&gt;</code></title><para>The element <code>replacement</code> contains a string used to replace any occurrence of <code><link linkend="element-pattern">&lt;pattern&gt;</link></code> </para><synopsis><emphasis>Definition:</emphasis>
-   (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
-   <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-text</synopsis><para>Used by: <code><link linkend="element-replace">&lt;replace&gt;</link></code> </para><example><title><code>&lt;replacement&gt;</code></title><programlisting>&lt;TAN-R-tok TAN-version="1/dev" id="tag:textalign.net,2015:tan-r-tok:general-1"&gt;
-   &lt;head&gt;
-      .........
-      &lt;desc&gt;This tokenization pattern takes any text in any language, offsets punctuation and other
-         non-word characters with spaces, then returns a sequence of strings tokenized by white
-         space. It is meant to be applied to transcriptions prepared by agents who have given little
-         or no thought to tokenization, and to be suitable for languages and texts where individual
-         punctuation marks are deemed important objects of linguistic analysis. This is a core
-         tokenization pattern, so can be invoked by the elements tokenization or
-         recommended-tokenization simply by setting @which to the value "general-1". Or you may use
-         the full IRI + name pattern.
-         
-         
-      &lt;/desc&gt;
-      &lt;master-location href="http://textalign.net/release/1/dev/TAN-R-tok/general-1.xml"/&gt;
-      &lt;rights-excluding-sources rights-holder="kalvesmaki"&gt;
-         .........
-      &lt;/rights-excluding-sources&gt;
-      &lt;declarations/&gt;
-      &lt;agent xml:id="kalvesmaki" roles="creator"&gt;
-         .........
-      &lt;/agent&gt;
-      .........
-   &lt;/head&gt;
-   &lt;body in-progress="false"&gt;
-      &lt;replace&gt;
-         .........
-         &lt;pattern&gt;(\W)&lt;/pattern&gt;
-         <emphasis role="bold">&lt;replacement&gt;</emphasis> $1 <emphasis role="bold">&lt;/replacement&gt;</emphasis>
-      &lt;/replace&gt;
-      &lt;replace&gt;
-         .........
-         &lt;pattern&gt;^\s+|\s+$&lt;/pattern&gt;
-         <emphasis role="bold">&lt;replacement/&gt;</emphasis>
-      &lt;/replace&gt;
-   &lt;/body&gt;
-&lt;/TAN-R-tok&gt;
-</programlisting></example><example><title><code>&lt;replacement&gt;</code></title><programlisting>      &lt;replace&gt;
-         .........
-         &lt;pattern&gt;^\W+|\W+$&lt;/pattern&gt;
-         <emphasis role="bold">&lt;replacement/&gt;</emphasis>
-      &lt;/replace&gt;
-</programlisting></example><example><title><code>&lt;replacement&gt;</code></title><programlisting>      &lt;replace&gt;
-         .........
-         &lt;pattern&gt;^\s+|\s+$&lt;/pattern&gt;
-         <emphasis role="bold">&lt;replacement/&gt;</emphasis>
-      &lt;/replace&gt;
 </programlisting></example></section><section xml:id="element-rights-excluding-sources"><title><code>&lt;rights-excluding-sources&gt;</code></title><para>The element <code>rights-excluding-sources</code> states the license under which the data is distributed and the rights associated with it, EXCLUSIVE of any rights attached to the source.</para><para>If parts of your TAN data fall under two or more licenses, you should (1) split the file (one for each license), (2) find a license that sythesizes the desired licenses, or (3) release the entire file under the most restrictive of the possible licenses.</para><para>Diligently check to ensure that the license you have claimed respects the rights of your sources' rightsholders. It is recommended that you license your data under a license that is similar to or slightly more liberal than the one under which your sources have been released.</para><para>For more discussion, see <xref linkend="license"/></para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-   <code><link linkend="attribute-include">@include</link></code> |
+   (<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
       (<code><link linkend="attribute-rights-holder">@rights-holder</link></code>,
          (<code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
             (   (<code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
@@ -2440,7 +2261,8 @@ text</synopsis><para>Used by: <code><link linkend="element-replace">&lt;replace&
 </programlisting></example></section><section xml:id="element-rights-source-only"><title><code>&lt;rights-source-only&gt;</code></title><para>The element <code>rights-source-only</code> states license and rights that are attached to the source of the data.</para><para>For more discussion, see <xref linkend="license"/></para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-   <code><link linkend="attribute-include">@include</link></code> |
+   (<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
       (<code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
          (<code><link linkend="attribute-rights-holder">@rights-holder</link></code>*,
             (   (<code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
@@ -2449,7 +2271,8 @@ text</synopsis><para>Used by: <code><link linkend="element-replace">&lt;replace&
             <code><link linkend="attribute-which">@which</link></code>)))</synopsis><para>Used by: <code><link linkend="element-source">&lt;source&gt;</link></code> </para></section><section xml:id="element-role"><title><code>&lt;role&gt;</code></title><para>The element <code>role</code> specifies a role (responsibility, task, or activity) that one or more <code><link linkend="element-agent">&lt;agent&gt;</link></code>s did in creating or editing the data.</para><para>A role may be any activity, e.g., editor, funder, supervisor, data-processor, peer reviewer, patron, defined through the enclosed IRI + name pattern.</para><para>For suggestions on IRI vocabularies for this element, see <link xlink:href="iris.xml">IRIs.xml</link>.</para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-   <code><link linkend="attribute-include">@include</link></code> |
+   (<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
       (<code><link linkend="attribute-xmlid">@xml:id</link></code>,
          (<code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
             (   (<code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
@@ -2504,7 +2327,8 @@ text</synopsis><para>Used by: <code><link linkend="element-replace">&lt;replace&
 </programlisting></example></section><section xml:id="element-see-also"><title><code>&lt;see-also&gt;</code></title><para>The element <code>see-also</code> identifies auxiliary entities that were materially helpful in creating or editing the data, or are helpful in understanding the data.</para><para>This element is especially useful for may be used to credit 3rd parties who provide a set of raw data that you then edit to bring into better conformity with the <code><link linkend="element-source">&lt;source&gt;</link></code>. </para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-   <code><link linkend="attribute-include">@include</link></code> |
+   (<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
       (<code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
          (<code><link linkend="element-relationship">&lt;relationship&gt;</link></code>,
             (   (   (<code><link linkend="element-IRI">&lt;IRI&gt;</link></code>+,
@@ -2522,7 +2346,7 @@ text</synopsis><para>Used by: <code><link linkend="element-replace">&lt;replace&
                   <code><link linkend="element-name">&lt;name&gt;</link></code>+,
                   <code><link linkend="element-desc">&lt;desc&gt;</link></code>*,
                   <code><link linkend="element-checksum">&lt;checksum&gt;</link></code>*,
-                  <code><link linkend="element-location">&lt;location&gt;</link></code>+)))))</synopsis><para>Used by: <code><link linkend="element-head">&lt;head&gt;</link></code> </para><caution><itemizedlist><listitem><para>In class 1 files, alternative editions must share the same source.</para></listitem><listitem><para>In class 1 files, alternative editions must share the same work.</para></listitem><listitem><para>In class 1 files, alternative editions must share the same work-version.</para></listitem><listitem><para>In class 1 files, alternatively divided editions must preserve identical transcriptions.</para></listitem><listitem><para> If <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> keyword is <itemizedlist><listitem><para>dependent</para></listitem><listitem><para>different work version</para></listitem><listitem><para>context</para></listitem><listitem><para>parent edition</para></listitem><listitem><para>child edition</para></listitem><listitem><para>sibling edition</para></listitem><listitem><para>ancestor edition</para></listitem><listitem><para>descendant edition</para></listitem><listitem><para>cousin edition</para></listitem><listitem><para>alternatively divided edition</para></listitem><listitem><para>alternatively normalized edition</para></listitem><listitem><para>old version</para></listitem><listitem><para>new version</para></listitem></itemizedlist> then parent element must point to TAN file.</para></listitem><listitem><para> If <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> keyword is <itemizedlist><listitem><para>parent edition</para></listitem><listitem><para>child edition</para></listitem><listitem><para>sibling edition</para></listitem><listitem><para>ancestor edition</para></listitem><listitem><para>descendant edition</para></listitem><listitem><para>cousin edition</para></listitem><listitem><para>alternatively divided edition</para></listitem><listitem><para>alternatively normalized edition</para></listitem></itemizedlist> then parent element must point to a TAN file of the same type as the current file. </para></listitem><listitem><para>If relationship is dependent, then the current document's id must be found in at least one IRI in the dependent file.</para></listitem><listitem><para> If <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> keyword is  <itemizedlist><listitem><para>parent edition</para></listitem><listitem><para>child edition</para></listitem><listitem><para>sibling edition</para></listitem><listitem><para>ancestor edition</para></listitem><listitem><para>descendant edition</para></listitem><listitem><para>cousin edition</para></listitem><listitem><para>alternatively divided edition</para></listitem><listitem><para>alternatively normalized edition</para></listitem></itemizedlist> then the current file and the see-also file cannot have the same <code><link linkend="attribute-id">@id</link></code> value. </para></listitem></itemizedlist></caution><example><title><code>&lt;see-also&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs" TAN-version="1"&gt;
+                  <code><link linkend="element-location">&lt;location&gt;</link></code>+)))))</synopsis><para>Used by: <code><link linkend="element-head">&lt;head&gt;</link></code> </para><caution><itemizedlist><listitem><para>In class 1 files, alternative editions must share the same source.</para></listitem><listitem><para>In class 1 files, alternative editions must share the same work.</para></listitem><listitem><para>In class 1 files, alternative editions must share the same work-version.</para></listitem><listitem><para>In class 1 files, alternatively divided editions must preserve identical transcriptions.</para></listitem><listitem><para> If <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> keyword is <itemizedlist><listitem><para>dependent</para></listitem><listitem><para>different work version</para></listitem><listitem><para>context</para></listitem><listitem><para>parent edition</para></listitem><listitem><para>child edition</para></listitem><listitem><para>sibling edition</para></listitem><listitem><para>ancestor edition</para></listitem><listitem><para>descendant edition</para></listitem><listitem><para>cousin edition</para></listitem><listitem><para>alternatively divided edition</para></listitem><listitem><para>alternatively normalized edition</para></listitem><listitem><para>old version</para></listitem><listitem><para>new version</para></listitem><listitem><para>update</para></listitem></itemizedlist> then parent element must point to TAN file.</para></listitem><listitem><para> If <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> keyword is <itemizedlist><listitem><para>parent edition</para></listitem><listitem><para>child edition</para></listitem><listitem><para>sibling edition</para></listitem><listitem><para>ancestor edition</para></listitem><listitem><para>descendant edition</para></listitem><listitem><para>cousin edition</para></listitem><listitem><para>alternatively divided edition</para></listitem><listitem><para>alternatively normalized edition</para></listitem></itemizedlist> then parent element must point to a TAN file of the same type as the current file. </para></listitem><listitem><para>If relationship is dependent, then the current document's id must be found in at least one IRI in the dependent file.</para></listitem><listitem><para> If <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> keyword is <itemizedlist><listitem><para>parent edition</para></listitem><listitem><para>child edition</para></listitem><listitem><para>sibling edition</para></listitem><listitem><para>ancestor edition</para></listitem><listitem><para>descendant edition</para></listitem><listitem><para>cousin edition</para></listitem><listitem><para>alternatively divided edition</para></listitem><listitem><para>alternatively normalized edition</para></listitem></itemizedlist> then the current file and the see-also file cannot have the same <code><link linkend="attribute-id">@id</link></code> value. </para></listitem></itemizedlist></caution><example><title><code>&lt;see-also&gt;</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs" TAN-version="1"&gt;
    &lt;head&gt;
       .........
       &lt;source&gt;
@@ -2571,7 +2395,8 @@ text</synopsis><para>Used by: <code><link linkend="element-replace">&lt;replace&
 </programlisting></example></section><section xml:id="element-source"><title><code>&lt;source&gt;</code></title><para>The element <code>source</code> identifies the source upon which the data in the <code><link linkend="element-body">&lt;body&gt;</link></code> of the current file depends.</para><para>TAN-T and TAN-LM allow only one <code><link linkend="element-source">&lt;source&gt;</link></code>. TAN-A-tok allows exactly two. All other TAN formats require one or more. </para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-   <code><link linkend="attribute-include">@include</link></code> |
+   (<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
       (
 <emphasis>TAN-A-div.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
@@ -2599,7 +2424,7 @@ text</synopsis><para>Used by: <code><link linkend="element-replace">&lt;replace&
          <code><link linkend="element-desc">&lt;desc&gt;</link></code>*,
          <code><link linkend="element-checksum">&lt;checksum&gt;</link></code>*,
          <code><link linkend="element-location">&lt;location&gt;</link></code>+))),
-            <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code>?)))</synopsis><para>Used by: <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> </para><warning><itemizedlist><listitem><para>At least one copy of each source must be available to validate file.</para></listitem></itemizedlist></warning><caution><itemizedlist><listitem><para>After declarations are applied, source must preserve the Leaf Div Uniqueness Rule.</para></listitem><listitem><para>Any TAN file with more than one source must provide an <code><link linkend="attribute-xmlid">@xml:id</link></code> to label the source.</para></listitem></itemizedlist></caution><important><itemizedlist><listitem><para> Upon validation, if a source is found to have a <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> that has a <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> of 'new-version', a warning will be returned indicating that an updated version is available </para></listitem></itemizedlist></important><tip><para><emphasis role="bold">Schematron Quick Fix: Replace with new version </emphasis>If the source is found to have a see-also that has a relationship of 'new-version', choosing this option will replace the IRI + name pattern with the one in the source file's see-also.</para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Insert @xml:id </emphasis>Choose this option to add an <code><link linkend="attribute-xmlid">@xml:id</link></code> to a source element that requires an id value.</para></tip><example><title><code>&lt;source&gt;</code></title><programlisting>   &lt;head&gt;
+            <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code>?)))</synopsis><para>Used by: <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> </para><important><itemizedlist><listitem><para> Upon validation, if a source is found to have a <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> that has a <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> of 'new-version', a warning will be returned indicating that an updated version is available </para></listitem></itemizedlist></important><caution><itemizedlist><listitem><para>Any TAN file with more than one source must provide an <code><link linkend="attribute-xmlid">@xml:id</link></code> to label the source.</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Insert @xml:id </emphasis>Choose this option to add an <code><link linkend="attribute-xmlid">@xml:id</link></code> to a source element that requires an id value.</para></tip><example><title><code>&lt;source&gt;</code></title><programlisting>   &lt;head&gt;
       .........
       &lt;rights-excluding-sources rights-holder="kalvesmaki"&gt;
          .........
@@ -2662,48 +2487,48 @@ text</synopsis><para>Used by: <code><link linkend="element-replace">&lt;replace&
       &lt;/see-also&gt;
       .........
    &lt;/head&gt;
-</programlisting></example></section><section xml:id="element-tokenize"><title><code>&lt;tokenize&gt;</code></title><para>The element <code>tokenize</code> constructs the equivalent of an XPath tokenize() function plus parameters. Used in class 1 and class 3 (TAN-R-tok) files.</para><synopsis><emphasis>Definition:</emphasis>
+</programlisting></example></section><section xml:id="element-tail"><title><code>&lt;tail&gt;</code></title><para>The element <code>tail</code> permits any arbitrary content. Suitable as a placeholder for temporary data, especially to facilitate time-consuming validation routines. </para><synopsis><emphasis>Definition:</emphasis>
+      (<code><link linkend="element-">&lt;&gt;</link></code>* &amp;
+text)</synopsis><para>Used by: <code><link linkend="element-TAN-A-div">&lt;TAN-A-div&gt;</link></code> <code><link linkend="element-TAN-A-tok">&lt;TAN-A-tok&gt;</link></code> <code><link linkend="element-TAN-LM">&lt;TAN-LM&gt;</link></code> <code><link linkend="element-TAN-T">&lt;TAN-T&gt;</link></code> <code><link linkend="element-TAN-key">&lt;TAN-key&gt;</link></code> <code><link linkend="element-TAN-mor">&lt;TAN-mor&gt;</link></code> <code><link linkend="element-TAN-rdf">&lt;TAN-rdf&gt;</link></code> </para></section><section xml:id="element-token-definition"><title><code>&lt;token-definition&gt;</code></title><para>The element <code>token-definition</code> defines through a regular expression the definition of a word token. This element will be used to segment a string into token and non-token components. </para><para>This element takes attributes that function as the parameters for the function xsl:analyze-string (see https://www.w3.org/TR/xslt-30/#element-analyze-string).</para><para>For theoretical background and more information, see <xref linkend="preparing_transcriptions_for_tokenization"/></para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-   <code><link linkend="attribute-include">@include</link></code> |
-      (<code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
-         (<code><link linkend="element-pattern">&lt;pattern&gt;</link></code>,
-         <code><link linkend="element-flags">&lt;flags&gt;</link></code>?))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> </para><example><title><code>&lt;tokenize&gt;</code></title><programlisting>   &lt;body in-progress="false"&gt;
-      .........
-      &lt;replace&gt;
+   (<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
+      (<code><link linkend="attribute-src">@src</link></code>,
+         (<code><link linkend="attribute-which">@which</link></code> |
+            (<code><link linkend="attribute-regex">@regex</link></code>,
+            <code><link linkend="attribute-flags">@flags</link></code>?)))</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> </para><example><title><code>&lt;token-definition&gt;</code></title><programlisting>      &lt;declarations&gt;
+         &lt;suppress-div-types src="eng-1790" div-type-ref="poem"/&gt;
+         &lt;comment when="2016-02-22-05:00" who="park"&gt;The following token definition
+                treats the following as words: sequences of letters, any individual character 
+                that is neither a letter nor a space (i.e., punctuation).&lt;/comment&gt;
+         <emphasis role="bold">&lt;token-definition src="eng-us" regex="[-\w]+"/&gt;</emphasis>
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;token-definition&gt;</code></title><programlisting>      &lt;declarations&gt;
          .........
-      &lt;/replace&gt;
-      <emphasis role="bold">&lt;tokenize&gt;</emphasis>
-         &lt;pattern&gt;\s+&lt;/pattern&gt;
-      <emphasis role="bold">&lt;/tokenize&gt;</emphasis>
-      &lt;example&gt;
+         &lt;reuse-type xml:id="adaptation"&gt;
+            .........
+         &lt;/reuse-type&gt;
+         <emphasis role="bold">&lt;token-definition src="ring1881 ring1987" which="letters"/&gt;</emphasis>
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;token-definition&gt;</code></title><programlisting>      &lt;declarations&gt;
+         &lt;rename-div-ns src="ger" div-type-ref="Zeile"&gt;
+            &lt;rename old="#a" new="#1"/&gt;
+         &lt;/rename-div-ns&gt;
+         &lt;comment when="2016-02-22-05:00" who="park"&gt;The following is equivalent to @which = 'letters'&lt;/comment&gt;
+         <emphasis role="bold">&lt;token-definition src="eng ger" regex="\w+"/&gt;</emphasis>
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>&lt;token-definition&gt;</code></title><programlisting>      &lt;declarations&gt;
          .........
-      &lt;/example&gt;
-   &lt;/body&gt;
-</programlisting></example><example><title><code>&lt;tokenize&gt;</code></title><programlisting>   &lt;body in-progress="false"&gt;
-      &lt;replace&gt;
-         .........
-      &lt;/replace&gt;
-      <emphasis role="bold">&lt;tokenize&gt;</emphasis>
-         &lt;comment when="2015-03-16" who="kalvesmaki"&gt;Tokenize on any cluster of nonword
-            characters.&lt;/comment&gt;
-         &lt;pattern&gt;\W+&lt;/pattern&gt;
-      <emphasis role="bold">&lt;/tokenize&gt;</emphasis>
-      &lt;example&gt;
-         .........
-      &lt;/example&gt;
-   &lt;/body&gt;
-</programlisting></example><example><title><code>&lt;tokenize&gt;</code></title><programlisting>   &lt;body in-progress="false"&gt;
-      &lt;replace&gt;
-         .........
-      &lt;/replace&gt;
-      <emphasis role="bold">&lt;tokenize&gt;</emphasis>
-         &lt;pattern&gt;[\s​]+&lt;/pattern&gt;
-      <emphasis role="bold">&lt;/tokenize&gt;</emphasis>
-      &lt;example&gt;
-         .........
-      &lt;/example&gt;
-   &lt;/body&gt;
+         &lt;reuse-type xml:id="correlationGeneral"&gt;
+            .........
+         &lt;/reuse-type&gt;
+         <emphasis role="bold">&lt;token-definition src="eng ger" which="letters and punctuation"/&gt;</emphasis>
+         &lt;rename-div-ns src="ger" div-type-ref="Zeile"&gt;
+            &lt;rename old="#a" new="#1"/&gt;
+            &lt;rename old="e" new="4"/&gt;
+         &lt;/rename-div-ns&gt;
+      &lt;/declarations&gt;
 </programlisting></example></section><section xml:id="element-value"><title><code>&lt;value&gt;</code></title><para>The element <code>value</code> states the value of a <code><link linkend="element-checksum">&lt;checksum&gt;</link></code></para><synopsis><emphasis>Definition:</emphasis>
 string </synopsis><para>Used by: <code><link linkend="element-checksum">&lt;checksum&gt;</link></code> </para><example><title><code>&lt;value&gt;</code></title><programlisting>         &lt;checksum&gt;
             .........
@@ -2715,7 +2540,8 @@ string </synopsis><para>Used by: <code><link linkend="element-checksum">&lt;chec
    <code><link linkend="attribute-to">@to</link></code></synopsis><para>Used by: <code><link linkend="element-agentrole">&lt;agentrole&gt;</link></code> <code><link linkend="element-claim">&lt;claim&gt;</link></code> </para></section><section xml:id="element-work"><title><code>&lt;work&gt;</code></title><para>The element <code>work</code> indicates a creative work. Must be a conceptual entity, not a physical one.</para><para>The term "work" is only pragmatically defined in TAN. Any text that has enough unity to be referred to in ordinary conversation as a single entity may be defined as a work. A work may be composed of other works, be a part of other works, or even overlap with other works. E.g., the Lord's Prayer, the Gospel of Luke, the Tetravengelion, the New Testament, and the Bible are all valid works, despite the complex relationship between each of these concepts.</para><para>This element takes the IRI + name pattern. For more, see <link xlink:href="iris.xml">IRIs.xml</link> and <xref linkend="conceptual_works"/></para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
 <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-      (<code><link linkend="attribute-include">@include</link></code> |
+      ((<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
          (
 <emphasis>TAN-A-tok.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
@@ -2723,7 +2549,7 @@ string </synopsis><para>Used by: <code><link linkend="element-checksum">&lt;chec
 <emphasis>TAN-key.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
-<emphasis>TAN-R-mor.rng:</emphasis>
+<emphasis>TAN-mor.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
 <emphasis>TAN-rdf.rng:</emphasis>
@@ -2771,7 +2597,8 @@ string </synopsis><para>Used by: <code><link linkend="element-checksum">&lt;chec
          &lt;/div-type&gt;
          .........
       &lt;/declarations&gt;
-</programlisting></example></section><section xml:id="attribute-cert"><title><code>@cert</code></title><para>The attribute <code>cert</code> states how certain an agent is of the data governed by the parent element. High = "is probably"; low = "is probably not"; all other values expressed as a real number from 0 (no certainty) to 1 (completely certainty).</para><para> This attribute is taken into account after other attributes. That is, <code><link linkend="attribute-cert">@cert</link></code> is to be interpreted to mean: "Assuming the abovementioned inheritable attributes to be true, I have <code><link linkend="attribute-cert">@cert</link></code> confidence about the following data:...."</para><para>This attribute is inheritable. See <xref linkend="inheritable_attributes"/></para><synopsis><emphasis>Definition:</emphasis>
+</programlisting></example></section><section xml:id="attribute-"><title><code>@</code></title><synopsis><emphasis>Definition:</emphasis>
+</synopsis><para>Used by: &lt;&gt; </para></section><section xml:id="attribute-cert"><title><code>@cert</code></title><para>The attribute <code>cert</code> states how certain an agent is of the data governed by the parent element. High = "is probably"; low = "is probably not"; all other values expressed as a real number from 0 (no certainty) to 1 (completely certainty).</para><para> This attribute is taken into account after other attributes. That is, <code><link linkend="attribute-cert">@cert</link></code> is to be interpreted to mean: "Assuming the abovementioned inheritable attributes to be true, I have <code><link linkend="attribute-cert">@cert</link></code> confidence about the following data:...."</para><para>This attribute is inheritable. See <xref linkend="inheritable_attributes"/></para><synopsis><emphasis>Definition:</emphasis>
 string (pattern (high)|(low)|(0\.\d+))</synopsis><para>Used by: <code><link linkend="element-align">&lt;align&gt;</link></code> <code><link linkend="element-ana">&lt;ana&gt;</link></code> <code><link linkend="element-assert">&lt;assert&gt;</link></code> <code><link linkend="element-l">&lt;l&gt;</link></code> <code><link linkend="element-lm">&lt;lm&gt;</link></code> <code><link linkend="element-m">&lt;m&gt;</link></code> <code><link linkend="element-report">&lt;report&gt;</link></code> <code><link linkend="element-tok">&lt;tok&gt;</link></code> </para><example><title><code>@cert</code></title><programlisting>   &lt;body reuse-type="correlationGeneral" bitext-relation="unclear"&gt;
       &lt;align&gt;
          &lt;tok src="eng" ref="line 4" val="all"/&gt;
@@ -2833,7 +2660,7 @@ string (pattern (high)|(low)|(0\.\d+))</synopsis><para>Used by: <code><link link
       &lt;/align&gt;
    &lt;/body&gt;
 </programlisting></example></section><section xml:id="attribute-ed-when"><title><code>@ed-when</code></title><para>The attribute <code>ed-when</code> marks the date or time when an element or its content was edited (added or modified)</para><para>The value of must always conform to an ISO date or dateTime pattern. See <xref linkend="date_and_datetime"/>.</para><para>Along with <code><link linkend="attribute-ed-who">@ed-who</link></code>, this forms the Edit Stamp pattern. See <xref linkend="edit_stamp"/></para><synopsis><emphasis>Definition:</emphasis>
-   dateTime    date </synopsis><para>Used by: <code><link linkend="element-IRI">&lt;IRI&gt;</link></code> <code><link linkend="element-TAN-A-div">&lt;TAN-A-div&gt;</link></code> <code><link linkend="element-TAN-A-tok">&lt;TAN-A-tok&gt;</link></code> <code><link linkend="element-TAN-LM">&lt;TAN-LM&gt;</link></code> <code><link linkend="element-TAN-R-mor">&lt;TAN-R-mor&gt;</link></code> <code><link linkend="element-TAN-R-tok">&lt;TAN-R-tok&gt;</link></code> <code><link linkend="element-TAN-T">&lt;TAN-T&gt;</link></code> <code><link linkend="element-TAN-key">&lt;TAN-key&gt;</link></code> <code><link linkend="element-TAN-rdf">&lt;TAN-rdf&gt;</link></code> <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-agentrole">&lt;agentrole&gt;</link></code> <code><link linkend="element-align">&lt;align&gt;</link></code> <code><link linkend="element-ana">&lt;ana&gt;</link></code> <code><link linkend="element-anchor-div-ref">&lt;anchor-div-ref&gt;</link></code> <code><link linkend="element-assert">&lt;assert&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-category">&lt;category&gt;</link></code> <code><link linkend="element-change">&lt;change&gt;</link></code> <code><link linkend="element-claim">&lt;claim&gt;</link></code> <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-div">&lt;div&gt;</link></code> <code><link linkend="element-div-ref">&lt;div-ref&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-div-type-ref">&lt;div-type-ref&gt;</link></code> <code><link linkend="element-equate-div-types">&lt;equate-div-types&gt;</link></code> <code><link linkend="element-equate-works">&lt;equate-works&gt;</link></code> <code><link linkend="element-example">&lt;example&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-filter">&lt;filter&gt;</link></code> <code><link linkend="element-flags">&lt;flags&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-implicit-div-type-refs">&lt;implicit-div-type-refs&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-input">&lt;input&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-l">&lt;l&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-lm">&lt;lm&gt;</link></code> <code><link linkend="element-location">&lt;location&gt;</link></code> <code><link linkend="element-m">&lt;m&gt;</link></code> <code><link linkend="element-master-location">&lt;master-location&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-name">&lt;name&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-option">&lt;option&gt;</link></code> <code><link linkend="element-output-token">&lt;output-token&gt;</link></code> <code><link linkend="element-pattern">&lt;pattern&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-realign">&lt;realign&gt;</link></code> <code><link linkend="element-recommended-div-type-refs">&lt;recommended-div-type-refs&gt;</link></code> <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code> <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> <code><link linkend="element-rename-div-ns">&lt;rename-div-ns&gt;</link></code> <code><link linkend="element-rename-div-types">&lt;rename-div-types&gt;</link></code> <code><link linkend="element-replace">&lt;replace&gt;</link></code> <code><link linkend="element-replacement">&lt;replacement&gt;</link></code> <code><link linkend="element-report">&lt;report&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources&gt;</link></code> <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-split-leaf-div-at">&lt;split-leaf-div-at&gt;</link></code> <code><link linkend="element-suppress-div-types">&lt;suppress-div-types&gt;</link></code> <code><link linkend="element-tok">&lt;tok&gt;</link></code> <code><link linkend="element-tokenization">&lt;tokenization&gt;</link></code> <code><link linkend="element-tokenize">&lt;tokenize&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para><caution><itemizedlist><listitem><para>Future dates are not allowed.</para></listitem><listitem><para>Must be date or dateTime</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Change date to today's date </emphasis>If value is invalid, this quick fix will be made available, to replace the
+   dateTime    date </synopsis><para>Used by: <code><link linkend="element-IRI">&lt;IRI&gt;</link></code> <code><link linkend="element-TAN-A-div">&lt;TAN-A-div&gt;</link></code> <code><link linkend="element-TAN-A-tok">&lt;TAN-A-tok&gt;</link></code> <code><link linkend="element-TAN-LM">&lt;TAN-LM&gt;</link></code> <code><link linkend="element-TAN-T">&lt;TAN-T&gt;</link></code> <code><link linkend="element-TAN-key">&lt;TAN-key&gt;</link></code> <code><link linkend="element-TAN-mor">&lt;TAN-mor&gt;</link></code> <code><link linkend="element-TAN-rdf">&lt;TAN-rdf&gt;</link></code> <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-agentrole">&lt;agentrole&gt;</link></code> <code><link linkend="element-align">&lt;align&gt;</link></code> <code><link linkend="element-ana">&lt;ana&gt;</link></code> <code><link linkend="element-anchor-div-ref">&lt;anchor-div-ref&gt;</link></code> <code><link linkend="element-assert">&lt;assert&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-category">&lt;category&gt;</link></code> <code><link linkend="element-change">&lt;change&gt;</link></code> <code><link linkend="element-claim">&lt;claim&gt;</link></code> <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-div">&lt;div&gt;</link></code> <code><link linkend="element-div-ref">&lt;div-ref&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-div-type-ref">&lt;div-type-ref&gt;</link></code> <code><link linkend="element-equate-div-types">&lt;equate-div-types&gt;</link></code> <code><link linkend="element-equate-works">&lt;equate-works&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-filter">&lt;filter&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-l">&lt;l&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-lm">&lt;lm&gt;</link></code> <code><link linkend="element-location">&lt;location&gt;</link></code> <code><link linkend="element-m">&lt;m&gt;</link></code> <code><link linkend="element-master-location">&lt;master-location&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-name">&lt;name&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-option">&lt;option&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-realign">&lt;realign&gt;</link></code> <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> <code><link linkend="element-rename-div-ns">&lt;rename-div-ns&gt;</link></code> <code><link linkend="element-replace">&lt;replace&gt;</link></code> <code><link linkend="element-report">&lt;report&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources&gt;</link></code> <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-split-leaf-div-at">&lt;split-leaf-div-at&gt;</link></code> <code><link linkend="element-suppress-div-types">&lt;suppress-div-types&gt;</link></code> <code><link linkend="element-tok">&lt;tok&gt;</link></code> <code><link linkend="element-token-definition">&lt;token-definition&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para><caution><itemizedlist><listitem><para>Future dates are not allowed.</para></listitem><listitem><para>Must be date or dateTime</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Change date to today's date </emphasis>If value is invalid, this quick fix will be made available, to replace the
                content of with the current date.</para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Change date to today's date-time </emphasis>If value is invalid, this quick fix will be made available, to replace the
                content of with the current dateTime.</para></tip><example><title><code>@ed-when</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:semantic-refs" TAN-version="1"&gt;
    &lt;head&gt;
@@ -2869,8 +2696,9 @@ string (pattern (high)|(low)|(0\.\d+))</synopsis><para>Used by: <code><link link
          &lt;div-type xml:id="l"&gt;
             .........
          &lt;/div-type&gt;
-         &lt;recommended-tokenization which="general-words-only-1"/&gt;
-         .........
+         &lt;filter&gt;
+            .........
+         &lt;/filter&gt;
       &lt;/declarations&gt;
       &lt;agent xml:id="park" roles="creator"&gt;
          .........
@@ -2890,7 +2718,7 @@ string (pattern (high)|(low)|(0\.\d+))</synopsis><para>Used by: <code><link link
          .........
       &lt;/declarations&gt;
 </programlisting></example></section><section xml:id="attribute-ed-who"><title><code>@ed-who</code></title><para>The attribute <code>ed-who</code> refers to one or more <code><link linkend="element-agent">&lt;agent&gt;</link></code>s who have edited (added or modified) an element or its content.</para><para>Along with <code><link linkend="attribute-ed-when">@ed-when</link></code>, this forms the Edit Stamp pattern. See <xref linkend="edit_stamp"/></para><para>This attribute is inheritable. See <xref linkend="inheritable_attributes"/></para><synopsis><emphasis>Definition:</emphasis>
-text</synopsis><para>Used by: <code><link linkend="element-IRI">&lt;IRI&gt;</link></code> <code><link linkend="element-TAN-A-div">&lt;TAN-A-div&gt;</link></code> <code><link linkend="element-TAN-A-tok">&lt;TAN-A-tok&gt;</link></code> <code><link linkend="element-TAN-LM">&lt;TAN-LM&gt;</link></code> <code><link linkend="element-TAN-R-mor">&lt;TAN-R-mor&gt;</link></code> <code><link linkend="element-TAN-R-tok">&lt;TAN-R-tok&gt;</link></code> <code><link linkend="element-TAN-T">&lt;TAN-T&gt;</link></code> <code><link linkend="element-TAN-key">&lt;TAN-key&gt;</link></code> <code><link linkend="element-TAN-rdf">&lt;TAN-rdf&gt;</link></code> <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-agentrole">&lt;agentrole&gt;</link></code> <code><link linkend="element-align">&lt;align&gt;</link></code> <code><link linkend="element-ana">&lt;ana&gt;</link></code> <code><link linkend="element-anchor-div-ref">&lt;anchor-div-ref&gt;</link></code> <code><link linkend="element-assert">&lt;assert&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-category">&lt;category&gt;</link></code> <code><link linkend="element-change">&lt;change&gt;</link></code> <code><link linkend="element-claim">&lt;claim&gt;</link></code> <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-div">&lt;div&gt;</link></code> <code><link linkend="element-div-ref">&lt;div-ref&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-div-type-ref">&lt;div-type-ref&gt;</link></code> <code><link linkend="element-equate-div-types">&lt;equate-div-types&gt;</link></code> <code><link linkend="element-equate-works">&lt;equate-works&gt;</link></code> <code><link linkend="element-example">&lt;example&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-filter">&lt;filter&gt;</link></code> <code><link linkend="element-flags">&lt;flags&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-implicit-div-type-refs">&lt;implicit-div-type-refs&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-input">&lt;input&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-l">&lt;l&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-lm">&lt;lm&gt;</link></code> <code><link linkend="element-location">&lt;location&gt;</link></code> <code><link linkend="element-m">&lt;m&gt;</link></code> <code><link linkend="element-master-location">&lt;master-location&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-name">&lt;name&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-option">&lt;option&gt;</link></code> <code><link linkend="element-output-token">&lt;output-token&gt;</link></code> <code><link linkend="element-pattern">&lt;pattern&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-realign">&lt;realign&gt;</link></code> <code><link linkend="element-recommended-div-type-refs">&lt;recommended-div-type-refs&gt;</link></code> <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code> <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> <code><link linkend="element-rename-div-ns">&lt;rename-div-ns&gt;</link></code> <code><link linkend="element-rename-div-types">&lt;rename-div-types&gt;</link></code> <code><link linkend="element-replace">&lt;replace&gt;</link></code> <code><link linkend="element-replacement">&lt;replacement&gt;</link></code> <code><link linkend="element-report">&lt;report&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources&gt;</link></code> <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-split-leaf-div-at">&lt;split-leaf-div-at&gt;</link></code> <code><link linkend="element-suppress-div-types">&lt;suppress-div-types&gt;</link></code> <code><link linkend="element-tok">&lt;tok&gt;</link></code> <code><link linkend="element-tokenization">&lt;tokenization&gt;</link></code> <code><link linkend="element-tokenize">&lt;tokenize&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para><caution><itemizedlist><listitem><para>Must point to <code><link linkend="attribute-xmlid">@xml:id</link></code> value of <code><link linkend="element-agent">&lt;agent&gt;</link></code></para></listitem><listitem><para>Must not contain duplicates</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Replace content of attribute with all valid values </emphasis>To see a list of all possible valid values, add any invalid content, then choose
+text</synopsis><para>Used by: <code><link linkend="element-IRI">&lt;IRI&gt;</link></code> <code><link linkend="element-TAN-A-div">&lt;TAN-A-div&gt;</link></code> <code><link linkend="element-TAN-A-tok">&lt;TAN-A-tok&gt;</link></code> <code><link linkend="element-TAN-LM">&lt;TAN-LM&gt;</link></code> <code><link linkend="element-TAN-T">&lt;TAN-T&gt;</link></code> <code><link linkend="element-TAN-key">&lt;TAN-key&gt;</link></code> <code><link linkend="element-TAN-mor">&lt;TAN-mor&gt;</link></code> <code><link linkend="element-TAN-rdf">&lt;TAN-rdf&gt;</link></code> <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-agentrole">&lt;agentrole&gt;</link></code> <code><link linkend="element-align">&lt;align&gt;</link></code> <code><link linkend="element-ana">&lt;ana&gt;</link></code> <code><link linkend="element-anchor-div-ref">&lt;anchor-div-ref&gt;</link></code> <code><link linkend="element-assert">&lt;assert&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-category">&lt;category&gt;</link></code> <code><link linkend="element-change">&lt;change&gt;</link></code> <code><link linkend="element-claim">&lt;claim&gt;</link></code> <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-div">&lt;div&gt;</link></code> <code><link linkend="element-div-ref">&lt;div-ref&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-div-type-ref">&lt;div-type-ref&gt;</link></code> <code><link linkend="element-equate-div-types">&lt;equate-div-types&gt;</link></code> <code><link linkend="element-equate-works">&lt;equate-works&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-filter">&lt;filter&gt;</link></code> <code><link linkend="element-head">&lt;head&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-l">&lt;l&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-lm">&lt;lm&gt;</link></code> <code><link linkend="element-location">&lt;location&gt;</link></code> <code><link linkend="element-m">&lt;m&gt;</link></code> <code><link linkend="element-master-location">&lt;master-location&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-name">&lt;name&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-option">&lt;option&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-realign">&lt;realign&gt;</link></code> <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> <code><link linkend="element-rename-div-ns">&lt;rename-div-ns&gt;</link></code> <code><link linkend="element-replace">&lt;replace&gt;</link></code> <code><link linkend="element-report">&lt;report&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources&gt;</link></code> <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-split-leaf-div-at">&lt;split-leaf-div-at&gt;</link></code> <code><link linkend="element-suppress-div-types">&lt;suppress-div-types&gt;</link></code> <code><link linkend="element-tok">&lt;tok&gt;</link></code> <code><link linkend="element-token-definition">&lt;token-definition&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para><caution><itemizedlist><listitem><para>Must point to <code><link linkend="attribute-xmlid">@xml:id</link></code> value of <code><link linkend="element-agent">&lt;agent&gt;</link></code></para></listitem><listitem><para>Must not contain duplicates</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Replace content of attribute with all valid values </emphasis>To see a list of all possible valid values, add any invalid content, then choose
                this quick fix to replace all content with every possible value.</para></tip><example><title><code>@ed-who</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:semantic-refs" TAN-version="1"&gt;
    &lt;head&gt;
       .........
@@ -2925,8 +2753,9 @@ text</synopsis><para>Used by: <code><link linkend="element-IRI">&lt;IRI&gt;</lin
          &lt;div-type xml:id="l"&gt;
             .........
          &lt;/div-type&gt;
-         &lt;recommended-tokenization which="general-words-only-1"/&gt;
-         .........
+         &lt;filter&gt;
+            .........
+         &lt;/filter&gt;
       &lt;/declarations&gt;
       &lt;agent xml:id="park" roles="creator"&gt;
          .........
@@ -2945,9 +2774,11 @@ text</synopsis><para>Used by: <code><link linkend="element-IRI">&lt;IRI&gt;</lin
          &lt;/lexicon&gt;
          .........
       &lt;/declarations&gt;
-</programlisting></example></section><section xml:id="attribute-from"><title><code>@from</code></title><para>The attribute <code>from</code> specifies the beginning of a period of time</para><synopsis><emphasis>Definition:</emphasis>
-   dateTime    date </synopsis><para>Used by: <code><link linkend="element-when">&lt;when&gt;</link></code> </para></section><section xml:id="attribute-href"><title><code>@href</code></title><para>The attribute <code>href</code> points to the location of a file, either as part of <code><link linkend="element-location">&lt;location&gt;</link></code> or in elements that refer to TAN files, to be used to invoke a schematron quick fix to populate the <code><link linkend="element-IRI">&lt;IRI&gt;</link></code> and <code><link linkend="element-location">&lt;location&gt;</link></code> child elements.</para><para>The first use is a convenience for XML editors that autocomplete filenames or allow users to open the referred file (oftentimes with control+click)</para><para>The second use of this attribute is pragmatic, used only as a convenience to TAN users who wish to include the metadata of another TAN file without leaving the current file. It is associated with a warning message that is linked to a Schematron Quick Fix that will supply the correct metadata and remove the attribute.</para><synopsis><emphasis>Definition:</emphasis>
-text</synopsis><para>Used by: <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-location">&lt;location&gt;</link></code> <code><link linkend="element-master-location">&lt;master-location&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-tokenization">&lt;tokenization&gt;</link></code> </para><important><itemizedlist><listitem><para> An <code><link linkend="attribute-href">@href</link></code> will be flagged with a warning if the document is either unavailable, is not valid XML, or is at a URL trusted by a validation engine </para></listitem></itemizedlist></important><caution><itemizedlist><listitem><para>If not a child of tan:location or tan:master-location, then used only for Schematron Quick Fixes, to populate an element with <code><link linkend="element-IRI">&lt;IRI&gt;</link></code>, <code><link linkend="element-name">&lt;name&gt;</link></code>, and <code><link linkend="element-location">&lt;location&gt;</link></code> values.</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Delete @href and insert IRI, name, and location </emphasis>To add the metadata of a TAN file in another one, without ever leaving the
+</programlisting></example></section><section xml:id="attribute-flags"><title><code>@flags</code></title><para>The attribute <code>flags</code> specifies flags to be applied in an XPath expression using regular expressions.</para><para>s = dot-all mode; m = multi-line mode; i = case-insensitive mode; x = remove whitespace characters from regular expression; q = no metacharacters </para><para>For more see http://www.w3.org/TR/xpath-functions-30/#flags</para><synopsis><emphasis>Definition:</emphasis>
+string (pattern [smixq]+)</synopsis><para>Used by: <code><link linkend="element-replace">&lt;replace&gt;</link></code> <code><link linkend="element-token-definition">&lt;token-definition&gt;</link></code> </para></section><section xml:id="attribute-from"><title><code>@from</code></title><para>The attribute <code>from</code> specifies the beginning of a period of time</para><synopsis><emphasis>Definition:</emphasis>
+   dateTime    date </synopsis><para>Used by: <code><link linkend="element-when">&lt;when&gt;</link></code> </para></section><section xml:id="attribute-help"><title><code>@help</code></title><para>The attribute <code>help</code> requests help on the context element</para><synopsis><emphasis>Definition:</emphasis>
+</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-agentrole">&lt;agentrole&gt;</link></code> <code><link linkend="element-align">&lt;align&gt;</link></code> <code><link linkend="element-ana">&lt;ana&gt;</link></code> <code><link linkend="element-assert">&lt;assert&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-category">&lt;category&gt;</link></code> <code><link linkend="element-claim">&lt;claim&gt;</link></code> <code><link linkend="element-div">&lt;div&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-equate-div-types">&lt;equate-div-types&gt;</link></code> <code><link linkend="element-equate-works">&lt;equate-works&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-option">&lt;option&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-realign">&lt;realign&gt;</link></code> <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> <code><link linkend="element-rename-div-ns">&lt;rename-div-ns&gt;</link></code> <code><link linkend="element-replace">&lt;replace&gt;</link></code> <code><link linkend="element-report">&lt;report&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources&gt;</link></code> <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-split-leaf-div-at">&lt;split-leaf-div-at&gt;</link></code> <code><link linkend="element-suppress-div-types">&lt;suppress-div-types&gt;</link></code> <code><link linkend="element-token-definition">&lt;token-definition&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para></section><section xml:id="attribute-href"><title><code>@href</code></title><para>The attribute <code>href</code> points to the location of a file, either as part of <code><link linkend="element-location">&lt;location&gt;</link></code> or in elements that refer to TAN files, to be used to invoke a schematron quick fix to populate the <code><link linkend="element-IRI">&lt;IRI&gt;</link></code> and <code><link linkend="element-location">&lt;location&gt;</link></code> child elements.</para><para>The first use is a convenience for XML editors that autocomplete filenames or allow users to open the referred file (oftentimes with control+click)</para><para>The second use of this attribute is pragmatic, used only as a convenience to TAN users who wish to include the metadata of another TAN file without leaving the current file. It is associated with a warning message that is linked to a Schematron Quick Fix that will supply the correct metadata and remove the attribute.</para><synopsis><emphasis>Definition:</emphasis>
+text</synopsis><para>Used by: <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-location">&lt;location&gt;</link></code> <code><link linkend="element-master-location">&lt;master-location&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> </para><important><itemizedlist><listitem><para> An <code><link linkend="attribute-href">@href</link></code> will be flagged with a warning if the document is either unavailable, is not valid XML, or is at a URL trusted by a validation engine </para></listitem></itemizedlist></important><caution><itemizedlist><listitem><para>If not a child of tan:location or tan:master-location, then <code><link linkend="attribute-href">@href</link></code> will invoke Schematron Quick Fixes to populate an element with <code><link linkend="element-IRI">&lt;IRI&gt;</link></code>, <code><link linkend="element-name">&lt;name&gt;</link></code>, and <code><link linkend="element-location">&lt;location&gt;</link></code> values for the TAN file identified by <code><link linkend="attribute-href">@href</link></code>.</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Delete @href and insert IRI, name, and location </emphasis>To add the metadata of a TAN file in another one, without ever leaving the
                latter, add a valid <code><link linkend="attribute-href">@href</link></code> value then choose this quick fix to remove the attribute
                and insert the IRI, name, and location of the file, indicating as well the date and
                time when accessed.</para></tip><example><title><code>@href</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs" TAN-version="1"&gt;
@@ -2968,16 +2799,9 @@ text</synopsis><para>Used by: <code><link linkend="element-desc">&lt;desc&gt;</l
          &lt;relationship which="alternatively divided edition"/&gt;
          &lt;IRI&gt;tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:semantic-refs&lt;/IRI&gt;
          &lt;name&gt;Categories, Aristotle, English translation by E. M. Edghill&lt;/name&gt;
-         &lt;location<emphasis role="bold"> href="file:/H:/Users-2/Joel/Dropbox/TAN/SERVER/release/1/dev/examples/ar.cat.eng.1926.edghill.sem.xml"</emphasis> when-accessed="2016-02-11T13:45:52.194-05:00"/&gt;
+         &lt;location<emphasis role="bold"> href="ar.cat.eng.1926.edghill.sem.xml"</emphasis> when-accessed="2016-02-11T13:45:52.194-05:00"/&gt;
       &lt;/see-also&gt;
       &lt;declarations&gt;
-         .........
-         &lt;div-type xml:id="l"&gt;
-            .........
-         &lt;/div-type&gt;
-         &lt;recommended-tokenization which="general-1"/&gt;
-         &lt;recommended-tokenization which="general-words-only-1"/&gt;
-         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
          &lt;filter&gt;
             &lt;normalization which="no hyphens"/&gt;
          &lt;/filter&gt;
@@ -2991,7 +2815,7 @@ text</synopsis><para>Used by: <code><link linkend="element-desc">&lt;desc&gt;</l
          &lt;location<emphasis role="bold"> href="ar.cat.grc.1949.minio-paluello-sem.xml"</emphasis> when-accessed="2016-02-10T14:08:52.058-05:00"/&gt;
       &lt;/see-also&gt;
 </programlisting></example></section><section xml:id="attribute-id"><title><code>@id</code></title><para>The attribute <code>id</code> contains a tag URN that permanently and uniquely names the current file, the so-called IRI Name of the current file. See <xref linkend="iri_name"/> for discussion.</para><para>For more on the syntax of tag URNs see <xref linkend="tag_urn"/></para><synopsis><emphasis>Definition:</emphasis>
-anyURI (pattern tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-(0\d|1[0-2]))?(-([0-2]\d|3[01]))?:\S+)</synopsis><para>Used by: <code><link linkend="element-TAN-A-div">&lt;TAN-A-div&gt;</link></code> <code><link linkend="element-TAN-A-tok">&lt;TAN-A-tok&gt;</link></code> <code><link linkend="element-TAN-LM">&lt;TAN-LM&gt;</link></code> <code><link linkend="element-TAN-R-mor">&lt;TAN-R-mor&gt;</link></code> <code><link linkend="element-TAN-R-tok">&lt;TAN-R-tok&gt;</link></code> <code><link linkend="element-TAN-T">&lt;TAN-T&gt;</link></code> <code><link linkend="element-TAN-key">&lt;TAN-key&gt;</link></code> <code><link linkend="element-TAN-rdf">&lt;TAN-rdf&gt;</link></code> </para><caution><itemizedlist><listitem><para>To attach responsibility for the TAN file to a person or organization, at least one agent must have an IRI that is a tag URI whose namespace matches that of the URI name</para></listitem></itemizedlist></caution><example><title><code>@id</code></title><programlisting>&lt;TAN-T<emphasis role="bold"> id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs"</emphasis> TAN-version="1"&gt;
+anyURI (pattern tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-(0\d|1[0-2]))?(-([0-2]\d|3[01]))?:\S+)</synopsis><para>Used by: <code><link linkend="element-TAN-A-div">&lt;TAN-A-div&gt;</link></code> <code><link linkend="element-TAN-A-tok">&lt;TAN-A-tok&gt;</link></code> <code><link linkend="element-TAN-LM">&lt;TAN-LM&gt;</link></code> <code><link linkend="element-TAN-T">&lt;TAN-T&gt;</link></code> <code><link linkend="element-TAN-key">&lt;TAN-key&gt;</link></code> <code><link linkend="element-TAN-mor">&lt;TAN-mor&gt;</link></code> <code><link linkend="element-TAN-rdf">&lt;TAN-rdf&gt;</link></code> </para><caution><itemizedlist><listitem><para>To attach responsibility for the TAN file to a person or organization, at least one agent must have an IRI that is a tag URI whose namespace matches that of the URI name</para></listitem></itemizedlist></caution><example><title><code>@id</code></title><programlisting>&lt;TAN-T<emphasis role="bold"> id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs"</emphasis> TAN-version="1"&gt;
    &lt;head&gt;
       .........
    &lt;/head&gt;
@@ -2999,7 +2823,7 @@ anyURI (pattern tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-
       .........
    &lt;/body&gt;
 &lt;/TAN-T&gt;
-</programlisting></example><example><title><code>@id</code></title><programlisting>&lt;TAN-T<emphasis role="bold"> id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:sem-divs"</emphasis> TAN-version="1"&gt;
+</programlisting></example><example><title><code>@id</code></title><programlisting>&lt;TAN-T<emphasis role="bold"> id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:semantic-refs-resegmented-2016-02-21T09:33:16.107-05:00"</emphasis> TAN-version="1"&gt;
    &lt;head&gt;
       .........
    &lt;/head&gt;
@@ -3048,7 +2872,7 @@ boolean </synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt
 &lt;/TAN-T&gt;
 </programlisting></example><example><title><code>@in-progress</code></title><programlisting>   &lt;text&gt;
       &lt;body xml:lang="eng"<emphasis role="bold"> in-progress="false"</emphasis>&gt;
-         &lt;div type="poem" n="" part="N" org="uniform" sample="complete"&gt;
+         &lt;div type="poem" n="poem" part="N" org="uniform" sample="complete"&gt;
             .........
          &lt;/div&gt;
       &lt;/body&gt;
@@ -3065,14 +2889,61 @@ boolean </synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt
    &lt;/body&gt;
 &lt;/TAN-T&gt;
 </programlisting></example></section><section xml:id="attribute-include"><title><code>@include</code></title><para>The attribute <code>include</code> signals that the parent element is to be replaced by all elements of the same name found in the referred <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code>.</para><synopsis><emphasis>Definition:</emphasis>
-IDREFS </synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-agentrole">&lt;agentrole&gt;</link></code> <code><link linkend="element-align">&lt;align&gt;</link></code> <code><link linkend="element-ana">&lt;ana&gt;</link></code> <code><link linkend="element-assert">&lt;assert&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-category">&lt;category&gt;</link></code> <code><link linkend="element-claim">&lt;claim&gt;</link></code> <code><link linkend="element-div">&lt;div&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-equate-div-types">&lt;equate-div-types&gt;</link></code> <code><link linkend="element-equate-works">&lt;equate-works&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-implicit-div-type-refs">&lt;implicit-div-type-refs&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-option">&lt;option&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-realign">&lt;realign&gt;</link></code> <code><link linkend="element-recommended-div-type-refs">&lt;recommended-div-type-refs&gt;</link></code> <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code> <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> <code><link linkend="element-rename-div-ns">&lt;rename-div-ns&gt;</link></code> <code><link linkend="element-rename-div-types">&lt;rename-div-types&gt;</link></code> <code><link linkend="element-replace">&lt;replace&gt;</link></code> <code><link linkend="element-report">&lt;report&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources&gt;</link></code> <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-split-leaf-div-at">&lt;split-leaf-div-at&gt;</link></code> <code><link linkend="element-suppress-div-types">&lt;suppress-div-types&gt;</link></code> <code><link linkend="element-tokenization">&lt;tokenization&gt;</link></code> <code><link linkend="element-tokenize">&lt;tokenize&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para><caution><itemizedlist><listitem><para>Must point to <code><link linkend="attribute-xmlid">@xml:id</link></code> value of <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code></para></listitem><listitem><para>Must not contain duplicates</para></listitem><listitem><para>All included text needs to be normalized.</para></listitem><listitem><para>Help requested</para></listitem><listitem><para>Text is not allowed in an element with <code><link linkend="attribute-include">@include</link></code>.</para></listitem></itemizedlist></caution><warning><itemizedlist><listitem><para> Possible validation errors: <itemizedlist><listitem><para>Inclusion must be supported in parent element</para></listitem><listitem><para>Replacement element must be found in target inclusion</para></listitem><listitem><para>Inclusion may not be circular</para></listitem><listitem><para>Functions based on inclusions must be applied to elements that have the same
-            name</para></listitem></itemizedlist> </para></listitem></itemizedlist></warning><tip><para><emphasis role="bold">Schematron Quick Fix: Replace content of attribute with all valid values </emphasis>To see a list of all possible valid values, add any invalid content, then choose
+IDREFS </synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-agentrole">&lt;agentrole&gt;</link></code> <code><link linkend="element-align">&lt;align&gt;</link></code> <code><link linkend="element-ana">&lt;ana&gt;</link></code> <code><link linkend="element-assert">&lt;assert&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-category">&lt;category&gt;</link></code> <code><link linkend="element-claim">&lt;claim&gt;</link></code> <code><link linkend="element-div">&lt;div&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-equate-div-types">&lt;equate-div-types&gt;</link></code> <code><link linkend="element-equate-works">&lt;equate-works&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-option">&lt;option&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-realign">&lt;realign&gt;</link></code> <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> <code><link linkend="element-rename-div-ns">&lt;rename-div-ns&gt;</link></code> <code><link linkend="element-replace">&lt;replace&gt;</link></code> <code><link linkend="element-report">&lt;report&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources&gt;</link></code> <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-split-leaf-div-at">&lt;split-leaf-div-at&gt;</link></code> <code><link linkend="element-suppress-div-types">&lt;suppress-div-types&gt;</link></code> <code><link linkend="element-token-definition">&lt;token-definition&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para><caution><itemizedlist><listitem><para>Tokens must be locatable</para></listitem><listitem><para>Sibling <code><link linkend="element-tok">&lt;tok&gt;</link></code>s may not point to the same token.</para></listitem><listitem><para><code><link linkend="attribute-chars">@chars</link></code> may not exceed the number of characters in a token picked</para></listitem><listitem><para>max</para></listitem><listitem><para>max</para></listitem><listitem><para/></listitem><listitem><para>Splits may not be made at the first token in a div.</para></listitem><listitem><para>Possible values and counts:</para></listitem><listitem><para>Every <code><link linkend="attribute-ref">@ref</link></code> must be found in every source</para></listitem><listitem><para> Putting <itemizedlist><listitem><para>???</para></listitem></itemizedlist> in <code><link linkend="attribute-ref">@ref</link></code> will take the content of <code><link linkend="attribute-ref">@ref</link></code> and return matched refs or refs that have matched content </para></listitem><listitem><para>Siblings may not be duplicated</para></listitem><listitem><para><code><link linkend="attribute-cont">@cont</link></code> may not be used to join references from different sources.</para></listitem><listitem><para>Must point to <code><link linkend="attribute-xmlid">@xml:id</link></code> value of <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code></para></listitem><listitem><para>Must not contain duplicates</para></listitem><listitem><para>All included text needs to be normalized.</para></listitem><listitem><para>Help requested</para></listitem></itemizedlist></caution><warning><itemizedlist><listitem><para> Possible validation errors: <itemizedlist><listitem><para>Inclusion must be supported in parent element</para></listitem><listitem><para>Replacement element must be found in target inclusion</para></listitem><listitem><para>Inclusion may not be circular</para></listitem><listitem><para>Functions based on inclusions must be applied to elements that have the same
+            name</para></listitem></itemizedlist> </para></listitem></itemizedlist></warning><tip><para><emphasis role="bold">Schematron Quick Fix: Append text content of divs with @ref or text that matches current @ref </emphasis>This quick fix will allow you to search for divs by <code><link linkend="attribute-ref">@ref</link></code> or by text and append
+               matching divs as tan:comments.</para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Replace content of attribute with all valid values </emphasis>To see a list of all possible valid values, add any invalid content, then choose
                this quick fix to replace all content with every possible value.</para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Replace with inclusions </emphasis>Any element that has <code><link linkend="attribute-include">@include</link></code> must be empty. But if you intentionally open it up
                and add text, even space characters, this quick fix will be made available upon
                validation. Choose it to comment out the original element and add after it the
                complete set of elements found in the inclusion (recursively checked against any
                inclusions in the included document). This is especially helpful for cases where you
-               wish to use a TAN document as a starting point for a new file.</para></tip></section><section xml:id="attribute-rights-holder"><title><code>@rights-holder</code></title><para>The attribute <code>rights-holder</code> specifies one or more <code><link linkend="element-agent">&lt;agent&gt;</link></code>s who hold the rights over the material specified by the parent element (either the data of the current file, or of the source that forms the basis for the data).</para><para>A missing <code><link linkend="attribute-rights-holder">@rights-holder</link></code> implies only only silence, not that the rightsholder is unknown or nonexistent. For more, see <xref linkend="license"/></para><synopsis><emphasis>Definition:</emphasis>
+               wish to use a TAN document as a starting point for a new file.</para></tip></section><section xml:id="attribute-regex"><title><code>@regex</code></title><para>The attribute <code>regex</code> specifies a regular expression pattern to be searched for or matched</para><para>For more see https://www.w3.org/TR/xpath-functions-30/#regex-syntax</para><synopsis><emphasis>Definition:</emphasis>
+text</synopsis><para>Used by: <code><link linkend="element-replace">&lt;replace&gt;</link></code> <code><link linkend="element-token-definition">&lt;token-definition&gt;</link></code> </para><example><title><code>@regex</code></title><programlisting>      &lt;declarations&gt;
+         &lt;suppress-div-types src="eng-1790" div-type-ref="poem"/&gt;
+         &lt;comment when="2016-02-22-05:00" who="park"&gt;The following token definition
+                treats the following as words: sequences of letters, any individual character 
+                that is neither a letter nor a space (i.e., punctuation).&lt;/comment&gt;
+         &lt;token-definition src="eng-us"<emphasis role="bold"> regex="[-\w]+"</emphasis>/&gt;
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>@regex</code></title><programlisting>      &lt;declarations&gt;
+         &lt;rename-div-ns src="ger" div-type-ref="Zeile"&gt;
+            &lt;rename old="#a" new="#1"/&gt;
+         &lt;/rename-div-ns&gt;
+         &lt;comment when="2016-02-22-05:00" who="park"&gt;The following is equivalent to @which = 'letters'&lt;/comment&gt;
+         &lt;token-definition src="eng ger"<emphasis role="bold"> regex="\w+"</emphasis>/&gt;
+      &lt;/declarations&gt;
+</programlisting></example><example><title><code>@regex</code></title><programlisting>&lt;TAN-key TAN-version="1/dev" id="tag:textalign.net,2015:tan-key:tokenizations"&gt;
+   &lt;head&gt;
+      &lt;name&gt;TAN keywords for types of token definitions&lt;/name&gt;
+      &lt;master-location href="http://textalign.net/release/1/dev/TAN-key/tokenizations.TAN-key.xml"/&gt;
+      &lt;rights-excluding-sources rights-holder="kalvesmaki"&gt;
+         .........
+      &lt;/rights-excluding-sources&gt;
+      &lt;declarations/&gt;
+      &lt;agent xml:id="kalvesmaki" roles="creator"&gt;
+         .........
+      &lt;/agent&gt;
+      .........
+   &lt;/head&gt;
+   &lt;body in-progress="false" affects-element="token-definition"&gt;
+      &lt;item&gt;
+         &lt;token-definition<emphasis role="bold"> regex="\w+|[^\w\s]"</emphasis>/&gt;
+         &lt;name&gt;letters and punctuation&lt;/name&gt;
+         .........
+      &lt;/item&gt;
+      &lt;item&gt;
+         &lt;token-definition<emphasis role="bold"> regex="\w+"</emphasis>/&gt;
+         &lt;name&gt;letters&lt;/name&gt;
+         .........
+      &lt;/item&gt;
+      &lt;item&gt;
+         &lt;token-definition<emphasis role="bold"> regex="[\p{Z}]+"</emphasis>/&gt;
+         &lt;name&gt;non-separators&lt;/name&gt;
+         .........
+      &lt;/item&gt;
+   &lt;/body&gt;
+&lt;/TAN-key&gt;
+</programlisting></example></section><section xml:id="attribute-rights-holder"><title><code>@rights-holder</code></title><para>The attribute <code>rights-holder</code> specifies one or more <code><link linkend="element-agent">&lt;agent&gt;</link></code>s who hold the rights over the material specified by the parent element (either the data of the current file, or of the source that forms the basis for the data).</para><para>A missing <code><link linkend="attribute-rights-holder">@rights-holder</link></code> implies only only silence, not that the rightsholder is unknown or nonexistent. For more, see <xref linkend="license"/></para><synopsis><emphasis>Definition:</emphasis>
 text</synopsis><para>Used by: <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources&gt;</link></code> <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code> </para><example><title><code>@rights-holder</code></title><programlisting>   &lt;head&gt;
       .........
       &lt;name&gt;Categories, Aristotle, English translation by E. M. Edghill&lt;/name&gt;
@@ -3194,7 +3065,7 @@ text</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;<
       .........
    &lt;/head&gt;
 </programlisting></example></section><section xml:id="attribute-TAN-version"><title><code>@TAN-version</code></title><para>The attribute <code>TAN-version</code> specifies the version of TAN schemas used (version 1 or 1/dev). </para><para>Must indicate at least the major version; may include the minor version.</para><synopsis><emphasis>Definition:</emphasis>
-string (pattern 1(\W+dev)?)</synopsis><para>Used by: <code><link linkend="element-TAN-A-div">&lt;TAN-A-div&gt;</link></code> <code><link linkend="element-TAN-A-tok">&lt;TAN-A-tok&gt;</link></code> <code><link linkend="element-TAN-LM">&lt;TAN-LM&gt;</link></code> <code><link linkend="element-TAN-R-mor">&lt;TAN-R-mor&gt;</link></code> <code><link linkend="element-TAN-R-tok">&lt;TAN-R-tok&gt;</link></code> <code><link linkend="element-TAN-T">&lt;TAN-T&gt;</link></code> <code><link linkend="element-TAN-key">&lt;TAN-key&gt;</link></code> <code><link linkend="element-TAN-rdf">&lt;TAN-rdf&gt;</link></code> </para><caution><itemizedlist><listitem><para>Should be schema major version</para></listitem><listitem><para>Should be schema minor version</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Update to major version  </emphasis>Choose this quick fix to replace the major version with <itemizedlist><listitem><para>1</para></listitem></itemizedlist>
+string (pattern 1(\W+dev)?)</synopsis><para>Used by: <code><link linkend="element-TAN-A-div">&lt;TAN-A-div&gt;</link></code> <code><link linkend="element-TAN-A-tok">&lt;TAN-A-tok&gt;</link></code> <code><link linkend="element-TAN-LM">&lt;TAN-LM&gt;</link></code> <code><link linkend="element-TAN-T">&lt;TAN-T&gt;</link></code> <code><link linkend="element-TAN-key">&lt;TAN-key&gt;</link></code> <code><link linkend="element-TAN-mor">&lt;TAN-mor&gt;</link></code> <code><link linkend="element-TAN-rdf">&lt;TAN-rdf&gt;</link></code> </para><caution><itemizedlist><listitem><para>Should be schema major version</para></listitem><listitem><para>Should be schema minor version</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Update to major version  </emphasis>Choose this quick fix to replace the major version with <itemizedlist><listitem><para>1</para></listitem></itemizedlist>
             </para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Update to major+minor version  </emphasis>Choose this quick fix to replace the major and minor version with
                <itemizedlist><listitem><para>1</para></listitem></itemizedlist> / <itemizedlist><listitem><para>dev</para></listitem></itemizedlist> </para></tip><example><title><code>@TAN-version</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs"<emphasis role="bold"> TAN-version="1"</emphasis>&gt;
    &lt;head&gt;
@@ -3204,7 +3075,7 @@ string (pattern 1(\W+dev)?)</synopsis><para>Used by: <code><link linkend="elemen
       .........
    &lt;/body&gt;
 &lt;/TAN-T&gt;
-</programlisting></example><example><title><code>@TAN-version</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:sem-divs"<emphasis role="bold"> TAN-version="1"</emphasis>&gt;
+</programlisting></example><example><title><code>@TAN-version</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:semantic-refs-resegmented-2016-02-21T09:33:16.107-05:00"<emphasis role="bold"> TAN-version="1"</emphasis>&gt;
    &lt;head&gt;
       .........
    &lt;/head&gt;
@@ -3250,9 +3121,8 @@ string (pattern 1(\W+dev)?)</synopsis><para>Used by: <code><link linkend="elemen
    &lt;/head&gt;
 &lt;/TAN-T&gt;
 </programlisting></example><example><title><code>@when</code></title><programlisting>   &lt;head&gt;
-      &lt;comment who="sysadmin"<emphasis role="bold"> when="2016-02-11-05:00"</emphasis>&gt;This is a revised version of the text, using
-         the first alternatively divided edition as a template by which to resegment the
-         text.&lt;/comment&gt;
+      &lt;comment who="sysadmin"<emphasis role="bold"> when="2016-02-21-05:00"</emphasis>&gt;This is a revised version of the text, using
+         the first different work version as a template by which to resegment the text.&lt;/comment&gt;
       &lt;name&gt;Categories, Aristotle, English translation by E. M. Edghill&lt;/name&gt;
       .........
    &lt;/head&gt;
@@ -3277,16 +3147,9 @@ string (pattern 1(\W+dev)?)</synopsis><para>Used by: <code><link linkend="elemen
          &lt;relationship which="alternatively divided edition"/&gt;
          &lt;IRI&gt;tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:semantic-refs&lt;/IRI&gt;
          &lt;name&gt;Categories, Aristotle, English translation by E. M. Edghill&lt;/name&gt;
-         &lt;location href="file:/H:/Users-2/Joel/Dropbox/TAN/SERVER/release/1/dev/examples/ar.cat.eng.1926.edghill.sem.xml"<emphasis role="bold"> when-accessed="2016-02-11T13:45:52.194-05:00"</emphasis>/&gt;
+         &lt;location href="ar.cat.eng.1926.edghill.sem.xml"<emphasis role="bold"> when-accessed="2016-02-11T13:45:52.194-05:00"</emphasis>/&gt;
       &lt;/see-also&gt;
       &lt;declarations&gt;
-         .........
-         &lt;div-type xml:id="l"&gt;
-            .........
-         &lt;/div-type&gt;
-         &lt;recommended-tokenization which="general-1"/&gt;
-         &lt;recommended-tokenization which="general-words-only-1"/&gt;
-         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
          &lt;filter&gt;
             &lt;normalization which="no hyphens"/&gt;
          &lt;/filter&gt;
@@ -3300,7 +3163,11 @@ string (pattern 1(\W+dev)?)</synopsis><para>Used by: <code><link linkend="elemen
          &lt;location href="ar.cat.grc.1949.minio-paluello-sem.xml"<emphasis role="bold"> when-accessed="2016-02-10T14:08:52.058-05:00"</emphasis>/&gt;
       &lt;/see-also&gt;
 </programlisting></example></section><section xml:id="attribute-which"><title><code>@which</code></title><para>The attribute <code>which</code> used to point to a reserved keyword, either a reserved tokenization pattern or a relationship.</para><synopsis><emphasis>Definition:</emphasis>
-text</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-checksum">&lt;checksum&gt;</link></code> <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code> <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources&gt;</link></code> <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-tokenization">&lt;tokenization&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para><caution><itemizedlist><listitem><para><code><link linkend="attribute-which">@which</link></code> must contain a reserved or privately defined keyword</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Get first valid keyword </emphasis></para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Get all valid keywords </emphasis></para></tip><example><title><code>@which</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs" TAN-version="1"&gt;
+text</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-checksum">&lt;checksum&gt;</link></code> <code><link linkend="element-desc">&lt;desc&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-item">&lt;item&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-relationship">&lt;relationship&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-rights-excluding-sources">&lt;rights-excluding-sources&gt;</link></code> <code><link linkend="element-rights-source-only">&lt;rights-source-only&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-see-also">&lt;see-also&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-token-definition">&lt;token-definition&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para><caution><itemizedlist><listitem><para><code><link linkend="attribute-which">@which</link></code> must contain a reserved or privately defined keyword</para></listitem><listitem><para>Help requested.</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Get first valid keyword </emphasis></para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Get all valid keywords </emphasis></para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Replace with keyword definition </emphasis>Any element that has a <code><link linkend="attribute-which">@which</link></code> with the value of <itemizedlist><listitem><para>???</para></listitem></itemizedlist> will trigger this
+               quick fix. Choose it to comment out the original element and add after it the
+               complete definition of the keyword. This is especially helpful for cases where you
+               wish to know the meaning of a keyword, or you wish to edit the definition of a
+               keyword.</para></tip><example><title><code>@which</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs" TAN-version="1"&gt;
    &lt;head&gt;
       &lt;see-also&gt;
          &lt;relationship<emphasis role="bold"> which="different work version"</emphasis>/&gt;
@@ -3318,16 +3185,9 @@ text</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;<
          &lt;relationship<emphasis role="bold"> which="alternatively divided edition"</emphasis>/&gt;
          &lt;IRI&gt;tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:semantic-refs&lt;/IRI&gt;
          &lt;name&gt;Categories, Aristotle, English translation by E. M. Edghill&lt;/name&gt;
-         &lt;location href="file:/H:/Users-2/Joel/Dropbox/TAN/SERVER/release/1/dev/examples/ar.cat.eng.1926.edghill.sem.xml" when-accessed="2016-02-11T13:45:52.194-05:00"/&gt;
+         &lt;location href="ar.cat.eng.1926.edghill.sem.xml" when-accessed="2016-02-11T13:45:52.194-05:00"/&gt;
       &lt;/see-also&gt;
       &lt;declarations&gt;
-         .........
-         &lt;div-type xml:id="l"&gt;
-            .........
-         &lt;/div-type&gt;
-         &lt;recommended-tokenization<emphasis role="bold"> which="general-1"</emphasis>/&gt;
-         &lt;recommended-tokenization<emphasis role="bold"> which="general-words-only-1"</emphasis>/&gt;
-         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
          &lt;filter&gt;
             &lt;normalization<emphasis role="bold"> which="no hyphens"</emphasis>/&gt;
          &lt;/filter&gt;
@@ -3354,14 +3214,13 @@ text</synopsis><para>Used by: <code><link linkend="element-agentrole">&lt;agentr
    &lt;/head&gt;
 &lt;/TAN-T&gt;
 </programlisting></example><example><title><code>@who</code></title><programlisting>   &lt;head&gt;
-      &lt;comment<emphasis role="bold"> who="sysadmin"</emphasis> when="2016-02-11-05:00"&gt;This is a revised version of the text, using
-         the first alternatively divided edition as a template by which to resegment the
-         text.&lt;/comment&gt;
+      &lt;comment<emphasis role="bold"> who="sysadmin"</emphasis> when="2016-02-21-05:00"&gt;This is a revised version of the text, using
+         the first different work version as a template by which to resegment the text.&lt;/comment&gt;
       &lt;name&gt;Categories, Aristotle, English translation by E. M. Edghill&lt;/name&gt;
       .........
    &lt;/head&gt;
 </programlisting></example></section><section xml:id="attribute-xmlid"><title><code>@xml:id</code></title><para>The attribute <code>xml:id</code> identifies an entity described within an element. Must be unique within a given file. Must consist only of word characters.</para><synopsis><emphasis>Definition:</emphasis>
-ID (pattern \w\S*)</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-align">&lt;align&gt;</link></code> <code><link linkend="element-ana">&lt;ana&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para><caution><itemizedlist><listitem><para><code><link linkend="attribute-xmlid">@xml:id</link></code> assignments must be unique</para></listitem><listitem><para>No duplication of <code><link linkend="attribute-xmlids">@xml:ids</link></code> is permitted</para></listitem></itemizedlist></caution><example><title><code>@xml:id</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs" TAN-version="1"&gt;
+ID (pattern \w\S*)</synopsis><para>Used by: <code><link linkend="element-agent">&lt;agent&gt;</link></code> <code><link linkend="element-align">&lt;align&gt;</link></code> <code><link linkend="element-ana">&lt;ana&gt;</link></code> <code><link linkend="element-bitext-relation">&lt;bitext-relation&gt;</link></code> <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> <code><link linkend="element-feature">&lt;feature&gt;</link></code> <code><link linkend="element-inclusion">&lt;inclusion&gt;</link></code> <code><link linkend="element-key">&lt;key&gt;</link></code> <code><link linkend="element-lexicon">&lt;lexicon&gt;</link></code> <code><link linkend="element-morphology">&lt;morphology&gt;</link></code> <code><link linkend="element-normalization">&lt;normalization&gt;</link></code> <code><link linkend="element-place">&lt;place&gt;</link></code> <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code> <code><link linkend="element-role">&lt;role&gt;</link></code> <code><link linkend="element-source">&lt;source&gt;</link></code> <code><link linkend="element-topic">&lt;topic&gt;</link></code> <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code> <code><link linkend="element-unit">&lt;unit&gt;</link></code> <code><link linkend="element-verb">&lt;verb&gt;</link></code> <code><link linkend="element-version">&lt;version&gt;</link></code> <code><link linkend="element-work">&lt;work&gt;</link></code> </para><caution><itemizedlist><listitem><para><code><link linkend="attribute-xmlid">@xml:id</link></code> assignments must be unique</para></listitem><listitem><para>No duplication of <code><link linkend="attribute-xmlids">@xml:ids</link></code> is permitted</para></listitem></itemizedlist></caution><example><title><code>@xml:id</code></title><programlisting>&lt;TAN-T id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:obj-divs" TAN-version="1"&gt;
    &lt;head&gt;
       .........
       &lt;declarations&gt;
@@ -3380,8 +3239,9 @@ ID (pattern \w\S*)</synopsis><para>Used by: <code><link linkend="element-agent">
             &lt;IRI&gt;tag:textalign.net,2015:div-type:line:physical&lt;/IRI&gt;
             &lt;name&gt;physical line&lt;/name&gt;
          &lt;/div-type&gt;
-         &lt;recommended-tokenization which="general-1"/&gt;
-         .........
+         &lt;filter&gt;
+            .........
+         &lt;/filter&gt;
       &lt;/declarations&gt;
       &lt;agent roles="editor"<emphasis role="bold"> xml:id="kalvesmaki"</emphasis>&gt;
          &lt;IRI&gt;http://viaf.org/viaf/299582703&lt;/IRI&gt;

@@ -29,7 +29,7 @@
          </info>
          <revision>
             <revnumber>1/dev</revnumber>
-            <date>2016-02-24</date>
+            <date>2016-03-19</date>
             <revdescription>
                <para>Prepublication working draft, under construction and for circulation among
                   those interested in helping to develop TAN. Corrections are actively solicited and
@@ -41,7 +41,7 @@
                   <para>This version is known to have significant omissions. In case of
                      contradictions, apparent or not, between the schemas and these guidelines, the
                      greatest weight is to be given to the RELAX-NG schemas (compact syntax), then
-                     to these guidelines, and then to the Schematron schemas.</para>
+                     to the Schematron schemas, and only then to these guidelines.</para>
                   <para>Chapters 1, 4-8 are relatively accurate. Chapter 2 was drafted in mid-2015,
                      before major changes to the schemas. Chapter 3 remains unwritten until the
                      format reaches some maturity. Chapter 9 is intended to cover areas that explore
@@ -620,73 +620,73 @@
     &lt;body bitext-relation="B-descends-from-A" reuse-type="adaptation" in-progress="false">
         &lt;!-- Examples of picking tokens by number -->
         &lt;align>
-            &lt;tok src="ring1881" ref="line 1" ord="1"/>
-            &lt;tok src="ring1987" ref="l 1" ord="1"/>
+            &lt;tok src="ring1881" ref="1" ord="1"/>
+            &lt;tok src="ring1987" ref="1" ord="1"/>
         &lt;/align>
         &lt;align>
-            &lt;tok src="ring1881" ref="line 1" ord="2"/>
-            &lt;tok src="ring1987" ref="l 1" ord="2"/>
+            &lt;tok src="ring1881" ref="1" ord="2"/>
+            &lt;tok src="ring1987" ref="1" ord="2"/>
         &lt;/align>
         &lt;align>
-            &lt;tok src="ring1881" ref="line 1" ord="3"/>
-            &lt;tok src="ring1987" ref="l 1" ord="3"/>
+            &lt;tok src="ring1881" ref="1" ord="3"/>
+            &lt;tok src="ring1987" ref="1" ord="3"/>
         &lt;/align>
         &lt;align>
-            &lt;tok src="ring1881" ref="line 1" ord="4"/>
-            &lt;tok src="ring1987" ref="l 1" ord="4"/>
+            &lt;tok src="ring1881" ref="1" ord="4"/>
+            &lt;tok src="ring1987" ref="l" ord="4"/>
         &lt;/align>
         &lt;align>
-            &lt;tok src="ring1881" ref="line 1" ord="5"/>
-            &lt;tok src="ring1987" ref="l 1" ord="5"/>
+            &lt;tok src="ring1881" ref="1" ord="5"/>
+            &lt;tok src="ring1987" ref="1" ord="5"/>
         &lt;/align>
         &lt;!-- Examples of picking tokens by value -->
         &lt;align>
-            &lt;tok src="ring1881" ref="line 2" val="A"/>
-            &lt;tok src="ring1987" ref="l 2" val="A"/>
+            &lt;tok src="ring1881" ref="2" val="A"/>
+            &lt;tok src="ring1987" ref="2" val="A"/>
         &lt;/align>
         &lt;align>
-            &lt;tok src="ring1881" ref="line 2" val="pocket"/>
-            &lt;tok src="ring1987" ref="l 2" val="pocket"/>
+            &lt;tok src="ring1881" ref="2" val="pocket"/>
+            &lt;tok src="ring1987" ref="2" val="pocket"/>
         &lt;/align>
         &lt;align>
-            &lt;tok src="ring1881" ref="line 2" val="full"/>
-            &lt;tok src="ring1987" ref="l 2" val="full"/>
+            &lt;tok src="ring1881" ref="2" val="full"/>
+            &lt;tok src="ring1987" ref="2" val="full"/>
         &lt;/align>
         &lt;align>
-            &lt;tok src="ring1881" ref="line 2" val="of"/>
-            &lt;tok src="ring1987" ref="l 2" val="of"/>
+            &lt;tok src="ring1881" ref="2" val="of"/>
+            &lt;tok src="ring1987" ref="2" val="of"/>
         &lt;/align>
         &lt;align>
-            &lt;tok src="ring1881" ref="line 2" val="posies"/>
-            &lt;tok src="ring1987" ref="l 2" val="posies"/>
+            &lt;tok src="ring1881" ref="2" val="posies"/>
+            &lt;tok src="ring1987" ref="2" val="posies"/>
         &lt;/align>
         &lt;!-- Examples of picking tokens by number with commas, hyphens, and 'last' -->
         &lt;align>
-            &lt;tok src="ring1881" ref="line 3" ord="1, 2"/>
-            &lt;tok src="ring1987" ref="l 3" ord="1"/>
+            &lt;tok src="ring1881" ref="3" ord="1, 2"/>
+            &lt;tok src="ring1987" ref="3" ord="1"/>
         &lt;/align>
         &lt;align>
-            &lt;tok src="ring1881" ref="line 3" ord="3 - 4"/>
-            &lt;tok src="ring1987" ref="l 3" ord="2"/>
+            &lt;tok src="ring1881" ref="3" ord="3 - 4"/>
+            &lt;tok src="ring1987" ref="3" ord="2"/>
         &lt;/align>
         &lt;align>
-            &lt;tok src="ring1881" ref="line 4" ord="1"/>
-            &lt;tok src="ring1987" ref="l 4" ord="1"/>
+            &lt;tok src="ring1881" ref="4" ord="1"/>
+            &lt;tok src="ring1987" ref="4" ord="1"/>
         &lt;/align>
         &lt;align>
-            &lt;tok src="ring1881" ref="line 4" ord="2"/>
+            &lt;tok src="ring1881" ref="4" ord="2"/>
         &lt;/align>
         &lt;align>
-            &lt;tok src="ring1881" ref="line 4" ord="3"/>
-            &lt;tok src="ring1987" ref="l 4" ord="2"/>
+            &lt;tok src="ring1881" ref="4" ord="3"/>
+            &lt;tok src="ring1987" ref="4" ord="2"/>
         &lt;/align>
         &lt;align>
-            &lt;tok src="ring1881" ref="line 4" ord="last-1"/>
-            &lt;tok src="ring1987" ref="l 4" ord="last-1"/>
+            &lt;tok src="ring1881" ref="4" ord="last-1"/>
+            &lt;tok src="ring1987" ref="4" ord="last-1"/>
         &lt;/align>
         &lt;align>
-            &lt;tok src="ring1881" ref="line 4" ord="last"/>
-            &lt;tok src="ring1987" ref="l 4" ord="last"/>
+            &lt;tok src="ring1881" ref="4" ord="last"/>
+            &lt;tok src="ring1987" ref="4" ord="last"/>
         &lt;/align>
     &lt;/body>
 &lt;/TAN-A-tok></programlisting></para>
@@ -1122,7 +1122,6 @@
             &lt;IRI>http://dbpedia.org/resource/Line_(poetry)&lt;/IRI>
             &lt;name>line&lt;/name>
          &lt;/div-type>
-         &lt;recommended-tokenization which="general-words-only-1"/>
          &lt;filter>
             &lt;normalization>
                &lt;IRI>tag:textalign.net,2015:normalization:hyphens-discretionary-removed&lt;/IRI>
@@ -1279,7 +1278,7 @@
                 &lt;IRI>tag:textalign.net,2015:reuse-type:adaptation:general&lt;/IRI>
                 &lt;name>general adaptation&lt;/name>
             &lt;/reuse-type>
-            &lt;tokenization src="ring1881 ring1987" which="general-1"/>
+            &lt;token-definition src="ring1881 ring1987" which="general-1"/>
         &lt;/declarations>
         &lt;agent xml:id="park" roles="creator">
             &lt;IRI>tag:parkj@textalign.net,2015:self&lt;/IRI>
@@ -1307,17 +1306,14 @@
                have used shows that we suspect that the text reuse is general adaptation. If this
                were a translation or a quotation or some other kind of text reuse, we would have
                used a different IRI value.</para>
-            <para>A third declaration, <code><link linkend="element-tokenization"
-                     >&lt;tokenization></link></code>, specifies the tokenization pattern we have
-               adopted to define our word tokens. It is much like the <code><link
-                     linkend="element-recommended-tokenization"
-                  >&lt;recommended-tokenization></link></code>s that feature in TAN-T files. Note,
-               however, that <code><link linkend="attribute-src">@src</link></code> may take more
-               than one value, to specify that the same tokenization rule should be applied to both
-               sources. We could have applied different tokenization patterns had we wanted to,
-               either to customized TAN-R-tok files or to one of the <code><link
-                     linkend="element-recommended-tokenization"
-                  >&lt;recommended-tokenization></link></code> patterns in the source.</para>
+            <para>A third declaration, <code><link linkend="element-token-definition"
+                     >&lt;token-definition></link></code>, specifies the pattern we have adopted to
+               define our word tokens. Note that <code><link linkend="attribute-src"
+                  >@src</link></code> may take more than one value, to specify that the same
+               tokenization rule should be applied to both sources. We could have applied different
+               tokenization patterns had we wanted to, either to customized TAN-R-tok files or to
+               one of the <code><link linkend="element-recommended-tokenization"
+                     >&lt;recommended-tokenization></link></code> patterns in the source.</para>
          </section>
          <section>
             <title>Aligning across Projects</title>
@@ -1356,7 +1352,6 @@
             &lt;IRI>http://dbpedia.org/resource/Gedichtzeile&lt;/IRI>
             &lt;name>Gedichtzeile&lt;/name>
          &lt;/div-type>
-         &lt;recommended-tokenization which="general-1"/>
          &lt;filter>
             &lt;normalization>
                &lt;IRI>tag:kalvesmaki@gmail.com,2014:normalization:hyphens-discretionary-off&lt;/IRI>

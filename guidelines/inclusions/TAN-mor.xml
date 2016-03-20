@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-R-mor elements and attributes summarized</title><section xml:id="element-assert"><title><code>&lt;assert&gt;</code></title><para>The element <code>assert</code> names a pattern that, if found to be false in any <code><link linkend="element-m">&lt;m&gt;</link></code> in a dependent TAN-LM file, will return the enclosed message upon validation of the dependent file, along with an error or warning. Modeled loosely on Schematron <code><link linkend="element-report">&lt;report&gt;</link></code>.</para><synopsis><emphasis>Definition:</emphasis>
+<?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-mor elements and attributes summarized</title><section xml:id="element-assert"><title><code>&lt;assert&gt;</code></title><para>The element <code>assert</code> names a pattern that, if found to be false in any <code><link linkend="element-m">&lt;m&gt;</link></code> in a dependent TAN-LM file, will return the enclosed message upon validation of the dependent file, along with an error or warning. Modeled loosely on Schematron <code><link linkend="element-report">&lt;report&gt;</link></code>.</para><synopsis><emphasis>Definition:</emphasis>
    
 <emphasis>TAN-A-div.rng:</emphasis>
 (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
@@ -9,7 +9,8 @@
 (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
 <code><link linkend="attribute-ed-when">@ed-when</link></code>)?)
 ?,
-      (<code><link linkend="attribute-include">@include</link></code> |
+      ((<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
          (<code><link linkend="attribute-feature-filter">@feature-filter</link></code>?,
             (<code><link linkend="attribute-code-regex-test">@code-regex-test</link></code> |
             <code><link linkend="attribute-token-regex-test">@token-regex-test</link></code> |
@@ -18,13 +19,15 @@
 text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> </para></section><section xml:id="element-category"><title><code>&lt;category&gt;</code></title><para>The element <code>category</code> creates a set of features that share a common grammatical trait such as gender, number, etc.</para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-   <code><link linkend="attribute-include">@include</link></code> |
+   (<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
       (<code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
          (<code><link linkend="attribute-feature">@feature</link></code>,
          <code><link linkend="element-option">&lt;option&gt;</link></code>+))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> </para></section><section xml:id="element-feature"><title><code>&lt;feature&gt;</code></title><para>The element <code>feature</code> names, through its IRI + name pattern, a grammatical concept (e.g., plural, subjunctive, 1st person) that characterizes a language.</para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
 <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-      (<code><link linkend="attribute-include">@include</link></code> |
+      ((<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
          (
 <emphasis>TAN-A-tok.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
@@ -32,7 +35,7 @@ text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;<
 <emphasis>TAN-key.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
-<emphasis>TAN-R-mor.rng:</emphasis>
+<emphasis>TAN-mor.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
 <emphasis>TAN-rdf.rng:</emphasis>
@@ -74,7 +77,8 @@ text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;<
 </programlisting></example></section><section xml:id="element-option"><title><code>&lt;option&gt;</code></title><para>The element <code>option</code> refer to a feature.</para><para>If its parent is <code><link linkend="element-category">&lt;category&gt;</link></code>, this element indicates a feature that is allowed in that area.</para><para>If its parent is <code><link linkend="element-body">&lt;body&gt;</link></code> it markes a supplemental way to refer to the feature other than the assigned <code><link linkend="attribute-xmlid">@xml:id</link></code>. Useful for situations where a code requires a value that is otherwise disallowed by <code><link linkend="attribute-xmlid">@xml:id</link></code>, e.g., colons.</para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-   <code><link linkend="attribute-include">@include</link></code> |
+   (<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
       (<code><link linkend="attribute-feature">@feature</link></code>,
       <code><link linkend="attribute-code">@code</link></code>?)</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> <code><link linkend="element-category">&lt;category&gt;</link></code> </para><example><title><code>&lt;option&gt;</code></title><programlisting>&lt;TAN-R-mor TAN-version="1" id="tag:kalvesmaki.com,2014:tan-r-mor:eng:penn"&gt;
    &lt;body&gt;
@@ -102,27 +106,21 @@ text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;<
 (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
 <code><link linkend="attribute-ed-when">@ed-when</link></code>)?)
 ?,
-      (<code><link linkend="attribute-include">@include</link></code> |
+      ((<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
          (<code><link linkend="attribute-feature-filter">@feature-filter</link></code>?,
             (<code><link linkend="attribute-code-regex-test">@code-regex-test</link></code> |
             <code><link linkend="attribute-token-regex-test">@token-regex-test</link></code> |
             <code><link linkend="attribute-feature-test">@feature-test</link></code> |
             <code><link linkend="attribute-feature-qty-test">@feature-qty-test</link></code>),
-text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> </para></section><section xml:id="element-TAN-R-mor"><title><code>&lt;TAN-R-mor&gt;</code></title><para>The element <code>TAN-R-mor</code> specifies that the TAN file contains definitions for the parts of speech for a language, the codes for those parts, and the rules for combining them. Root element.</para><synopsis><emphasis>Definition:</emphasis>
+text))</synopsis><para>Used by: <code><link linkend="element-body">&lt;body&gt;</link></code> </para></section><section xml:id="element-TAN-mor"><title><code>&lt;TAN-mor&gt;</code></title><para>The element <code>TAN-mor</code> specifies that the TAN file contains definitions for the parts of speech for a language, the codes for those parts, and the rules for combining them. Root element.</para><synopsis><emphasis>Definition:</emphasis>
    <code><link linkend="attribute-id">@id</link></code>,
    <code><link linkend="attribute-TAN-version">@TAN-version</link></code>,
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
    <code><link linkend="element-head">&lt;head&gt;</link></code>,
-   <code><link linkend="element-body">&lt;body&gt;</link></code></synopsis><para>Used by: none</para><example><title><code>&lt;TAN-R-mor&gt;</code></title><programlisting><emphasis role="bold">&lt;TAN-R-mor TAN-version="1" id="tag:kalvesmaki.com,2014:tan-r-mor:eng:penn"&gt;</emphasis>
-   &lt;head&gt;
-      .........
-   &lt;/head&gt;
-   &lt;body&gt;
-      .........
-   &lt;/body&gt;
-<emphasis role="bold">&lt;/TAN-R-mor&gt;</emphasis>
-</programlisting></example></section><section xml:id="attribute-code"><title><code>@code</code></title><para>The attribute <code>code</code> contains a string that can be used as an alternative code for a <code><link linkend="element-feature">&lt;feature&gt;</link></code>.</para><synopsis><emphasis>Definition:</emphasis>
+   <code><link linkend="element-body">&lt;body&gt;</link></code>,
+   <code><link linkend="element-tail">&lt;tail&gt;</link></code>?</synopsis><para>Used by: none</para></section><section xml:id="attribute-code"><title><code>@code</code></title><para>The attribute <code>code</code> contains a string that can be used as an alternative code for a <code><link linkend="element-feature">&lt;feature&gt;</link></code>.</para><synopsis><emphasis>Definition:</emphasis>
 string (pattern [^\-\(\),|\s]|[^\(\),|\s]+)</synopsis><para>Used by: <code><link linkend="element-option">&lt;option&gt;</link></code> </para><caution><itemizedlist><listitem><para>The value of <code><link linkend="attribute-code">@code</link></code> must be unique within a given category</para></listitem><listitem><para>Codes may not duplicate or be a case variant of each other.</para></listitem><listitem><para>No code may repeat an id of a feature</para></listitem></itemizedlist></caution><example><title><code>@code</code></title><programlisting>&lt;TAN-R-mor TAN-version="1" id="tag:kalvesmaki.com,2014:tan-r-mor:eng:penn"&gt;
    &lt;body&gt;
       &lt;option feature="quote-cl"<emphasis role="bold"> code="''"</emphasis>/&gt;

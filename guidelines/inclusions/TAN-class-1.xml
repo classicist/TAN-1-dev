@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-class-1 elements and attributes summarized</title><section xml:id="element-div-type"><title><code>&lt;div-type&gt;</code></title><para>The element <code>div-type</code> declares a type of textual division (e.g., title, paragraph, stanza). You may have as many <code><link linkend="element-div-types">&lt;div-types&gt;</link></code> as you wish, and they need not all be used.</para><para>For more information, see <xref linkend="reference_system"/></para><para>This element takes a reserved keyword or IRI + name pattern. For more, see <link xlink:href="iris.xml">IRIs.xml</link> for suggested values. </para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-   <code><link linkend="attribute-include">@include</link></code> |
+   (<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
       (<code><link linkend="attribute-ns-are-numerals">@ns-are-numerals</link></code>?,
       <code><link linkend="attribute-xmlid">@xml:id</link></code>,
          (<code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
@@ -25,8 +26,9 @@
             &lt;IRI&gt;tag:textalign.net,2015:div-type:line:physical&lt;/IRI&gt;
             &lt;name&gt;physical line&lt;/name&gt;
          <emphasis role="bold">&lt;/div-type&gt;</emphasis>
-         &lt;recommended-tokenization which="general-1"/&gt;
-         .........
+         &lt;filter&gt;
+            .........
+         &lt;/filter&gt;
       &lt;/declarations&gt;
    &lt;/head&gt;
 </programlisting></example><example><title><code>&lt;div-type&gt;</code></title><programlisting>      &lt;declarations&gt;
@@ -50,28 +52,34 @@
       <code><link linkend="element-replace">&lt;replace&gt;</link></code>* &amp;
       <code><link linkend="element-transliteration">&lt;transliteration&gt;</link></code>*)</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><example><title><code>&lt;filter&gt;</code></title><programlisting>      &lt;declarations&gt;
          .........
-         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
+         &lt;div-type xml:id="l"&gt;
+            .........
+         &lt;/div-type&gt;
          <emphasis role="bold">&lt;filter&gt;</emphasis>
             &lt;normalization which="no hyphens"/&gt;
          <emphasis role="bold">&lt;/filter&gt;</emphasis>
       &lt;/declarations&gt;
 </programlisting></example><example><title><code>&lt;filter&gt;</code></title><programlisting>      &lt;declarations&gt;
          .........
-         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
+         &lt;div-type xml:id="ic"&gt;
+            .........
+         &lt;/div-type&gt;
          <emphasis role="bold">&lt;filter&gt;</emphasis>
             &lt;normalization which="no hyphens"/&gt;
          <emphasis role="bold">&lt;/filter&gt;</emphasis>
       &lt;/declarations&gt;
 </programlisting></example><example><title><code>&lt;filter&gt;</code></title><programlisting>      &lt;declarations&gt;
          .........
-         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
+         &lt;div-type xml:id="ic" which="clause (grammatical)"/&gt;
          <emphasis role="bold">&lt;filter&gt;</emphasis>
             &lt;normalization which="no hyphens"/&gt;
          <emphasis role="bold">&lt;/filter&gt;</emphasis>
       &lt;/declarations&gt;
 </programlisting></example><example><title><code>&lt;filter&gt;</code></title><programlisting>      &lt;declarations&gt;
          .........
-         &lt;recommended-tokenization which="general-words-only-1"/&gt;
+         &lt;div-type xml:id="l"&gt;
+            .........
+         &lt;/div-type&gt;
          <emphasis role="bold">&lt;filter&gt;</emphasis>
             &lt;normalization&gt;
                .........
@@ -81,7 +89,8 @@
 </programlisting></example></section><section xml:id="element-normalization"><title><code>&lt;normalization&gt;</code></title><para>The element <code>normalization</code> specifies an alteration made to a source file to bring the text into conformity with standards or common expectations. Typically applies to minor corrections made in the transcription or interpetation of a source (e.g., suppression of discretionary hyphenation). You should declare every change you have made to the source.</para><para>The scope of this element may be specified through optional <code><link linkend="element-for-lang">&lt;for-lang&gt;</link></code>s.</para><para><code><link linkend="element-normalization">&lt;normalization&gt;</link></code> is especially helpful in reference to nondigital sources, but it may be made also for digital sources, to declare global changes that would be cumbersome, difficult, or impossible to describe in <code><link linkend="element-replace">&lt;replace&gt;</link></code>. </para><para>See <link xlink:href="iris.xml">IRIs.xml</link> for suggested IRI + name values for normalizations. </para><para>For more on this element see <xref linkend="normalizing_transcriptions"/> </para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-   <code><link linkend="attribute-include">@include</link></code> |
+   (<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
       (
 <emphasis>TAN-A-tok.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
@@ -89,7 +98,7 @@
 <emphasis>TAN-key.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
-<emphasis>TAN-R-mor.rng:</emphasis>
+<emphasis>TAN-mor.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
 <emphasis>TAN-rdf.rng:</emphasis>
@@ -114,123 +123,19 @@
                &lt;name&gt;discretionary hyphens suppressed&lt;/name&gt;
             <emphasis role="bold">&lt;/normalization&gt;</emphasis>
          &lt;/filter&gt;
-</programlisting></example></section><section xml:id="element-recommended-div-type-refs"><title><code>&lt;recommended-div-type-refs&gt;</code></title><para>The element <code>recommended-div-type-refs</code> suggests whether div types in references to the transcription should be explicit (e.g., book.John:chapter.3:verse.16) or implicit (e.g., John 3:16). If not present, explicit is assumed.</para><para>Anyone using your file need not adhere to your recommendation. If you mark the value as implicit, someone who prefers the verbose syntax is welcome to do so. But the converse is not true: explicit means only the verbose form may be used.</para><para>Although this element is optional, it is suggested especially for long files, because it will reduce the time to validate any dependent files.</para><synopsis><emphasis>Definition:</emphasis>
+</programlisting></example></section><section xml:id="element-replace"><title><code>&lt;replace&gt;</code></title><para>The element <code>replace</code> contains the equivalent of the XPath replace() function plus parameters, indicating a replacement operation that should be, or has been, applied to a digital file.</para><para>Multiple <code><link linkend="element-replace">&lt;replace&gt;</link></code>s will be assumed to have been implemented in document order.</para><para>The conventions of this element and its children accord with the definition of the function and its parameters provided at http://www.w3.org/TR/xpath-functions-30/#func-replace</para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-   <code><link linkend="attribute-include">@include</link></code> |
-   string (pattern implicit|explicit)</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><caution><itemizedlist><listitem><para>Implicit div refs cannot be recommended if any <code><link linkend="attribute-n">@n</link></code> have empty values.</para></listitem><listitem><para>Implicit div refs cannot be recommended if any flattened refs result in duplicates.</para></listitem></itemizedlist></caution><example><title><code>&lt;recommended-div-type-refs&gt;</code></title><programlisting>      &lt;declarations&gt;
-         .........
-         &lt;recommended-tokenization which="general-words-only-1"/&gt;
-         <emphasis role="bold">&lt;recommended-div-type-refs&gt;</emphasis>implicit<emphasis role="bold">&lt;/recommended-div-type-refs&gt;</emphasis>
-         &lt;filter&gt;
-            .........
-         &lt;/filter&gt;
-      &lt;/declarations&gt;
-</programlisting></example><example><title><code>&lt;recommended-div-type-refs&gt;</code></title><programlisting>      &lt;declarations&gt;
-         .........
-         &lt;recommended-tokenization which="general-words-only-1"/&gt;
-         <emphasis role="bold">&lt;recommended-div-type-refs&gt;</emphasis>implicit<emphasis role="bold">&lt;/recommended-div-type-refs&gt;</emphasis>
-         &lt;filter&gt;
-            .........
-         &lt;/filter&gt;
-      &lt;/declarations&gt;
-</programlisting></example><example><title><code>&lt;recommended-div-type-refs&gt;</code></title><programlisting>      &lt;declarations&gt;
-         .........
-         &lt;recommended-tokenization which="general-words-only-1"/&gt;
-         <emphasis role="bold">&lt;recommended-div-type-refs&gt;</emphasis>implicit<emphasis role="bold">&lt;/recommended-div-type-refs&gt;</emphasis>
-         &lt;filter&gt;
-            .........
-         &lt;/filter&gt;
-      &lt;/declarations&gt;
-</programlisting></example><example><title><code>&lt;recommended-div-type-refs&gt;</code></title><programlisting>      &lt;declarations&gt;
-         .........
-         &lt;div-type xml:id="l"&gt;
-            .........
-         &lt;/div-type&gt;
-         <emphasis role="bold">&lt;recommended-div-type-refs&gt;</emphasis>implicit<emphasis role="bold">&lt;/recommended-div-type-refs&gt;</emphasis>
-         &lt;recommended-tokenization which="general-words-only-1"/&gt;
-         .........
-      &lt;/declarations&gt;
-</programlisting></example></section><section xml:id="element-recommended-tokenization"><title><code>&lt;recommended-tokenization&gt;</code></title><para>The element <code>recommended-tokenization</code> suggests an ideal TAN-R-tok pattern to be used to segment a text into word tokens. If no thought has been given to tokenization, this element should be left empty. There are two kinds of tokenization patterns.</para><para>(1) Core: general-1, general-words-only-1, and precise-1 (values of <code><link linkend="attribute-which">@which</link></code>). </para><para>(2) Custom: each <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code> must point through an IRI + name pattern a specific TAN-R-tok file, and must take a unique value for <code><link linkend="attribute-xmlid">@xml:id</link></code>, to be used by dependent class 2 TAN files.</para><para>You may have as many <code><link linkend="element-recommended-tokenization">&lt;recommended-tokenization&gt;</link></code>s as you like, but the order is important: the optimal tokenizing pattern should be placed first.</para><para>For theoretical background and more information, see <xref linkend="preparing_transcriptions_for_tokenization"/></para><synopsis><emphasis>Definition:</emphasis>
-      <code><link linkend="attribute-include">@include</link></code> |
-      ((<code><link linkend="attribute-ed-who">@ed-who</link></code>,
-<code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-         (<code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
-            (<code><link linkend="attribute-which">@which</link></code> |
-               (<code><link linkend="attribute-xmlid">@xml:id</link></code>,
-                  (<code><link linkend="attribute-href">@href</link></code> |
-                     (<code><link linkend="element-IRI">&lt;IRI&gt;</link></code>,
-                     <code><link linkend="element-name">&lt;name&gt;</link></code>+,
-                     <code><link linkend="element-desc">&lt;desc&gt;</link></code>*,
-                     <code><link linkend="element-checksum">&lt;checksum&gt;</link></code>*,
-                     <code><link linkend="element-location">&lt;location&gt;</link></code>+))))))</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para><caution><itemizedlist><listitem><para>Recommended tokenization must point to a TAN-R-tok file.</para></listitem><listitem><para>Every language used in the transcription must be accommodated by at least one recommended tokenization pattern.</para></listitem><listitem><para>Tokenization patterns must be able to predictably handle any combining characters</para></listitem></itemizedlist></caution><important><itemizedlist><listitem><para>If pointing to a TAN-R-tok file meant for specific languages, at least one of them must be used in the body of the transcription.</para></listitem></itemizedlist></important><example><title><code>&lt;recommended-tokenization&gt;</code></title><programlisting>   &lt;head&gt;
-      &lt;see-also&gt;
-         &lt;relationship which="different work version"/&gt;
-         &lt;IRI&gt;tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:object-refs&lt;/IRI&gt;
-         &lt;name&gt;Categories, Aristotle, Greek text by Minio-Paluello&lt;/name&gt;
-         &lt;location href="ar.cat.grc.1949.minio-paluello-obj.xml" when-accessed="2016-02-11T12:40:42.823-05:00"/&gt;
-      &lt;/see-also&gt;
-      &lt;see-also&gt;
-         &lt;relationship which="different work version"/&gt;
-         &lt;IRI&gt;tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:semantic-refs&lt;/IRI&gt;
-         &lt;name&gt;Categories, Aristotle, Greek text by Minio-Paluello&lt;/name&gt;
-         &lt;location href="ar.cat.grc.1949.minio-paluello-sem.xml" when-accessed="2016-02-10T14:08:52.058-05:00"/&gt;
-      &lt;/see-also&gt;
-      &lt;see-also&gt;
-         &lt;relationship which="alternatively divided edition"/&gt;
-         &lt;IRI&gt;tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:semantic-refs&lt;/IRI&gt;
-         &lt;name&gt;Categories, Aristotle, English translation by E. M. Edghill&lt;/name&gt;
-         &lt;location href="file:/H:/Users-2/Joel/Dropbox/TAN/SERVER/release/1/dev/examples/ar.cat.eng.1926.edghill.sem.xml" when-accessed="2016-02-11T13:45:52.194-05:00"/&gt;
-      &lt;/see-also&gt;
-      &lt;declarations&gt;
-         .........
-         &lt;div-type xml:id="l"&gt;
-            .........
-         &lt;/div-type&gt;
-         <emphasis role="bold">&lt;recommended-tokenization which="general-1"/&gt;</emphasis>
-         <emphasis role="bold">&lt;recommended-tokenization which="general-words-only-1"/&gt;</emphasis>
-         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
-         &lt;filter&gt;
-            &lt;normalization which="no hyphens"/&gt;
-         &lt;/filter&gt;
-      &lt;/declarations&gt;
-   &lt;/head&gt;
-</programlisting></example><example><title><code>&lt;recommended-tokenization&gt;</code></title><programlisting>   &lt;head&gt;
-      &lt;see-also&gt;
-         &lt;relationship which="different work version"/&gt;
-         &lt;IRI&gt;tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:semantic-refs&lt;/IRI&gt;
-         &lt;name&gt;Categories, Aristotle, Greek text by Minio-Paluello&lt;/name&gt;
-         &lt;location href="ar.cat.grc.1949.minio-paluello-sem.xml" when-accessed="2016-02-10T14:08:52.058-05:00"/&gt;
-      &lt;/see-also&gt;
-      &lt;see-also&gt;
-         &lt;relationship which="different work version"/&gt;
-         &lt;IRI&gt;tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:object-refs&lt;/IRI&gt;
-         &lt;name&gt;Categories, Aristotle, Greek text by Minio-Paluello&lt;/name&gt;
-         &lt;location href="ar.cat.grc.1949.minio-paluello-obj.xml" when-accessed="2016-02-11T12:40:42.823-05:00"/&gt;
-      &lt;/see-also&gt;
-      &lt;see-also&gt;
-         &lt;relationship which="alternatively divided edition"/&gt;
-         &lt;IRI&gt;tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:semantic-refs&lt;/IRI&gt;
-         &lt;name&gt;Categories, Aristotle, English translation by E. M. Edghill&lt;/name&gt;
-         &lt;location href="file:/H:/Users-2/Joel/Dropbox/TAN/SERVER/release/1/dev/examples/ar.cat.eng.1926.edghill.sem.xml" when-accessed="2016-02-11T13:49:14.971-05:00"/&gt;
-      &lt;/see-also&gt;
-      &lt;declarations&gt;
-         .........
-         &lt;div-type xml:id="ic"&gt;
-            .........
-         &lt;/div-type&gt;
-         <emphasis role="bold">&lt;recommended-tokenization which="general-1"/&gt;</emphasis>
-         <emphasis role="bold">&lt;recommended-tokenization which="general-words-only-1"/&gt;</emphasis>
-         &lt;recommended-div-type-refs&gt;implicit&lt;/recommended-div-type-refs&gt;
-         &lt;filter&gt;
-            &lt;normalization which="no hyphens"/&gt;
-         &lt;/filter&gt;
-      &lt;/declarations&gt;
-   &lt;/head&gt;
-</programlisting></example></section><section xml:id="element-transliteration"><title><code>&lt;transliteration&gt;</code></title><para>The element <code>transliteration</code> indicates a transliteration scheme that has been applied to a source to convert it from one writing system to another. This element may be useful if it easier to work with a source in the Latin alphabet (for example) rather than a native one. </para><para>The scope of this element may be specified through optional <code><link linkend="element-for-lang">&lt;for-lang&gt;</link></code>s.</para><para>This may be useful for texts easier to handle in a Latin alphabet rather than a native one.  </para><synopsis><emphasis>Definition:</emphasis>
+   (<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
+      (<code><link linkend="element-comment">&lt;comment&gt;</link></code>* &amp;
+         (<code><link linkend="attribute-regex">@regex</link></code>,
+         <code><link linkend="attribute-replacement">@replacement</link></code>,
+         <code><link linkend="attribute-flags">@flags</link></code>?))</synopsis><para>Used by: <code><link linkend="element-filter">&lt;filter&gt;</link></code> </para></section><section xml:id="element-transliteration"><title><code>&lt;transliteration&gt;</code></title><para>The element <code>transliteration</code> indicates a transliteration scheme that has been applied to a source to convert it from one writing system to another. This element may be useful if it easier to work with a source in the Latin alphabet (for example) rather than a native one. </para><para>The scope of this element may be specified through optional <code><link linkend="element-for-lang">&lt;for-lang&gt;</link></code>s.</para><para>This may be useful for texts easier to handle in a Latin alphabet rather than a native one.  </para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
 <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-      (<code><link linkend="attribute-include">@include</link></code> |
+      ((<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
          (
 <emphasis>TAN-A-tok.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
@@ -238,7 +143,7 @@
 <emphasis>TAN-key.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
-<emphasis>TAN-R-mor.rng:</emphasis>
+<emphasis>TAN-mor.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
 <emphasis>TAN-rdf.rng:</emphasis>
@@ -252,7 +157,8 @@
                   <code><link linkend="attribute-which">@which</link></code>)))))</synopsis><para>Used by: <code><link linkend="element-filter">&lt;filter&gt;</link></code> </para></section><section xml:id="element-version"><title><code>&lt;version&gt;</code></title><para>The element <code>version</code> states the version of the work has been transcribed. Applicable to text-bearing objects that have multiple versions of the same work such as a bilingual edition of a text.</para><para>Very few work-versions have their own URN names. It is advisable to assign a tag URN or a UUID. If you have used an IRI for <code><link linkend="element-work">&lt;work&gt;</link></code> that you are entitled to modify, you may wish to add a suffix that will name the version. If you need to specify exactly where on a text-bearing object a version appears, <code><link linkend="element-desc">&lt;desc&gt;</link></code> or <code><link linkend="element-comment">&lt;comment&gt;</link></code> should be used.</para><para>This element takes the IRI + name pattern. For more, see <link xlink:href="iris.xml">IRIs.xml</link> and <xref linkend="conceptual_works"/></para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
 <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-      (<code><link linkend="attribute-include">@include</link></code> |
+      ((<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
          (
 <emphasis>TAN-A-tok.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
@@ -260,7 +166,7 @@
 <emphasis>TAN-key.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
-<emphasis>TAN-R-mor.rng:</emphasis>
+<emphasis>TAN-mor.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
 <emphasis>TAN-rdf.rng:</emphasis>
@@ -284,4 +190,5 @@
          .........
       &lt;/declarations&gt;
 </programlisting></example></section><section xml:id="attribute-ns-are-numerals"><title><code>@ns-are-numerals</code></title><para>The attribute <code>ns-are-numerals</code> specifies whether <code><link linkend="attribute-n">@n</link></code> values of a particular <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> are numerals. If this attribute is not present, then if the set of <code><link linkend="attribute-n">@n</link></code> values match patterns for Arabic, Roman, or letter-based (e.g., a, b, c, ... z, aa, bb, ....) numeral systems then the value will be treated as true, otherwise as false.</para><para>For more information, see <xref linkend="reference_system"/></para><synopsis><emphasis>Definition:</emphasis>
-boolean </synopsis><para>Used by: <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> </para></section></section>
+boolean </synopsis><para>Used by: <code><link linkend="element-div-type">&lt;div-type&gt;</link></code> </para></section><section xml:id="attribute-replacement"><title><code>@replacement</code></title><para>The attribute <code>replacement</code> contains a string used to replace any occurrence of <code><link linkend="element-pattern">&lt;pattern&gt;</link></code> </para><synopsis><emphasis>Definition:</emphasis>
+text</synopsis><para>Used by: <code><link linkend="element-replace">&lt;replace&gt;</link></code> </para></section></section>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-rdf elements and attributes summarized</title><section xml:id="element-claim"><title><code>&lt;claim&gt;</code></title><synopsis><emphasis>Definition:</emphasis>
-   <code><link linkend="attribute-include">@include</link></code> |
+   (<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
       ((<code><link linkend="attribute-ed-who">@ed-who</link></code>,
 <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
       <code><link linkend="attribute-claimant">@claimant</link></code>?,
@@ -14,7 +15,8 @@
 text</synopsis><para>Used by: <code><link linkend="element-claim">&lt;claim&gt;</link></code> </para></section><section xml:id="element-place"><title><code>&lt;place&gt;</code></title><para>The element <code>place</code> contains an IRI + name pattern identifying a spatial location, usually somewhere on earth</para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
 <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-      (<code><link linkend="attribute-include">@include</link></code> |
+      ((<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
          (
 <emphasis>TAN-A-tok.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
@@ -22,7 +24,7 @@ text</synopsis><para>Used by: <code><link linkend="element-claim">&lt;claim&gt;<
 <emphasis>TAN-key.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
-<emphasis>TAN-R-mor.rng:</emphasis>
+<emphasis>TAN-mor.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
 <emphasis>TAN-rdf.rng:</emphasis>
@@ -38,10 +40,12 @@ text</synopsis><para>Used by: <code><link linkend="element-claim">&lt;claim&gt;<
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
    <code><link linkend="element-head">&lt;head&gt;</link></code>,
-   <code><link linkend="element-body">&lt;body&gt;</link></code></synopsis><para>Used by: none</para></section><section xml:id="element-unit"><title><code>&lt;unit&gt;</code></title><para>The element <code>unit</code> contains an IRI + name pattern identifying a unit type (e.g., millimeters, seconds, Euros), to be used in conjunction with <code><link linkend="element-object">&lt;object&gt;</link></code> to specify the meaning of a value</para><synopsis><emphasis>Definition:</emphasis>
+   <code><link linkend="element-body">&lt;body&gt;</link></code>,
+   <code><link linkend="element-tail">&lt;tail&gt;</link></code>?</synopsis><para>Used by: none</para></section><section xml:id="element-unit"><title><code>&lt;unit&gt;</code></title><para>The element <code>unit</code> contains an IRI + name pattern identifying a unit type (e.g., millimeters, seconds, Euros), to be used in conjunction with <code><link linkend="element-object">&lt;object&gt;</link></code> to specify the meaning of a value</para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
 <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-      (<code><link linkend="attribute-include">@include</link></code> |
+      ((<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
          (
 <emphasis>TAN-A-tok.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
@@ -49,7 +53,7 @@ text</synopsis><para>Used by: <code><link linkend="element-claim">&lt;claim&gt;<
 <emphasis>TAN-key.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
-<emphasis>TAN-R-mor.rng:</emphasis>
+<emphasis>TAN-mor.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
 <emphasis>TAN-rdf.rng:</emphasis>
@@ -62,7 +66,8 @@ text</synopsis><para>Used by: <code><link linkend="element-claim">&lt;claim&gt;<
                <code><link linkend="attribute-which">@which</link></code>))))</synopsis><para>Used by: <code><link linkend="element-declarations">&lt;declarations&gt;</link></code> </para></section><section xml:id="element-verb"><title><code>&lt;verb&gt;</code></title><para>The element <code>verb</code> contains an IRI + name pattern identifying a property, relationship, action, or something else that is used to say something about something. </para><para>The preferred term "verb" is equivalent to RDF "predicate." The latter term is avoided as being misleading -- most who use TAN will understand "predicate," grammatically speaking, to refer to everything in a sentence that is not the subject,</para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
 <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-      (<code><link linkend="attribute-include">@include</link></code> |
+      ((<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
          (
 <emphasis>TAN-A-tok.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
@@ -70,7 +75,7 @@ text</synopsis><para>Used by: <code><link linkend="element-claim">&lt;claim&gt;<
 <emphasis>TAN-key.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
-<emphasis>TAN-R-mor.rng:</emphasis>
+<emphasis>TAN-mor.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
 <emphasis>TAN-rdf.rng:</emphasis>

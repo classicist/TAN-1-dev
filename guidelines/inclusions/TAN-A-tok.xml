@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><section xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tan="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:sqf="http://www.schematron-quickfix.com/validator/process" version="5.0"><title>TAN-A-tok elements and attributes summarized</title><section xml:id="element-bitext-relation"><title><code>&lt;bitext-relation&gt;</code></title><para>The element <code>bitext-relation</code> identifies how the text on one text-bearing object relates to that on another by specifying a relationship, e.g., B is a direct copy of A, B and A descent from a commont parent, etc. See <xref linkend="tan-a-tok"/> for theoretical background.</para><para>In most cases, there will be need for only one of these elements. But multiple values may be helpful for cases where a bitext has a complex history, for example, a textual object that was created over time, and in different phases.</para><para>This element should not be used to describe any activities (e.g., translation, copying), reserved for <code><link linkend="element-reuse-type">&lt;reuse-type&gt;</link></code>. </para><para>For examples see <link xlink:href="iris.xml">IRIs.xml</link> </para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
 <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-      (<code><link linkend="attribute-include">@include</link></code> |
+      ((<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
          (
 <emphasis>TAN-A-tok.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
@@ -9,7 +10,7 @@
 <emphasis>TAN-key.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
-<emphasis>TAN-R-mor.rng:</emphasis>
+<emphasis>TAN-mor.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
 <emphasis>TAN-rdf.rng:</emphasis>
@@ -56,7 +57,8 @@
 </programlisting></example></section><section xml:id="element-reuse-type"><title><code>&lt;reuse-type&gt;</code></title><para>The element <code>reuse-type</code> identifies a category of text reuse (e.g., translation, mistranslation, paraphrase, ridicule). See <xref linkend="tan-a-tok"/> for theoretical background.</para><para>For examples see <link xlink:href="iris.xml">IRIs.xml</link> </para><synopsis><emphasis>Definition:</emphasis>
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
 <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
-      (<code><link linkend="attribute-include">@include</link></code> |
+      ((<code><link linkend="attribute-include">@include</link></code>,
+<code><link linkend="attribute-help">@help</link></code>?) |
          (
 <emphasis>TAN-A-tok.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
@@ -64,7 +66,7 @@
 <emphasis>TAN-key.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
-<emphasis>TAN-R-mor.rng:</emphasis>
+<emphasis>TAN-mor.rng:</emphasis>
 <code><link linkend="attribute-xmlid">@xml:id</link></code>
 <emphasis>  ~OR~</emphasis>
 <emphasis>TAN-rdf.rng:</emphasis>
@@ -82,7 +84,7 @@
             &lt;IRI&gt;tag:textalign.net,2015:reuse-type:adaptation:general&lt;/IRI&gt;
             &lt;name&gt;general adaptation&lt;/name&gt;
          <emphasis role="bold">&lt;/reuse-type&gt;</emphasis>
-         &lt;tokenization src="ring1881 ring1987" which="general-1"/&gt;
+         &lt;token-definition src="ring1881 ring1987" which="letters"/&gt;
       &lt;/declarations&gt;
 </programlisting></example><example><title><code>&lt;reuse-type&gt;</code></title><programlisting>      &lt;declarations&gt;
          &lt;bitext-relation xml:id="unclear"&gt;
@@ -92,9 +94,9 @@
             &lt;IRI&gt;tag:kalvesmaki@gmail.com,2014:reuse-type:correlation-general&lt;/IRI&gt;
             &lt;name&gt;Texts are generally correlated, but without specifying the relation&lt;/name&gt;
          <emphasis role="bold">&lt;/reuse-type&gt;</emphasis>
-         &lt;rename-div-types src="ger"&gt;
+         &lt;rename-div-ns src="ger" div-type-ref="Zeile"&gt;
             .........
-         &lt;/rename-div-types&gt;
+         &lt;/rename-div-ns&gt;
          .........
       &lt;/declarations&gt;
 </programlisting></example><example><title><code>&lt;reuse-type&gt;</code></title><programlisting>      &lt;declarations&gt;
@@ -105,7 +107,7 @@
             &lt;IRI&gt;tag:kalvesmaki@gmail.com,2014:reuse-type:correlation-general&lt;/IRI&gt;
             &lt;name&gt;Texts are generally correlated, but without specifying the relation&lt;/name&gt;
          <emphasis role="bold">&lt;/reuse-type&gt;</emphasis>
-         &lt;tokenization src="eng ger" which="general-1"/&gt;
+         &lt;token-definition src="eng ger" which="letters and punctuation"/&gt;
          .........
       &lt;/declarations&gt;
 </programlisting></example></section><section xml:id="element-TAN-A-tok"><title><code>&lt;TAN-A-tok&gt;</code></title><para>The element <code>TAN-A-tok</code> specifies that the file is a token-based TAN alignment file. Root element.</para><synopsis><emphasis>Definition:</emphasis>
@@ -114,7 +116,8 @@
    (<code><link linkend="attribute-ed-who">@ed-who</link></code>,
    <code><link linkend="attribute-ed-when">@ed-when</link></code>)?,
    <code><link linkend="element-head">&lt;head&gt;</link></code>,
-   <code><link linkend="element-body">&lt;body&gt;</link></code></synopsis><para>Used by: none</para><tip><para><emphasis role="bold">Schematron Quick Fix: Get local source element with this document's IRI + name pattern </emphasis>Suppose you find a TAN file that you wish to make a source for another. Selecting
+   <code><link linkend="element-body">&lt;body&gt;</link></code>,
+   <code><link linkend="element-tail">&lt;tail&gt;</link></code>?</synopsis><para>Used by: none</para><caution><itemizedlist><listitem><para>Tokens must be locatable</para></listitem><listitem><para>Sibling <code><link linkend="element-tok">&lt;tok&gt;</link></code>s may not point to the same token.</para></listitem><listitem><para><code><link linkend="attribute-chars">@chars</link></code> may not exceed the number of characters in a token picked</para></listitem><listitem><para>max</para></listitem><listitem><para>max</para></listitem><listitem><para/></listitem><listitem><para>Splits may not be made at the first token in a div.</para></listitem><listitem><para>Possible values and counts:</para></listitem></itemizedlist></caution><tip><para><emphasis role="bold">Schematron Quick Fix: Get local source element with this document's IRI + name pattern </emphasis>Suppose you find a TAN file that you wish to make a source for another. Selecting
                this option will insert a tan:source element as the next child, complete with the
                appropriate values for tan:IRI and tan:name, and with a tan:location/<code><link linkend="attribute-href">@href</link></code> that
                points to the local directory.</para></tip><tip><para><emphasis role="bold">Schematron Quick Fix: Get absolute source element with this document's IRI + name

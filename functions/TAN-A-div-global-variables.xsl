@@ -16,8 +16,14 @@
 
    <xsl:variable name="srcs-segmented" select="tan:get-src-1st-da-segmented($self4, $srcs-tokenized)"
       as="document-node()*"/>
+   <xsl:variable name="srcs-segmented-and-filtered" select="tan:get-src-1st-da-segmented($self4, $srcs-tokenized-and-filtered)"
+      as="document-node()*"/>
    <xsl:variable name="self5" select="tan:get-self-expanded-5($self4)"/>
    <xsl:variable name="srcs-realigned" select="tan:get-src-1st-da-realigned($self5, $srcs-segmented)"
+      as="document-node()*"/>
+   <xsl:variable name="srcs-realigned-and-filtered" select="tan:get-src-1st-da-realigned($self5, $srcs-segmented-and-filtered)"
+      as="document-node()*"/>
+   <xsl:variable name="srcs-statted" select="tan:get-src-1st-da-statted($srcs-realigned)"
       as="document-node()*"/>
 
 </xsl:stylesheet>

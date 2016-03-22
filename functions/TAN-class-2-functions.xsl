@@ -55,7 +55,7 @@
       Each transformation results in a document node, conducted in a sequence of steps:
       TAN-class-2        TAN-class-1           Comments   
       ===========        ===========           ===============================
-      self-expanded-1                          Expand @src (but not for <equate-works>), @div-type-ref; normalize @ref; add @xml:id to TAN-LM <source>
+      self-expanded-1                          Expand @src (but not for <equate-works>), @div-type-ref; normalize @ref; add @xml:id to TAN-LM <source>; add @group to elements that take @cont
                          src-1st-da            Get first document available for each source chosen
                          src-1st-da-resolved   Resolve each source document: add @src to root element, get inclusions, keywords, strip duplicates
       self-expanded-2                          Expand <token-definition> and (TAN-A-div) <equate-works>, <equate-div-types>
@@ -133,6 +133,10 @@
                <xsl:attribute name="src" select="$this-src"/>
                <xsl:if test="exists($these-div-types)">
                   <xsl:attribute name="div-type-ref" select="."/>
+               </xsl:if>
+               <xsl:if test="$this-element-name = ('anchor-div-ref', 'div-ref', 'tok')">
+                  <xsl:attribute name="group" select="count($this-element/preceding-sibling::*[not(@cont)]) + 1"
+                  />
                </xsl:if>
                <xsl:copy-of select="$this-element/node()"/>
             </xsl:element>
@@ -862,8 +866,11 @@
                   <xsl:otherwise>
                      <xsl:choose>
                         <xsl:when test="$shallow-picks = true()">
-                           <xsl:copy-of select="$src-1st-da-data-prepped//tan:div[@ref = $start] except 
-                              $src-1st-da-data-prepped//tan:div[@ref = $start]/descendant::tan:div"/>
+                           <xsl:copy-of
+                              select="
+                                 $src-1st-da-data-prepped//tan:div[@ref = $start] except
+                                 $src-1st-da-data-prepped//tan:div[@ref = $start]/descendant::tan:div"
+                           />
                         </xsl:when>
                         <xsl:otherwise>
                            <xsl:copy-of

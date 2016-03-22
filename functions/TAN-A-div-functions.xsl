@@ -27,6 +27,7 @@
                          src-1st-da-segmented  In each <div> group <tok>s into <segs> based on TAN-A-div <split-leaf-div-at>s
       self-expanded-5                          Expand @seg, expand <align>, <realign>
                          src-1st-da-realigned  Using <realign>s, add @ref-eq to each <seg> with the proper value.
+                         src-1st-da-statted    To each <body> and <div> adds @tok-qty, @tok-avg, @tok-std for the number, average, and standard deviation of tokens; useful for analysis
    -->
 
    <!-- STEP SRC-1ST-DA-SEGMENTED: segment tokenized source documents -->
@@ -99,7 +100,7 @@
       </xsl:copy>
    </xsl:template>
 
-   <!-- STEP SELF-EXPANDED-5: distribute @seg, expand <align>, <realign> -->
+   <!-- STEP SELF-EXPANDED-5: distribute, group @seg, expand <align>, <realign> -->
    <xsl:function name="tan:get-self-expanded-5" as="document-node()?">
       <!-- zero-parameter version of the next function -->
       <xsl:variable name="self-expanded-4" select="tan:get-self-expanded-4()" as="document-node()?"/>
@@ -133,7 +134,9 @@
                   select="
                      count($splits-declared[@src = $this-src and
                      @ref = $this-ref]) + 1"/>
-               <xsl:variable name="seg-iterations" select="if (exists($this-seg)) then
+               <xsl:variable name="seg-iterations"
+                  select="
+                     if (exists($this-seg)) then
                         tan:sequence-expand($this-seg, $seg-count)
                      else
                         1"/>
@@ -175,7 +178,11 @@
                <realign>
                   <xsl:copy-of select="$this-realign-or-align/@*"/>
                   <xsl:copy-of select="@error"/>
-                  <xsl:copy-of select="."/>
+                  <xsl:for-each-group select="tan:div-ref, tan:anchor-div-ref" group-by="@group">
+                     <group>
+                        <xsl:copy-of select="current-group()"/>
+                     </group>
+                  </xsl:for-each-group>
                </realign>
             </xsl:for-each>
          </xsl:when>
@@ -197,7 +204,11 @@
                <align>
                   <xsl:copy-of select="$this-realign-or-align/@*"/>
                   <xsl:copy-of select="@error"/>
-                  <xsl:copy-of select="."/>
+                  <xsl:for-each-group select="tan:div-ref" group-by="@group">
+                     <group>
+                        <xsl:copy-of select="current-group()"/>
+                     </group>
+                  </xsl:for-each-group> 
                </align>
             </xsl:for-each>
          </xsl:when>
@@ -311,9 +322,9 @@
       <xsl:variable name="explicit-realign-groups"
          select="$self-expanded-5/tan:TAN-A-div/tan:body/tan:realign/tan:group[tan:div-ref[@src = $this-src][@ref = $this-ref]]"/>
       <xsl:variable name="explicit-realign-anchor"
-         select="($explicit-realign-groups/tan:anchor-div-ref[1])[1]"/>
+         select="($explicit-realign-groups/../tan:group/tan:anchor-div-ref[1])[1]"/>
       <xsl:variable name="explicit-realign-unanchored"
-         select="($explicit-realign-groups/tan:div-ref[1])[1]"/>
+         select="($explicit-realign-groups/../tan:group/tan:div-ref[1])[1]"/>
       <xsl:variable name="explicit-realign-div-ref-eq"
          select="
             if (exists($explicit-realign-unanchored)) then
@@ -339,9 +350,9 @@
       <xsl:variable name="explicit-realign-groups"
          select="$self-expanded-5/tan:TAN-A-div/tan:body/tan:realign/tan:group[tan:div-ref[@src = $this-src][@ref = $inherited-ref][@seg = $this-seg/@n]]"/>
       <xsl:variable name="explicit-realign-anchor"
-         select="($explicit-realign-groups/tan:anchor-div-ref[1])[1]"/>
+         select="($explicit-realign-groups/../tan:group/tan:anchor-div-ref[1])[1]"/>
       <xsl:variable name="explicit-realign-unanchored"
-         select="($explicit-realign-groups/tan:div-ref[1])[1]"/>
+         select="($explicit-realign-groups/../tan:group/tan:div-ref[1])[1]"/>
       <xsl:variable name="explicit-realign-div-ref-eq"
          select="
             if (exists($explicit-realign-unanchored)) then
@@ -385,4 +396,55 @@
          </xsl:if>
       </xsl:for-each-group>
    </xsl:function>
+
+   <!-- STEP SRC-1ST-DA-STATTED: retrieve count, average, and standard deviations of tokens -->
+   <!-- This function takes any tokenized source files or higher. It assumes that every <tok> has an @n -->
+   <xsl:function name="tan:get-src-1st-da-statted" as="document-node()*">
+      <!-- zero-parameter version of the next function -->
+      <xsl:variable name="src-1st-da-tokenized" select="tan:get-src-1st-da-tokenized()"
+         as="document-node()*"/>
+      <xsl:copy-of select="tan:get-src-1st-da-statted($src-1st-da-tokenized)"/>
+   </xsl:function>
+   <xsl:function name="tan:get-src-1st-da-statted" as="document-node()*">
+      <xsl:param name="src-1st-da-tokenized" as="document-node()*"/>
+      <xsl:for-each select="$src-1st-da-tokenized">
+         <xsl:copy>
+            <xsl:apply-templates mode="count-tokenized-class-1"/>
+         </xsl:copy>
+      </xsl:for-each>
+   </xsl:function>
+   <xsl:template match="node()" mode="count-tokenized-class-1">
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:apply-templates mode="count-tokenized-class-1"/>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:body | tan:div" mode="count-tokenized-class-1">
+      <xsl:variable name="tok-qty-per-leaf-div"
+         select="
+            for $i in .//tan:tok[last()]
+            return
+               xs:integer($i/@n)"/>
+      <xsl:variable name="tok-avg" select="avg($tok-qty-per-leaf-div)"/>
+      <xsl:variable name="tok-deviations"
+         select="
+            for $i in $tok-qty-per-leaf-div
+            return
+               math:pow(($i - $tok-avg), 2)"/>
+      <xsl:variable name="tok-variance" select="avg($tok-deviations)"/>
+      <xsl:variable name="tok-standard-deviation" select="math:sqrt($tok-variance)"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:attribute name="leaf-div-qty" select="count($tok-qty-per-leaf-div)"/>
+         <xsl:attribute name="tok-qty" select="sum($tok-qty-per-leaf-div)"/>
+         <xsl:attribute name="tok-avg" select="$tok-avg"/>
+         <xsl:attribute name="tok-max" select="max($tok-qty-per-leaf-div)"/>
+         <xsl:attribute name="tok-min" select="min($tok-qty-per-leaf-div)"/>
+         <xsl:attribute name="tok-dev" select="$tok-deviations"/>
+         <xsl:attribute name="tok-var" select="$tok-variance"/>
+         <xsl:attribute name="tok-std" select="$tok-standard-deviation"/>
+         <xsl:apply-templates mode="count-tokenized-class-1"/>
+      </xsl:copy>
+   </xsl:template>
+
 </xsl:stylesheet>

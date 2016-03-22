@@ -24,10 +24,12 @@
    <xsl:variable name="self2" select="tan:get-self-expanded-2($self1, $srcs-resolved)"/>
    <xsl:variable name="srcs-prepped" select="tan:get-src-1st-da-prepped($self2, $srcs-resolved)"
       as="document-node()*"/>
-   <xsl:param name="ref-filter" select="$self2//(tan:anchor-div-ref, tan:div-ref)" as="element()*"/>
-   <xsl:variable name="srcs-prepped-and-filtered" select="tan:pick-prepped-class-1-data($ref-filter, $srcs-prepped)"/>
    <xsl:variable name="self3" select="tan:get-self-expanded-3($self2, $srcs-prepped)"/>
+   <xsl:param name="ref-filter" select="$self3//(tan:anchor-div-ref, tan:div-ref)" as="element()*"/>
+   <xsl:variable name="srcs-prepped-and-filtered" select="tan:pick-prepped-class-1-data($ref-filter, $srcs-prepped)"/>
    <xsl:variable name="srcs-tokenized" select="tan:get-src-1st-da-tokenized($self2, $srcs-prepped)"
+      as="document-node()*"/>
+   <xsl:variable name="srcs-tokenized-and-filtered" select="tan:get-src-1st-da-tokenized($self2, $srcs-prepped-and-filtered)"
       as="document-node()*"/>
    <xsl:variable name="self4" select="tan:get-self-expanded-4($self3, $srcs-tokenized)"/>
 

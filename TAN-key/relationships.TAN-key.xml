@@ -5,6 +5,7 @@
     id="tag:textalign.net,2015:tan-key:relationships">
     <head>
         <name>TAN keywords for types of relationships</name>
+        <desc>Definitive list of key terms used for describing relationships between digital files.</desc>
         <master-location href="http://textalign.net/release/1/dev/TAN-key/relationships.TAN-key.xml"/>
         <rights-excluding-sources rights-holder="kalvesmaki">
             <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>

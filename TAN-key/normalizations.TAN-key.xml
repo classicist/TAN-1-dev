@@ -5,6 +5,7 @@
     id="tag:textalign.net,2015:tan-key:normalizations">
     <head>
         <name>TAN keywords for types of normalizations</name>
+        <desc>Definitive list of key terms used for normalizations to texts.</desc>
         <master-location
             href="http://textalign.net/release/1/dev/TAN-key/normalizations.TAN-key.xml"/>
         <rights-excluding-sources rights-holder="kalvesmaki">

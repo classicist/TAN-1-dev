@@ -91,6 +91,9 @@
                 <rng:ref name="text"/>
               </rng:choice>
             </rng:group>
+            <rng:optional>
+              <rng:ref name="TAN-tail"/>
+            </rng:optional>
           </content>
           <attList>
             <attDef mode="add" ident="id" usage="req">
@@ -133,6 +136,9 @@
           </attList>
         </elementSpec>
         <elementSpec mode="change" ident="div" module="textstructure">
+          <!-- N.B., there should be an alteration of content here, to enforce the rule that
+          a <div> should parent either other <div>s or none at all. But that would require disentangling
+          the well-composed models. That rule, then, is enforced in the Schematron validation. -->
           <attList>
             <attDef mode="change" ident="type" usage="req"/>
             <attDef mode="change" ident="n" usage="req">
@@ -142,6 +148,13 @@
                 <rng:data type="string">
                   <rng:param name="pattern">\w*</rng:param>
                 </rng:data>
+              </datatype>
+            </attDef>
+            <attDef ident="include" usage="opt" mode="add">
+              <desc>This attribute signals that the parent element is to be replaced by all elements of the same
+                name found in the referred inclusion</desc>
+              <datatype>
+                <rng:data type="string"/>
               </datatype>
             </attDef>
           </attList>

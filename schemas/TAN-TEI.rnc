@@ -10,7 +10,7 @@ namespace xlink = "http://www.w3.org/1999/xlink"
 
 datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
-# Schema generated from ODD source 2016-03-19T23:11:53Z. .
+# Schema generated from ODD source 2016-03-24T17:46:43Z. .
 # TEI Edition: Version 2.8.0. Last updated on
 #	6th April 2015, revision 13197
 # TEI Edition Location: http://www.tei-c.org/Vault/P5/Version 2.8.0/
@@ -263,6 +263,10 @@ div {
       ## contains the data
       element body { progress?, ed-stamp?, (comment* & TAN-body-core) }
     TAN-body-core = empty
+    TAN-tail =
+      
+      ## permits any arbitrary content. Suitable as a placeholder for temporary data, especially to facilitate time-consuming validation routines. 
+      element tail { any_content }?
     any_content = any_element* & text
     any_element = element * { any_attribute*, any_content }
     any_attribute = attribute * { text }
@@ -9051,7 +9055,8 @@ TEI =
   element ns3:TEI {
     (teiHeader,
      TAN-head,
-     ((model.resourceLike+, \text?) | \text))
+     ((model.resourceLike+, \text?) | \text)),
+    (TAN-tail?)
     >> sch:ns [ prefix = "tei" uri = "http://www.tei-c.org/ns/1.0" ]
     >> sch:ns [ prefix = "xs" uri = "http://www.w3.org/2001/XMLSchema" ]
     >> sch:ns [
@@ -9195,6 +9200,9 @@ floatingText =
     
     ## characterizes the element in some sense, using any convenient classification scheme or typology.
     attribute type { data.enumerated },
+    
+    ## This attribute signals that the parent element is to be replaced by all elements of the same name found in the referred inclusion
+    attribute include { xsd:string }?,
     empty
   }
 div1 =

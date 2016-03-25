@@ -147,7 +147,7 @@ distribute-claim =
     
     ## If @distribute is present (= true()), then every nth ref in every set (defined by a single <div-ref>, taking into account any continuations defined by @cont) will be aligned with the nth ref in every other set. Therefore the number of references derived from @refs must be identical.
     
-    ## If @distribute is true() then any ranges in @ref will be resolved shallowly, e.g., @ref="2 b - 4" would be resolved something like ("2 b", "2  c", "3", "4"), even if there are further subdivisions of "3" and "4".
+    ## If @distribute is true() then any ranges in @ref will be resolved shallowly, e.g., ref="2 b - 4" would be resolved something like ("2 b", "2  c", "3", "4"), even if there are further subdivisions of "3" and "4".
     
     ## Value must be 1 or true, implied by the very presence of the attribute. If you wish to decare it to be false, delete the attribute altogether.
     attribute distribute {

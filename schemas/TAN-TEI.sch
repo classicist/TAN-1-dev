@@ -39,6 +39,13 @@
             </sqf:replace>
          </sqf:fix>
       </rule>
+      <rule context="tei:div">
+         <report test="(preceding-sibling::tei:*, following-sibling::tei:*)[not(self::tei:div)]">No
+            mixed content allowed in a &lt;div>; it must parent either only &lt;div>s or none at
+            all. </report>
+         <report test="@include and @*[not(name() = ('include', 'ed-when', 'ed-who'))]">No other
+            attributes should be present with @include.</report>
+      </rule>
       <rule context="tei:div[not(tei:div)]//*" role="warning">
          <report test="@xml:lang" sqf:fix="remove-xmllang">Language differentiations below leaf div
             level may be ignored in alignments.</report>

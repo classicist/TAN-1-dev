@@ -60,7 +60,7 @@
          <assert test="$count = 1">Every IRI in invoked in the body of a TAN-key should be unique
             within the body.</assert>
       </rule>
-      <rule context="tan:item">
+      <rule context="tan:item[not(tan:token-definition)]">
          <report
             test="
                $is-reserved-TAN-key = true() and not(some $i in tan:IRI/text()

@@ -5,8 +5,9 @@
    <title>Schematron tests for class 2 TAN files, edits only.</title>
    <p>This pattern facilitates quick, on-the-fly help for editing class 2 files.</p>
    <let name="srcs-prepped-edit" value="(/tan:*/tan:tail, tan:get-src-1st-da-prepped())[1]"/>
-   <rule context="tan:body">
-      <assert test="/*/tan:tail" sqf:fix="make-tail-srcs-prepped">This editing phase depends upon
+   <rule context="/*[2]"><!-- XPath is /*[2] to avoid triggering guidelines for tan:body -->
+      <assert test="/*/tan:tail"  
+         role="warning" sqf:fix="make-tail-srcs-prepped">This editing phase depends upon
          preparation of each source document, which can be time-consuming and inefficient if done
          every single time. Select the associated Quick Fix to create a /*/tan:tail with a copy of
          the prepared source documents, to speed up editing. Alternatively, use the official TAN

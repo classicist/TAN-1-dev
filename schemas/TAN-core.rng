@@ -251,7 +251,7 @@
     <element name="token-definition">
       <a:documentation>defines through a regular expression the definition of a word token. This element will be used to segment a string into token and non-token components. </a:documentation>
       <a:documentation>This element takes attributes that function as the parameters for the function xsl:analyze-string (see https://www.w3.org/TR/xslt-30/#element-analyze-string).</a:documentation>
-      <a:documentation>For theoretical background and more information, see main.xml#preparing_transcriptions_for_tokenization</a:documentation>
+      <a:documentation>For more see main.xml#defining_tokens</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
@@ -425,7 +425,7 @@
       <element name="desc">
         <a:documentation>provides a description of a concept, person, or thing referred to by the parent element (or the current document, if the parent element is &lt;head&gt;). &lt;desc&gt; is, in effect, a &lt;comment&gt; about that concept, person, or thing. It has two possible structures, one human-readable and the other computer-readable.</a:documentation>
         <a:documentation>The first, human-readable approach defines &lt;desc&gt; as taking merely a string that comments on the entity. Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script. If you provide a comment in multiple languages, it best to make sure that each version says roughly the same thing.</a:documentation>
-        <a:documentation>The second, computer-readable approach has &lt;desc&gt; take an IRI + name pattern plus @href in &lt;location&gt; pointing to some XML resource that provides more information about the concept, person, or thing. This is the method preferred to point to a &lt;TAN-X&gt; file. </a:documentation>
+        <a:documentation>The second, computer-readable approach has &lt;desc&gt; take an IRI + name pattern plus @href in &lt;location&gt; pointing to a &lt;TAN-rdf&gt; file, providing more information about the concept, person, or thing. </a:documentation>
         <choice>
           <ref name="metadata-desc"/>
           <choice>

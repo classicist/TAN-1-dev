@@ -11,9 +11,10 @@
             for $i in $srcs-prepped,
                $j in $i/tan:TAN-T/tan:body
             return
-            tan:duplicate-values($j/tan:div[not(tan:div)]/@ref)"/>
-      <report test="exists($duplicate-leafdiv-flatrefs)" subject="tan:source">Class 1 sources must
-         preserve the leaf div uniqueness rule (violations at <value-of
+               tan:duplicate-values($j/tan:div[not(tan:div)]/@ref)"/>
+      <report test="exists($duplicate-leafdiv-flatrefs)" tan:does-not-apply-to="head"
+         subject="tan:source">Class 1 sources must preserve the leaf div uniqueness rule (violations
+         at <value-of
             select="
                for $i in $duplicate-leafdiv-flatrefs
                return
@@ -35,7 +36,7 @@
    <rule
       context="
          tan:tok | tan:anchor-div-ref | tan:div-ref |
-         tan:realign[@include] | tan:align[@include] | tan:ana[@include] | tan:split-leaf-div-at[@align]">
+         tan:realign[@include] | tan:align[@include] | tan:ana[@include] | tan:split-leaf-div-at[@include]">
       <let name="this" value="."/>
       <let name="this-resolved" value="tan:resolve-include(.)"/>
       <let name="this-expanded" value="tan:expand-src-and-div-type-ref($this-resolved)"/>
@@ -54,8 +55,7 @@
             for $i in $these-elements-with-ref,
                $j in tokenize(tan:normalize-refs($i/@ref), ' [-,] ')
             return
-               $srcs-prepped/tan:TAN-T[@src = $i/@src]/tan:body/tan:div[@ref = $j]"
-      />
+               $srcs-prepped/tan:TAN-T[@src = $i/@src]/tan:body/tan:div[@ref = $j]"/>
       <let name="mismatched-refs"
          value="
             for $i in $these-elements-with-ref,
@@ -90,14 +90,15 @@
                $srcs-prepped/tan:TAN-T[@src = $i/@src]/tan:body/tan:div[matches(., $k, $match-flags)]"/>
       <let name="cont-with-disjoint-srcs"
          value="$this-resolved/descendant-or-self::*[@cont][not(@src = following-sibling::*/@src)]"/>
-      <report test="exists($mismatched-refs)">Every @ref must be found in every source (<value-of
+      <report test="exists($mismatched-refs)" tan:does-not-apply-to="realign align ana split-leaf-div-at"
+         tan:applies-to="ref">Every @ref must be found in every
+         source (<value-of
             select="
                for $i in (1 to (count($mismatched-refs) idiv 2)),
                   $j in $mismatched-refs[($i * 2) - 1],
                   $k in $mismatched-refs[($i * 2)]
                return
-                  concat($j, ':', $k)"
-         />
+                  concat($j, ':', $k)"/>
          <value-of
             select="
                if (exists($possible-corrections)) then
@@ -106,39 +107,42 @@
                   ()"
          />)</report>
       <report test="exists($these-elements-with-ref-help-requested)"
-         sqf:fix="fetch-content get-matched-divs"
+         sqf:fix="fetch-content get-matched-divs" tan:does-not-apply-to="realign align ana split-leaf-div-at"
          ><!-- Putting $help-trigger in @ref will take the content of @ref and return matched refs or refs that have matched content -->Try
             <value-of select="$help-requested-ref-matches/@ref"/> (@ref matches) or <value-of
             select="$help-requested-searched-matches/@ref"/> (text matches) </report>
-      <report
+      <report tan:does-not-apply-to="realign align ana split-leaf-div-at"
          test="
             some $i in preceding-sibling::*
                satisfies deep-equal($i, $this)"
-         >Siblings may not be duplicated</report>
-      <report test="exists($cont-with-disjoint-srcs)">@cont may not be used to join
-         references from different sources.</report>
+         >May not be duplicated by siblings</report>
+      <report test="exists($cont-with-disjoint-srcs)"
+         tan:does-not-apply-to="realign align ana split-leaf-div-at" tan:applies-to="cont">@cont may
+         not be used to join references from different sources.</report>
 
       <!-- SCHEMATRON QUICK FIXES -->
       <sqf:fix id="fetch-content" use-when="exists($matched-refs)">
          <sqf:description>
             <sqf:title>Append text content of the divs being referred to</sqf:title>
-            <sqf:p>Selecting this option will insert for every reference in every source a
-               tan:comment element as a following sibling with the textual content.</sqf:p>
+            <sqf:p>For elements with at least one match in @ref, selecting this option will insert
+               for every reference in every source a tan:comment element as a following sibling with
+               the textual content.</sqf:p>
          </sqf:description>
          <sqf:delete match="text()"/>
          <sqf:add match="." position="after">
             <xsl:for-each select="$matched-refs">
                <xsl:text>&#xA;</xsl:text>
                <tan:comment when="{current-date()}" who="{$head/tan:agent[1]/@xml:id}"><xsl:value-of
-                  select="./text()"/></tan:comment>
+                     select="./text()"/></tan:comment>
             </xsl:for-each>
          </sqf:add>
       </sqf:fix>
       <sqf:fix id="get-matched-divs">
          <sqf:description>
-            <sqf:title>Append text content of divs with @ref or text that matches current @ref</sqf:title>
-            <sqf:p>This quick fix will allow you to search for divs by @ref or by text and append
-               matching divs as tan:comments.</sqf:p>
+            <sqf:title>Append text content of divs with @ref or text that matches current
+               @ref</sqf:title>
+            <sqf:p>This quick fix will allow you to search for divs by @ref or by text search
+               (regular expressions) and append matching divs as tan:comments.</sqf:p>
          </sqf:description>
          <sqf:add match="." position="after">
             <xsl:for-each select="$help-requested-ref-matches, $help-requested-searched-matches">
@@ -146,11 +150,11 @@
                <tan:div-ref src="{root()/*/@src}" ref="{@ref}"/>
                <xsl:text>&#xA;</xsl:text>
                <tan:comment when="{current-date()}" who="{$head/tan:agent[1]/@xml:id}"><xsl:value-of
-                  select="./text()"/></tan:comment>
+                     select="./text()"/></tan:comment>
             </xsl:for-each>
          </sqf:add>
       </sqf:fix>
-      
+
    </rule>
-   
+
 </pattern>

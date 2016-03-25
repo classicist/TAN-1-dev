@@ -48,7 +48,8 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) must include &l
   </define>
   <define name="decl-supp-div-type">
     <element name="suppress-div-types">
-      <a:documentation>marks div types in a source that should be suppressed in references. Any suppression of a div type must preserve the Leaf Div Uniqueness Rule (LDUR). See main.xml#leaf_div_uniqueness_rule</a:documentation>
+      <a:documentation>marks div types in a source that should be suppressed in references. Suppressions occur shallowly. That is, it does not suppress any descendants of that div type. But if the suppression applies to a leaf div, that div and its text is effectively suppressed. </a:documentation>
+      <a:documentation>Any suppression of a div type must preserve the Leaf Div Uniqueness Rule (LDUR). See main.xml#leaf_div_uniqueness_rule</a:documentation>
       <a:documentation>This element will be used seldomly, for cases where a source has a div type that is dispensable in text references. </a:documentation>
       <optional>
         <ref name="ed-stamp"/>
@@ -97,7 +98,7 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) must include &l
       <a:documentation>&lt;rename old="#i" new="#1"/&gt; </a:documentation>
       <a:documentation>&lt;rename old="#a" new="#1"/&gt; </a:documentation>
       <attribute name="old">
-        <a:documentation>name of an @n or @type in a source to be renamed</a:documentation>
+        <a:documentation>provides the name of an @n or @type in a source to be renamed</a:documentation>
         <choice>
           <ref name="n-val"/>
           <data type="string">
@@ -106,7 +107,7 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) must include &l
         </choice>
       </attribute>
       <attribute name="new">
-        <a:documentation>new name for an @n or @type that is to be renamed</a:documentation>
+        <a:documentation>provides the new name for an @n or @type that is to be renamed</a:documentation>
         <choice>
           <ref name="n-val"/>
           <data type="string">

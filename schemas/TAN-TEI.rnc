@@ -10,7 +10,7 @@ namespace xlink = "http://www.w3.org/1999/xlink"
 
 datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
-# Schema generated from ODD source 2016-03-24T17:46:43Z. .
+# Schema generated from ODD source 2016-03-25T12:03:47Z. .
 # TEI Edition: Version 2.8.0. Last updated on
 #	6th April 2015, revision 13197
 # TEI Edition Location: http://www.tei-c.org/Vault/P5/Version 2.8.0/
@@ -151,7 +151,7 @@ div {
       
       ## This element takes attributes that function as the parameters for the function xsl:analyze-string (see https://www.w3.org/TR/xslt-30/#element-analyze-string).
       
-      ## For theoretical background and more information, see main.xml#preparing_transcriptions_for_tokenization
+      ## For more see main.xml#defining_tokens
       element token-definition {
         ed-stamp?,
         (inclusion
@@ -237,7 +237,7 @@ div {
       
       ## The first, human-readable approach defines <desc> as taking merely a string that comments on the entity. Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script. If you provide a comment in multiple languages, it best to make sure that each version says roughly the same thing.
       
-      ## The second, computer-readable approach has <desc> take an IRI + name pattern plus @href in <location> pointing to some XML resource that provides more information about the concept, person, or thing. This is the method preferred to point to a <TAN-X> file. 
+      ## The second, computer-readable approach has <desc> take an IRI + name pattern plus @href in <location> pointing to a <TAN-rdf> file, providing more information about the concept, person, or thing. 
       element desc {
         metadata-desc | (keyword-ref | entity-digital-tan-other-ref)
       }*

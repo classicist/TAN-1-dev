@@ -28,7 +28,9 @@ decl-token-opt = decl-tok-def+
 decl-supp-div-opt = decl-supp-div-type*
 decl-supp-div-type =
     
-    ## marks div types in a source that should be suppressed in references. Any suppression of a div type must preserve the Leaf Div Uniqueness Rule (LDUR). See main.xml#leaf_div_uniqueness_rule
+    ## marks div types in a source that should be suppressed in references. Suppressions occur shallowly. That is, it does not suppress any descendants of that div type. But if the suppression applies to a leaf div, that div and its text is effectively suppressed. 
+    
+    ## Any suppression of a div type must preserve the Leaf Div Uniqueness Rule (LDUR). See main.xml#leaf_div_uniqueness_rule
     
     ## This element will be used seldomly, for cases where a source has a div type that is dispensable in text references. 
     element suppress-div-types {
@@ -64,13 +66,13 @@ name-change =
     ## <rename old="#a" new="#1"/> 
     element rename {
         
-        ## name of an @n or @type in a source to be renamed
+        ## provides the name of an @n or @type in a source to be renamed
         attribute old {
             n-val
             | xsd:string { pattern = "#[ai]" }
         },
         
-        ## new name for an @n or @type that is to be renamed
+        ## provides the new name for an @n or @type that is to be renamed
         attribute new {
             n-val
             | xsd:string { pattern = "#1" }

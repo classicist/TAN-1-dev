@@ -11,7 +11,7 @@
             for $i in $srcs-prepped,
                $j in $i/tan:TAN-T/tan:body
             return
-               tan:duplicate-values($j/tan:div[not(tan:div)]/@ref)"/>
+               tan:duplicate-values($j//tan:div[not(tan:div)]/@ref)"/>
       <report test="exists($duplicate-leafdiv-flatrefs)" tan:does-not-apply-to="head"
          subject="tan:source">Class 1 sources must preserve the leaf div uniqueness rule (violations
          at <value-of
@@ -55,13 +55,13 @@
             for $i in $these-elements-with-ref,
                $j in tokenize(tan:normalize-refs($i/@ref), ' [-,] ')
             return
-               $srcs-prepped/tan:TAN-T[@src = $i/@src]/tan:body/tan:div[@ref = $j]"/>
+               $srcs-prepped/tan:TAN-T[@src = $i/@src]/tan:body//tan:div[@ref = $j]"/>
       <let name="mismatched-refs"
          value="
             for $i in $these-elements-with-ref,
                $j in tokenize(tan:normalize-refs($i/@ref), ' [-,] ')
             return
-               if ($srcs-prepped/tan:TAN-T[@src = $i/@src]/tan:body/tan:div[@ref = $j]) then
+               if ($srcs-prepped/tan:TAN-T[@src = $i/@src]/tan:body//tan:div[@ref = $j]) then
                   ()
                else
                   ($i/@src, $j)"/>
@@ -71,13 +71,13 @@
                $j in $mismatched-refs[($i * 2) - 1],
                $k in $mismatched-refs[($i * 2)]
             return
-               $srcs-prepped/tan:TAN-T[@src = $j]/tan:body/tan:div[matches(@ref, $k)]/@ref"/>
+               $srcs-prepped/tan:TAN-T[@src = $j]/tan:body//tan:div[matches(@ref, $k)]/@ref"/>
       <let name="help-requested-ref-matches"
          value="
             for $i in $these-elements-with-ref-help-requested,
                $j in tokenize(tan:normalize-refs($i/@ref), ' [-,] ')
             return
-               $srcs-prepped/tan:TAN-T[@src = $i/@src]/tan:body/tan:div[matches(@ref, $j)]"/>
+               $srcs-prepped/tan:TAN-T[@src = $i/@src]/tan:body//tan:div[matches(@ref, $j)]"/>
       <let name="help-requested-searched-matches"
          value="
             for $i in $these-elements-with-ref-help-requested,
@@ -87,7 +87,7 @@
                else
                   $j)
             return
-               $srcs-prepped/tan:TAN-T[@src = $i/@src]/tan:body/tan:div[matches(., $k, $match-flags)]"/>
+               $srcs-prepped/tan:TAN-T[@src = $i/@src]/tan:body//tan:div[matches(., $k, $match-flags)]"/>
       <let name="cont-with-disjoint-srcs"
          value="$this-resolved/descendant-or-self::*[@cont][not(@src = following-sibling::*/@src)]"/>
       <report test="exists($mismatched-refs)" tan:does-not-apply-to="realign align ana split-leaf-div-at"

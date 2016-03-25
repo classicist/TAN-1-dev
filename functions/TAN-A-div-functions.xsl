@@ -163,8 +163,13 @@
          </group>
       </xsl:variable>
       <xsl:variable name="div-refs-grouped" as="element()+">
-         <xsl:for-each-group select="$div-refs-expanded/*"
+         <!--<xsl:for-each-group select="$div-refs-expanded/*"
             group-by="count(preceding-sibling::*[not(@cont)])">
+            <group>
+               <xsl:copy-of select="current-group()"/>
+            </group>
+         </xsl:for-each-group>-->
+         <xsl:for-each-group select="$div-refs-expanded/*" group-by="@group">
             <group>
                <xsl:copy-of select="current-group()"/>
             </group>
@@ -178,11 +183,12 @@
                <realign>
                   <xsl:copy-of select="$this-realign-or-align/@*"/>
                   <xsl:copy-of select="@error"/>
-                  <xsl:for-each-group select="tan:div-ref, tan:anchor-div-ref" group-by="@group">
+                  <!--<xsl:for-each-group select="tan:div-ref, tan:anchor-div-ref" group-by="@group">
                      <group>
                         <xsl:copy-of select="current-group()"/>
                      </group>
-                  </xsl:for-each-group>
+                  </xsl:for-each-group>-->
+                  <xsl:copy-of select="."/>
                </realign>
             </xsl:for-each>
          </xsl:when>
@@ -204,11 +210,12 @@
                <align>
                   <xsl:copy-of select="$this-realign-or-align/@*"/>
                   <xsl:copy-of select="@error"/>
-                  <xsl:for-each-group select="tan:div-ref" group-by="@group">
+                  <!--<xsl:for-each-group select="tan:div-ref" group-by="@group">
                      <group>
                         <xsl:copy-of select="current-group()"/>
                      </group>
-                  </xsl:for-each-group> 
+                  </xsl:for-each-group>-->
+                  <xsl:copy-of select="."/>
                </align>
             </xsl:for-each>
          </xsl:when>

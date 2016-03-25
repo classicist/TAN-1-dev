@@ -46,14 +46,5 @@
             <desc>General tokenization pattern for any language, words only. Non-letters such as
                 punctuation are ignored.</desc>
         </item>
-        <item>
-            <token-definition regex="[\p{Z}]+"/>
-            <name>non-separators</name>
-            <name>precise-1</name>
-            <name>precise</name>
-            <desc>Precise tokenization pattern for any language. Presumes that non-separators such
-                as spaces, lines, paragraphs, and specialized typographic spacing characters
-                (U+2000..U+200B) have been used to delimit word tokens. </desc>
-        </item>
     </body>
 </TAN-key>

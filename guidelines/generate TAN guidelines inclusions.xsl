@@ -25,7 +25,7 @@
 
    <xsl:include href="../functions/TAN-core-functions.xsl"/>
    <xsl:include href="../functions/TAN-schema-functions.xsl"/>
-   
+
    <xsl:param name="indent-value" select="3"/>
    <xsl:variable name="indent"
       select="
@@ -49,10 +49,10 @@
       select="
          collection('../examples/?select=*.xml;recurse=yes'),
          collection('../TAN-key/?select=*.xml;recurse=yes')"/>
-   <xsl:variable name="sch-collection"
-      select="collection('../schemas/?select=*.sch;recurse=yes')"/>
-   <xsl:variable name="fn-collection"
-      select="collection('../functions/?select=*.xsl;recurse=yes')"/>
+   <xsl:variable name="sch-collection" select="collection('../schemas/?select=*.sch;recurse=yes')"/>
+   <xsl:variable name="fn-collection" select="collection('../functions/?select=*.xsl;recurse=yes')"/>
+   <xsl:variable name="keyword-collection"
+      select="collection('../TAN-key/?select=*.xml;recurse=yes')"/>
    <xsl:variable name="element-names-excl-TEI"
       select="$rng-collection[not(matches(base-uri(.), 'TAN-TEI'))]//rng:element/@name"/>
    <xsl:variable name="attribute-names-excl-TEI"
@@ -109,29 +109,42 @@
          <appendix version="'5.0'">
             <title>Index of Elements and Attributes</title>
             <para>The <xsl:value-of select="count($element-names-excl-TEI)"/> elements and
-                  <xsl:value-of select="count($attribute-names-excl-TEI)"/> attributes in TAN are:</para>
+                  <xsl:value-of select="count($attribute-names-excl-TEI)"/> attributes in TAN
+               are:</para>
             <para>
-               <xsl:for-each select="($element-names-excl-TEI,$attribute-names-excl-TEI)">
+               <xsl:for-each select="($element-names-excl-TEI, $attribute-names-excl-TEI)">
                   <xsl:sort select="lower-case(.)"/>
                   <xsl:variable name="text"
                      select="
                         if (name(..) = 'element') then
                            concat('&lt;', ., '>')
                         else
-                           concat('@', .)"
-                  />
+                           concat('@', .)"/>
                   <xsl:call-template name="code-and-link-element-and-attribute-string-for-docbook">
                      <xsl:with-param name="input-string" select="$text"/>
                   </xsl:call-template>
                   <xsl:text> </xsl:text>
                </xsl:for-each>
             </para>
-            <para>This list excludes elements and attributes defined by the TEI (see <!--<link xlink:href="http://tei-c.org">official TEI documentation</link>-->).</para>
+            <para>This list excludes elements and attributes defined by the TEI (see <link
+                  xlink:href="http://tei-c.org">official TEI documentation</link>).</para>
+         </appendix>
+      </xsl:result-document>
+      <xsl:result-document href="inclusions/keywords.xml">
+         <appendix version="'5.0'">
+            <title>Official TAN keywords</title>
+            <para>In this section are collected all official TAN keywords, i.e., built-in values of
+                  <link linkend="attribute-which"><code>@which</code></link> for certain elements.
+               Remember, these keywords are not <link linkend="attribute-xmlid"
+                  ><code>@xml:id</code></link> values. They contain punctuation, spaces, and so
+               forth. For more on the use of these keywords, see <link linkend="attribute-which"
+                     ><code>@which</code></link>, specific elements, or various examples. </para>
+            <xsl:apply-templates select="$keyword-collection" mode="keyword-appendix"/>
          </appendix>
       </xsl:result-document>
    </xsl:template>
 
-   <xsl:template match="rng:element | rng:attribute" name="rng-element">
+   <xsl:template match="rng:element[@name] | rng:attribute[@name]" name="rng-element">
       <xsl:variable name="this-name" select="@name"/>
       <xsl:variable name="is-attribute"
          select="
@@ -144,15 +157,13 @@
             if (/rng:grammar/rng:start/rng:element/@name = 'TAN-X') then
                true()
             else
-               false()"
-      />
+               false()"/>
       <xsl:variable name="id-insertion"
          select="
             if ($is-experimental = true()) then
                'X-'
             else
-               ''"
-      />
+               ''"/>
       <xsl:variable name="this-parents"
          select="
             tan:get-parent-elements(./(ancestor::rng:define,
@@ -352,24 +363,21 @@
             then
                $current-indent
             else
-               concat($current-indent, $indent)"
-      />
+               concat($current-indent, $indent)"/>
       <xsl:variable name="this-prefix"
          select="
             if (parent::rng:attribute or parent::rng:element)
             then
                ()
             else
-               '('"
-      />
+               '('"/>
       <xsl:variable name="this-suffix"
          select="
             if (parent::rng:attribute or parent::rng:element)
             then
                ()
             else
-               ')'"
-      />
+               ')'"/>
       <xsl:value-of select="concat($new-indent, $this-prefix)"/>
       <xsl:apply-templates mode="formaldef" select="rng:*[1]"/>
       <xsl:apply-templates mode="formaldef" select="rng:*[position() gt 1]">
@@ -441,8 +449,18 @@
    <xsl:template match="rng:define[count(rng:*) gt 1]" mode="formaldef">
       <xsl:param name="current-indent"/>
       <xsl:param name="is-group" as="xs:boolean" select="true()"/>
-      <xsl:variable name="this-prefix" select="if ($is-group = true()) then '(' else ()"/>
-      <xsl:variable name="this-suffix" select="if ($is-group = true()) then ')' else ()"/>
+      <xsl:variable name="this-prefix"
+         select="
+            if ($is-group = true()) then
+               '('
+            else
+               ()"/>
+      <xsl:variable name="this-suffix"
+         select="
+            if ($is-group = true()) then
+               ')'
+            else
+               ()"/>
       <xsl:value-of select="concat($current-indent, $this-prefix)"/>
       <!--<xsl:value-of select="$current-indent"/>-->
       <xsl:apply-templates mode="formaldef" select="rng:*[1]"/>
@@ -463,7 +481,7 @@
       <xsl:param name="current-indent"/>
       <xsl:copy-of select="$current-indent"/>
       <xsl:call-template name="code-and-link-element-and-attribute-string-for-docbook">
-         <xsl:with-param name="input-string" select="concat('&lt;', @name, '>')"/>
+         <xsl:with-param name="input-string" select="concat('&lt;', (@name, '[ANY]')[1], '>')"/>
       </xsl:call-template>
       <xsl:call-template name="comma-check">
          <xsl:with-param name="current-indent" select="$current-indent"/>
@@ -474,7 +492,7 @@
       <!--<xsl:param name="is-first" as="xs:boolean"/>-->
       <xsl:copy-of select="$current-indent"/>
       <xsl:call-template name="code-and-link-element-and-attribute-string-for-docbook">
-         <xsl:with-param name="input-string" select="concat('@', @name)"/>
+         <xsl:with-param name="input-string" select="concat('@', (@name, '[ANY]')[1])"/>
       </xsl:call-template>
       <xsl:call-template name="comma-check">
          <xsl:with-param name="current-indent" select="$current-indent"/>
@@ -495,8 +513,7 @@
             if (parent::rng:group | parent::rng:choice | parent::rng:interleave) then
                $current-indent
             else
-               ()"
-      />
+               ()"/>
       <xsl:value-of select="@type"/>
       <xsl:text> </xsl:text>
       <xsl:apply-templates mode="formaldef">
@@ -908,8 +925,6 @@
    <xsl:template match="text()" mode="code-nodes">
       <xsl:variable name="element-and-attribute-check"
          select="analyze-string(., concat($lt, '[-:\w+]+>|@[-:\w+]+'))"/>
-      <!--<xsl:apply-templates select="$element-and-attribute-check"
-         mode="code-and-link-element-and-attribute-string-for-docbook"/>-->
       <xsl:for-each select="$element-and-attribute-check/*">
          <xsl:choose>
             <xsl:when test="self::fn:match">
@@ -980,9 +995,19 @@
    </xsl:function>
    <xsl:template name="code-and-link-element-and-attribute-string-for-docbook" as="item()*">
       <xsl:param name="input-string" as="xs:string?"/>
+      <xsl:variable name="rev-input-string" as="xs:string?">
+         <xsl:choose>
+            <xsl:when test="$input-string = '&lt;[ANY]>'">
+               <xsl:value-of select="'tail'"/>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:value-of select="$input-string"/>
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:variable>
       <xsl:variable name="is-attribute"
          select="
-            if (starts-with($input-string, '@')) then
+            if (starts-with($rev-input-string, '@')) then
                true()
             else
                false()"/>
@@ -991,10 +1016,10 @@
             concat(if ($is-attribute = true()) then
                'attribute'
             else
-               'element', '-', replace($input-string, '[&lt;@>:]', ''))"/>
+               'element', '-', replace($rev-input-string, '[&lt;@>:]', ''))"/>
       <code>
          <link linkend="{$linkend}">
-            <xsl:value-of select="$input-string"/>
+            <xsl:value-of select="$rev-input-string"/>
          </link>
       </code>
    </xsl:template>
@@ -1010,5 +1035,97 @@
    </xsl:template>
 
    <xsl:template match="tan:section"/>
+
+   <xsl:template match="/" mode="keyword-appendix">
+      <section xml:id="{'keywords-' || tan:TAN-key/tan:body/@affects-element}">
+         <title>
+            <xsl:value-of select="tan:TAN-key/tan:head/tan:name"/>
+         </title>
+         <para>
+            <xsl:value-of select="tan:TAN-key/tan:head/tan:desc"/>
+         </para>
+         <para>Affects element: <xsl:for-each
+               select="tokenize(replace(tan:TAN-key/tan:body/@affects-element, '([\S]+)', '&lt;$1>'), '\s+')"
+                  ><xsl:call-template name="code-and-link-element-and-attribute-string-for-docbook">
+                  <xsl:with-param name="input-string" select="."/>
+               </xsl:call-template></xsl:for-each>
+         </para>
+         <para>Master location: <link
+               xlink:href="{tan:TAN-key/tan:head/tan:master-location[1]/@href}">
+               <xsl:value-of select="tan:TAN-key/tan:head/tan:master-location[1]/@href"
+            /></link></para>
+         <table frame="all">
+            <title>
+               <xsl:value-of select="tan:TAN-key/tan:head/tan:name"/>
+            </title>
+            <tgroup cols="3">
+               <colspec colname="c1" colnum="1" colwidth="1.0*"/>
+               <colspec colname="c2" colnum="2" colwidth="1.0*"/>
+               <colspec colname="c3" colnum="3" colwidth="1.0*"/>
+               <thead>
+                  <row>
+                     <entry>keywords (values of <link linkend="attribute-which"
+                           ><code>@which</code></link>)</entry>
+                     <entry>
+                        <xsl:value-of
+                           select="
+                              if (tan:TAN-key/tan:body/@affects-element = 'token-definition')
+                              then
+                                 'regex'
+                              else
+                                 'IRIs'"
+                        />
+                     </entry>
+                     <entry>Comments</entry>
+                  </row>
+               </thead>
+               <tbody>
+                  <xsl:for-each select="//tan:item">
+                     <row>
+                        <entry>
+                           <itemizedlist>
+                              <xsl:for-each select="tan:name">
+                                 <listitem>
+                                    <para>
+                                       <xsl:value-of select="."/>
+                                    </para>
+                                 </listitem>
+                              </xsl:for-each>
+                           </itemizedlist>
+                        </entry>
+                        <entry>
+                           <itemizedlist>
+                              <xsl:for-each select="tan:IRI, tan:token-definition/@regex">
+                                 <listitem>
+                                    <para>
+                                       <xsl:choose>
+                                          <xsl:when test="matches(., '^https?://')">
+                                             <link xlink:href="{.}">
+                                                <xsl:value-of select="."/>
+                                             </link>
+                                          </xsl:when>
+                                          <xsl:otherwise>
+                                             <xsl:value-of select="."/>
+                                          </xsl:otherwise>
+                                       </xsl:choose>
+                                    </para>
+                                 </listitem>
+                              </xsl:for-each>
+                           </itemizedlist>
+                        </entry>
+                        <entry>
+                           <xsl:for-each select="tan:desc">
+                              <para>
+                                 <xsl:value-of select="tan:prep-string-for-docbook(.)"/>
+                              </para>
+                           </xsl:for-each>
+                        </entry>
+                     </row>
+                  </xsl:for-each>
+               </tbody>
+            </tgroup>
+         </table>
+      </section>
+   </xsl:template>
 
 </xsl:stylesheet>

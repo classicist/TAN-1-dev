@@ -135,8 +135,8 @@
                   <xsl:attribute name="div-type-ref" select="."/>
                </xsl:if>
                <xsl:if test="$this-element-name = ('anchor-div-ref', 'div-ref', 'tok')">
-                  <xsl:attribute name="group" select="count($this-element/preceding-sibling::*[not(@cont)]) + 1"
-                  />
+                  <xsl:attribute name="group"
+                     select="count($this-element/preceding-sibling::*[not(@cont)]) + 1"/>
                </xsl:if>
                <xsl:copy-of select="$this-element/node()"/>
             </xsl:element>
@@ -614,38 +614,53 @@
       </xsl:choose>
    </xsl:template>
 
-   <!-- Interlude: chance to reduce the size of the prepped files -->
+   <!-- Interlude: chance to get a proper subset of the prepped files -->
+   <!-- tan:pick-prepped-class-1-data() presumes that you want only some divs -->
    <xsl:function name="tan:pick-prepped-class-1-data" as="document-node()*">
       <!-- 1-param function of the 2-param version below -->
       <xsl:param name="elements-with-atomic-src-and-ref-attributes" as="element()*"/>
       <xsl:variable name="src-1st-da-prepped" select="tan:get-src-1st-da-prepped()"/>
       <xsl:copy-of
-         select="tan:pick-prepped-class-1-data($elements-with-atomic-src-and-ref-attributes, $src-1st-da-prepped)"
+         select="tan:pick-prepped-class-1-data($elements-with-atomic-src-and-ref-attributes, $src-1st-da-prepped, false())"
       />
    </xsl:function>
    <xsl:function name="tan:pick-prepped-class-1-data" xml:id="f-pick-prepped-class-1-data"
       as="document-node()*">
       <!-- Used to create a subset of $src-1st-da-prepped 
-         Input: any element with @src and @ref. It is assumed that both attributes have single, atomic values
-         (i.e., no ranges in @ref)
-         Output: src-1st-da-prepped, proper subset
-         This is the earliest stage at which a picked source document can be reduced to a particular subset, 
-         to make later transformations more efficient.
+         Input: (1) prepped source documents. (2) one or more elements with @src and @ref. It is assumed that both 
+         attributes have single, atomic values (i.e., no ranges in @ref). (3) boolean indicating whether the values
+         of @src and @ref should be treated as regular expressions
+         Output: src-1st-da-prepped, proper subset that consists exclusively of matches
       -->
       <xsl:param name="elements-with-atomic-src-and-ref-attributes" as="element()*"/>
       <xsl:param name="src-1st-da-prepped" as="document-node()*"/>
+      <xsl:param name="treat-src-and-ref-as-regex" as="xs:boolean"/>
       <xsl:variable name="erroneous-refs" as="element()*">
          <xsl:for-each select="$elements-with-atomic-src-and-ref-attributes">
             <xsl:variable name="this-element" select="."/>
             <xsl:if
-               test="not($src-1st-da-prepped/*[@src = $this-element/@src]/tan:body//tan:div[@ref = $this-element/@ref])">
+               test="
+                  not($src-1st-da-prepped/*[if ($treat-src-and-ref-as-regex = false()) then
+                     @src = $this-element/@src
+                  else
+                     matches(@src, $this-element/@src)]/tan:body//tan:div[if ($treat-src-and-ref-as-regex = false()) then
+                     @ref = $this-element/@ref
+                  else
+                     matches(@ref, $this-element/@ref)])">
                <xsl:sequence select="."/>
             </xsl:if>
          </xsl:for-each>
       </xsl:variable>
       <xsl:variable name="valid-refs"
          select="$elements-with-atomic-src-and-ref-attributes except $erroneous-refs"/>
-      <xsl:for-each select="$src-1st-da-prepped[*/@src = $valid-refs/@src]">
+      <xsl:for-each
+         select="
+            $src-1st-da-prepped[if ($treat-src-and-ref-as-regex = false()) then
+               */@src = $valid-refs/@src
+            else
+               for $i in $valid-refs
+               return
+                  matches(*/@src, $i/@src)]">
          <xsl:variable name="this-src" select="*/@src"/>
          <xsl:copy>
             <xsl:copy-of select="processing-instruction() | comment()"/>
@@ -662,7 +677,14 @@
                            </errors>
                         </xsl:if>
                         <xsl:apply-templates mode="pick-prepped-class-1">
-                           <xsl:with-param name="refs-norm" select="$valid-refs[@src = $this-src]"/>
+                           <xsl:with-param name="refs-norm"
+                              select="
+                                 $valid-refs[if ($treat-src-and-ref-as-regex = false()) then
+                                    @src = $this-src
+                                 else
+                                    matches($this-src, @src)]"/>
+                           <xsl:with-param name="treat-src-and-ref-as-regex"
+                              select="$treat-src-and-ref-as-regex"/>
                         </xsl:apply-templates>
                      </xsl:copy>
                   </xsl:for-each>
@@ -673,18 +695,142 @@
    </xsl:function>
    <xsl:template match="tan:div" mode="pick-prepped-class-1">
       <xsl:param name="refs-norm" as="element()*"/>
+      <xsl:param name="treat-src-and-ref-as-regex" as="xs:boolean"/>
       <xsl:choose>
-         <xsl:when test="self::tan:div/@ref = $refs-norm/@ref">
+         <xsl:when
+            test="
+               if ($treat-src-and-ref-as-regex = false()) then
+                  self::tan:div/@ref = $refs-norm/@ref
+               else
+                  some $i in $refs-norm
+                  satisfies
+                     matches(self::tan:div/@ref, $i/@ref)">
             <xsl:copy-of select="."/>
          </xsl:when>
-         <xsl:when test="descendant::tan:div/@ref = $refs-norm/@ref">
+         <xsl:when
+            test="
+               if ($treat-src-and-ref-as-regex = false()) then
+                  descendant::tan:div/@ref = $refs-norm/@ref
+               else
+                  some $i in $refs-norm,
+                     $j in descendant::tan:div
+                  satisfies
+                     matches($j/@ref, $i/@ref)">
             <xsl:copy>
                <xsl:copy-of select="@*"/>
                <xsl:apply-templates mode="#current">
                   <xsl:with-param name="refs-norm" select="$refs-norm"/>
+                  <xsl:with-param name="treat-src-and-ref-as-regex"
+                     select="$treat-src-and-ref-as-regex"/>
                </xsl:apply-templates>
             </xsl:copy>
          </xsl:when>
+      </xsl:choose>
+   </xsl:template>
+
+   <!-- tan:cull-prepped-class-1-data() assumes you want most prepped data, just not some divs -->
+   <xsl:function name="tan:cull-prepped-class-1-data" as="document-node()*">
+      <!-- 1-param function of the 2-param version below -->
+      <xsl:param name="elements-with-atomic-src-and-ref-attributes" as="element()*"/>
+      <xsl:variable name="src-1st-da-prepped" select="tan:get-src-1st-da-prepped()"/>
+      <xsl:copy-of
+         select="tan:cull-prepped-class-1-data($elements-with-atomic-src-and-ref-attributes, $src-1st-da-prepped, false())"
+      />
+   </xsl:function>
+   <xsl:function name="tan:cull-prepped-class-1-data" as="document-node()*">
+      <!-- Used to create a subset of $src-1st-da-prepped 
+         Input: (1) prepped source documents. (2) one or more elements with @src and @ref. It is assumed that both 
+         attributes have single, atomic values (i.e., no ranges in @ref). (3) boolean indicating whether the values
+         of @src and @ref should be treated as regular expressions
+         Output: src-1st-da-prepped, proper subset, excluding matches
+      -->
+      <xsl:param name="elements-with-atomic-src-and-ref-attributes" as="element()*"/>
+      <xsl:param name="src-1st-da-prepped" as="document-node()*"/>
+      <xsl:param name="treat-src-and-ref-as-regex" as="xs:boolean"/>
+      <xsl:variable name="erroneous-refs" as="element()*">
+         <xsl:for-each select="$elements-with-atomic-src-and-ref-attributes">
+            <xsl:variable name="this-element" select="."/>
+            <xsl:if
+               test="
+                  not($src-1st-da-prepped/*[if ($treat-src-and-ref-as-regex = false()) then
+                     @src = $this-element/@src
+                  else
+                     matches(@src, $this-element/@src)]/tan:body//tan:div[if ($treat-src-and-ref-as-regex = false()) then
+                     @ref = $this-element/@ref
+                  else
+                     matches(@ref, $this-element/@ref)])">
+               <xsl:sequence select="."/>
+            </xsl:if>
+         </xsl:for-each>
+      </xsl:variable>
+      <xsl:variable name="valid-refs"
+         select="$elements-with-atomic-src-and-ref-attributes except $erroneous-refs"/>
+      <xsl:for-each select="$src-1st-da-prepped">
+         <xsl:variable name="this-src" select="*/@src"/>
+         <xsl:copy>
+            <xsl:copy-of select="processing-instruction() | comment()"/>
+            <xsl:for-each select="*">
+               <xsl:copy>
+                  <xsl:copy-of select="@*"/>
+                  <xsl:copy-of select="tan:head"/>
+                  <xsl:for-each select="tan:body">
+                     <xsl:copy>
+                        <xsl:copy-of select="@*"/>
+                        <xsl:if test="exists($erroneous-refs)">
+                           <errors>
+                              <xsl:copy-of select="$erroneous-refs"/>
+                           </errors>
+                        </xsl:if>
+                        <xsl:apply-templates mode="cull-prepped-class-1">
+                           <xsl:with-param name="refs-norm"
+                              select="
+                                 $valid-refs[if ($treat-src-and-ref-as-regex = false()) then
+                                    @src = $this-src
+                                 else
+                                    matches($this-src, @src)]"/>
+                           <xsl:with-param name="treat-src-and-ref-as-regex"
+                              select="$treat-src-and-ref-as-regex"/>
+                        </xsl:apply-templates>
+                     </xsl:copy>
+                  </xsl:for-each>
+               </xsl:copy>
+            </xsl:for-each>
+         </xsl:copy>
+      </xsl:for-each>
+   </xsl:function>
+   <xsl:template match="tan:div" mode="cull-prepped-class-1">
+      <xsl:param name="refs-norm" as="element()*"/>
+      <xsl:param name="treat-src-and-ref-as-regex" as="xs:boolean"/>
+      <xsl:choose>
+         <xsl:when
+            test="
+               if ($treat-src-and-ref-as-regex = false()) then
+                  self::tan:div/@ref = $refs-norm/@ref
+               else
+                  some $i in $refs-norm
+                  satisfies
+                     matches(self::tan:div/@ref, $i/@ref)"/>
+         <xsl:when
+            test="
+               if ($treat-src-and-ref-as-regex = false()) then
+                  descendant::tan:div/@ref = $refs-norm/@ref
+               else
+                  some $i in $refs-norm,
+                     $j in descendant::tan:div
+                  satisfies
+                     matches($j/@ref, $i/@ref)">
+            <xsl:copy>
+               <xsl:copy-of select="@*"/>
+               <xsl:apply-templates mode="#current">
+                  <xsl:with-param name="refs-norm" select="$refs-norm"/>
+                  <xsl:with-param name="treat-src-and-ref-as-regex"
+                     select="$treat-src-and-ref-as-regex"/>
+               </xsl:apply-templates>
+            </xsl:copy>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:copy-of select="."/>
+         </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
 

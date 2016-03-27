@@ -429,9 +429,10 @@
    <xsl:template match="tan:body | tan:div" mode="count-tokenized-class-1">
       <xsl:variable name="tok-qty-per-leaf-div"
          select="
-            for $i in .//tan:tok[last()]
+            for $i in descendant-or-self::*[tan:tok, tan:non-tok]
             return
-               xs:integer($i/@n)"/>
+               count($i/tan:tok)"
+      />
       <xsl:variable name="tok-avg" select="avg($tok-qty-per-leaf-div)"/>
       <xsl:variable name="tok-deviations"
          select="

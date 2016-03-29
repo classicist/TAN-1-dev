@@ -37,6 +37,12 @@
       <zeroOrMore>
         <ref name="decl-unit"/>
       </zeroOrMore>
+      <zeroOrMore>
+        <ref name="decl-pers"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="decl-mode"/>
+      </zeroOrMore>
     </interleave>
   </define>
   <define name="decl-place">
@@ -55,6 +61,18 @@
   <define name="decl-unit">
     <element name="unit">
       <a:documentation>contains an IRI + name pattern identifying a unit type (e.g., millimeters, seconds, Euros), to be used in conjunction with &lt;object&gt; to specify the meaning of a value</a:documentation>
+      <ref name="decl-pattern-default"/>
+    </element>
+  </define>
+  <define name="decl-pers">
+    <element name="person">
+      <a:documentation>contains an IRI + name pattern identifying a person. This element is very similar to &lt;agent&gt;, but does not imply that the person had anything to do with the data in the TAN file.</a:documentation>
+      <ref name="decl-pattern-default"/>
+    </element>
+  </define>
+  <define name="decl-mode">
+    <element name="modal">
+      <a:documentation>contains an IRI + name pattern identifying a modal that qualifies an assertion.</a:documentation>
       <ref name="decl-pattern-default"/>
     </element>
   </define>
@@ -87,13 +105,19 @@
           <optional>
             <ref name="place-filter"/>
           </optional>
+          <optional>
+            <ref name="cert-claim"/>
+          </optional>
+          <optional>
+            <ref name="modal-claim"/>
+          </optional>
         </group>
       </choice>
     </element>
   </define>
   <define name="claimant">
     <attribute name="claimant">
-      <a:documentation>points to an &lt;agent&gt; who makes a claim. @claimant within &lt;body&gt; indicates the default persons to be credited or blamed for an assertion.</a:documentation>
+      <a:documentation>points to an &lt;agent&gt; or &lt;person&gt; who makes a claim. @claimant within &lt;body&gt; indicates the default persons to be credited or blamed for an assertion.</a:documentation>
       <a:documentation>Claimants are not to be confused with the editor of a TAN file. If an editor X writes a TAN-rdf file that says that person Y makes such-and-such a claim, then the implication is that X claims that Y claims that....  </a:documentation>
       <data type="IDREFS"/>
     </attribute>
@@ -143,6 +167,12 @@
     <attribute name="where">
       <a:documentation>restricts the &lt;claim&gt; to a specific &lt;place&gt; </a:documentation>
       <data type="IDREFS"/>
+    </attribute>
+  </define>
+  <define name="modal-claim">
+    <attribute name="adverb">
+      <a:documentation>names a &lt;modal&gt; that qualifies the claim.</a:documentation>
+      <data type="IDREF"/>
     </attribute>
   </define>
 </grammar>

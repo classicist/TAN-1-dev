@@ -34,4 +34,7 @@
     <id element="inclusion">
         <idrefs attribute="include"/>
     </id>
+    <id element="modal">
+        <idrefs attribute="adverb"/>
+    </id>
 </id-idrefs>

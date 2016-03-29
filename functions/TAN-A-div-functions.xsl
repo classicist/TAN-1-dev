@@ -322,7 +322,7 @@
          </xsl:apply-templates>
       </xsl:copy>
    </xsl:template>
-   <xsl:template match="tan:div[tan:div]" mode="realign-segmented-class-1">
+   <xsl:template match="tan:div" mode="realign-segmented-class-1">
       <xsl:param name="self-expanded-5" as="document-node()?"/>
       <xsl:variable name="this-src" select="root(.)/*/@src"/>
       <xsl:variable name="this-ref" select="@ref"/>
@@ -338,12 +338,17 @@
                concat('#' (:adding the # ensures it is removed from auto alignment :), $explicit-realign-unanchored/@ref)
             else
                ()"/>
+      <xsl:variable name="realigned-ref"
+         select="
+            ($explicit-realign-anchor/@ref, $explicit-realign-div-ref-eq,
+            $this-ref)[1]"
+      />
       <xsl:copy>
          <xsl:copy-of select="@*"/>
-         <xsl:attribute name="realigned-ref"
-            select="
-               ($explicit-realign-anchor/@ref, $explicit-realign-div-ref-eq,
-               $this-ref)[1]"/>
+         <xsl:if test="not($this-ref = $realigned-ref)">
+            <xsl:attribute name="ref" select="$realigned-ref"/>
+            <xsl:attribute name="orig-ref" select="$this-ref"/>
+         </xsl:if>
          <xsl:apply-templates mode="#current">
             <xsl:with-param name="self-expanded-5" select="$self-expanded-5"/>
          </xsl:apply-templates>
@@ -388,10 +393,10 @@
       <xsl:param name="src-1st-da-realigned" as="document-node()*"/>
       <xsl:param name="return-groups-of-size" as="xs:integer*"/>
       <xsl:for-each-group
-         select="$src-1st-da-realigned/tan:TAN-T/tan:body/(tan:div[not(tan:seg)], tan:div/tan:seg)"
+         select="$src-1st-da-realigned/tan:TAN-T/tan:body//(tan:div[not(tan:seg)], tan:div/tan:seg)"
          group-by="
             if (self::tan:div) then
-               @realigned-ref
+               @ref
             else
                concat(@ref, '##', @seg)">
          <xsl:if
@@ -427,11 +432,19 @@
       </xsl:copy>
    </xsl:template>
    <xsl:template match="tan:body | tan:div" mode="count-tokenized-class-1">
+      <xsl:variable name="this-ref" select="(@ref, '.+')[1]"/>
+      <!-- One must look for all divs, not just descendants, because there may have been realignment -->
+      <xsl:variable name="leaf-divs"
+         select="(self::*, root(current())/tan:TAN-T/tan:body//tan:div[matches(@ref, concat('^', $this-ref, ' '))])[tan:seg, tan:tok]"
+      />
       <xsl:variable name="tok-qty-per-leaf-div"
          select="
-            for $i in descendant-or-self::*[tan:tok, tan:non-tok]
-            return
-               count($i/tan:tok)"
+            if (exists($leaf-divs)) then
+               for $i in descendant-or-self::*[tan:tok, tan:non-tok]
+               return
+                  count($i/tan:tok)
+            else
+               0"
       />
       <xsl:variable name="tok-avg" select="avg($tok-qty-per-leaf-div)"/>
       <xsl:variable name="tok-deviations"

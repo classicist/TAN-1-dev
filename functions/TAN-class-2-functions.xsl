@@ -32,15 +32,14 @@
    <!-- Searches -->
    <xsl:param name="searches-ignore-accents" select="true()" as="xs:boolean"/>
    <xsl:param name="searches-are-case-sensitive" select="false()" as="xs:boolean"/>
-   <xsl:variable name="match-flags" xml:id="v-match-flags"
+   <xsl:variable name="match-flags"
       select="
          if ($searches-are-case-sensitive = true()) then
             ()
          else
             'i'"
       as="xs:string?"/>
-   <xsl:param name="searches-suppress-what-text" xml:id="p-searches-suppress-what-text"
-      as="xs:string?" select="'[\p{M}]'"/>
+   <xsl:param name="searches-suppress-what-text" as="xs:string?" select="'[\p{M}]'"/>
 
    <!-- Source transformation -->
    <!-- When fetching src-1st-da-prepped, should each tan:div have included a @type-eq that converts the @type

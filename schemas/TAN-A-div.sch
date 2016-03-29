@@ -239,7 +239,7 @@
                         if ($j/tan:seg) then
                            concat($j/*/@ref, ' seg ', $j/*/@seg)
                         else
-                           $j/*/@realigned-ref, ', '),
+                           $j/*/@ref, ', '),
                      '] ')"
             /></report>
       </rule>

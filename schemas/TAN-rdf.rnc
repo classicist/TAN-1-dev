@@ -14,7 +14,7 @@ include "TAN-class-3.rnc" {
     decl-non-core = TAN-rdf-decl
     TAN-body-core = TAN-rdf-body
 }
-TAN-rdf-decl = decl-work* & decl-place* & decl-verb+ & decl-unit*
+TAN-rdf-decl = decl-work* & decl-place* & decl-verb+ & decl-unit* & decl-pers* & decl-mode*
 decl-place =
     
     ## contains an IRI + name pattern identifying a spatial location, usually somewhere on earth
@@ -29,14 +29,31 @@ decl-unit =
     
     ## contains an IRI + name pattern identifying a unit type (e.g., millimeters, seconds, Euros), to be used in conjunction with <object> to specify the meaning of a value
     element unit { decl-pattern-default }
+decl-pers =
+    
+    ## contains an IRI + name pattern identifying a person. This element is very similar to <agent>, but does not imply that the person had anything to do with the data in the TAN file.
+    element person { decl-pattern-default }
+decl-mode =
+    
+    ## contains an IRI + name pattern identifying a modal that qualifies an assertion.
+    element modal { decl-pattern-default }
 TAN-rdf-body = claimant, subject, claim+
 claim =
     element claim {
-        inclusion | (ed-stamp?, claimant?, subject?, verb, object, period-filter*, place-filter?)
+        inclusion
+        | (ed-stamp?,
+           claimant?,
+           subject?,
+           verb,
+           object,
+           period-filter*,
+           place-filter?,
+           cert-claim?,
+           modal-claim?)
     }
 claimant =
     
-    ## points to an <agent> who makes a claim. @claimant within <body> indicates the default persons to be credited or blamed for an assertion.
+    ## points to an <agent> or <person> who makes a claim. @claimant within <body> indicates the default persons to be credited or blamed for an assertion.
     
     ## Claimants are not to be confused with the editor of a TAN file. If an editor X writes a TAN-rdf file that says that person Y makes such-and-such a claim, then the implication is that X claims that Y claims that....  
     attribute claimant { d:IDREFS }
@@ -64,3 +81,7 @@ place-filter =
     
     ## restricts the <claim> to a specific <place> 
     attribute where { d:IDREFS }
+modal-claim =
+    
+    ## names a <modal> that qualifies the claim.
+    attribute adverb { d:IDREF }

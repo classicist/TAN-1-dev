@@ -462,3 +462,14 @@ decl-work =
     
     ## This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works
     element work { decl-pattern-default }
+
+decl-vers =
+    
+    ## identifies the version of a work. Applicable to works that go through multiple versions, whether through revision, translation, or some other process. Like <work>, <version> points to a conceptual entity, not a physical one.
+    
+    ## In the context of a class 1 file, the entity identified by <version> is assumed to be a version of the entity defined in <work>. In class 3 files, however, the relationship between <version> and <work> must be explicitly declared in a TAN-rdf file. 
+    
+    ## Very few work-versions have their own URN names. It is advisable to assign a tag URN or a UUID. If you have used an IRI for <work> that you are entitled to modify, you may wish to add a suffix that will name the version. If you need to specify exactly where on a text-bearing object a version appears, <desc> or <comment> should be used.
+    
+    ## This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works
+    element version { decl-pattern-default }

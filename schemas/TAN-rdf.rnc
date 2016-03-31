@@ -14,7 +14,7 @@ include "TAN-class-3.rnc" {
     decl-non-core = TAN-rdf-decl
     TAN-body-core = TAN-rdf-body
 }
-TAN-rdf-decl = decl-work* & decl-place* & decl-verb+ & decl-unit* & decl-pers* & decl-mode*
+TAN-rdf-decl = decl-work* & decl-place* & decl-verb+ & decl-unit* & decl-pers* & decl-mode* & decl-vers*
 decl-place =
     
     ## contains an IRI + name pattern identifying a spatial location, usually somewhere on earth
@@ -24,7 +24,20 @@ decl-verb =
     ## contains an IRI + name pattern identifying a property, relationship, action, or something else that is used to say something about something. 
     
     ## The preferred term "verb" is equivalent to RDF "predicate." The latter term is avoided as being misleading -- most who use TAN will understand "predicate," grammatically speaking, to refer to everything in a sentence that is not the subject,
-    element verb { decl-pattern-default }
+    element verb { object-datatype?, object-lexical-constraint?, decl-pattern-default }
+object-datatype =
+    
+    ## specifies the type of data that the object must take. Use this attribute if and only if the object is not an entity defined by the
+    attribute object-datatype {
+        xsd:string {
+            pattern =
+                "string|boolean|decimal|float|double|duration|dateTime|time|date|gYearMonth|gYear|gMonthDay|gDay|gMonth|hexBinary|base64Binary|anyURI|QName|NOTATION|normalizedString|token|language|NMTOKEN|NMTOKENS|Name|NCName|ID|IDREF|IDREFS|ENTITY|ENTITIES|integer|nonPositiveInteger|negativeInteger|long|int|short|byte|nonNegativeInteger|unsignedLong|unsignedInt|unsignedShort|unsignedByte|positiveInteger"
+        }
+    }
+object-lexical-constraint =
+    
+    ## specifies a regular expression that constrains the value of any <object>
+    attribute object-lexical-constraint { text }
 decl-unit =
     
     ## contains an IRI + name pattern identifying a unit type (e.g., millimeters, seconds, Euros), to be used in conjunction with <object> to specify the meaning of a value
@@ -32,6 +45,8 @@ decl-unit =
 decl-pers =
     
     ## contains an IRI + name pattern identifying a person. This element is very similar to <agent>, but does not imply that the person had anything to do with the data in the TAN file.
+    
+    ## Although person implies a single individual, this element may be applied to corporate entities, or natural groups of more than one person.
     element person { decl-pattern-default }
 decl-mode =
     

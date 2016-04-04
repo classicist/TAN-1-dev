@@ -29,7 +29,7 @@
     </head>
     <body in-progress="false" affects-element="token-definition">
         <item>
-            <token-definition regex="[\w&#xAD;]+"/>
+            <token-definition regex="[\w&#xad;&#x200b;&#x200d;]+"/>
             <name>letters</name>
             <name>letters only</name>
             <name>general-words-only-1</name>

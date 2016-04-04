@@ -29,16 +29,7 @@
     </head>
     <body in-progress="false" affects-element="token-definition">
         <item>
-            <token-definition regex="\w+|[^\w\s]"/>
-            <name>letters and punctuation</name>
-            <name>general-1</name>
-            <name>general</name>
-            <name>gen</name>
-            <desc>General tokenization pattern for any language, treating not only series of letters
-                as word tokens but also individual non-letter characters (e.g., punctuation).</desc>
-        </item>
-        <item>
-            <token-definition regex="\w+"/>
+            <token-definition regex="[\w&#xAD;]+"/>
             <name>letters</name>
             <name>letters only</name>
             <name>general-words-only-1</name>
@@ -46,6 +37,15 @@
             <name>gwo</name>
             <desc>General tokenization pattern for any language, words only. Non-letters such as
                 punctuation are ignored.</desc>
+        </item>
+        <item>
+            <token-definition regex="\w+|[^\w\s]"/>
+            <name>letters and punctuation</name>
+            <name>general-1</name>
+            <name>general</name>
+            <name>gen</name>
+            <desc>General tokenization pattern for any language, treating not only series of letters
+                as word tokens but also individual non-letter characters (e.g., punctuation).</desc>
         </item>
     </body>
 </TAN-key>

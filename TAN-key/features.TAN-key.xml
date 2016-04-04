@@ -26,17 +26,11 @@
         </role>
         <change when="2016-03-31" who="kalvesmaki">Started file</change>
     </head>
-    <body in-progress="false" affects-element="feature">
+    <body xmlns="tag:textalign.net,2015:ns" in-progress="false" affects-element="feature">
         <item>
             <IRI>http://purl.org/olia/olia.owl#Abbreviation</IRI>
             <IRI>tag:textalign.net,2015:feature:Abbreviation</IRI>
             <name>abbreviation</name>
-            <desc>EAGLES Category Abbreviations with Type="Abbreviation".</desc>
-            <desc> Abbreviation (from Latin brevis "short") is strictly speaking a shorter form of a
-                word, but more particularly, an abbreviation is a letter or group of letters, taken
-                from a word or words, and employed to represent them for the sake of brevity. For
-                example, the word "abbreviation" can be abbreviated as "abbr." or "abbrev."
-                (http://en.wikipedia.org/wiki/Abbreviation 19.09.06)</desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#Accusative</IRI>
@@ -475,6 +469,12 @@
             <desc>http://www.isocat.org/datcat/DC-1911</desc>
             <desc> Perceived as alive. (ISO12620; http://www.isocat.org/datcat/DC-1911) </desc>
             <desc>subClassOf animacy (dcif:conceptualDomain)</desc>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#UnitOfAnnotation</IRI>
+            <IRI>tag:textalign.net,2015:feature:UnitOfAnnotation</IRI>
+            <name>annotation of unit</name>
+            <name>unit of annotation</name>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#Anticausative</IRI>
@@ -1925,6 +1925,18 @@
                 17.11.06) </desc>
         </item>
         <item>
+            <IRI>http://purl.org/olia/olia.owl#MorphologicalCategory</IRI>
+            <IRI>tag:textalign.net,2015:feature:MorphologicalCategory</IRI>
+            <name>category morphological</name>
+            <name>morphological category</name>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#MorphosyntacticCategory</IRI>
+            <IRI>tag:textalign.net,2015:feature:MorphosyntacticCategory</IRI>
+            <name>category morphosyntactic</name>
+            <name>morphosyntactic category</name>
+        </item>
+        <item>
             <IRI>http://purl.org/olia/olia.owl#Causative</IRI>
             <IRI>tag:textalign.net,2015:feature:Causative</IRI>
             <name>causative</name>
@@ -1952,7 +1964,7 @@
                 (http://en.wikipedia.org/wiki/Circumposition 19.09.06) </desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#NumeralAgreementClass</IRI>
+            <IRI>http://purl.org/olia/olia.owl#NumeralAgreementClass</IRI>
             <IRI>tag:textalign.net,2015:feature:NumeralAgreementClass</IRI>
             <name>class agreement numeral</name>
             <name>numeral agreement class</name>
@@ -1979,37 +1991,6 @@
             <IRI>http://purl.org/olia/olia.owl#Clause</IRI>
             <IRI>tag:textalign.net,2015:feature:Clause</IRI>
             <name>clause</name>
-            <desc> EAGLES, http://purl.org/linguistics/gold/Clause </desc>
-            <desc> Clause is the class of constructions that form minimal sentential units. They
-                must include a predicate, all arguments of the predicate, and all modifiers of the
-                predicate and the arguments. (http://purl.org/linguistics/gold/Clause) </desc>
-            <desc> Traditionally sentences are deemed to be composed of major constituents known as
-                clauses, which may be main clauses (not included in a superordinate clause) or
-                embedded clauses (included in a superordinate clause) such as relative clauses or
-                adverbial clauses. A main clause, unless it is coordinated, is equivalent to a
-                simple sentence, and does not need to be separately labelled. Embedded and
-                coordinated clauses, on the other hand, will need to be separately identified. We
-                recommend that such units be identified in the annotation, and labelled either as
-                sentences (S) or as clauses (CL), according to the preference specified in the
-                annotation scheme. The reason for allowing choice here is that different theoretical
-                preferences have to be accommodated. In some syntactic models, the `clause' category
-                is not used (except informally), embedded clauses being marked by included [S]
-                constituents. In other models, clauses are identified as such, even where they are
-                coextensive with an independent sentence. One solution which commends itself (and is
-                employed in the Lancaster Treebank and the SUSANNE Corpus) is to retain [S ... S] as
-                the delimiter of sentences, whether included or not, and also to use [S ... S] for
-                the coordinated parts of a compound sentence; but to use `clause' labels for
-                subordinate clauses. An example which illustrates this division is 12: (12) [S [S
-                The distinction at issue is relatively clear S] , but [S closer examination reveals
-                [CL that all is not quite so straightforward [CL as it seems CL] CL] S] . S]
-                Embedded (subordinate) clauses are generally identified by some sign of their
-                dependence on the superordinate clause or sentence, such as an introductory
-                conjunction or a non-finite verb form. It is noticeable that the coordinated parts
-                of the compound sentence do not have to be clause-like units with subjects and
-                verbs, and to this extent [CL] would be a misleading label to apply to them. This is
-                true, in 13, of so far so good in: (13) [S [S So far so good S] , but [S now
-                consider gender in adjectives S] . S]
-                (http://www.ilc.cnr.it/EAGLES96/segsasg1/node31.html) </desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#ComplementClause</IRI>
@@ -2443,16 +2424,6 @@
             <IRI>tag:textalign.net,2015:feature:CoordinatingConjunction</IRI>
             <name>conjunction coordinating</name>
             <name>coordinating conjunction</name>
-            <desc>EAGLES Conjunction with Type="Coordinating". EAGLES' optional CoordType attribute
-                subclassifies coordinating conjunctions, with respect to positional characteristics
-                (repetition/pairing of expressions forming complex conjunctions).
-                (http://www.ilc.cnr.it/EAGLES96/annotate/node18.html#oav1av 17.11.06) CoordType was
-                originally implemented as MorphosyntacticFeature, the new modelling follows the
-                MULTEXT-East ontology
-                (http://purl.org/olia/mte/multext-east.owl#CoordinatingConjunction_PositionalType) </desc>
-            <desc> Coordinating conjunctions, also called coordinators, are conjunctions that join
-                two items of equal syntactic importance.
-                (http://en.wikipedia.org/wiki/Grammatical_conjunction 19.09.06) </desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#CorrelativeCoordinatingConjunction</IRI>
@@ -2540,7 +2511,7 @@
                 19.09.06) </desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#Constituent</IRI>
+            <IRI>http://purl.org/olia/olia.owl#Constituent</IRI>
             <IRI>tag:textalign.net,2015:feature:Constituent</IRI>
             <name>constituent</name>
             <desc>http://www.linguistics-ontology.org/gold/2008/SyntacticConstruction</desc>
@@ -2579,6 +2550,12 @@
             <desc> An embedded construction which contains a non-finite verb form
                 (http://languagelink.let.uu.nl/tds/onto/LinguisticOntology.owl#non-finiteEmbeddedConstruction
                 with reference to Dik 1997) </desc>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#SyntacticConstruction</IRI>
+            <IRI>tag:textalign.net,2015:feature:SyntacticConstruction</IRI>
+            <name>construction syntactic</name>
+            <name>syntactic construction</name>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#Contraction</IRI>
@@ -2787,11 +2764,6 @@
             <IRI>tag:textalign.net,2015:feature:InterrogativeDeterminer</IRI>
             <name>determiner interrogative</name>
             <name>interrogative determiner</name>
-            <desc>EAGLES Determiner with WhType="Interrogative"</desc>
-            <desc> A interrogative is a function word used to introduce an interrogative clause.
-                E.g. "which", "what", "whose" (interrogative possessive determiner) are
-                interrogative determiner in English.
-                (http://en.wikipedia.org/wiki/Interrogative_word 02.05.07) </desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#NegativeDeterminer</IRI>
@@ -2869,23 +2841,12 @@
             <IRI>tag:textalign.net,2015:feature:ReflexiveDeterminer</IRI>
             <name>determiner reflexive</name>
             <name>reflexive determiner</name>
-            <desc>http://www.isocat.org/datcat/DC-1377</desc>
-            <desc>TOCHECK: Are there non-possessive reflexive determiners ?</desc>
-            <desc> Determiner that refers to the same entity. (http://www.isocat.org/datcat/DC-1377) </desc>
-            <desc>subClassOf determiner (dcif:isA)</desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#RelativeDeterminer</IRI>
             <IRI>tag:textalign.net,2015:feature:RelativeDeterminer</IRI>
             <name>determiner relative</name>
             <name>relative determiner</name>
-            <desc> EAGLES Determiner with Wh-Type="Relative". </desc>
-            <desc> The relative determiner describes a attributive relative pronoun. In German
-                "wessen" in "Ich weiss nicht, wessen Auto das ist." or the English "whose" in "The
-                man whose daughter became ill.". The relative determiner needs a noun to complete a
-                NP (Nominal Phrase).
-                (http://www.ilc.cnr.it/EAGLES96/pub/eagles/lexicons/elm_en.ps.gz, p.28, 07.05.07)
-            </desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#UniquitiveDeterminer</IRI>
@@ -2963,6 +2924,12 @@
             <desc>Introduced to account for Bullet http://www.isocat.org/datcat/DC-1438</desc>
         </item>
         <item>
+            <IRI>http://purl.org/olia/olia.owl#NullElement</IRI>
+            <IRI>tag:textalign.net,2015:feature:NullElement</IRI>
+            <name>element null</name>
+            <name>null element</name>
+        </item>
+        <item>
             <IRI>http://purl.org/olia/olia.owl#Elision</IRI>
             <IRI>tag:textalign.net,2015:feature:Elision</IRI>
             <name>elision</name>
@@ -3020,6 +2987,12 @@
                 be considered NonEmphatic, see #Emphatic</desc>
         </item>
         <item>
+            <IRI>http://purl.org/olia/olia.owl#DiscourseEntity</IRI>
+            <IRI>tag:textalign.net,2015:feature:DiscourseEntity</IRI>
+            <name>entity discourse</name>
+            <name>discourse entity</name>
+        </item>
+        <item>
             <IRI>http://purl.org/olia/olia.owl#NamedEntity</IRI>
             <IRI>tag:textalign.net,2015:feature:NamedEntity</IRI>
             <name>entity named</name>
@@ -3027,6 +3000,17 @@
             <desc>http://www.isocat.org/datcat/DC-2275</desc>
             <desc> segment of text for which one or many rigid designators stands for the referent
                 (Gil Francopoulo; http://www.isocat.org/datcat/DC-2275) </desc>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#OrthographicEntity</IRI>
+            <IRI>tag:textalign.net,2015:feature:OrthographicEntity</IRI>
+            <name>entity orthographic</name>
+            <name>orthographic entity</name>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#Exclusive</IRI>
+            <IRI>tag:textalign.net,2015:feature:Exclusive</IRI>
+            <name>exclusive</name>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#FirstExclusive</IRI>
@@ -3043,12 +3027,6 @@
             <IRI>http://purl.org/olia/olia.owl#Expletive</IRI>
             <IRI>tag:textalign.net,2015:feature:Expletive</IRI>
             <name>expletive</name>
-            <desc>http://www.isocat.org/datcat/DC-1283</desc>
-            <desc> Word which serves no grammatical function, but which fills up a sentence or gives
-                emphasis. (www.southwestern.edu/~carlg/Latin_Web/glossary.html;
-                http://www.isocat.org/datcat/DC-1283) </desc>
-            <desc>modelled as a Unique concept here, although normally not considered a
-                Particle</desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#StructuralExpletive</IRI>
@@ -3072,17 +3050,6 @@
             <IRI>tag:textalign.net,2015:feature:FixedExpression</IRI>
             <name>expression fixed</name>
             <name>fixed expression</name>
-            <desc>http://purl.org/olia/mte/multext-east.owl#PartOfFixedExpression</desc>
-            <desc> Some forms can only be used in a fixed context, e.g., polsku in po polsku. They
-                are classified as special kinds of adjectives in the IPIC. In the MTE version this
-                information is preserved in the status of a "burkinostka". This term is devised by
-                Magdalena Derwojedowa and refers to dependent words like Burkina which only make
-                sense and can be morphosyntactically identified in a fixed combination (Burkina
-                Faso).</desc>
-            <desc>Corresponds to MTE Burkinostka (Adverb/Clitic="burkinostka"; Polish) "Burkinostka
-                was a local joke :). IsPartOfFixedExpression, to be more precise. Or somehow
-                shorter." (Natalia Kotsyba, email 2010/06/21,
-                http://purl.org/olia/mte/multext-east.owl#PartOfFixedExpression)</desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#VocativeExpression</IRI>
@@ -3122,13 +3089,19 @@
             </desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#AspectFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#AnimacyFeature</IRI>
+            <IRI>tag:textalign.net,2015:feature:AnimacyFeature</IRI>
+            <name>feature animacy</name>
+            <name>animacy feature</name>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#AspectFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:AspectFeature</IRI>
             <name>feature aspect</name>
             <name>aspect feature</name>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#CaseFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#CaseFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:CaseFeature</IRI>
             <name>feature case</name>
             <name>case feature</name>
@@ -3142,19 +3115,19 @@
                 described differently, either as postpositions or as grammatical cases.</desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#ClusivityFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#ClusivityFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:ClusivityFeature</IRI>
             <name>feature clusivity</name>
             <name>clusivity feature</name>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#CountabilityFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#CountabilityFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:CountabilityFeature</IRI>
             <name>feature countability</name>
             <name>countability feature</name>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#DefinitenessFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#DefinitenessFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:DefinitenessFeature</IRI>
             <name>feature definiteness</name>
             <name>definiteness feature</name>
@@ -3164,13 +3137,13 @@
             <desc>TODO: use this property to define Definite/IndefiniteArticle </desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#DegreeFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#DegreeFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:DegreeFeature</IRI>
             <name>feature degree</name>
             <name>degree feature</name>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#EmphasisFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#EmphasisFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:EmphasisFeature</IRI>
             <name>feature emphasis</name>
             <name>emphasis feature</name>
@@ -3179,25 +3152,31 @@
                 http://purl.org/olia/ilposts.owl#Emphasis</desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#EvaluativeFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#EvaluativeFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:EvaluativeFeature</IRI>
             <name>feature evaluative</name>
             <name>evaluative feature</name>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#EvidentialityFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#EvidentialityFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:EvidentialityFeature</IRI>
             <name>feature evidentiality</name>
             <name>evidentiality feature</name>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#GenderFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#UsageAndFrequencyFeature</IRI>
+            <IRI>tag:textalign.net,2015:feature:UsageAndFrequencyFeature</IRI>
+            <name>feature frequency and usage</name>
+            <name>usage and frequency feature</name>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#GenderFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:GenderFeature</IRI>
             <name>feature gender</name>
             <name>gender feature</name>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#ModalityFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#ModalityFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:ModalityFeature</IRI>
             <name>feature modality</name>
             <name>modality feature</name>
@@ -3210,61 +3189,63 @@
                 analysis. Any updates should maintain this relationship.</desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#MoodFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#MoodFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:MoodFeature</IRI>
             <name>feature mood</name>
             <name>mood feature</name>
-            <desc>Mood feature pertains to grammaticalized moods (as expressed in verbal
-                inflection), Modality refers to the underlying concept that can also be manifested
-                by other grammatical or orthographic markers. Every Mood concept however, entails
-                the corresponding Modality, hence modelled as subsmption between these.</desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#NumberFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#NumberFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:NumberFeature</IRI>
             <name>feature number</name>
             <name>number feature</name>
             <desc>TODO: extend with TDS numberProperty and GOLD NumberValue</desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#PersonFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#PersonFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:PersonFeature</IRI>
             <name>feature person</name>
             <name>person feature</name>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#PolarityFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#PolarityFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:PolarityFeature</IRI>
             <name>feature polarity</name>
             <name>polarity feature</name>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#ProximityFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#ProximityFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:ProximityFeature</IRI>
             <name>feature proximity</name>
             <name>proximity feature</name>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#ReflexivityFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#ReflexivityFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:ReflexivityFeature</IRI>
             <name>feature reflexivity</name>
             <name>reflexivity feature</name>
             <desc>TODO: integrate with VoiceFeature (as in the TDS Ontology) implementation</desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#SeparabilityFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#RegisterFeature</IRI>
+            <IRI>tag:textalign.net,2015:feature:RegisterFeature</IRI>
+            <name>feature register</name>
+            <name>register feature</name>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#SeparabilityFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:SeparabilityFeature</IRI>
             <name>feature separability</name>
             <name>separability feature</name>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#SpecificityFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#SpecificityFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:SpecificityFeature</IRI>
             <name>feature specificity</name>
             <name>specificity feature</name>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#StrengthFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#StrengthFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:StrengthFeature</IRI>
             <name>feature strength</name>
             <name>strength feature</name>
@@ -3275,7 +3256,7 @@
                 inflection</desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#TenseFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#TenseFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:TenseFeature</IRI>
             <name>feature tense</name>
             <name>tense feature</name>
@@ -3287,13 +3268,13 @@
                 to cover different future and past tenses </desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#CoordTypeFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#CoordTypeFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:CoordTypeFeature</IRI>
             <name>feature type coord</name>
             <name>coord type feature</name>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#InflectionTypeFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#InflectionTypeFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:InflectionTypeFeature</IRI>
             <name>feature type inflection</name>
             <name>inflection type feature</name>
@@ -3304,31 +3285,40 @@
                 overlaps with StrongInflection or WeakInflection) </desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#ReduplicationTypeFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#ReduplicationTypeFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:ReduplicationTypeFeature</IRI>
             <name>feature type reduplication</name>
             <name>reduplication type feature</name>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#SubordTypeFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#ReferentTypeFeature</IRI>
+            <IRI>tag:textalign.net,2015:feature:ReferentTypeFeature</IRI>
+            <name>feature type referent</name>
+            <name>referent type feature</name>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#SentenceTypeFeature</IRI>
+            <IRI>tag:textalign.net,2015:feature:SentenceTypeFeature</IRI>
+            <name>feature type sentence</name>
+            <name>sentence type feature</name>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#SubordTypeFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:SubordTypeFeature</IRI>
             <name>feature type subord</name>
             <name>subord type feature</name>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#ValencyFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#ValencyFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:ValencyFeature</IRI>
             <name>feature valency</name>
             <name>valency feature</name>
-            <desc>ValencyFeature cannot be reflexive, because hasSyntacticValency is distinguished
-                from hasSemanticValency</desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#VoiceFeature</IRI>
+            <IRI>http://purl.org/olia/olia.owl#VoiceFeature</IRI>
             <IRI>tag:textalign.net,2015:feature:VoiceFeature</IRI>
             <name>feature voice</name>
             <name>voice feature</name>
-            <desc>hierarchically restructured</desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#Feminine</IRI>
@@ -3438,7 +3428,7 @@
                 (Telljohann et al. 2009, p.17) </desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#TopologicalField</IRI>
+            <IRI>http://purl.org/olia/olia.owl#TopologicalField</IRI>
             <IRI>tag:textalign.net,2015:feature:TopologicalField</IRI>
             <name>field topological</name>
             <name>topological field</name>
@@ -3552,7 +3542,7 @@
                 Topicalization.) (Chiarcos)</desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#SyntacticFunction</IRI>
+            <IRI>http://purl.org/olia/olia.owl#SyntacticFunction</IRI>
             <IRI>tag:textalign.net,2015:feature:SyntacticFunction</IRI>
             <name>function syntactic</name>
             <name>syntactic function</name>
@@ -3843,6 +3833,11 @@
             <name>zu inclusion</name>
             <desc>http://www.isocat.org/datcat/DC-1954</desc>
             <desc> Inclusion of zu. (DFKI; http://www.isocat.org/datcat/DC-1954) </desc>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#Inclusive</IRI>
+            <IRI>tag:textalign.net,2015:feature:Inclusive</IRI>
+            <name>inclusive</name>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#FirstInclusive</IRI>
@@ -4193,6 +4188,12 @@
             <desc>modality expressed by AbilitativeMood: Abilitative is a mood that indicates
                 ability, comparable to the use of "can" in English.
                 (http://zbb.spinnwebe.com/viewtopic.php?f=7&amp;t=34901)</desc>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#ActionalModality</IRI>
+            <IRI>tag:textalign.net,2015:feature:ActionalModality</IRI>
+            <name>modality actional</name>
+            <name>actional modality</name>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#AdmonitiveModality</IRI>
@@ -4776,9 +4777,6 @@
             <IRI>tag:textalign.net,2015:feature:ProperNoun</IRI>
             <name>noun proper</name>
             <name>proper noun</name>
-            <desc> EAGLES Noun with Type="Proper". </desc>
-            <desc> Proper nouns (also called proper names) are the names of unique entities.
-                (http://en.wikipedia.org/wiki/Noun 19.09.06) </desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#RelationNoun</IRI>
@@ -5185,10 +5183,6 @@
             <IRI>http://purl.org/olia/olia.owl#Particle</IRI>
             <IRI>tag:textalign.net,2015:feature:Particle</IRI>
             <name>particle</name>
-            <desc>synonym of Unique, to be avoided because of its divergent definitions, applies to
-                every category that *contains* the expression "Particle" in its name</desc>
-            <desc>synonym of Unique, to be avoided because of its divergent definitions
-                (Chiarcos)</desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#AffirmativeParticle</IRI>
@@ -5229,6 +5223,12 @@
             <desc>DCR subClassOf particle (dcif:isA)</desc>
         </item>
         <item>
+            <IRI>http://purl.org/olia/olia.owl#ContrastiveParticle</IRI>
+            <IRI>tag:textalign.net,2015:feature:ContrastiveParticle</IRI>
+            <name>particle contrastive</name>
+            <name>contrastive particle</name>
+        </item>
+        <item>
             <IRI>http://purl.org/olia/olia.owl#CoordinationParticle</IRI>
             <IRI>tag:textalign.net,2015:feature:CoordinationParticle</IRI>
             <name>particle coordination</name>
@@ -5246,6 +5246,12 @@
             <desc>http://www.isocat.org/datcat/DC-2228</desc>
             <desc> distinctive particle (MIRACL &amp; LSCA; http://www.isocat.org/datcat/DC-2228) </desc>
             <desc>subClassOf particle (dcif:isA)</desc>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#EmphaticParticle</IRI>
+            <IRI>tag:textalign.net,2015:feature:EmphaticParticle</IRI>
+            <name>particle emphatic</name>
+            <name>emphatic particle</name>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#ExistentialParticle</IRI>
@@ -5287,6 +5293,12 @@
             <desc>http://www.isocat.org/datcat/DC-1921</desc>
             <desc> Particle used to express a question. (http://www.isocat.org/datcat/DC-1921) </desc>
             <desc>subClassOf particle (dcif:isA)</desc>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#TenseMarkingParticle</IRI>
+            <IRI>tag:textalign.net,2015:feature:TenseMarkingParticle</IRI>
+            <name>particle marking tense</name>
+            <name>tense marking particle</name>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#ModalParticle</IRI>
@@ -6063,6 +6075,11 @@
             <desc>subClassOf referentType (dcif:conceptualDomain)</desc>
         </item>
         <item>
+            <IRI>http://purl.org/olia/olia.owl#Possible</IRI>
+            <IRI>tag:textalign.net,2015:feature:Possible</IRI>
+            <name>possible</name>
+        </item>
+        <item>
             <IRI>http://purl.org/olia/olia.owl#Postposition</IRI>
             <IRI>tag:textalign.net,2015:feature:Postposition</IRI>
             <name>postposition</name>
@@ -6224,16 +6241,21 @@
                 (http://purl.org/linguistics/gold/StillPresent) </desc>
         </item>
         <item>
+            <IRI>http://purl.org/olia/olia.owl#MorphologicalProcess</IRI>
+            <IRI>tag:textalign.net,2015:feature:MorphologicalProcess</IRI>
+            <name>process morphological</name>
+            <name>morphological process</name>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#PhonologicalProcess</IRI>
+            <IRI>tag:textalign.net,2015:feature:PhonologicalProcess</IRI>
+            <name>process phonological</name>
+            <name>phonological process</name>
+        </item>
+        <item>
             <IRI>http://purl.org/olia/olia.owl#Pronoun</IRI>
             <IRI>tag:textalign.net,2015:feature:Pronoun</IRI>
             <name>pronoun</name>
-            <desc> EAGLES PronounOrDeterminer with Category="Pronoun". </desc>
-            <desc> A pronoun is a pro-form which functions like a noun and substitutes for a noun or
-                a noun-phrase. A language may have several classes of pronouns.
-                (http://www.sil.org/linguistics/GlossaryOfLinguisticTerms/WhatIsAPronoun.htm
-                19.09.06) A pronominal is a phrase that functions as a pronoun
-                (www.sil.org/linguistics/GlossaryOfLinguisticTerms/WhatIsAPronominal.htm;
-                http://www.isocat.org/datcat/DC-1369) </desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#AbbreviatedPronoun</IRI>
@@ -6392,22 +6414,12 @@
             <IRI>tag:textalign.net,2015:feature:IndefinitePronoun</IRI>
             <name>pronoun indefinite</name>
             <name>indefinite pronoun</name>
-            <desc> EAGLES Pronoun with Pron.-Type="Indefinite". </desc>
-            <desc> An indefinite pronoun is a pronoun that belongs to a class whose members indicate
-                indefinite reference. Examples in English are "anybody", "one", "somebody".
-                (http://www.sil.org/linguistics/GlossaryOfLinguisticTerms/WhatIsAnIndefinitePronoun.htm
-                19.09.06) </desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#InterrogativePronoun</IRI>
             <IRI>tag:textalign.net,2015:feature:InterrogativePronoun</IRI>
             <name>pronoun interrogative</name>
             <name>interrogative pronoun</name>
-            <desc>EAGLES WHPronoun with Wh-Type="Interrogative".</desc>
-            <desc> A interrogative pronoun is a pro-form that is used in questions in place of the
-                item questioned for.
-                (http://www.sil.org/linguistics/GlossaryOfLinguisticTerms/WhatIsAnInterrogativeProForm.htm
-                19.09.06) </desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#NegativePronoun</IRI>
@@ -6499,13 +6511,6 @@
             <IRI>tag:textalign.net,2015:feature:ThirdPersonPronoun</IRI>
             <name>pronoun person third</name>
             <name>third person pronoun</name>
-            <desc> EAGLES Pronoun with Person="Third". As only personal and reflexive pronouns show
-                person differentiation, ThirdPersonPronoun is modelled as a subclass of
-                PersReflConcept here. </desc>
-            <desc> Third person reference is a deictic reference to a referent(s) not identified as
-                the speaker or addressee.
-                (http://www.sil.org/linguistics/GlossaryOfLinguisticTerms/WhatIsThirdPersonDeixis.htm
-                19.09.06) </desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#PersonalPronoun</IRI>
@@ -6558,17 +6563,6 @@
             <IRI>tag:textalign.net,2015:feature:PossessivePronoun</IRI>
             <name>pronoun possessive</name>
             <name>possessive pronoun</name>
-            <desc>EAGLES Pronoun with Pron.-Type="Possessive".</desc>
-            <desc>TODO: Check regrouping possibilities, as it is covered by the GOLD definition of
-                PersonalPronoun (i.e., person marking, although no person congruency).
-                PossessivePronoun isn't disjoint with IndefinitePronoun (German: "jemandes" nach
-                jemandes Pfeife tanzen), DemonstrativePronoun (German:"dessen" Zähne alle exakt
-                gleich waren), WHPronoun (German: "wessen" Bedürfnissen soll sie genügen),
-                ReflexivePronoun (Old English "sin" his/her/its). </desc>
-            <desc> A possessive pronoun is a pronoun that expresses relationships like ownership,
-                such as kinship, and other forms of association.
-                (http://www.sil.org/linguistics/GlossaryOfLinguisticTerms/WhatIsAPossessivePronoun.htm
-                19.09.06) </desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#ReciprocalPronoun</IRI>
@@ -6609,12 +6603,6 @@
             <IRI>tag:textalign.net,2015:feature:RelativePronoun</IRI>
             <name>pronoun relative</name>
             <name>relative pronoun</name>
-            <desc>EAGLES WHPronoun with Wh-Type="Relative".</desc>
-            <desc> A relative pronoun is a pronoun that marks a relative clause, functions
-                grammatically within the relative clause, and is coreferential to the word modified
-                by the relative clause.
-                (http://www.sil.org/linguistics/GlossaryOfLinguisticTerms/WhatIsARelativePronoun.htm
-                19.09.06) </desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#SubstitutivePronoun</IRI>
@@ -6753,10 +6741,6 @@
             <IRI>tag:textalign.net,2015:feature:SecondaryPunctuation</IRI>
             <name>punctuation secondary</name>
             <name>secondary punctuation</name>
-            <desc>http://www.isocat.org/datcat/DC-2076</desc>
-            <desc> Punctuation that is not very important with regards to sentence splitting in a
-                text. (http://www.isocat.org/datcat/DC-2076) </desc>
-            <desc>subClassOf punctuation (dcif:isA)</desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#Quadrial</IRI>
@@ -6770,12 +6754,6 @@
             <IRI>http://purl.org/olia/olia.owl#Qualifier</IRI>
             <IRI>tag:textalign.net,2015:feature:Qualifier</IRI>
             <name>qualifier</name>
-            <desc>http://www.isocat.org/datcat/DC-1373</desc>
-            <desc> Also called MODIFIER : A word or phrase that qualifies the sense of another word;
-                for example, the noun alarm is a modifier of clock in "alarm clock" and the phrase
-                every day is an adverbial modifier of walks in "he walks every day"
-                (www.wordreference.com/English/definition.asp?en=modifier;
-                http://www.isocat.org/datcat/DC-1373) </desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#Quantifier</IRI>
@@ -6934,11 +6912,6 @@
             <IRI>tag:textalign.net,2015:feature:DirectQuestion</IRI>
             <name>question direct</name>
             <name>direct question</name>
-            <desc>There are two types of direct questions: yes-no questions and wh-questions. Yes-no
-                questions should be bracketed as SQ. The auxiliary verb or form of do that precedes
-                the subject in a yes-no question is a child of SQ. Note that yes-no questions need
-                not contain a VP node (Santorini 1991)</desc>
-            <desc>Santorini 1991, Bies et al. 1995</desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#YesNoQuestion</IRI>
@@ -7098,19 +7071,30 @@
             <desc>subClassOf register (dcif:conceptualDomain)</desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#DependencyRelation</IRI>
+            <IRI>http://purl.org/olia/olia.owl#Relation</IRI>
+            <IRI>tag:textalign.net,2015:feature:Relation</IRI>
+            <name>relation</name>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#DependencyRelation</IRI>
             <IRI>tag:textalign.net,2015:feature:DependencyRelation</IRI>
             <name>relation dependency</name>
             <name>dependency relation</name>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#DominanceRelation</IRI>
+            <IRI>http://purl.org/olia/olia.owl#DominanceRelation</IRI>
             <IRI>tag:textalign.net,2015:feature:DominanceRelation</IRI>
             <name>relation dominance</name>
             <name>dominance relation</name>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#SyntacticRelation</IRI>
+            <IRI>http://purl.org/olia/olia.owl#LexicalRelation</IRI>
+            <IRI>tag:textalign.net,2015:feature:LexicalRelation</IRI>
+            <name>relation lexical</name>
+            <name>lexical relation</name>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#SyntacticRelation</IRI>
             <IRI>tag:textalign.net,2015:feature:SyntacticRelation</IRI>
             <name>relation syntactic</name>
             <name>syntactic relation</name>
@@ -7420,7 +7404,7 @@
             </desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#SemanticRole</IRI>
+            <IRI>http://purl.org/olia/olia.owl#SemanticRole</IRI>
             <IRI>tag:textalign.net,2015:feature:SemanticRole</IRI>
             <name>role semantic</name>
             <name>semantic role</name>
@@ -7435,7 +7419,7 @@
                 (http://languagelink.let.uu.nl/tds/onto/LinguisticOntology.owl#sourceRole) </desc>
         </item>
         <item>
-            <IRI>http://purl.org/olia/olia-top.owl#SyntacticRole</IRI>
+            <IRI>http://purl.org/olia/olia.owl#SyntacticRole</IRI>
             <IRI>tag:textalign.net,2015:feature:SyntacticRole</IRI>
             <name>role syntactic</name>
             <name>syntactic role</name>
@@ -7498,40 +7482,6 @@
             <IRI>http://purl.org/olia/olia.owl#Sentence</IRI>
             <IRI>tag:textalign.net,2015:feature:Sentence</IRI>
             <name>sentence</name>
-            <desc> EAGLES category Sentence (S),
-                http://purl.org/linguistics/gold/OrthographicSentence </desc>
-            <desc> TODO: model Sentence as separate concept indepdendently from Constituent (cf.
-                TüBa-DZ "Root"). But what would be an appropriate name for that ? </desc>
-            <desc> The maximal, syntactically independent, segments into which a text is subdivided,
-                for parsing purposes, are normally considered to be sentences. In a written text,
-                they are typically (though by no means invariably) delimited by an initial capital
-                letter and a final full stop (`.') or other terminal punctuation. It is convenient
-                to accept this primary orthographic definition of `sentence' for the purposes of
-                syntactic annotation. However, a sentence, so defined, may be either a full sentence
-                (9) or a `grammatically incomplete' one (10). (9) [S This is a sentence. S] (10) [S
-                Well done. S] The same applies to sentences included within other sentences, as in
-                (11) (11) [S [S ``Well done'', S] she said. S] } ``Well done'' in 11 is labelled as
-                a sentence, since it clearly has an independent syntactic status equivalent to those
-                of 9, even though it is included in another sentence. This inclusion of one
-                independent sentence within another is found both with reported speech and
-                elsewhere. Phenomena such as those illustrated in 10 are by no means exceptional in
-                text corpora. In transcriptions of spoken discourse, there is no simple answer to
-                the question ``What is a sentence?''. Some transcriptions, based on standard
-                orthography, yield de facto sentences in the form of units beginning with a capital
-                letter and closing with a terminal punctuation mark. For these, there is no problem
-                in recognising the primary sentential segments and delimiting them by [S ... S],
-                even though these segments frequently lack the canonical structure of a complete
-                written sentence. Moreover, even in other transcriptions, where the standard
-                orthographic practices of sentence delimitation are avoided, it is possible to
-                identify `primary segments' analogous to the written sentence, viz. the primary
-                units into which the transcribed discourse is divided for parsing purposes. For
-                spoken as well as written language, then, the [S] unit may be retained, although it
-                may be interpreted differently, and some other term, such as `primary segment', may
-                be preferred to `sentence'. We conclude by recommending, for the syntactic
-                annotation of any text (including a transcription of spoken language), an exhaustive
-                division of the text into units labelled [S ... S].
-                (http://www.ilc.cnr.it/EAGLES96/segsasg1/node30.html#SECTION00052100000000000000)
-            </desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#DeclarativeSentence</IRI>
@@ -7565,6 +7515,12 @@
             <desc>EAGLES; note that UbyPos extends separability to particles</desc>
             <desc> Non-separable verbs are not composed of a verb stem and a separable affix. (cf.
                 SeparabilityFeature: Separable) </desc>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#GraphicalSeparator</IRI>
+            <IRI>tag:textalign.net,2015:feature:GraphicalSeparator</IRI>
+            <name>separator graphical</name>
+            <name>graphical separator</name>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#Sequel</IRI>
@@ -7932,6 +7888,12 @@
             <desc>subClassOf grammaticalNumber (dcif:conceptualDomain)</desc>
         </item>
         <item>
+            <IRI>http://purl.org/olia/olia.owl#NarrativeType</IRI>
+            <IRI>tag:textalign.net,2015:feature:NarrativeType</IRI>
+            <name>type narrative</name>
+            <name>narrative type</name>
+        </item>
+        <item>
             <IRI>http://purl.org/olia/olia.owl#Typo</IRI>
             <IRI>tag:textalign.net,2015:feature:Typo</IRI>
             <name>typo</name>
@@ -7989,6 +7951,12 @@
                 (http://www.ilc.cnr.it/EAGLES96/annotate/node16.html#mp 19.09.06) </desc>
         </item>
         <item>
+            <IRI>http://purl.org/olia/olia.owl#LexicalUnit</IRI>
+            <IRI>tag:textalign.net,2015:feature:LexicalUnit</IRI>
+            <name>unit lexical</name>
+            <name>lexical unit</name>
+        </item>
+        <item>
             <IRI>http://purl.org/olia/olia.owl#OmittedUnit</IRI>
             <IRI>tag:textalign.net,2015:feature:OmittedUnit</IRI>
             <name>unit omitted</name>
@@ -8006,6 +7974,18 @@
                 reflect the spoken order, with *U* placed as the last element in the ADJP: (NP a
                 (ADJP $ 5-a-share *U*) increase) Sometimes, this type may lack the *U* entirely.
                 (Bies et al. 1995)</desc>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#SemanticUnit</IRI>
+            <IRI>tag:textalign.net,2015:feature:SemanticUnit</IRI>
+            <name>unit semantic</name>
+            <name>semantic unit</name>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#TemporallyDefinedUsage</IRI>
+            <IRI>tag:textalign.net,2015:feature:TemporallyDefinedUsage</IRI>
+            <name>usage defined temporally</name>
+            <name>temporally defined usage</name>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#ModernUsage</IRI>
@@ -8384,32 +8364,12 @@
             <IRI>tag:textalign.net,2015:feature:MiddleVoice</IRI>
             <name>voice middle</name>
             <name>middle voice</name>
-            <desc>http://languagelink.let.uu.nl/tds/onto/LinguisticOntology.owl#middleVoice</desc>
-            <desc> A verb that appears active but expresses a passive action may be called middle
-                voice, e.g. 'The chicken cooked in the oven'. In Greek the middle voice is often
-                reflexive expressing a causative reading or that the action is performed for one's
-                own benefit.
-                (http://languagelink.let.uu.nl/tds/onto/LinguisticOntology.owl#middleVoice) </desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#PassiveVoice</IRI>
             <IRI>tag:textalign.net,2015:feature:PassiveVoice</IRI>
             <name>voice passive</name>
             <name>passive voice</name>
-            <desc>http://languagelink.let.uu.nl/tds/onto/LinguisticOntology.owl#passiveVoice</desc>
-            <desc> When the subject is the patient, target or undergoer of the action, it is said to
-                be in the passive voice. (http://en.wikipedia.org/wiki/Grammatical_voice 17.11.06)
-                When the subject is the agent or actor of the verb, the verb is said to be in the
-                active voice. When the subject is the patient, target or undergoer of the action, it
-                is said to be in the passive voice.
-                (http://languagelink.let.uu.nl/tds/onto/LinguisticOntology.owl#passiveVoice) Passive
-                is often not clearly distinguished from Inverse: According to Givón (1988), Inverse
-                is characterized by obligatory realization of the suppressed agent, whereas the
-                realization of the agent in a passive construction is optional (or impossible). This
-                restrictive definition of passive does, however, conflict with the use of the term
-                "passive" for European languages. Then, English and German "Passive" would be
-                Inverses. Therefore, Inverse is a subconcept of Passive here. Givón's original
-                Passive is NonInversePassive. </desc>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#ReferentialVoice</IRI>
@@ -8498,6 +8458,12 @@
                 inflect them for gender: (Spanish example) "mío", "mía", "míos" and "mías" ("mine",
                 in the masculine singular, feminine singular, masculine plural, and feminine plural
                 form, respectively). (http://en.wikipedia.org/wiki/Weak_pronoun 20.11.06) </desc>
+        </item>
+        <item>
+            <IRI>http://purl.org/olia/olia.owl#QuestionWord</IRI>
+            <IRI>tag:textalign.net,2015:feature:QuestionWord</IRI>
+            <name>word question</name>
+            <name>question word</name>
         </item>
         <item>
             <IRI>http://purl.org/olia/olia.owl#ing</IRI>

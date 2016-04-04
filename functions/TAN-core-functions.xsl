@@ -55,7 +55,7 @@
             select="
                 doc('../TAN-key/div-types.TAN-key.xml'), doc('../TAN-key/relationships.TAN-key.xml'),
                 doc('../TAN-key/normalizations.TAN-key.xml'), doc('../TAN-key/token-definitions.TAN-key.xml'),
-                doc('../TAN-key/rights.TAN-key.xml')"/>
+                doc('../TAN-key/rights.TAN-key.xml'), doc('../TAN-key/features.TAN-key.xml')"/>
         <xsl:apply-templates mode="resolve-href" select="$TAN-keyword-files/tan:TAN-key/tan:body"/>
     </xsl:variable>
     <xsl:variable name="relationship-keywords-for-tan-versions"
@@ -255,7 +255,7 @@
         corresponding to fn:match and fn:non-match for fn:analyze-string() -->
         <xsl:param name="text" as="xs:string?"/>
         <xsl:param name="token-definition" as="element()?"/>
-        <xsl:variable name="regex" select="($token-definition/@regex, '\w+')[1]"/>
+        <xsl:variable name="regex" select="($token-definition/@regex, $token-definitions-reserved[1]/@regex)[1]"/>
         <xsl:variable name="flags" select="$token-definition/@flags"/>
         <xsl:variable name="results">
             <results regex="{$regex}" flags="{$flags}">

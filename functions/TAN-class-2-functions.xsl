@@ -145,7 +145,7 @@
 
    <!-- Results of step -->
    <xsl:variable name="src-elements" select="$head/tan:source"/>
-   <xsl:variable name="src-ids" select="$src-elements/@xml:id" as="xs:string+"/>
+   <xsl:variable name="src-ids" select="($src-elements/@xml:id, '1')[1]" as="xs:string+"/>
 
    <!-- Resultant functions -->
    <xsl:function name="tan:expand-src-and-div-type-ref" as="element()*">
@@ -182,7 +182,7 @@
       <xsl:copy-of
          select="
             for $i in ($srcs-picked-to-id-refs),
-               $j in tan:first-loc-available($src-elements[@xml:id = $i])
+               $j in tan:first-loc-available($src-elements[(@xml:id, '1')[1] = $i])
             return
                if ($i = 'error' or $j = '') then
                   $empty-doc
@@ -198,13 +198,13 @@
          <xsl:choose>
             <xsl:when test="matches(., '[-,] ')">
                <xsl:variable name="seq-exp" select="tan:sequence-expand(., count($src-elements))"/>
-               <xsl:copy-of select="$src-elements[position() = $seq-exp]/@xml:id"/>
+               <xsl:copy-of select="$src-elements[position() = $seq-exp]/(@xml:id, '1')[1]"/>
             </xsl:when>
             <xsl:when test=". = $src-ids">
                <xsl:copy-of select="."/>
             </xsl:when>
             <xsl:when test=". instance of xs:integer and . le count($src-elements)">
-               <xsl:copy-of select="$src-elements[.]/@xml:id"/>
+               <xsl:copy-of select="$src-elements[.]/(@xml:id, '1')[1]"/>
             </xsl:when>
             <xsl:otherwise>
                <xsl:copy-of select="'error'"/>
@@ -702,7 +702,7 @@
                   self::tan:div/@ref = $refs-norm/@ref
                else
                   some $i in $refs-norm
-                  satisfies
+                     satisfies
                      matches(self::tan:div/@ref, $i/@ref)">
             <xsl:copy-of select="."/>
          </xsl:when>
@@ -713,7 +713,7 @@
                else
                   some $i in $refs-norm,
                      $j in descendant::tan:div
-                  satisfies
+                     satisfies
                      matches($j/@ref, $i/@ref)">
             <xsl:copy>
                <xsl:copy-of select="@*"/>
@@ -807,7 +807,7 @@
                   self::tan:div/@ref = $refs-norm/@ref
                else
                   some $i in $refs-norm
-                  satisfies
+                     satisfies
                      matches(self::tan:div/@ref, $i/@ref)"/>
          <xsl:when
             test="
@@ -816,7 +816,7 @@
                else
                   some $i in $refs-norm,
                      $j in descendant::tan:div
-                  satisfies
+                     satisfies
                      matches($j/@ref, $i/@ref)">
             <xsl:copy>
                <xsl:copy-of select="@*"/>
@@ -1125,9 +1125,11 @@
          <xsl:variable name="token-pos" select="tan:get-tok-nos($this-div, $this-tok)"/>
          <xsl:for-each select="$token-pos">
             <xsl:variable name="this-n" select="."/>
+            <xsl:variable name="this-seq" select="position()"/>
             <xsl:for-each select="$this-tok">
                <xsl:copy>
                   <xsl:copy-of select="@*"/>
+                  <xsl:attribute name="group" select="concat(@group, '-', $this-seq)"/>
                   <xsl:attribute name="n" select="$this-n"/>
                </xsl:copy>
             </xsl:for-each>

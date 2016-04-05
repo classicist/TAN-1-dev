@@ -7,7 +7,8 @@ start =
     ## specifies that the TAN file contains a transcription. Root element.
     element TAN-T { TAN-root }
 include "TAN-class-1.rnc" {
-    TAN-body-core = lang-of-content, text-div+
+    other-body-attributes = lang-of-content
+    item = text-div
 }
 text-div =
     

@@ -2,6 +2,7 @@ default namespace local = "tag:textalign.net,2015:ns"
 
 include "TAN-core.rnc" {
     decl-non-core = decl-class-1 & decl-non-class-1
+    group = empty
 }
 
 ## Class 1 files must declare a single work, perhaps one version, one or more divisions, one or more recommended tokenizations, perhaps one filter, and perhaps one 

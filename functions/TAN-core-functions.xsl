@@ -18,6 +18,7 @@
     <xsl:variable name="regex-escaping-characters" as="xs:string"
         select="'[\.\[\]\\\|\-\^\$\?\*\+\{\}\(\)]'"/>
     <xsl:variable name="quot" select="'&quot;'"/>
+    <xsl:variable name="apos" select='"&apos;"'/>
     <xsl:variable name="empty-doc" as="document-node()">
         <xsl:document/>
     </xsl:variable>

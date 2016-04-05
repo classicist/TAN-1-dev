@@ -13,7 +13,7 @@
         </xd:desc>
     </xd:doc>
     <xsl:include href="TAN-class-2-functions.xsl"/>
-    
+
     <xsl:variable name="morphologies" select="$head/tan:declarations/tan:morphology"/>
     <xsl:variable name="morphologies-prepped" as="element()*">
         <xsl:for-each select="$morphologies">
@@ -39,7 +39,22 @@
             for $i in $morphologies-prepped
             return
                 tan:resolve-doc(doc($i/tan:location/@href), $i/@xml:id, false())"/>
-    <xsl:variable name="mory-1st-da-features" as="element()*">
+    <xsl:variable name="features-prepped" as="element()*">
+        <xsl:for-each
+            select="$mory-1st-da-resolved/tan:TAN-mor/tan:head/tan:declarations/tan:feature">
+            <xsl:variable name="this-id" select="@xml:id"/>
+            <xsl:variable name="this-code"
+                select="root(current())/tan:TAN-mor/tan:body//tan:option[@feature = $this-id]/@code"/>
+            <xsl:copy>
+                <xsl:copy-of select="@*"/>
+                <xsl:attribute name="src" select="root(current())/tan:TAN-mor/@src"/>
+                <xsl:copy-of select="$this-code"/>
+            </xsl:copy>
+        </xsl:for-each>
+    </xsl:variable>
+    <xsl:variable name="features-grouped" select="tan:group-by-IRIs($features-prepped)"/>
+    <!-- probably can delete the following - - detritus? -->
+    <!--<xsl:variable name="mory-1st-da-features" as="element()*">
         <xsl:for-each select="$mory-1st-da-resolved">
             <morphology>
                 <xsl:for-each select="/tan:TAN-mor/tan:head/tan:declarations/tan:feature">
@@ -52,7 +67,7 @@
                 </xsl:for-each>
             </morphology>
         </xsl:for-each>
-    </xsl:variable>
+    </xsl:variable>-->
 
     <xsl:function name="tan:all-morph-codes" as="xs:string*">
         <!-- Change any sequence of morphological codes into a sequence of synonymous morphological codes
@@ -86,6 +101,77 @@
                 $code-equiv))"
         />
     </xsl:function>
+
+    <xsl:function name="tan:expand-m" as="element()*">
+        <!-- Expands an <m>. 
+        Input: (1) one or more <m>s, (2) true/false indicating whether features should be counted 
+        Output: that <m>, and for every code, the corresponding <feature> is inserted -->
+        <xsl:param name="m" as="element()*"/>
+        <xsl:param name="add-counts" as="xs:boolean"/>
+        <xsl:variable name="pass-1" as="element()*">
+            <xsl:for-each select="$m">
+                <xsl:variable name="this-morphology-id"
+                    select="(ancestor-or-self::*/@morphology)[1]"/>
+                <xsl:variable name="this-mory"
+                    select="$mory-1st-da-resolved[tan:TAN-mor/@src = $this-morphology-id]"/>
+                <xsl:variable name="this-mory-is-categorized"
+                    select="
+                        if ($this-mory/tan:TAN-mor/tan:body/tan:category) then
+                            true()
+                        else
+                            false()"/>
+                <xsl:variable name="code-parsed" as="element()*">
+                    <xsl:analyze-string select="." regex="\S+">
+                        <xsl:matching-substring>
+                            <match>
+                                <xsl:value-of select="."/>
+                            </match>
+                        </xsl:matching-substring>
+                    </xsl:analyze-string>
+                </xsl:variable>
+                <xsl:copy>
+                    <xsl:copy-of select="@*"/>
+                    <xsl:for-each select="$code-parsed">
+                        <xsl:variable name="pos" select="position()"/>
+                        <xsl:variable name="this-code" select="."/>
+                        <xsl:variable name="this-feature-id"
+                            select="
+                                if ($this-mory-is-categorized = true()) then
+                                    $this-mory/tan:TAN-mor/tan:body/tan:category[$pos]/tan:option[(@feature, @code) = $this-code]/@feature
+                                else
+                                    ($this-mory/tan:TAN-mor/tan:body/tan:option[(@feature, @code) = $this-code]/@feature, $this-code)"/>
+                        <xsl:variable name="this-feature"
+                            select="$this-mory/tan:TAN-mor/tan:head/tan:declarations/tan:feature[@xml:id = $this-feature-id]"/>
+                        <xsl:copy-of select="$this-feature"/>
+                    </xsl:for-each>
+                </xsl:copy>
+            </xsl:for-each>
+        </xsl:variable>
+        <xsl:variable name="counts" as="element()*">
+            <xsl:for-each select="distinct-values($pass-1/tan:feature/@xml:id)">
+                <count xml:id="{.}" count="{count($pass-1/tan:feature[@xml:id = current()])}"/>
+            </xsl:for-each>
+        </xsl:variable>
+        <xsl:choose>
+            <xsl:when test="$add-counts = true()">
+                <xsl:for-each select="$pass-1">
+                    <m n="{position()}">
+                        <xsl:for-each select="tan:feature">
+                            <xsl:copy>
+                                <xsl:copy-of select="@*"/>
+                                <xsl:copy-of select="$counts[@xml:id = current()/@xml:id]/@count"/>
+                                <xsl:copy-of select="*"/>
+                            </xsl:copy>
+                        </xsl:for-each>
+                    </m>
+                </xsl:for-each>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:copy-of select="$pass-1"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:function>
+
 
     <xsl:function name="tan:feature-test-check" as="xs:boolean">
         <!--  Checks to see if a logical expression of morphological codes (+ synonyms) is found in a given value of <m>
@@ -250,7 +336,7 @@
             </xsl:choose>
         </xsl:copy>
     </xsl:template>
-    
+
     <xsl:function name="tan:add-tok-val" as="document-node()*">
         <!-- take a fully expanded TAN-LM file ($self4) and to each <tok> add the value of 
         the token chosen, as @val, and replacing any pre-existing @val with @val-orig -->
@@ -278,11 +364,12 @@
         <xsl:param name="src-tokenized" as="document-node()?"/>
         <xsl:variable name="this-ref" select="@ref"/>
         <xsl:variable name="this-n" select="@n"/>
-        <xsl:variable name="this-match" select="$src-tokenized/tan:TAN-T/tan:body//tan:div[@ref = $this-ref]/tan:tok[@n = $this-n]"/>
+        <xsl:variable name="this-match"
+            select="$src-tokenized/tan:TAN-T/tan:body//tan:div[@ref = $this-ref]/tan:tok[@n = $this-n]"/>
         <xsl:copy>
             <xsl:copy-of select="@*"/>
             <xsl:if test="@val">
-                <xsl:attribute name="val-orig" select="@val"></xsl:attribute>
+                <xsl:attribute name="val-orig" select="@val"/>
             </xsl:if>
             <xsl:attribute name="val" select="$this-match"/>
         </xsl:copy>

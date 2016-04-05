@@ -250,6 +250,7 @@
       <xsl:variable name="token-definitions"
          select="tan:get-token-definitions-per-source($self-expanded-1, $src-1st-da-resolved)"
          as="element()*"/>
+      <xsl:variable name="TAN-LM-expansions" select="tan:get-div-type-equivalents($self-expanded-1, $src-1st-da-resolved)"/>
       <xsl:variable name="TAN-A-div-expansions"
          select="
             tan:get-work-equivalents($self-expanded-1, $src-1st-da-resolved),

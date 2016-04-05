@@ -12,7 +12,8 @@ include "TAN-class-3.rnc" {
     decl-id-ref-opt = internal-id
     source-list = source-item*
     decl-non-core = TAN-rdf-decl
-    TAN-body-core = TAN-rdf-body
+    item = TAN-rdf-item
+    other-body-attributes = claimant, subject
 }
 TAN-rdf-decl = decl-work* & decl-place* & decl-verb+ & decl-unit* & decl-pers* & decl-mode* & decl-vers*
 decl-place =
@@ -52,7 +53,7 @@ decl-mode =
     
     ## contains an IRI + name pattern identifying a modal that qualifies an assertion.
     element modal { decl-pattern-default }
-TAN-rdf-body = claimant, subject, claim+
+TAN-rdf-item = claim+
 claim =
     element claim {
         inclusion

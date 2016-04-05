@@ -9,25 +9,25 @@ include "TAN-class-3.rnc" {
     ## all declarations must have ids
     decl-id-ref-opt = internal-id
     source-list = empty
+    
     ## No sense in having keywords refer by shorthand to other keywords
     keyword-ref = empty
     decl-non-core = TAN-key-decl
-    TAN-body-core = TAN-key-body
+    other-body-attributes = element-scope?
+    group-attributes = metadata-human, element-scope?
+    item = TAN-key-item
 }
 TAN-key-decl = empty
-TAN-key-body = element-scope, (group | item)+
-group =
-    
-    ## collects a group of items that have a natural affinity
-    element group { metadata-human, element-scope?, (group | item)* }
-item =
+TAN-key-item =
     
     ## names an item that is being described. The item is assumed to be a species of the type of thing discussed by the TAN element that is affected.
     element item {
         element-scope?,
-        (entity-digital-tan-other-ref | entity-digital-generic-ref | entity-nondigital-ref | entity-tok-def)
+        (entity-digital-tan-other-ref
+         | entity-digital-generic-ref
+         | entity-nondigital-ref
+         | entity-tok-def)
     }
-
 element-scope =
     
     ## names one or more TAN elements that the keywords apply to

@@ -306,13 +306,18 @@ TAN-body =
     
     ## contains the data
     element body { progress?, ed-stamp?, (comment* & TAN-body-core) }
-TAN-body-core = empty
-
-TAN-tail = 
-
-   ## permits any arbitrary content. Suitable as a placeholder for temporary data, especially to facilitate time-consuming validation routines. 
-element tail { any_content }?
-
+TAN-body-core = other-body-attributes, (group | item)+
+other-body-attributes = empty
+group =
+    
+    ## collects a group of items that have a natural affinity
+    element group { group-attributes, (group | item)* }
+group-attributes = empty
+item = empty
+TAN-tail =
+    
+    ## permits any arbitrary content. Suitable as a placeholder for temporary data, especially to facilitate time-consuming validation routines. 
+    element tail { any_content }?
 any_content = any_element* & text
 any_element = element * { any_attribute*, any_content }
 any_attribute = attribute * { text }
@@ -462,7 +467,6 @@ decl-work =
     
     ## This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works
     element work { decl-pattern-default }
-
 decl-vers =
     
     ## identifies the version of a work. Applicable to works that go through multiple versions, whether through revision, translation, or some other process. Like <work>, <version> points to a conceptual entity, not a physical one.

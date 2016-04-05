@@ -17,11 +17,12 @@ include "TAN-class-2.rnc" {
     ## Because TAN-LM files depend on only one source, no id references to sources are needed
     source-ref = empty
     id-option = empty
-    TAN-body-core = lexicon-attr, grammar-attr, TAN-LM-body-core
     
     ## TAN-LM files may have no more than one suppress-div-type field. Multiple div-types should be space delimited in @div-type-ref
     decl-supp-div-opt = decl-supp-div-type?
     continuation-opt = continuation
+    other-body-attributes = lexicon-attr, grammar-attr
+    item = TAN-LM-item
 }
 decl-morph =
     
@@ -53,7 +54,7 @@ grammar-attr =
     
     ## This attribute is inheritable. See main.xml#inheritable_attributes
     attribute morphology { d:IDREF }
-TAN-LM-body-core =
+TAN-LM-item =
     
     ## contains a one or more assertions about the lexical or morphological properties of one or more tokens
     element ana {
@@ -69,7 +70,7 @@ TAN-LM-body-core =
                    (comment*
                     & ((lexeme+, morph*) | (lexeme*, morph+)))
                }+)))
-    }+
+    }
 lexeme =
     
     ## names a lexeme. Points to the main word entry. Sholud not be used to point to roots, only lexical headwords. 

@@ -306,12 +306,12 @@ TAN-body =
     
     ## contains the data
     element body { progress?, ed-stamp?, (comment* & TAN-body-core) }
-TAN-body-core = other-body-attributes, (group | item)+
+TAN-body-core = other-body-attributes, (body-group | item)+
 other-body-attributes = empty
-group =
+body-group =
     
     ## collects a group of items that have a natural affinity
-    element group { group-attributes, (group | item)* }
+    element group { group-attributes, (body-group | item)* }
 group-attributes = empty
 item = empty
 TAN-tail =

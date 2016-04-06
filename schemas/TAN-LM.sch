@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://purl.oclc.org/dsdl/schematron"
    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
-   xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-   queryBinding="xslt2">
+   xmlns:tan="tag:textalign.net,2015:ns" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" queryBinding="xslt2">
    <title>Tests for TAN-LM files.</title>
    <!-- to do: 
       Check @only-if-has-features to make sure it matches either a @code or feature/@xml:id 
@@ -21,9 +21,19 @@
    <include href="TAN-class-2-quarter.sch"/>
    <include href="TAN-class-2-half.sch"/>
    <include href="TAN-class-2-full.sch"/>
-   <phase id="edit">
+   <!--<phase id="edit-no-SQFs">
+      <active pattern="LM-edit-no-SQFs"/>
+   </phase>-->
+   <!--<phase id="edit-test">
+      <active pattern="LM-edit-test"/>
+   </phase>-->
+   <!--<phase id="edit-missing-ls">
+      <!-\-<active pattern="class-2-edit"/>-\->
+      <active pattern="LM-edit-missing-ls"/>
+   </phase>-->
+   <phase id="edit-grouped-data">
       <active pattern="class-2-edit"/>
-      <active pattern="LM-edit"/>
+      <active pattern="LM-edit-grouped-data"/>
    </phase>
    <phase id="quarter">
       <active pattern="core"/>
@@ -47,9 +57,105 @@
       <active pattern="LM-full"/>
    </phase>
 
-   <pattern id="LM-edit">
-      <!--<let name="features-grouped" value="tan:group-by-IRIs($mory-1st-da-resolved/tan:TAN-mor/tan:head/tan:declarations/tan:feature)"/>-->
+   <sqf:fixes>
+      <sqf:fix id="delete-chosen-l-or-m">
+         <sqf:param name="l-or-m-element" type="element()"/>
+         <sqf:description>
+            <sqf:title>Delete a specific l or m (or entire lm if only one l exists)</sqf:title>
+         </sqf:description>
+         <let name="focus"
+            value="
+               if ($l-or-m-element/(following-sibling::tan:l, preceding-sibling::tan:l)) then
+                  $l-or-m-element
+               else
+                  $l-or-m-element/.."/>
+         <sqf:delete match="$focus, $focus/following-sibling::node()[1][self::text()]"/>
+      </sqf:fix>
+      <sqf:fix id="delete-chosen-l-or-m-globally">
+         <sqf:param name="l-or-m-element" type="element()"/>
+         <sqf:description>
+            <sqf:title>Delete instances of a l or m globally</sqf:title>
+         </sqf:description>
+         <let name="focus" value="tan:get-matching-ls-or-ms($l-or-m-element)"/>
+         <sqf:delete match="$focus, $focus/following-sibling::node()[1][self::text()]"/>
+      </sqf:fix>
+   </sqf:fixes>
+
+   <!--<pattern id="LM-edit-no-SQFs">
+      <let name="validation-top-limit" value="10"/>
+      <let name="validation-bottom-limit" value="100"/>
+      <rule context="tan:ana[parent::tan:group]">
+         <let name="this-ana" value="."/>
+         <let name="l-and-m-combos"
+            value="
+               for $i in tan:lm,
+                  $j in $i/tan:l,
+                  $k in $i/tan:m
+               return
+                  (count($i/preceding-sibling::tan:lm) + 1,
+                  count($j/preceding-sibling::tan:l) + 1,
+                  count($k/preceding-sibling::tan:m) + 1)"/>
+         <report test="count($l-and-m-combos) idiv 3 gt 1"> &lt;ana> has <value-of
+               select="count($l-and-m-combos) idiv 3"/> l+m combos (<value-of
+               select="
+                  for $i in tan:lm,
+                     $j in tan:expand-m($i/tan:m, true())
+                  return
+                     concat(string(number($j/@n) + count($i/preceding-sibling::tan:lm/tan:m)), ': ',
+                     string-join($j/tan:feature[number(@count) lt max((count($i/tan:m), 2))]/@xml:id, ' '))"
+            />) </report>
+      </rule>
+      <rule context="tan:l[ancestor::tan:group]">
+         <let name="fellow-ls" value="../../tan:lm/tan:l"/>
+         <report test="count($fellow-ls) gt 1">Multiple &lt;l>s</report>
+      </rule>
+      <rule context="tan:m[ancestor::tan:group]">
+         <let name="fellow-ms" value="../../tan:lm/tan:m"/>
+         <report test="count($fellow-ms) gt 1"><value-of
+               select="tan:expand-m(., false())/tan:feature/@xml:id"/></report>
+      </rule>
+   </pattern>-->
+   <!--<pattern id="LM-edit-test">
       <rule context="tan:ana">
+         <!-\-  delete-m-2 delete-m-3 -\->
+         <report sqf:fix="delete-m-1" test="count(.//tan:m) gt 1">Multiple ms.</report>
+         
+      </rule>
+   </pattern>-->
+   <!--<pattern id="LM-edit-missing-ls">
+      <let name="master-lexicon"
+         value="doc('../../../pre-TAN%20dev%20aids/pre-TAN-LM/grc/morphology%20grc.xml')"/>
+      <rule context="tan:l">
+         <let name="this-token" value="comment()"/>
+         <report test="not(text())">value missing</report>
+         <report test="comment() and exists($master-lexicon)" sqf:fix="find-match">Master lexicon
+            available to search on <value-of select="$this-token"/></report>
+         <sqf:fix id="find-match">
+            <sqf:description>
+               <sqf:title>Find regex matches in master lexicon on <value-of select="$this-token"
+                  /></sqf:title>
+            </sqf:description>
+            <let name="easier-search" value="tan:expand-search($this-token)"/>
+            <let name="matches"
+               value="$master-lexicon/*/tan:body/tan:e[tan:t[matches(., $easier-search, 'i')]]"/>
+            <!-\-<sqf:add position="after" select="$matches/tan:l"></sqf:add>-\->
+            <sqf:add match="." position="after">
+               <!-\-<tan:l><value-of select="count($matches)"></value-of></tan:l>-\->
+               <xsl:for-each-group select="$matches" group-by="tan:l">
+                  <xsl:text>&#xA;</xsl:text>
+                  <xsl:copy-of select="current-group()[1]/tan:l"/>
+                  <xsl:for-each select="current-group()">
+                     <xsl:text>&#xA;</xsl:text>
+                     <xsl:copy-of select="tan:m"/>
+                  </xsl:for-each>
+               </xsl:for-each-group>
+            </sqf:add>
+         </sqf:fix>
+      </rule>
+   </pattern>-->
+   <pattern id="LM-edit-grouped-data">
+      <!--<let name="features-grouped" value="tan:group-by-IRIs($mory-1st-da-resolved/tan:TAN-mor/tan:head/tan:declarations/tan:feature)"/>-->
+      <rule context="tan:ana[parent::tan:group]">
          <let name="this-ana" value="."/>
          <let name="l-and-m-combos"
             value="
@@ -66,22 +172,89 @@
                for $i in tan:lm
                return
                   ()"/>
-         <report test="count($l-and-m-combos) idiv 3 gt 1" sqf:fix="delete-1 delete-2 delete-3">
-            &lt;ana> has <value-of select="count($l-and-m-combos) idiv 3"/> options (<value-of
+         <report test="count($l-and-m-combos) idiv 3 gt 1"
+            sqf:fix="delete-combo-1 delete-combo-2 delete-combo-3 delete-combo-1-globally delete-combo-2-globally delete-combo-3-globally delete-l-1 delete-l-2 delete-l-3 delete-l-1-globally delete-l-2-globally delete-l-3-globally delete-m-1 delete-m-2 delete-m-3 delete-m-1-globally delete-m-2-globally delete-m-3-globally"
+            > &lt;ana> has <value-of select="count($l-and-m-combos) idiv 3"/> options (<value-of
                select="
                   for $i in tan:lm,
                      $j in tan:expand-m($i/tan:m, true())
                   return
-                     concat(string(number($j/@n) + count($i/preceding-sibling::tan:lm/tan:m)), ': ', 
+                     concat(string(number($j/@n) + count($i/preceding-sibling::tan:lm/tan:m)), ': ',
                      string-join($j/tan:feature[number(@count) lt max((count($i/tan:m), 2))]/@xml:id, ' '))"
             />) </report>
-         <sqf:fix id="delete-1">
+         <sqf:fix id="delete-combo-1">
             <sqf:description>
                <sqf:title>Delete l-m combination 1</sqf:title>
             </sqf:description>
-            <let name="this-lm" value="$this-ana/tan:lm[$l-and-m-combos[1]]"/>
-            <let name="this-l" value="$this-lm/tan:l[$l-and-m-combos[2]]"/>
-            <let name="this-m" value="$this-lm/tan:m[$l-and-m-combos[3]]"/>
+            <sqf:call-fix ref="delete-chosen-l-m-combo">
+               <sqf:with-param name="this-l"
+                  select="$this-ana/tan:lm[$l-and-m-combos[1]]/tan:l[$l-and-m-combos[2]]"/>
+               <sqf:with-param name="this-m"
+                  select="$this-ana/tan:lm[$l-and-m-combos[1]]/tan:m[$l-and-m-combos[3]]"/>
+            </sqf:call-fix>
+         </sqf:fix>
+         <sqf:fix id="delete-combo-2" use-when="count($l-and-m-combos) ge 6">
+            <sqf:description>
+               <sqf:title>Delete l-m combination 2</sqf:title>
+            </sqf:description>
+            <sqf:call-fix ref="delete-chosen-l-m-combo">
+               <sqf:with-param name="this-l"
+                  select="$this-ana/tan:lm[$l-and-m-combos[4]]/tan:l[$l-and-m-combos[5]]"/>
+               <sqf:with-param name="this-m"
+                  select="$this-ana/tan:lm[$l-and-m-combos[4]]/tan:m[$l-and-m-combos[6]]"/>
+            </sqf:call-fix>
+         </sqf:fix>
+         <sqf:fix id="delete-combo-3" use-when="count($l-and-m-combos) ge 9">
+            <sqf:description>
+               <sqf:title>Delete l-m combination 3</sqf:title>
+            </sqf:description>
+            <sqf:call-fix ref="delete-chosen-l-m-combo">
+               <sqf:with-param name="this-l"
+                  select="$this-ana/tan:lm[$l-and-m-combos[7]]/tan:l[$l-and-m-combos[8]]"/>
+               <sqf:with-param name="this-m"
+                  select="$this-ana/tan:lm[$l-and-m-combos[7]]/tan:m[$l-and-m-combos[9]]"/>
+            </sqf:call-fix>
+         </sqf:fix>
+         <sqf:fix id="delete-combo-1-globally">
+            <sqf:description>
+               <sqf:title>Delete l + m combination 1 globally</sqf:title>
+            </sqf:description>
+            <sqf:call-fix ref="delete-l-m-combo-globally">
+               <sqf:with-param name="this-l"
+                  select="$this-ana/tan:lm[$l-and-m-combos[1]]/tan:l[$l-and-m-combos[2]]"/>
+               <sqf:with-param name="this-m"
+                  select="$this-ana/tan:lm[$l-and-m-combos[1]]/tan:m[$l-and-m-combos[3]]"/>
+            </sqf:call-fix>
+         </sqf:fix>
+         <sqf:fix id="delete-combo-2-globally" use-when="count($l-and-m-combos) ge 6">
+            <sqf:description>
+               <sqf:title>Delete l + m combination 2 globally</sqf:title>
+            </sqf:description>
+            <sqf:call-fix ref="delete-l-m-combo-globally">
+               <sqf:with-param name="this-l"
+                  select="$this-ana/tan:lm[$l-and-m-combos[4]]/tan:l[$l-and-m-combos[5]]"/>
+               <sqf:with-param name="this-m"
+                  select="$this-ana/tan:lm[$l-and-m-combos[4]]/tan:m[$l-and-m-combos[6]]"/>
+            </sqf:call-fix>
+         </sqf:fix>
+         <sqf:fix id="delete-combo-3-globally" use-when="count($l-and-m-combos) ge 9">
+            <sqf:description>
+               <sqf:title>Delete l + m combination 3 globally</sqf:title>
+            </sqf:description>
+            <sqf:call-fix ref="delete-l-m-combo-globally">
+               <sqf:with-param name="this-l"
+                  select="$this-ana/tan:lm[$l-and-m-combos[7]]/tan:l[$l-and-m-combos[8]]"/>
+               <sqf:with-param name="this-m"
+                  select="$this-ana/tan:lm[$l-and-m-combos[7]]/tan:m[$l-and-m-combos[9]]"/>
+            </sqf:call-fix>
+         </sqf:fix>
+         <sqf:fix id="delete-chosen-l-m-combo">
+            <sqf:param name="this-l" type="element()"/>
+            <sqf:param name="this-m" type="element()"/>
+            <let name="this-lm" value="$this-l/.."/>
+            <sqf:description>
+               <sqf:title>Replace a chosen l + m combo</sqf:title>
+            </sqf:description>
             <sqf:delete use-when="count($this-lm/tan:l) eq 1 and count($this-lm/tan:m) eq 1"
                match="$this-lm, $this-lm/following-sibling::node()[1][self::text()]"/>
             <sqf:delete use-when="count($this-lm/tan:l) gt 1 and count($this-lm/tan:m) eq 1"
@@ -89,33 +262,123 @@
             <sqf:delete use-when="count($this-lm/tan:l) eq 1 and count($this-lm/tan:m) gt 1"
                match="$this-m, $this-m/following-sibling::node()[1][self::text()]"/>
          </sqf:fix>
-         <sqf:fix id="delete-2" use-when="count($l-and-m-combos) ge 6">
+         <sqf:fix id="delete-l-m-combo-globally">
+            <sqf:param name="this-l" type="element()"/>
+            <sqf:param name="this-m" type="element()"/>
+            <let name="all-matches" value="tan:get-matching-lm-combos($this-l, $this-m)"/>
             <sqf:description>
-               <sqf:title>Delete l-m combination 2</sqf:title>
+               <sqf:title>Replace chosen l + m combo globally</sqf:title>
             </sqf:description>
-            <let name="this-lm" value="$this-ana/tan:lm[$l-and-m-combos[4]]"/>
-            <let name="this-l" value="$this-lm/tan:l[$l-and-m-combos[5]]"/>
-            <let name="this-m" value="$this-lm/tan:m[$l-and-m-combos[6]]"/>
-            <sqf:delete use-when="count($this-lm/tan:l) eq 1 and count($this-lm/tan:m) eq 1"
-               match="$this-lm"/>
-            <sqf:delete use-when="count($this-lm/tan:l) gt 1 and count($this-lm/tan:m) eq 1"
-               match="$this-l"/>
-            <sqf:delete use-when="count($this-lm/tan:l) eq 1 and count($this-lm/tan:m) gt 1"
-               match="$this-m"/>
+            <sqf:delete
+               match="$all-matches, $all-matches/following-sibling::node()[1][self::text()]"/>
          </sqf:fix>
-         <sqf:fix id="delete-3" use-when="count($l-and-m-combos) ge 9">
+         <sqf:fix id="delete-l-1">
+            <let name="this-l" value="(.//tan:l)[1]"/>
             <sqf:description>
-               <sqf:title>Delete l-m combination 3</sqf:title>
+               <sqf:title>Delete <value-of select="$this-l"/></sqf:title>
             </sqf:description>
-            <let name="this-lm" value="$this-ana/tan:lm[$l-and-m-combos[7]]"/>
-            <let name="this-l" value="$this-lm/tan:l[$l-and-m-combos[8]]"/>
-            <let name="this-m" value="$this-lm/tan:m[$l-and-m-combos[9]]"/>
-            <sqf:delete use-when="count($this-lm/tan:l) eq 1 and count($this-lm/tan:m) eq 1"
-               match="$this-lm"/>
-            <sqf:delete use-when="count($this-lm/tan:l) gt 1 and count($this-lm/tan:m) eq 1"
-               match="$this-l"/>
-            <sqf:delete use-when="count($this-lm/tan:l) eq 1 and count($this-lm/tan:m) gt 1"
-               match="$this-m"/>
+            <sqf:call-fix ref="delete-chosen-l-or-m">
+               <sqf:with-param name="l-or-m-element" select="$this-l"/>
+            </sqf:call-fix>
+         </sqf:fix>
+         <sqf:fix id="delete-l-2" use-when="count(.//tan:l) gt 1">
+            <let name="this-l" value="(.//tan:l)[2]"/>
+            <sqf:description>
+               <sqf:title>Delete <value-of select="$this-l"/></sqf:title>
+            </sqf:description>
+            <sqf:call-fix ref="delete-chosen-l-or-m">
+               <sqf:with-param name="l-or-m-element" select="$this-l"/>
+            </sqf:call-fix>
+         </sqf:fix>
+         <sqf:fix id="delete-l-3" use-when="count(.//tan:l) gt 2">
+            <let name="this-l" value="(.//tan:l)[3]"/>
+            <sqf:description>
+               <sqf:title>Delete <value-of select="$this-l"/></sqf:title>
+            </sqf:description>
+            <sqf:call-fix ref="delete-chosen-l-or-m">
+               <sqf:with-param name="l-or-m-element" select="$this-l"/>
+            </sqf:call-fix>
+         </sqf:fix>
+         <sqf:fix id="delete-l-1-globally">
+            <let name="this-l" value="(.//tan:l)[1]"/>
+            <sqf:description>
+               <sqf:title>Delete <value-of select="$this-l"/> globally</sqf:title>
+            </sqf:description>
+            <sqf:call-fix ref="delete-chosen-l-or-m-globally">
+               <sqf:with-param name="l-or-m-element" select="$this-l"/>
+            </sqf:call-fix>
+         </sqf:fix>
+         <sqf:fix id="delete-l-2-globally" use-when="count(.//tan:l) gt 1">
+            <let name="this-l" value="(.//tan:l)[2]"/>
+            <sqf:description>
+               <sqf:title>Delete <value-of select="$this-l"/> globally</sqf:title>
+            </sqf:description>
+            <sqf:call-fix ref="delete-chosen-l-or-m-globally">
+               <sqf:with-param name="l-or-m-element" select="$this-l"/>
+            </sqf:call-fix>
+         </sqf:fix>
+         <sqf:fix id="delete-l-3-globally" use-when="count(.//tan:l) gt 2">
+            <let name="this-l" value="(.//tan:l)[3]"/>
+            <sqf:description>
+               <sqf:title>Delete <value-of select="$this-l"/> globally</sqf:title>
+            </sqf:description>
+            <sqf:call-fix ref="delete-chosen-l-or-m-globally">
+               <sqf:with-param name="l-or-m-element" select="$this-l"/>
+            </sqf:call-fix>
+         </sqf:fix>
+         <sqf:fix id="delete-m-1">
+            <let name="this-m" value="(.//tan:m)[1]"/>
+            <sqf:description>
+               <sqf:title>Delete <value-of select="$this-m"/></sqf:title>
+            </sqf:description>
+            <sqf:call-fix ref="delete-chosen-l-or-m">
+               <sqf:with-param name="l-or-m-element" select="$this-m"/>
+            </sqf:call-fix>
+         </sqf:fix>
+         <sqf:fix id="delete-m-2" use-when="count(.//tan:m) gt 1">
+            <let name="this-m" value="(.//tan:m)[2]"/>
+            <sqf:description>
+               <sqf:title>Delete <value-of select="$this-m"/></sqf:title>
+            </sqf:description>
+            <sqf:call-fix ref="delete-chosen-l-or-m">
+               <sqf:with-param name="l-or-m-element" select="$this-m"/>
+            </sqf:call-fix>
+         </sqf:fix>
+         <sqf:fix id="delete-m-3" use-when="count(.//tan:m) gt 2">
+            <let name="this-m" value="(.//tan:m)[3]"/>
+            <sqf:description>
+               <sqf:title>Delete <value-of select="$this-m"/></sqf:title>
+            </sqf:description>
+            <sqf:call-fix ref="delete-chosen-l-or-m">
+               <sqf:with-param name="l-or-m-element" select="$this-m"/>
+            </sqf:call-fix>
+         </sqf:fix>
+         <sqf:fix id="delete-m-1-globally">
+            <let name="this-m" value="(.//tan:m)[1]"/>
+            <sqf:description>
+               <sqf:title>Delete <value-of select="$this-m"/> globally</sqf:title>
+            </sqf:description>
+            <sqf:call-fix ref="delete-chosen-l-or-m-globally">
+               <sqf:with-param name="l-or-m-element" select="$this-m"/>
+            </sqf:call-fix>
+         </sqf:fix>
+         <sqf:fix id="delete-m-2-globally" use-when="count(.//tan:m) gt 1">
+            <let name="this-m" value="(.//tan:m)[2]"/>
+            <sqf:description>
+               <sqf:title>Delete <value-of select="$this-m"/> globally</sqf:title>
+            </sqf:description>
+            <sqf:call-fix ref="delete-chosen-l-or-m-globally">
+               <sqf:with-param name="l-or-m-element" select="$this-m"/>
+            </sqf:call-fix>
+         </sqf:fix>
+         <sqf:fix id="delete-m-3-globally" use-when="count(.//tan:m) gt 2">
+            <let name="this-m" value="(.//tan:m)[3]"/>
+            <sqf:description>
+               <sqf:title>Delete <value-of select="$this-m"/> globally</sqf:title>
+            </sqf:description>
+            <sqf:call-fix ref="delete-chosen-l-or-m-globally">
+               <sqf:with-param name="l-or-m-element" select="$this-m"/>
+            </sqf:call-fix>
          </sqf:fix>
       </rule>
    </pattern>

@@ -7,6 +7,9 @@
         <ref name="decl-non-class-1"/>
       </interleave>
     </define>
+    <define name="body-group">
+      <empty/>
+    </define>
   </include>
   <define name="decl-class-1">
     <a:documentation>Class 1 files must declare a single work, perhaps one version, one or more divisions, one or more recommended tokenizations, perhaps one filter, and perhaps one </a:documentation>
@@ -29,14 +32,6 @@
   <define name="decl-non-class-1">
     <a:documentation>Reserved for declarations specific to individual types of class 1 files</a:documentation>
     <empty/>
-  </define>
-  <define name="decl-vers">
-    <element name="version">
-      <a:documentation>states the version of the work has been transcribed. Applicable to text-bearing objects that have multiple versions of the same work such as a bilingual edition of a text.</a:documentation>
-      <a:documentation>Very few work-versions have their own URN names. It is advisable to assign a tag URN or a UUID. If you have used an IRI for &lt;work&gt; that you are entitled to modify, you may wish to add a suffix that will name the version. If you need to specify exactly where on a text-bearing object a version appears, &lt;desc&gt; or &lt;comment&gt; should be used.</a:documentation>
-      <a:documentation>This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works</a:documentation>
-      <ref name="decl-pattern-default"/>
-    </element>
   </define>
   <define name="decl-div">
     <element name="div-type">

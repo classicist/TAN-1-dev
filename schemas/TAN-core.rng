@@ -509,6 +509,33 @@
     </element>
   </define>
   <define name="TAN-body-core">
+    <ref name="other-body-attributes"/>
+    <oneOrMore>
+      <choice>
+        <ref name="body-group"/>
+        <ref name="item"/>
+      </choice>
+    </oneOrMore>
+  </define>
+  <define name="other-body-attributes">
+    <empty/>
+  </define>
+  <define name="body-group">
+    <element name="group">
+      <a:documentation>collects a group of items that have a natural affinity</a:documentation>
+      <ref name="group-attributes"/>
+      <zeroOrMore>
+        <choice>
+          <ref name="body-group"/>
+          <ref name="item"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="group-attributes">
+    <empty/>
+  </define>
+  <define name="item">
     <empty/>
   </define>
   <define name="TAN-tail">
@@ -835,6 +862,15 @@
     <element name="work">
       <a:documentation>indicates a creative work. Must be a conceptual entity, not a physical one.</a:documentation>
       <a:documentation>The term "work" is only pragmatically defined in TAN. Any text that has enough unity to be referred to in ordinary conversation as a single entity may be defined as a work. A work may be composed of other works, be a part of other works, or even overlap with other works. E.g., the Lord's Prayer, the Gospel of Luke, the Tetravengelion, the New Testament, and the Bible are all valid works, despite the complex relationship between each of these concepts.</a:documentation>
+      <a:documentation>This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works</a:documentation>
+      <ref name="decl-pattern-default"/>
+    </element>
+  </define>
+  <define name="decl-vers">
+    <element name="version">
+      <a:documentation>identifies the version of a work. Applicable to works that go through multiple versions, whether through revision, translation, or some other process. Like &lt;work&gt;, &lt;version&gt; points to a conceptual entity, not a physical one.</a:documentation>
+      <a:documentation>In the context of a class 1 file, the entity identified by &lt;version&gt; is assumed to be a version of the entity defined in &lt;work&gt;. In class 3 files, however, the relationship between &lt;version&gt; and &lt;work&gt; must be explicitly declared in a TAN-rdf file. </a:documentation>
+      <a:documentation>Very few work-versions have their own URN names. It is advisable to assign a tag URN or a UUID. If you have used an IRI for &lt;work&gt; that you are entitled to modify, you may wish to add a suffix that will name the version. If you need to specify exactly where on a text-bearing object a version appears, &lt;desc&gt; or &lt;comment&gt; should be used.</a:documentation>
       <a:documentation>This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works</a:documentation>
       <ref name="decl-pattern-default"/>
     </element>

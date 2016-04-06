@@ -10,7 +10,7 @@ namespace xlink = "http://www.w3.org/1999/xlink"
 
 datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
-# Schema generated from ODD source 2016-03-25T12:03:47Z. .
+# Schema generated from ODD source 2016-04-06T13:22:11Z. .
 # TEI Edition: Version 2.8.0. Last updated on
 #	6th April 2015, revision 13197
 # TEI Edition Location: http://www.tei-c.org/Vault/P5/Version 2.8.0/
@@ -262,7 +262,9 @@ div {
       
       ## contains the data
       element body { progress?, ed-stamp?, (comment* & TAN-body-core) }
-    TAN-body-core = empty
+    TAN-body-core = other-body-attributes, (body-group | item)+
+    other-body-attributes = empty
+    group-attributes = empty
     TAN-tail =
       
       ## permits any arbitrary content. Suitable as a placeholder for temporary data, especially to facilitate time-consuming validation routines. 
@@ -422,8 +424,19 @@ div {
       
       ## This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works
       element work { decl-pattern-default }
+    decl-vers =
+      
+      ## identifies the version of a work. Applicable to works that go through multiple versions, whether through revision, translation, or some other process. Like <work>, <version> points to a conceptual entity, not a physical one.
+      
+      ## In the context of a class 1 file, the entity identified by <version> is assumed to be a version of the entity defined in <work>. In class 3 files, however, the relationship between <version> and <work> must be explicitly declared in a TAN-rdf file. 
+      
+      ## Very few work-versions have their own URN names. It is advisable to assign a tag URN or a UUID. If you have used an IRI for <work> that you are entitled to modify, you may wish to add a suffix that will name the version. If you need to specify exactly where on a text-bearing object a version appears, <desc> or <comment> should be used.
+      
+      ## This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works
+      element version { decl-pattern-default }
   }
   decl-non-core = decl-class-1 & decl-non-class-1
+  body-group = empty
   
   ## Class 1 files must declare a single work, perhaps one version, one or more divisions, one or more recommended tokenizations, perhaps one filter, and perhaps one 
   decl-class-1 =
@@ -431,14 +444,6 @@ div {
   
   ## Reserved for declarations specific to individual types of class 1 files
   decl-non-class-1 = empty
-  decl-vers =
-    
-    ## states the version of the work has been transcribed. Applicable to text-bearing objects that have multiple versions of the same work such as a bilingual edition of a text.
-    
-    ## Very few work-versions have their own URN names. It is advisable to assign a tag URN or a UUID. If you have used an IRI for <work> that you are entitled to modify, you may wish to add a suffix that will name the version. If you need to specify exactly where on a text-bearing object a version appears, <desc> or <comment> should be used.
-    
-    ## This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works
-    element version { decl-pattern-default }
   decl-div =
     
     ## declares a type of textual division (e.g., title, paragraph, stanza). You may have as many <div-types> as you wish, and they need not all be used.

@@ -172,6 +172,63 @@
         </xsl:choose>
     </xsl:function>
 
+    <xsl:function name="tan:get-matching-lm-combos" as="element()*">
+        <!-- Input: one <l> and one <m>
+            Output: all matching combinations. If an <lm> has only one <l> and <m> (and both match)
+            then the entire <lm> is picked. If there's only one <l> and many <m>s then only the <m> is picked;
+            and vice versa. If there are many <m>s and <l>s then nothing is picked, since any alterations
+            to any <l> or <m> in that case would affect other <l> + <m> combos that have not been picked.
+            This function is useful for global deletions of a particular lexeme + 
+            morphological code pair.
+        -->
+        <xsl:param name="l-element" as="element()"/>
+        <xsl:param name="m-element" as="element()"/>
+        <xsl:variable name="matching-lms"
+            select="$l-element/ancestor::tan:body//tan:ana/tan:lm[tan:l = $l-element and tan:m = $m-element]"/>
+        <xsl:for-each select="$matching-lms">
+            <xsl:choose>
+                <xsl:when test="count(./tan:l) eq 1 and count(./tan:m) eq 1">
+                    <xsl:sequence select="."/>
+                </xsl:when>
+                <xsl:when test="count(./tan:l) gt 1 and count(./tan:m) eq 1">
+                    <xsl:sequence select="tan:l[. = $l-element]"/>
+                </xsl:when>
+                <xsl:when test="count(./tan:l) eq 1 and count(./tan:m) gt 1">
+                    <xsl:sequence select="tan:m[. = $m-element]"/>
+                </xsl:when>
+            </xsl:choose>
+        </xsl:for-each>
+    </xsl:function>
+    <xsl:function name="tan:get-matching-ls-or-ms" as="element()*">
+        <!-- Input: one <l> or one <m>
+            Output: all matching combinations. If an <lm> has only one <l>/<m>
+            then the entire <lm> is picked. Otherwise, it picks only the <l>/<m>
+            that matches.
+            This function is useful for global deletions of a particular lexeme or 
+            morphological code-->
+        <xsl:param name="l-or-m-element" as="element()"/>
+        <xsl:variable name="this-name" select="name($l-or-m-element)"/>
+        <xsl:variable name="complement-name"
+            select="
+                if ($this-name = 'l') then
+                    'm'
+                else
+                    'l'"
+        />
+        <xsl:variable name="these-matches"
+            select="$l-or-m-element/ancestor::tan:body//tan:ana/tan:lm[*[name(.) = $this-name and . = $l-or-m-element]]"
+        />
+        <xsl:for-each select="$these-matches">
+            <xsl:choose>
+                <xsl:when test="count(./*[name(.) = $this-name]) eq 1">
+                    <xsl:sequence select="."/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:sequence select="*[name(.) = $this-name and . = $l-or-m-element]"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:for-each>
+    </xsl:function>
 
     <xsl:function name="tan:feature-test-check" as="xs:boolean">
         <!--  Checks to see if a logical expression of morphological codes (+ synonyms) is found in a given value of <m>

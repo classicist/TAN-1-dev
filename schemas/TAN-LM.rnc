@@ -82,7 +82,6 @@ lexeme =
         ## identifies which definition is meant. Essential in cases where a lexicon has multiple entries for lexemes that are  orthographically indistinguishable.
         attribute def-ref { text }?,
         certainty-stamp,
-        item-pos-ref?,
         text
     }
 morph =

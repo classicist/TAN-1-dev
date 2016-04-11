@@ -59,5 +59,10 @@
             else
                tan:resolve-doc(document($i/@href), concat($i/@src, '-context'), false())"
    />
+   <xsl:function name="tan:convert-context" as="document-node()*">
+      <xsl:param name="class-2-self2" as="document-node()"/>
+      <xsl:param name="class-2-context-self2" as="document-node()*"/>
+      <xsl:param name=""/>
+   </xsl:function>
 
 </xsl:stylesheet>

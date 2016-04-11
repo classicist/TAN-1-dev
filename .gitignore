@@ -3,4 +3,5 @@
 *.xhtml
 *.pdf
 *.xml_xslt
+*0400.xml
 testing*

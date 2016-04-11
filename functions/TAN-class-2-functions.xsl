@@ -587,6 +587,9 @@
             </xsl:apply-templates>
          </xsl:when>
          <xsl:otherwise>
+            <xsl:variable name="orig-ref"
+               select="string-join((ancestor-or-self::tei:div, ancestor-or-self::tan:div)/@n, ' ')"
+            />
             <xsl:variable name="new-ns" as="xs:string*">
                <xsl:for-each
                   select="(ancestor-or-self::tei:div, ancestor-or-self::tan:div)[not(@type = $div-types-to-suppress)]">
@@ -609,10 +612,14 @@
                   <xsl:copy-of select="(($alias-specific, $alias-generic, $this-n))[1]"/>
                </xsl:for-each>
             </xsl:variable>
+            <xsl:variable name="new-ref" select="string-join($new-ns, ' ')"/>
             <!-- Homogenize tei:body element to tan:body -->
             <div>
                <xsl:copy-of select="@*"/>
-               <xsl:attribute name="ref" select="string-join($new-ns, ' ')"/>
+               <xsl:attribute name="ref" select="$new-ref"/>
+               <xsl:if test="not($orig-ref = $new-ref)">
+                  <xsl:attribute name="orig-ref" select="$orig-ref"/>
+               </xsl:if>
                <xsl:apply-templates mode="#current">
                   <xsl:with-param name="key-to-this-src" select="$key-to-this-src"/>
                </xsl:apply-templates>

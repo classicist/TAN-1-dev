@@ -467,6 +467,7 @@
             <xsl:if test="exists($these-nodes-to-build/tan:tok)">
                <tok>
                   <xsl:copy-of select="$these-nodes-to-build/tan:tok/@*"/>
+                  <xsl:copy-of select="$these-nodes-to-build/tan:tok/comment()"/>
                </tok>
             </xsl:if>
             <xsl:if test="exists($these-nodes-to-build/(tan:l, tan:m))">
@@ -661,6 +662,7 @@
          <tok attribute="cert"/>
          <tok attribute="ed-who"/>
          <tok attribute="ed-when"/>
+         <tok attribute="comment()"/>
          <preceding-tok-with-cont attribute="ref"/>
          <preceding-tok-with-cont attribute="val"/>
          <preceding-tok-with-cont attribute="pos"/>

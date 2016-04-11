@@ -145,7 +145,13 @@
 
    <!-- Results of step -->
    <xsl:variable name="src-elements" select="$head/tan:source"/>
-   <xsl:variable name="src-ids" select="($src-elements/@xml:id, '1')[1]" as="xs:string+"/>
+   <xsl:variable name="src-ids"
+      select="
+         if ($src-elements/@xml:id) then
+            $src-elements/@xml:id
+         else
+            '1'"
+      as="xs:string+"/>
 
    <!-- Resultant functions -->
    <xsl:function name="tan:expand-src-and-div-type-ref" as="element()*">
@@ -250,7 +256,8 @@
       <xsl:variable name="token-definitions"
          select="tan:get-token-definitions-per-source($self-expanded-1, $src-1st-da-resolved)"
          as="element()*"/>
-      <xsl:variable name="TAN-LM-expansions" select="tan:get-div-type-equivalents($self-expanded-1, $src-1st-da-resolved)"/>
+      <xsl:variable name="TAN-LM-expansions"
+         select="tan:get-div-type-equivalents($self-expanded-1, $src-1st-da-resolved)"/>
       <xsl:variable name="TAN-A-div-expansions"
          select="
             tan:get-work-equivalents($self-expanded-1, $src-1st-da-resolved),

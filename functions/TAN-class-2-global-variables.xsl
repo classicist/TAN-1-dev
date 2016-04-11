@@ -19,18 +19,45 @@
    <xsl:variable name="srcs-raw" select="tan:get-src-1st-da($src-filter)" as="document-node()*"/>
    <xsl:variable name="src-ids-picked"
       select="$src-ids[position() = tan:sequence-expand($src-filter, count($src-ids))]"/>
-   <xsl:variable name="srcs-resolved" select="tan:get-src-1st-da-resolved($srcs-raw, $src-ids-picked)"
-      as="document-node()*"/>
+   <xsl:variable name="srcs-resolved"
+      select="tan:get-src-1st-da-resolved($srcs-raw, $src-ids-picked)" as="document-node()*"/>
    <xsl:variable name="self2" select="tan:get-self-expanded-2($self1, $srcs-resolved)"/>
    <xsl:variable name="srcs-prepped" select="tan:get-src-1st-da-prepped($self2, $srcs-resolved)"
       as="document-node()*"/>
    <xsl:variable name="self3" select="tan:get-self-expanded-3($self2, $srcs-prepped)"/>
    <xsl:param name="ref-filter" select="$self3//(tan:anchor-div-ref, tan:div-ref)" as="element()*"/>
-   <xsl:variable name="srcs-prepped-and-filtered" select="tan:pick-prepped-class-1-data($ref-filter, $srcs-prepped, false())"/>
+   <xsl:variable name="srcs-prepped-and-filtered"
+      select="tan:pick-prepped-class-1-data($ref-filter, $srcs-prepped, false())"/>
    <xsl:variable name="srcs-tokenized" select="tan:get-src-1st-da-tokenized($self2, $srcs-prepped)"
       as="document-node()*"/>
-   <xsl:variable name="srcs-tokenized-and-filtered" select="tan:get-src-1st-da-tokenized($self2, $srcs-prepped-and-filtered)"
+   <xsl:variable name="srcs-tokenized-and-filtered"
+      select="tan:get-src-1st-da-tokenized($self2, $srcs-prepped-and-filtered)"
       as="document-node()*"/>
    <xsl:variable name="self4" select="tan:get-self-expanded-4($self3, $srcs-tokenized)"/>
+
+   <!-- CONTEXTUAL DATA -->
+   <xsl:variable name="srcs-base-uris" as="element()*">
+      <xsl:for-each select="$srcs-raw">
+         <xsl:variable name="pos" select="position()"/>
+         <base-uris src="{$src-ids[$pos]}" base="{base-uri()}"/>
+      </xsl:for-each>
+   </xsl:variable>
+   <xsl:variable name="srcs-context-1st-da-locations" as="element()*">
+      <xsl:for-each select="$srcs-resolved/*/tan:head/tan:see-also[tan:relationship/@which = 'context']">
+         <xsl:variable name="this-src" select="root()/*/@src"/>
+         <xsl:variable name="this-base" select="$srcs-base-uris[@src = $this-src]/@base"/>
+         <context src="{$this-src}" base="{$this-base}" 
+            href="{tan:first-loc-available(.,$this-base)}"/>
+      </xsl:for-each>
+   </xsl:variable>
+   <xsl:variable name="srcs-context-resolved"
+      select="
+         for $i in $srcs-context-1st-da-locations
+         return
+            if ($i/@href = '') then
+               $empty-doc
+            else
+               tan:resolve-doc(document($i/@href), concat($i/@src, '-context'), false())"
+   />
 
 </xsl:stylesheet>

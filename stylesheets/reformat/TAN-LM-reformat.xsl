@@ -12,6 +12,7 @@
         4. Re-sort
         5. Feedback
     -->
+   <xsl:param name="make-backup" as="xs:boolean" select="true()"/>
    <!-- This parameter takes a sequence of TAN sequence constructors (e.g., '1 - last', '4, 5, 
         last-4 - last-1'). If the parameter is not present, or if it is the zero-length string, 
         then no changes will be made. Then for every value, the <ana>s picked by the constructor 
@@ -69,21 +70,31 @@
             'ascending'"/>
    <xsl:variable name="name-of-node-on-which-to-sort"
       select="replace($p5-primary-sort, $descending-sort-regex, '')[. = $nodes-that-allowing-sorting]"/>
+   <!-- Regroup option after everything has been reformatted -->
+   <xsl:param name="p6-re-re-group-anas" as="xs:string*"/>
    <!-- Feedback and cleanup. -->
-   <xsl:variable name="p6-include-feedback" as="xs:boolean" select="true()"/>
+   <xsl:variable name="p7-include-feedback" as="xs:boolean" select="true()"/>
 
    <!-- ################################################################################# -->
 
    <!-- OUTPUT -->
    <xsl:template match="/">
       <!--<xsl:copy-of select="$srcs-tokenized"/>-->
-      <!--<xsl:copy-of select="$consolidated-doc"/>-->
+      <!--<xsl:copy-of select="$revised-tok-doc"/>-->
       <xsl:copy-of select="$final-results-with-feedback"/>
+      <xsl:if test="$make-backup">
+         <xsl:variable name="new-version-no" select="replace(string(current-dateTime()), '\D', '')"/>
+         <xsl:variable name="new-uri"
+            select="replace($doc-uri, '(.+)(\..+)$', concat('$1-', $new-version-no, '$2'))"/>
+         <xsl:result-document href="{$new-uri}">
+            <xsl:copy-of select="/"/>
+         </xsl:result-document>
+      </xsl:if>
    </xsl:template>
 
    <!-- Default template handling -->
    <xsl:template match="node()"
-      mode="re-group no-groups revise-tok consolidate-anas unconsolidate-anas re-sort feedback">
+      mode="re-group re-re-group no-groups revise-tok consolidate-anas unconsolidate-anas re-sort feedback">
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:apply-templates mode="#current"/>
@@ -96,21 +107,15 @@
          <xsl:apply-templates select="/" mode="re-group"/>
       </xsl:document>
    </xsl:variable>
+   <xsl:template match="tan:body" mode="re-group">
+      <xsl:copy-of select="tan:re-group-anas(., $p1-re-group-anas)"/>
+   </xsl:template>
    <xsl:template match="tan:group" mode="no-groups">
       <xsl:apply-templates mode="#current"/>
-   </xsl:template>
-   <xsl:template match="tan:body" mode="re-group" name="re-group">
-      <xsl:copy-of select="tan:re-group-anas(., $p1-re-group-anas)"/>
    </xsl:template>
    <xsl:function name="tan:re-group-anas" as="element()">
       <xsl:param name="body-to-re-group" as="element()"/>
       <xsl:param name="sequences-to-check" as="xs:string*"/>
-      <!--<xsl:variable name="sequences-to-check-adjusted"
-            select="
-                if (exists($sequences-to-check)) then
-                    $sequences-to-check
-                else
-                    $re-group-anas"/>-->
       <xsl:variable name="this-sequence" select="$sequences-to-check[1]"/>
       <xsl:variable name="ana-max" select="count($body-to-re-group/tan:ana)"/>
       <xsl:variable name="this-sequence-resolved"
@@ -127,12 +132,9 @@
             <xsl:copy-of select="tan:re-group-anas($new-body, $this-sequence[position() gt 1])"/>
          </xsl:when>
          <xsl:otherwise>
-            <!-- the complex ending to this XPath specifies that a blank text node that follows 
-                    an <ana> should also be moved to the group. -->
             <xsl:variable name="anas-to-group"
                select="
-                  $body-to-re-group/tan:ana[position() = $this-sequence-resolved]/(self::*,
-                  self::*/following-sibling::node()[1][self::text()])"/>
+                  $body-to-re-group/tan:ana[position() = $this-sequence-resolved]"/>
             <xsl:variable name="first-ana-to-group" select="$anas-to-group[1]"/>
             <xsl:variable name="new-body" as="element()">
                <body>
@@ -199,6 +201,7 @@
                   </xsl:if>
                </xsl:otherwise>
             </xsl:choose>
+            <xsl:copy-of select="$this-tok/comment()"/>
          </tok>
       </xsl:for-each>
    </xsl:template>
@@ -248,12 +251,16 @@
                <xsl:copy-of select="$this-frag/@*"/>
                <xsl:for-each select="$ana-comments/node()">
                   <xsl:variable name="this-comment" select="."/>
-                  <xsl:if test="not(some $i in preceding-sibling::node() satisfies deep-equal($i, $this-comment))">
+                  <xsl:if
+                     test="
+                        not(some $i in preceding-sibling::node()
+                           satisfies deep-equal($i, $this-comment))">
                      <xsl:copy-of select="."/>
                   </xsl:if>
                </xsl:for-each>
                <xsl:choose>
                   <xsl:when test="starts-with($combination-id, 'tok')">
+                     <xsl:copy-of select="$this-frag/tan:tok"/>
                      <xsl:choose>
                         <xsl:when test="exists($second-recombination)">
                            <xsl:for-each-group select="current-group()/tan:lm"
@@ -262,13 +269,17 @@
                                  <lm-comments>
                                     <xsl:copy-of select="current-group()/(comment(), tan:comment)"/>
                                  </lm-comments>
-                              </xsl:variable>                              <xsl:variable name="this-second-frag"
+                              </xsl:variable>
+                              <xsl:variable name="this-second-frag"
                                  select="tan:rebuild-ana-fragment(current-grouping-key())"/>
                               <lm>
                                  <xsl:copy-of select="$this-second-frag/tan:lm/@*"/>
                                  <xsl:for-each select="lm-comments/node()">
                                     <xsl:variable name="this-comment" select="."/>
-                                    <xsl:if test="not(some $i in preceding-sibling::node() satisfies deep-equal($i, $this-comment))">
+                                    <xsl:if
+                                       test="
+                                          not(some $i in preceding-sibling::node()
+                                             satisfies deep-equal($i, $this-comment))">
                                        <xsl:copy-of select="."/>
                                     </xsl:if>
                                  </xsl:for-each>
@@ -329,6 +340,7 @@
                            <xsl:if test="not($this-pos = 1)">
                               <xsl:attribute name="pos" select="$this-pos"/>
                            </xsl:if>
+                           <xsl:copy-of select="$this-tok/comment()"/>
                         </tok>
                         <lm>
                            <xsl:copy-of select="$this-lm/@*"/>
@@ -398,16 +410,26 @@
       </xsl:copy>
    </xsl:template>
 
-   <!-- STEP FIVE: FEEDBACK, FINAL CLEAN-UP -->
+   <!-- STEP FIVE: RE-REGROUP -->
+   <xsl:variable name="re-regrouped-doc" as="document-node()">
+      <xsl:document>
+         <xsl:apply-templates select="$re-sorted-doc" mode="re-re-group"/>
+      </xsl:document>
+   </xsl:variable>
+   <xsl:template match="tan:body" mode="re-re-group">
+      <xsl:copy-of select="tan:re-group-anas(., $p6-re-re-group-anas)"/>
+   </xsl:template>
+
+   <!-- STEP SIX: FEEDBACK, FINAL CLEAN-UP -->
    <xsl:variable name="final-results-with-feedback" as="document-node()">
       <xsl:choose>
-         <xsl:when test="$p6-include-feedback = true()">
+         <xsl:when test="$p7-include-feedback = true()">
             <xsl:document>
-               <xsl:apply-templates select="$re-sorted-doc" mode="feedback"/>
+               <xsl:apply-templates select="$re-regrouped-doc" mode="feedback"/>
             </xsl:document>
          </xsl:when>
          <xsl:otherwise>
-            <xsl:sequence select="$re-sorted-doc"/>
+            <xsl:sequence select="$re-regrouped-doc"/>
          </xsl:otherwise>
       </xsl:choose>
    </xsl:variable>
@@ -471,10 +493,11 @@ ana + l + m combination counts: <xsl:value-of select="count($orig-keys)"/> in or
    </comment></xsl:variable>
    <xsl:variable name="change-log-item" as="element()" xml:space="preserve"><change who="stylesheet" when="{current-dateTime()}">
          Reformatted version at <xsl:value-of select="$doc-uri"/>, using the following parameters: 
-           Groups: <xsl:value-of select="$p1-re-group-anas"/> 
+           Groups before reformatting: <xsl:value-of select="$p1-re-group-anas"/> 
            Convert to @pos/val: <xsl:value-of select="$p2-convert-tok-refs-to-pos-or-val"/> 
            Recombination: <xsl:value-of select="$combination-id"/> 
            Sorted by: <xsl:value-of select="$name-of-node-on-which-to-sort"/> (<xsl:value-of select="$sort-order"/>)
+           Groups after reformatting: <xsl:value-of select="$p6-re-re-group-anas"/> 
          </change></xsl:variable>
    <xsl:template match="tan:head" mode="feedback">
       <xsl:copy>

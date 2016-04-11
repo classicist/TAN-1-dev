@@ -14,7 +14,9 @@ div:before{
     content: attr(type) '.' attr(n) ' ';
 }
 /* DISPLAY */
-div{
+div,
+ana,
+lm{
     display: block;
 }
 comment{

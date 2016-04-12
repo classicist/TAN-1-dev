@@ -80,6 +80,16 @@
          <xsl:apply-templates mode="self-expanded-1" select="$self-breadcrumbed"/>
       </xsl:document>
    </xsl:function>
+   <xsl:function name="tan:get-self-expanded-1" as="document-node()*">
+      <xsl:param name="tan-doc" as="document-node()*"/>
+      <xsl:param name="leave-breadcrumbs" as="xs:boolean"/>
+      <xsl:for-each select="$tan-doc">
+         <xsl:variable name="self-breadcrumbed" select="tan:resolve-doc(., (), true())"/>
+         <xsl:document>
+            <xsl:apply-templates mode="self-expanded-1" select="$self-breadcrumbed"/>
+         </xsl:document>
+      </xsl:for-each>
+   </xsl:function>
    <xsl:template match="node()" mode="self-expanded-1">
       <xsl:copy>
          <xsl:copy-of select="@*"/>
@@ -116,7 +126,7 @@
             if (exists($these-sources)) then
                $these-sources
             else
-               1">
+               (root()/*/@src, 1)[1]">
          <xsl:variable name="this-src" select="."/>
          <xsl:for-each
             select="
@@ -925,10 +935,25 @@
          </xsl:for-each-group>
       </xsl:copy>
    </xsl:template>
+   <xsl:template match="tan:ana" mode="self-expanded-3">
+      <xsl:param name="self-expanded-2" as="document-node()?"/>
+      <xsl:param name="src-1st-da-prepped" as="document-node()*"/>
+      <xsl:variable name="shallow-picks" select="true()"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:for-each-group select="tan:tok"
+            group-by="count(preceding-sibling::*[not(@cont)])">
+            <xsl:copy-of
+               select="tan:expand-ref(current-group(), $shallow-picks, $src-1st-da-prepped)"
+            />
+         </xsl:for-each-group>
+         <xsl:copy-of select="node()[not(self::tan:tok)]"/>
+      </xsl:copy>
+   </xsl:template>
 
    <!-- functions for step -->
    <xsl:function name="tan:expand-ref" as="element()*">
-      <!-- takes any elements that has compound values for @ref. Returns one copy per element
+      <!-- takes any elements that have compound values for @ref. Returns one copy per element
          per ref, replacing @ref with normalized single reference, putting the original value
          of @ref into @orig-ref, adding @cont
          for all but the last element for a group of elements that correspond to a single element, and
@@ -978,7 +1003,7 @@
       <xsl:copy-of
          select="tan:select-divs($elements-with-ref-norm, $shallow-picks, $src-1st-da-prepped)"/>
    </xsl:function>
-   <xsl:function name="tan:select-divs" xml:id="f-itemize-bare-refs" as="element()*">
+   <xsl:function name="tan:select-divs" as="element()*">
       <!-- Turns an element with a single @src and a normalized but compound @ref string into a sequence of 
          <div>s chosen in the prepped documents supplied. 
          Input: (1) Element with a single value for @src and normalized value of @ref; (2) indication whether picks 

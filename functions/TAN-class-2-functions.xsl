@@ -8,7 +8,7 @@
 
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Updated </xd:b>March 4, 2016</xd:p>
+         <xd:p><xd:b>Updated </xd:b>April 12, 2016</xd:p>
          <xd:p>Core variables and functions for class 2 TAN files (i.e., applicable to multiple
             class 2 TAN file types). Written principally for Schematron validation, but suitable for
             general use in other contexts.</xd:p>
@@ -214,7 +214,14 @@
          <xsl:choose>
             <xsl:when test="matches(., '[-,] ')">
                <xsl:variable name="seq-exp" select="tan:sequence-expand(., count($src-elements))"/>
-               <xsl:copy-of select="$src-elements[position() = $seq-exp]/(@xml:id, '1')[1]"/>
+               <xsl:variable name="poss-ids" select="$src-elements[position() = $seq-exp]/@xml:id"/>
+               <xsl:copy-of
+                  select="
+                     if (exists($poss-ids)) then
+                        $poss-ids
+                     else
+                        '1'"
+               />
             </xsl:when>
             <xsl:when test=". = $src-ids">
                <xsl:copy-of select="."/>
@@ -1279,6 +1286,19 @@
 
 
    <!-- PART III.
+      CONTEXTUAL FUNCTIONS
+   -->
+   <!-- In this part, a context is a <see-also> with a <relationship which="context"/>. 
+      Contexts are class 2 files or TAN-rdf files that provide supplementary TAN data. 
+      For example, a TAN-T transcription may
+      point to a contextual TAN-LM file for lexico-morphological data, or to 
+      a TAN-A-div file that aligns it with others. Or a TAN-A-div file may directly supply
+      context TAN-LM files for its sources. The following functions assume a class 2 file 
+      as a kind of hub, from which the spokes of its sources (the TAN-T(EI) files) might
+      lead to contextual information.
+   -->
+   
+   <!-- PART IV.
       FUNCTIONS USEFUL FOR VALIDATION, CALCULATION
    -->
 

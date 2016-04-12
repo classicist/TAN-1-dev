@@ -592,18 +592,13 @@
         <xsl:param name="src-ids" as="xs:string*"/>
         <xsl:param name="leave-breadcrumbs" as="xs:boolean"/>
         <xsl:variable name="docs-breadcrumbed" as="document-node()*">
-            <xsl:choose>
-                <xsl:when test="$leave-breadcrumbs = true()">
-                    <xsl:for-each select="$TAN-documents">
-                        <xsl:copy>
-                            <xsl:apply-templates mode="leave-breadcrumbs"/>
-                        </xsl:copy>
-                    </xsl:for-each>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:sequence select="$TAN-documents"/>
-                </xsl:otherwise>
-            </xsl:choose>
+            <xsl:for-each select="$TAN-documents">
+                <xsl:copy>
+                    <xsl:apply-templates mode="first-stamp">
+                        <xsl:with-param name="leave-breadcrumbs" select="$leave-breadcrumbs"/>
+                    </xsl:apply-templates>
+                </xsl:copy>
+            </xsl:for-each>
         </xsl:variable>
         <xsl:for-each select="$docs-breadcrumbed">
             <xsl:variable name="pos" select="position()"/>
@@ -827,7 +822,22 @@
     </xsl:template>
 
     <!-- Mode-specific templates -->
-    <xsl:template match="node()" mode="leave-breadcrumbs">
+    <xsl:template match="/*" mode="first-stamp">
+        <xsl:param name="leave-breadcrumbs" as="xs:boolean?"/>
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:attribute name="base-uri" select="base-uri()"/>
+            <xsl:choose>
+                <xsl:when test="$leave-breadcrumbs = true()">
+                    <xsl:apply-templates mode="#current"></xsl:apply-templates>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:copy-of select="node()"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:copy>
+    </xsl:template>
+    <xsl:template match="node()" mode="first-stamp">
         <xsl:variable name="this-element-name" select="name(.)"/>
         <xsl:copy>
             <xsl:copy-of select="@*"/>

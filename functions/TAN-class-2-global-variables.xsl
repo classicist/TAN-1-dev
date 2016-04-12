@@ -53,7 +53,7 @@
             else
                tan:resolve-doc(document($i/@href), $i/@src, false())"/>
    <xsl:variable name="srcs-context-1" as="document-node()*"
-      select="tan:get-self-expanded-1($srcs-context-resolved, true())"/>
+      select="tan:get-self-expanded-1($srcs-context-resolved, false())"/>
    <xsl:variable name="srcs-context-2" as="document-node()*">
       <xsl:for-each select="$srcs-context-1">
          <xsl:variable name="this-src" select="*/@src"/>

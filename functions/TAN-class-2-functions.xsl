@@ -605,8 +605,7 @@
          </xsl:when>
          <xsl:otherwise>
             <xsl:variable name="orig-ref"
-               select="string-join((ancestor-or-self::tei:div, ancestor-or-self::tan:div)/@n, ' ')"
-            />
+               select="string-join((ancestor-or-self::tei:div, ancestor-or-self::tan:div)/@n, ' ')"/>
             <xsl:variable name="new-ns" as="xs:string*">
                <xsl:for-each
                   select="(ancestor-or-self::tei:div, ancestor-or-self::tan:div)[not(@type = $div-types-to-suppress)]">
@@ -948,11 +947,9 @@
       <xsl:variable name="shallow-picks" select="true()"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
-         <xsl:for-each-group select="tan:tok"
-            group-by="count(preceding-sibling::*[not(@cont)])">
+         <xsl:for-each-group select="tan:tok" group-by="count(preceding-sibling::*[not(@cont)])">
             <xsl:copy-of
-               select="tan:expand-ref(current-group(), $shallow-picks, $src-1st-da-prepped)"
-            />
+               select="tan:expand-ref(current-group(), $shallow-picks, $src-1st-da-prepped)"/>
          </xsl:for-each-group>
          <xsl:copy-of select="node()[not(self::tan:tok)]"/>
       </xsl:copy>
@@ -1297,7 +1294,217 @@
       as a kind of hub, from which the spokes of its sources (the TAN-T(EI) files) might
       lead to contextual information.
    -->
-   
+
+   <xsl:function name="tan:get-context-prepped" as="document-node()*">
+      <!-- Input: a class 2 document, transformed to level $self2 or higher; one or more contextual class 2 documents
+      whose should reference system should be reconciled to the first document; the intervening source documents, in both
+      prepped and resolved forms.
+      Output: the class 2 context documents, with values converted (where needed) to the main class 2 document
+      
+      This function is used primarily in the context of a TAN-A-div file, where one finds supplementary TAN-LM and TAN-A-tok
+      data that provides contextual information about source documents. This function will convert those satellite class 2 files
+      to the naming conventions adopted in the original class 2 files. Because the prepped sources are oftentimes the intermediary,
+      they are like a spoke connecting the original document (the hub) to the contextual documents (the rim).
+      -->
+      <xsl:param name="class-2-self3" as="document-node()"/>
+      <xsl:param name="class-2-context-self2" as="document-node()*"/>
+      <xsl:param name="srcs-prepped" as="document-node()*"/>
+      <xsl:param name="srcs-resolved" as="document-node()*"/>
+      <xsl:variable name="hub" select="$class-2-self3"/>
+      <xsl:variable name="hub-srcs" select="$hub/*/tan:head/tan:source"/>
+      <xsl:variable name="hub-sdts" select="$hub/*/tan:head/tan:declarations/tan:suppress-div-types"/>
+      <xsl:variable name="hub-tds" select="$hub/*/tan:head/tan:declarations/tan:token-definition"/>
+      <xsl:variable name="hub-rdns" select="$hub/*/tan:head/tan:declarations/tan:rename-div-ns"/>
+      <xsl:variable name="spokes" select="$srcs-prepped"/>
+      <xsl:variable name="rim" as="document-node()*">
+         <xsl:for-each select="$class-2-context-self2">
+            <xsl:variable name="these-srcs" select="*/tan:head/tan:source"/>
+            <xsl:variable name="src-key" as="element()*">
+               <xsl:choose>
+                  <xsl:when test="tan:TAN-LM">
+                     <src-key old="1" new="{tan:TAN-LM/@src}"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:for-each select="$hub-srcs">
+                        <xsl:variable name="this-hub-src" select="."/>
+                        <src-key old="{$these-srcs[tan:IRI = $this-hub-src/tan:IRI]/@xml:id}"
+                           new="{@xml:id}"/>
+                     </xsl:for-each>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:variable>
+            <xsl:document>
+               <xsl:apply-templates mode="prep-rim-pass-1">
+                  <xsl:with-param name="src-key" select="$src-key"/>
+               </xsl:apply-templates>
+            </xsl:document>
+         </xsl:for-each>
+      </xsl:variable>
+      <xsl:for-each select="$rim">
+         <xsl:variable name="this-rims-spokes"
+            select="
+               for $i in */tan:head/tan:source
+               return
+                  $spokes[tan:TAN-T/@id = $i/tan:IRI]"/>
+         <xsl:variable name="this-rims-src" select="$this-rims-spokes/tan:TAN-T/@src"/>
+         <xsl:variable name="rim-is-multi-src"
+            select="
+               if (tan:TAN-LM) then
+                  false()
+               else
+                  true()"/>
+         <xsl:variable name="this-rims-sdts"
+            select="
+               */tan:head/tan:declarations/tan:suppress-div-types[if ($rim-is-multi-src = true()) then
+                  tokenize((@src, '1')[1], '\s+') = $this-rims-src
+               else
+                  true()]"/>
+         <xsl:variable name="this-rims-tds"
+            select="
+               */tan:head/tan:declarations/tan:token-definition[if ($rim-is-multi-src = true()) then
+                  tokenize((@src, '1')[1], '\s+') = $this-rims-src
+               else
+                  true()]"/>
+         <xsl:variable name="this-rims-rdns"
+            select="
+               */tan:head/tan:declarations/tan:rename-div-ns[if ($rim-is-multi-src = true()) then
+                  tokenize((@src, '1')[1], '\s+') = $this-rims-src
+               else
+                  true()]"/>
+         <xsl:document>
+            <xsl:choose>
+               <!-- First two tests weed out non-starters: differences between rim and hub over 
+                  suppressed div types and token definitions -->
+               <xsl:when
+                  test="
+                     not(every $i in $this-rims-sdts
+                        satisfies
+                        some $j in $hub-sdts[tokenize((@src, '1')[1], '\s+') = $this-rims-src]
+                           satisfies deep-equal($i, $j)) or not(every $i in $hub-sdts[tokenize((@src, '1')[1], '\s+') = $this-rims-src]
+                        satisfies
+                        some $j in $this-rims-sdts
+                           satisfies deep-equal($i, $j))">
+                  <xsl:document>
+                     <error src="{$this-rims-src}">Reconcile suppress-div-types before using this
+                        function. <xsl:copy-of select="$this-rims-sdts"/>
+                        <xsl:copy-of
+                           select="$hub-sdts[tokenize((@src, '1')[1], '\s+') = $this-rims-src]"/>
+                     </error>
+                  </xsl:document>
+               </xsl:when>
+               <xsl:when
+                  test="not($this-rims-tds/@regex = $hub-tds[tokenize((@src, '1')[1], '\s+')]/@regex)">
+                  <xsl:document>
+                     <xsl:copy-of select="$rim"/>
+                     <error src="{$this-rims-src}">Reconcile token-definitions before using this
+                        function. <these-srcs><xsl:value-of select="$this-rims-src"/></these-srcs>
+                        <xsl:copy-of select="*/tan:head/tan:declarations/tan:token-definition"/>
+                     </error>
+                  </xsl:document>
+               </xsl:when>
+               <xsl:when
+                  test="not(exists($this-rims-rdns) or exists($hub-rdns[tokenize((@src, '1')[1], '\s+') = $this-rims-src]))">
+                  <!-- If neither rim nor hub rename any div types, then just proceed -->                  
+                  <xsl:sequence select="."/>
+               </xsl:when>
+               <xsl:otherwise>
+                  <!-- If we've gotten here, then the rim or the hub rename div types, and they need to be reconciled. 
+                  The strategy is to get two version of the spoke: one that reflects the naming covention of the hub, 
+                  the other for the rim. One then traverses from the rim through the two spokes to the hub, or vice
+                  versa: rim ⇄ spoke-prepped-for-rim ⇄ spoke-prepped-for-hub ⇄ hub
+                  Of these four files, we are missing only the second.
+                  -->
+                  <xsl:variable name="spokes-prepped-for-rim"
+                     select="tan:get-src-1st-da-prepped(., $srcs-resolved[*/@src = $this-rims-src])"
+                  />
+                  <xsl:variable name="conversions" as="element()*">
+                     <xsl:for-each select="$this-rims-src">
+                        <xsl:variable name="this-src" select="."/>
+                        <xsl:for-each
+                           select="$spokes-prepped-for-rim/tan:TAN-T[@src = $this-src]/tan:body//tan:div">
+                           <xsl:variable name="rim-ref" select="@ref"/>
+                           <xsl:variable name="rim-spoke-ref" select="(@orig-ref, @ref)[1]"/>
+                           <xsl:variable name="hub-ref"
+                              select="$srcs-prepped/*[@src = $this-src]/tan:body//tan:div[(@orig-ref, @ref)[1] = $rim-spoke-ref]/@ref"/>
+                           <convert src="{$this-src}" old="{$rim-ref}" new="{$hub-ref}"/>
+                        </xsl:for-each>
+                     </xsl:for-each>
+                  </xsl:variable>
+                  <xsl:variable name="rim-self-3" as="document-node()*"
+                     select="tan:get-self-expanded-3(., $spokes-prepped-for-rim)"/>
+                  <!-- reconciled output -->
+                  <xsl:apply-templates select="$rim-self-3" mode="prep-rim-pass-2">
+                     <xsl:with-param name="key" select="$conversions"/>
+                  </xsl:apply-templates>
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:document>
+      </xsl:for-each>
+   </xsl:function>
+   <xsl:template match="node()" mode="prep-rim-pass-1">
+      <xsl:param name="src-key" as="element()*"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:apply-templates mode="#current">
+            <xsl:with-param name="src-key" select="$src-key"/>
+         </xsl:apply-templates>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:source" mode="prep-rim-pass-1">
+      <xsl:param name="src-key" as="element()*"/>
+      <!-- allow fallback of '1' in case the file is TAN-LM (i.e., no src ids) -->
+      <xsl:variable name="this-id" select="(@xml:id, '1')[1]"/>
+      <xsl:variable name="new-id" select="$src-key[@old = $this-id]/@new"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:attribute name="xml:id" select="($new-id, @xml:id)[1]"/>
+         <xsl:copy-of select="node()"/>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template
+      match="tan:anchor-div-ref | tan:div-ref | tan:div-type-ref | tan:equate-works | tan:rename-div-ns | tan:suppress-div-types | tan:tok | tan:token-definition"
+      mode="prep-rim-pass-1">
+      <xsl:param name="src-key" as="element()*"/>
+      <xsl:variable name="these-srcs" select="tokenize((@src, '1')[1], '\s+')" as="xs:string*"/>
+      <xsl:variable name="new-srcs"
+         select="
+            for $i in $these-srcs
+            return
+               if ($src-key[@old = $i]) then
+                  ($src-key[@old = $i]/@new)
+               else
+                  $i"
+         as="xs:string*"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:attribute name="src" select="$new-srcs"/>
+         <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="node()" mode="prep-rim-pass-2">
+      <xsl:param name="key" as="element()*"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:apply-templates mode="#current">
+            <xsl:with-param name="key" select="$key"/>
+         </xsl:apply-templates>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:anchor-div-ref | tan:div-ref | tan:tok" mode="prep-rim-pass-2">
+      <xsl:param name="key" as="element()*"/>
+      <xsl:variable name="this-src" select="@src"/>
+      <xsl:variable name="this-ref" select="@ref"/>
+      <xsl:variable name="new-ref" as="xs:string"
+         select="$key[@src = $this-src][@old = $this-ref]/@new"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:attribute name="ref" select="$new-ref"/>
+         <xsl:apply-templates mode="#current">
+            <xsl:with-param name="key" select="$key"/>
+         </xsl:apply-templates>
+      </xsl:copy>
+   </xsl:template>
+
    <!-- PART IV.
       FUNCTIONS USEFUL FOR VALIDATION, CALCULATION
    -->

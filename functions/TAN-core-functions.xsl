@@ -720,7 +720,7 @@
         </xsl:variable>
         <xsl:variable name="new-sequence" as="node()*">
             <xsl:for-each select="$elements-to-be-checked-for-inclusion">
-                <xsl:variable name="this-base-uri" select="(root()/*/@uri, base-uri(.))[1]"
+                <xsl:variable name="this-base-uri" select="(root()/*/@base-uri, base-uri(.))[1]"
                     as="xs:anyURI"/>
                 <xsl:variable name="this-root" select="root(.)"/>
                 <xsl:variable name="this-element" select="."/>

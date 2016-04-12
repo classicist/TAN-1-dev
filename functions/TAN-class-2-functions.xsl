@@ -241,7 +241,7 @@
       <!-- zero-parameter version of the next function -->
       <xsl:copy-of select="tan:get-src-1st-da-resolved(tan:get-src-1st-da(), $src-ids)"/>
    </xsl:function>
-   <xsl:function name="tan:get-src-1st-da-resolved" xml:id="v-src-1st-da-resolved">
+   <xsl:function name="tan:get-src-1st-da-resolved">
       <xsl:param name="picked-class-1-docs" as="document-node()*"/>
       <xsl:param name="picked-src-ids" as="xs:string*"/>
       <xsl:copy-of select="tan:resolve-doc($picked-class-1-docs, $picked-src-ids, false())"/>

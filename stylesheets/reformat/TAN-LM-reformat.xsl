@@ -94,7 +94,7 @@
 
    <!-- Default template handling -->
    <xsl:template match="node()"
-      mode="re-group re-re-group no-groups revise-tok consolidate-anas unconsolidate-anas re-sort feedback">
+      mode="re-group re-re-group no-groups revise-tok consolidate-anas re-sort feedback">
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:apply-templates mode="#current"/>
@@ -210,9 +210,10 @@
    <xsl:variable name="unconsolidated-doc" as="document-node()">
       <xsl:choose>
          <xsl:when test="exists($combination-id)">
-            <xsl:document>
+            <!--<xsl:document>
                <xsl:apply-templates select="$revised-tok-doc" mode="unconsolidate-anas"/>
-            </xsl:document>
+            </xsl:document>-->
+            <xsl:copy-of select="tan:unconsolidate-tan-lm($revised-tok-doc, $srcs-tokenized)"/>
          </xsl:when>
          <xsl:otherwise>
             <xsl:copy-of select="$revised-tok-doc"/>
@@ -310,57 +311,7 @@
          </xsl:for-each-group>
       </xsl:copy>
    </xsl:template>
-   <xsl:template match="tan:ana" mode="unconsolidate-anas">
-      <xsl:variable name="this-ana" select="."/>
-      <xsl:for-each select="tan:tok[not(@cont)]">
-         <xsl:variable name="this-tok" select="."/>
-         <xsl:variable name="this-ref-norm" select="tan:normalize-refs(@ref)"/>
-         <xsl:variable name="this-val-norm" select="(@val, '.')[1]"/>
-         <xsl:variable name="that-div"
-            select="$srcs-tokenized/tan:TAN-T/tan:body//tan:div[@ref = $this-ref-norm]"/>
-         <xsl:variable name="tok-ceiling" select="count($that-div/tan:tok)"/>
-         <xsl:variable name="this-pos-norm"
-            select="
-               if (@pos) then
-                  tan:sequence-expand(@pos, $tok-ceiling)
-               else
-                  1"/>
-         <xsl:for-each select="$this-pos-norm">
-            <xsl:variable name="this-pos" select="."/>
-            <xsl:for-each select="$this-ana/tan:lm">
-               <xsl:variable name="this-lm" select="."/>
-               <xsl:for-each select="tan:l">
-                  <xsl:variable name="this-l" select="."/>
-                  <xsl:for-each select="$this-lm/tan:m">
-                     <xsl:variable name="this-m" select="."/>
-                     <ana>
-                        <xsl:copy-of select="$this-ana/(comment(), tan:comment)"/>
-                        <tok>
-                           <xsl:copy-of select="$this-tok/@*"/>
-                           <xsl:if test="not($this-pos = 1)">
-                              <xsl:attribute name="pos" select="$this-pos"/>
-                           </xsl:if>
-                           <xsl:copy-of select="$this-tok/comment()"/>
-                        </tok>
-                        <lm>
-                           <xsl:copy-of select="$this-lm/@*"/>
-                           <xsl:copy-of select="$this-lm/(comment(), tan:comment)"/>
-                           <l>
-                              <xsl:copy-of select="$this-l/@*"/>
-                              <xsl:copy-of select="$this-l/node()"/>
-                           </l>
-                           <m>
-                              <xsl:copy-of select="$this-m/@*"/>
-                              <xsl:copy-of select="$this-m/node()"/>
-                           </m>
-                        </lm>
-                     </ana>
-                  </xsl:for-each>
-               </xsl:for-each>
-            </xsl:for-each>
-         </xsl:for-each>
-      </xsl:for-each>
-   </xsl:template>
+   
 
    <!-- STEP FOUR: RE-SORT -->
    <xsl:variable name="re-sorted-doc" as="document-node()">

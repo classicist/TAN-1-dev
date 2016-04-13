@@ -84,7 +84,13 @@
       <xsl:param name="tan-doc" as="document-node()*"/>
       <xsl:param name="leave-breadcrumbs" as="xs:boolean"/>
       <xsl:for-each select="$tan-doc">
-         <xsl:variable name="self-breadcrumbed" select="tan:resolve-doc(., (), true())"/>
+         <xsl:variable name="self-breadcrumbed"
+            select="
+               if (/*/@base-uri) then
+                  .
+               else
+                  tan:resolve-doc(., (), $leave-breadcrumbs)"
+            as="document-node()"/>
          <xsl:document>
             <xsl:apply-templates mode="self-expanded-1" select="$self-breadcrumbed"/>
          </xsl:document>
@@ -1278,9 +1284,39 @@
 
    <!-- This concludes functions and templates essential to transforming all class-2 files. 
       This is not the end of the story, however, since specific class-2 formats require further 
-      transformation for other purposes.
+      transformation for other purposes. Also, below are some helpful, optional transformations
    -->
 
+   <xsl:function name="tan:get-src-1st-da-with-lms" as="document-node()">
+      <!-- For now, this function assumes that every TAN-LM document pertains to
+      the tokenized class-1 doc -->
+      <xsl:param name="tokenized-class-1-doc" as="document-node()"/>
+      <xsl:param name="prepped-tan-lm-docs" as="document-node()*"/>
+      <xsl:document>
+         <xsl:apply-templates select="$tokenized-class-1-doc" mode="add-lm-to-tok">
+            <xsl:with-param name="tan-lms" select="$prepped-tan-lm-docs"/>
+         </xsl:apply-templates>
+      </xsl:document>
+   </xsl:function>
+   <xsl:template match="node()" mode="add-lm-to-tok">
+      <xsl:param name="tan-lms" as="document-node()*"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:apply-templates mode="add-lm-to-tok">
+            <xsl:with-param name="tan-lms" select="$tan-lms"/>
+         </xsl:apply-templates>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:tok" mode="add-lm-to-tok">
+      <xsl:param name="tan-lms" as="document-node()*"/>
+      <xsl:variable name="this-ref" select="../@ref"/>
+      <xsl:variable name="this-n" select="@n"/>
+      <xsl:copy>
+         <xsl:copy-of select="node()"/>
+         <xsl:copy-of select="$tan-lms/tan:TAN-LM/tan:body/tan:ana[tan:tok[@ref = $this-ref 
+            and @pos = $this-n]]/tan:lm"/>
+      </xsl:copy>
+   </xsl:template>
 
    <!-- PART III.
       CONTEXTUAL FUNCTIONS
@@ -1404,7 +1440,7 @@
                </xsl:when>
                <xsl:when
                   test="not(exists($this-rims-rdns) or exists($hub-rdns[tokenize((@src, '1')[1], '\s+') = $this-rims-src]))">
-                  <!-- If neither rim nor hub rename any div types, then just proceed -->                  
+                  <!-- If neither rim nor hub rename any div types, then just proceed -->
                   <xsl:sequence select="."/>
                </xsl:when>
                <xsl:otherwise>
@@ -1415,8 +1451,7 @@
                   Of these four files, we are missing only the second.
                   -->
                   <xsl:variable name="spokes-prepped-for-rim"
-                     select="tan:get-src-1st-da-prepped(., $srcs-resolved[*/@src = $this-rims-src])"
-                  />
+                     select="tan:get-src-1st-da-prepped(., $srcs-resolved[*/@src = $this-rims-src])"/>
                   <xsl:variable name="conversions" as="element()*">
                      <xsl:for-each select="$this-rims-src">
                         <xsl:variable name="this-src" select="."/>
@@ -1503,6 +1538,95 @@
             <xsl:with-param name="key" select="$key"/>
          </xsl:apply-templates>
       </xsl:copy>
+   </xsl:template>
+
+   <!-- Functions to be applied to TAN-LM files, as context or not -->
+   <xsl:function name="tan:unconsolidate-tan-lm" as="document-node()*">
+      <!-- Reformats TAN-LM files, such that each <ana> has one and only
+      one <tok> + <l> + <m> combination -->
+      <xsl:param name="tan-lm-docs" as="document-node()*"/>
+      <xsl:param name="srcs-tokenized" as="document-node()*"/>
+      <xsl:choose>
+         <xsl:when test="not(count($tan-lm-docs) = count($srcs-tokenized))">
+            <xsl:message>There must be an equal number of TAN-LM documents and their tokenized
+               sources</xsl:message>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:for-each select="$tan-lm-docs">
+               <xsl:variable name="pos" select="position()"/>
+               <xsl:document>
+                  <xsl:apply-templates mode="unconsolidate-anas">
+                     <xsl:with-param name="src-tokenized" select="$srcs-tokenized[$pos]"/>
+                  </xsl:apply-templates>
+               </xsl:document>
+            </xsl:for-each>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:function>
+   <xsl:template match="node()" mode="unconsolidate-anas">
+      <xsl:param name="src-tokenized" as="document-node()"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:apply-templates mode="unconsolidate-anas">
+            <xsl:with-param name="src-tokenized" select="$src-tokenized"/>
+         </xsl:apply-templates>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:head" mode="unconsolidate-anas">
+      <xsl:copy-of select="."/>
+   </xsl:template>
+   <xsl:template match="tan:ana" mode="unconsolidate-anas">
+      <xsl:param name="src-tokenized" as="document-node()"/>
+      <xsl:variable name="this-ana" select="."/>
+      <xsl:for-each select="tan:tok[not(@cont)]">
+         <xsl:variable name="this-tok" select="."/>
+         <!-- this has not yet been written to anticipate @ref with multiple values -->
+         <xsl:variable name="this-ref-norm" select="tan:normalize-refs(@ref)"/>
+         <xsl:variable name="this-val-norm" select="(@val, '.')[1]"/>
+         <xsl:variable name="that-div"
+            select="$src-tokenized/tan:TAN-T/tan:body//tan:div[@ref = $this-ref-norm]"/>
+         <xsl:variable name="tok-ceiling" select="count($that-div/tan:tok)"/>
+         <xsl:variable name="this-pos-norm"
+            select="
+               if (@pos) then
+                  tan:sequence-expand(@pos, $tok-ceiling)
+               else
+                  1"/>
+         <xsl:for-each select="$this-pos-norm">
+            <xsl:variable name="this-pos" select="."/>
+            <xsl:for-each select="$this-ana/tan:lm">
+               <xsl:variable name="this-lm" select="."/>
+               <xsl:for-each select="tan:l">
+                  <xsl:variable name="this-l" select="."/>
+                  <xsl:for-each select="$this-lm/tan:m">
+                     <xsl:variable name="this-m" select="."/>
+                     <ana>
+                        <xsl:copy-of select="$this-ana/(comment(), tan:comment)"/>
+                        <tok>
+                           <xsl:copy-of select="$this-tok/@*"/>
+                           <xsl:if test="not($this-pos = 1)">
+                              <xsl:attribute name="pos" select="$this-pos"/>
+                           </xsl:if>
+                           <xsl:copy-of select="$this-tok/comment()"/>
+                        </tok>
+                        <lm>
+                           <xsl:copy-of select="$this-lm/@*"/>
+                           <xsl:copy-of select="$this-lm/(comment(), tan:comment)"/>
+                           <l>
+                              <xsl:copy-of select="$this-l/@*"/>
+                              <xsl:copy-of select="$this-l/node()"/>
+                           </l>
+                           <m>
+                              <xsl:copy-of select="$this-m/@*"/>
+                              <xsl:copy-of select="$this-m/node()"/>
+                           </m>
+                        </lm>
+                     </ana>
+                  </xsl:for-each>
+               </xsl:for-each>
+            </xsl:for-each>
+         </xsl:for-each>
+      </xsl:for-each>
    </xsl:template>
 
    <!-- PART IV.
@@ -1653,12 +1777,12 @@
       />
    </xsl:function>
 
-   <xsl:function name="tan:ordinal" xml:id="f-ordinal" as="xs:string+">
+   <xsl:function name="tan:ordinal" xml:id="f-ordinal" as="xs:string*">
       <!-- Input: one or more numerals
         Output: one or more strings with the English form of the ordinal form of the input number
         E.g., (1, 4, 17)  ->  ('first','fourth','17th'). 
         -->
-      <xsl:param name="in" as="xs:integer+"/>
+      <xsl:param name="in" as="xs:integer*"/>
       <xsl:variable name="ordinals"
          select="
             ('first',

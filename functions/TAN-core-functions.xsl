@@ -826,7 +826,7 @@
         <xsl:param name="leave-breadcrumbs" as="xs:boolean?"/>
         <xsl:copy>
             <xsl:copy-of select="@*"/>
-            <xsl:attribute name="base-uri" select="base-uri(current())"/>
+            <xsl:attribute name="base-uri" select="(@base-uri, base-uri(current()))[1]"/>
             <xsl:choose>
                 <xsl:when test="$leave-breadcrumbs = true()">
                     <xsl:apply-templates mode="#current"></xsl:apply-templates>

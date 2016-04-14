@@ -284,7 +284,9 @@
         </xsl:copy>
     </xsl:template>
     <xsl:template match="tan:non-tok" mode="count-tokens">
-        <xsl:copy-of select="."/>
+        <non-tok n="{count(preceding-sibling::tan:non-tok) + 1}">
+            <xsl:value-of select="."/>
+        </non-tok>
     </xsl:template>
     <xsl:template match="tan:tok" mode="count-tokens">
         <tok n="{count(preceding-sibling::tan:tok) + 1}">

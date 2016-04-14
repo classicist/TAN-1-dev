@@ -1815,7 +1815,10 @@
                then
                   $ordinals[$i]
                else
-                  concat(xs:string($i), $ordinal-suffixes[($i mod 10) + 1])"
+                  if ($i lt 1) then
+                     'none'
+                  else
+                     concat(xs:string($i), $ordinal-suffixes[($i mod 10) + 1])"
       />
    </xsl:function>
 

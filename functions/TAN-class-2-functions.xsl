@@ -8,7 +8,7 @@
 
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Updated </xd:b>April 12, 2016</xd:p>
+         <xd:p><xd:b>Updated </xd:b>April 14, 2016</xd:p>
          <xd:p>Core variables and functions for class 2 TAN files (i.e., applicable to multiple
             class 2 TAN file types). Written principally for Schematron validation, but suitable for
             general use in other contexts.</xd:p>
@@ -1287,6 +1287,98 @@
       transformation for other purposes. Also, below are some helpful, optional transformations
    -->
 
+   <xsl:function name="tan:recombine-docs" as="document-node()*">
+      <!-- Input: any number of documents
+      Output: recombined documents
+      This function is useful for cases where you have both picked and culled
+      from a source, and you wish to combine the two documents into a single one
+      that strips away duplicates. 
+      NB, the results may not preserve the original document order of an original
+      document. It also treats non-leaf white-space text nodes as dispensible.
+      -->
+      <xsl:param name="docs-to-recombine" as="document-node()*"/>
+      <xsl:param name="ref-sort-key-docs" as="document-node()*"/>
+      <xsl:for-each-group select="$docs-to-recombine" group-by="tan:element-key(*)">
+         <xsl:variable name="this-src" select="current-group()[1]/*/@src"/>
+         <xsl:document>
+            <xsl:call-template name="merge-nodes">
+               <xsl:with-param name="nodes-to-merge" select="current-group()/node()"/>
+               <xsl:with-param name="ref-sequence"
+                  select="$ref-sort-key-docs/*[@src = $this-src]/tan:body//@ref"/>
+            </xsl:call-template>
+         </xsl:document>
+      </xsl:for-each-group>
+   </xsl:function>
+   <xsl:template name="merge-nodes" as="item()*">
+      <xsl:param name="nodes-to-merge" as="node()*"/>
+      <xsl:param name="ref-sequence" as="xs:string*"/>
+      <xsl:variable name="is-leaf-element" select="
+            not($nodes-to-merge[self::*])" as="xs:boolean"/>
+      <xsl:variable name="unique-child-nodes"
+         select="tan:strip-duplicate-nodes($nodes-to-merge, ())"/>
+      <xsl:copy-of
+         select="
+            $unique-child-nodes[self::processing-instruction() or self::comment() or self::text()[$is-leaf-element]]"
+      />
+      <xsl:for-each-group select="$unique-child-nodes[self::*]" group-by="tan:element-key(.)">
+         <xsl:sort
+            select="
+               if (@ref) then
+                  index-of($ref-sequence, @ref)
+               else
+                  0"
+         />
+         <xsl:variable name="first-item" select="current-group()[1]"/>
+         <xsl:variable name="root-name" select="name($first-item)"/>
+         <xsl:element name="{$root-name}">
+            <xsl:copy-of select="$first-item/@*"/>
+            <xsl:call-template name="merge-nodes">
+               <xsl:with-param name="nodes-to-merge" select="current-group()/node()"/>
+               <xsl:with-param name="ref-sequence" select="$ref-sequence"/>
+            </xsl:call-template>
+         </xsl:element>
+      </xsl:for-each-group>
+   </xsl:template>
+   <xsl:function name="tan:element-key" as="xs:string?">
+      <xsl:param name="node" as="node()"/>
+      <xsl:variable name="name" select="name($node)"/>
+      <xsl:variable name="attrs" as="xs:string*">
+         <xsl:for-each select="$node/@*">
+            <xsl:sort/>
+            <xsl:copy-of select="name()"/>
+            <xsl:copy-of select="."/>
+         </xsl:for-each>
+      </xsl:variable>
+      <xsl:value-of select="string-join(($name, $attrs), '%%%')"/>
+   </xsl:function>
+   <xsl:function name="tan:strip-duplicate-nodes" as="node()*">
+      <xsl:param name="nodes-to-check" as="node()*"/>
+      <xsl:param name="checked-nodes" as="node()*"/>
+      <xsl:choose>
+         <xsl:when test="count($nodes-to-check) = 0">
+            <xsl:copy-of select="$checked-nodes"/>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:choose>
+               <xsl:when
+                  test="
+                     some $i in $checked-nodes
+                        satisfies deep-equal($i, $nodes-to-check[1])">
+                  <xsl:copy-of
+                     select="tan:strip-duplicate-nodes($nodes-to-check[position() gt 1], ($checked-nodes))"
+                  />
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:copy-of
+                     select="tan:strip-duplicate-nodes($nodes-to-check[position() gt 1], ($checked-nodes, $nodes-to-check[1]))"
+                  />
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:function>
+
+
    <xsl:function name="tan:get-src-1st-da-with-lms" as="document-node()">
       <!-- For now, this function assumes that every TAN-LM document pertains to
       the tokenized class-1 doc -->
@@ -1313,8 +1405,11 @@
       <xsl:variable name="this-n" select="@n"/>
       <xsl:copy>
          <xsl:copy-of select="node()"/>
-         <xsl:copy-of select="$tan-lms/tan:TAN-LM/tan:body/tan:ana[tan:tok[@ref = $this-ref 
-            and @pos = $this-n]]/tan:lm"/>
+         <xsl:copy-of
+            select="
+               $tan-lms/tan:TAN-LM/tan:body/tan:ana[tan:tok[@ref = $this-ref
+               and @pos = $this-n]]/tan:lm"
+         />
       </xsl:copy>
    </xsl:template>
 

@@ -1229,59 +1229,6 @@
       </xsl:for-each>
    </xsl:function>
 
-   <xsl:function name="tan:sequence-expand" xml:id="f-sequence-expand" as="xs:integer*">
-      <!-- input: one string of concise TAN selectors (used by @poss, @chars, @segs), 
-            and one integer defining the value of 'last'
-            output: a sequence of numbers representing the positions selected, unsorted, and retaining
-            duplicate values.
-            E.g., ("2 - 4, last-5 - last, 36", 50) -> (2, 3, 4, 45, 46, 47, 48, 49, 50, 36)
-            Errors will not be flagged; they must be processed by functions that invoke this one by
-            checking for values less than zero or greater than the max. The one exception are ranges
-            that ask for negative steps such as '4 - 2' or '1 - last-5' (where $max = 3), in which case 
-            each item will be simply -1.
-        -->
-      <xsl:param name="selector" as="xs:string?"/>
-      <xsl:param name="max" as="xs:integer?"/>
-      <!-- first normalize syntax -->
-      <xsl:variable name="pass-1" select="replace($selector, '(\d)\s*-\s*(last|\d)', '$1 - $2')"/>
-      <xsl:variable name="pass-2" select="replace($pass-1, '(\d)\s+(\d)', '$1, $2')"/>
-      <!-- replace 'last' with max value as string -->
-      <xsl:variable name="selector-norm" select="replace($pass-2, 'last|all|max', string($max))"/>
-      <xsl:variable name="seq-a" select="tokenize(normalize-space($selector-norm), '\s*,\s+')"/>
-      <xsl:copy-of
-         select="
-            for $i in $seq-a
-            return
-               if (matches($i, ' - '))
-               then
-                  for $j in tan:string-subtract(tokenize($i, ' - ')[1]),
-                     $k in tan:string-subtract(tokenize($i, ' - ')[2])
-                  return
-                     if ($j gt $k) then
-                        for $l in ($k to $j)
-                        return
-                           -1
-                     else
-                        ($j to $k)
-               else
-                  tan:string-subtract($i)"/>
-
-   </xsl:function>
-   <xsl:function name="tan:string-subtract" xml:id="f-string-subtract" as="xs:integer">
-      <!-- input: string of pattern \d+(-\d+)?
-        output: number giving the sum
-        E.g., "50-5" -> 45 -->
-      <xsl:param name="input" as="xs:string"/>
-      <xsl:copy-of
-         select="
-            xs:integer(if (matches($input, '\d+-\d+'))
-            then
-               number(tokenize($input, '-')[1]) - (number(tokenize($input, '-')[2]))
-            else
-               number($input))"
-      />
-   </xsl:function>
-
    <!-- This concludes functions and templates essential to transforming all class-2 files. 
       This is not the end of the story, however, since specific class-2 formats require further 
       transformation for other purposes. Also, below are some helpful, optional transformations

@@ -171,14 +171,15 @@
          E.g., '1F' - > 31
       -->
         <xsl:param name="str" as="xs:string?"/>
-        <xsl:variable name="len" select="string-length($str)"/>
+        <xsl:variable name="str-u" select="upper-case($str)"/>
+        <xsl:variable name="len" select="string-length($str-u)"/>
         <xsl:value-of
             select="
                 if ($len lt 1)
                 then
                     0
                 else
-                    tan:hex-to-dec(substring($str, 1, $len - 1)) * 16 + string-length(substring-before('0123456789ABCDEF', substring($str, $len)))"
+                    tan:hex-to-dec(substring($str-u, 1, $len - 1)) * 16 + string-length(substring-before('0123456789ABCDEF', substring($str-u, $len)))"
         />
     </xsl:function>
 
@@ -256,7 +257,8 @@
         corresponding to fn:match and fn:non-match for fn:analyze-string() -->
         <xsl:param name="text" as="xs:string?"/>
         <xsl:param name="token-definition" as="element()?"/>
-        <xsl:variable name="regex" select="($token-definition/@regex, $token-definitions-reserved[1]/@regex)[1]"/>
+        <xsl:variable name="regex"
+            select="($token-definition/@regex, $token-definitions-reserved[1]/@regex)[1]"/>
         <xsl:variable name="flags" select="$token-definition/@flags"/>
         <xsl:variable name="results">
             <results regex="{$regex}" flags="{$flags}">
@@ -284,7 +286,9 @@
         </xsl:copy>
     </xsl:template>
     <xsl:template match="tan:non-tok" mode="count-tokens">
-        <xsl:copy-of select="."/>
+        <non-tok n="{count(preceding-sibling::tan:non-tok) + 1}">
+            <xsl:value-of select="."/>
+        </non-tok>
     </xsl:template>
     <xsl:template match="tan:tok" mode="count-tokens">
         <tok n="{count(preceding-sibling::tan:tok) + 1}">
@@ -370,6 +374,203 @@
                     normalize-space(replace($i, $help-trigger-regex, ''))"
         />
     </xsl:function>
+
+    <xsl:function name="tan:matches" as="xs:boolean">
+        <!-- two-param function of the three-param version below -->
+        <xsl:param name="input" as="xs:string?"/>
+        <xsl:param name="pattern" as="xs:string"/>
+        <xsl:copy-of select="tan:matches($input, $pattern, '')"/>
+    </xsl:function>
+    <xsl:function name="tan:matches" as="xs:boolean">
+        <!-- Parallel to fn:matches(), but converts TAN-exceptions into classes. See tan:regex() for details. -->
+        <xsl:param name="input" as="xs:string?"/>
+        <xsl:param name="pattern" as="xs:string"/>
+        <xsl:param name="flags" as="xs:string"/>
+        <xsl:copy-of select="matches($input, tan:regex($pattern), $flags)"/>
+    </xsl:function>
+    <xsl:function name="tan:regex" as="xs:string?">
+        <!-- Input: string of a regex search
+        Output: the same string, with TAN-reserved escape sequences replaced by characters class sequences
+        E.g., '\k{.greek.capital.perispomeni}' - - > '[ἎἏἮἯἾἿὟὮὯᾎᾏᾞᾟᾮᾯ]'
+        \k{.latin.cedilla} - - > '[ÇçĢģĶķĻļŅņŖŗŞşŢţȨȩᷗḈḉḐḑḜḝḨḩ]'
+        'angle \k{4d-4f, 51}' - - > 'angle [MNOQ]'
+        
+        This function grabs entire classes of Unicode characters either by their codepoint or by the parts of 
+        their name. It performs specially upon the form \k{***VALUE***}, where ***VALUE*** is either (1) one or
+        more hexadecimal numbers joined by commas and hyphens or (2) one or more words each one prepended by a
+        non-word character. In the first option, there will be returned every Unicode character that has been 
+        picked, filling in ranges where indicated by the hyphen. In the second option, there will be returned 
+        every Unicode character that has all of those words in its official Unicode name, or alias.
+        Other examples:
+
+          Any word with an omega, even if not in any of the Greek blocks: '\k{.omega}' (useful if you
+          wish to find nonstandard uses of the omega, especially in the symbol block)
+          
+          Any word with two successive omegas, no matter their accentuation or capitalizaton, or if they 
+          have an iota subscript: '\k{.greek.omega}{2}' (useful for looking up a Greek word where accentuation
+          changes depending upon context or inflection)
+          
+          Every Greek word that attracts an accent from an enclitic: 
+          '[\k{.greek.oxia}\k{.greek.tonos}\k{.greek.perispomeni}]\w*[\k{.greek.tonos}\k{.greek.oxia}]'
+        -->
+        <xsl:param name="regex" as="xs:string?"/>
+        <xsl:variable name="tan-regex" select="doc('tan-regex.xml')"/>
+        <xsl:variable name="esc-seq" select="'\\k\{([^\}]+)\}'"/>
+        <xsl:variable name="pass-1">
+            <regex>
+                <xsl:analyze-string select="$regex" regex="{$esc-seq}">
+                    <xsl:matching-substring>
+                        <match>
+                            <xsl:value-of
+                                select="tan:process-regex-escape-u(regex-group(1), $tan-regex)"/>
+                        </match>
+                    </xsl:matching-substring>
+                    <xsl:non-matching-substring>
+                        <non-match>
+                            <xsl:value-of select="."/>
+                        </non-match>
+                    </xsl:non-matching-substring>
+                </xsl:analyze-string>
+            </regex>
+        </xsl:variable>
+        <xsl:variable name="pass-2">
+            <xsl:apply-templates select="$pass-1" mode="add-square-brackets"/>
+        </xsl:variable>
+        <xsl:value-of select="$pass-2//text()"/>
+    </xsl:function>
+    <xsl:function name="tan:process-regex-escape-u" as="xs:string?">
+        <xsl:param name="val-inside-braces" as="xs:string"/>
+        <xsl:param name="unicode-db" as="document-node()"/>
+        <xsl:choose>
+            <xsl:when
+                test="matches($val-inside-braces, '^[0-9a-fA-F]{1,6}(\s*-\s*[0-9a-fA-F]{1,6})?(\s*,\s*[0-9a-fA-F]{1,6}(\s*-\s*[0-9a-fA-F]{1,6})?)$')">
+                <xsl:variable name="pass-1">
+                    <xsl:analyze-string select="$val-inside-braces" regex="\s*([-,])\s*">
+                        <xsl:matching-substring>
+                            <xsl:value-of select="concat(' ', regex-group(1), ' ')"/>
+                        </xsl:matching-substring>
+                        <xsl:non-matching-substring>
+                            <xsl:value-of select="string(tan:hex-to-dec(.))"/>
+                        </xsl:non-matching-substring>
+                    </xsl:analyze-string>
+                </xsl:variable>
+                <xsl:variable name="pass-2" select="tan:sequence-expand($pass-1, 1)"/>
+                <xsl:value-of select="codepoints-to-string($pass-2[. gt 1])"/>
+            </xsl:when>
+            <xsl:when test="matches($val-inside-braces, '^(\W\w+)+$')">
+                <xsl:variable name="this-class"
+                    select="tokenize($val-inside-braces, '\W')[position() gt 1]"/>
+                <xsl:variable name="pass-1"
+                    select="
+                        $unicode-db/*/*[every $i in $this-class
+                            satisfies * = $i]/@cp"/>
+                <xsl:value-of
+                    select="
+                        codepoints-to-string(for $i in $pass-1
+                        return
+                            tan:hex-to-dec($i))"/>
+            </xsl:when>
+            <xsl:otherwise/>
+        </xsl:choose>
+    </xsl:function>
+    <xsl:template match="node()" mode="add-square-brackets">
+        <xsl:copy>
+            <xsl:apply-templates mode="#current"/>
+        </xsl:copy>
+    </xsl:template>
+    <xsl:template match="tan:match" mode="add-square-brackets">
+        <xsl:variable name="preceding-text" as="xs:string?"
+            select="string-join(preceding-sibling::tan:non-match/text(), '')"/>
+        <xsl:variable name="preceding-text-without-escaped-brackets" as="xs:string?"
+            select="replace($preceding-text, '\\\[|\\\]', '')"/>
+        <xsl:variable name="preceding-text-char-classes" as="element()">
+            <char-classes>
+                <xsl:analyze-string select="$preceding-text-without-escaped-brackets"
+                    regex="\[[^\[]*">
+                    <xsl:matching-substring>
+                        <match>
+                            <xsl:value-of select="."/>
+                        </match>
+                    </xsl:matching-substring>
+                    <xsl:non-matching-substring>
+                        <non-match>
+                            <xsl:value-of select="."/>
+                        </non-match>
+                    </xsl:non-matching-substring>
+                </xsl:analyze-string>
+            </char-classes>
+        </xsl:variable>
+        <xsl:variable name="needs-brackets" as="xs:boolean"
+            select="
+                if (matches(($preceding-text-char-classes/*)[last()], '^\[[^\]]*$') or string-length(.) lt 1) then
+                    false()
+                else
+                    true()"/>
+        <xsl:copy>
+            <!--<xsl:value-of select="concat(' *** ', ($preceding-text-char-classes/*)[last()], ' *** ')"/>-->
+            <xsl:value-of
+                select="
+                    if ($needs-brackets = true()) then
+                        concat('[', ., ']')
+                    else
+                        ."
+            />
+        </xsl:copy>
+    </xsl:template>
+
+    <xsl:function name="tan:sequence-expand" as="xs:integer*">
+        <!-- input: one string of concise TAN selectors (used by @poss, @chars, @segs), 
+            and one integer defining the value of 'last'
+            output: a sequence of numbers representing the positions selected, unsorted, and retaining
+            duplicate values.
+            E.g., ("2 - 4, last-5 - last, 36", 50) -> (2, 3, 4, 45, 46, 47, 48, 49, 50, 36)
+            Errors will not be flagged; they must be processed by functions that invoke this one by
+            checking for values less than zero or greater than the max. The one exception are ranges
+            that ask for negative steps such as '4 - 2' or '1 - last-5' (where $max = 3), in which case 
+            each item will be simply -1.
+        -->
+        <xsl:param name="selector" as="xs:string?"/>
+        <xsl:param name="max" as="xs:integer?"/>
+        <!-- first normalize syntax -->
+        <xsl:variable name="pass-1" select="replace($selector, '(\d)\s*-\s*(last|\d)', '$1 - $2')"/>
+        <xsl:variable name="pass-2" select="replace($pass-1, '(\d)\s+(\d)', '$1, $2')"/>
+        <!-- replace 'last' with max value as string -->
+        <xsl:variable name="selector-norm" select="replace($pass-2, 'last|all|max', string($max))"/>
+        <xsl:variable name="seq-a" select="tokenize(normalize-space($selector-norm), '\s*,\s+')"/>
+        <xsl:copy-of
+            select="
+                for $i in $seq-a
+                return
+                    if (matches($i, ' - '))
+                    then
+                        for $j in tan:string-subtract(tokenize($i, ' - ')[1]),
+                            $k in tan:string-subtract(tokenize($i, ' - ')[2])
+                        return
+                            if ($j gt $k) then
+                                for $l in ($k to $j)
+                                return
+                                    -1
+                            else
+                                ($j to $k)
+                    else
+                        tan:string-subtract($i)"/>
+
+    </xsl:function>
+    <xsl:function name="tan:string-subtract" as="xs:integer">
+        <!-- input: string of pattern \d+(-\d+)?
+        output: number giving the sum
+        E.g., "50-5" -> 45 -->
+        <xsl:param name="input" as="xs:string"/>
+        <xsl:copy-of
+            select="
+                xs:integer(if (matches($input, '\d+-\d+'))
+                then
+                    number(tokenize($input, '-')[1]) - (number(tokenize($input, '-')[2]))
+                else
+                    number($input))"
+        />
+    </xsl:function>
+
 
     <xsl:function name="tan:escape" as="xs:string*">
         <!-- Input: any sequence of strings; Output: each string prepared for regular expression searches,
@@ -826,10 +1027,10 @@
         <xsl:param name="leave-breadcrumbs" as="xs:boolean?"/>
         <xsl:copy>
             <xsl:copy-of select="@*"/>
-            <xsl:attribute name="base-uri" select="base-uri(current())"/>
+            <xsl:attribute name="base-uri" select="(@base-uri, base-uri(current()))[1]"/>
             <xsl:choose>
                 <xsl:when test="$leave-breadcrumbs = true()">
-                    <xsl:apply-templates mode="#current"></xsl:apply-templates>
+                    <xsl:apply-templates mode="#current"/>
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:copy-of select="node()"/>

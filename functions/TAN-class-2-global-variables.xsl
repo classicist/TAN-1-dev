@@ -33,6 +33,8 @@
    <xsl:variable name="srcs-tokenized-and-filtered"
       select="tan:get-src-1st-da-tokenized($self2, $srcs-prepped-and-filtered)"
       as="document-node()*"/>
+   <xsl:variable name="srcs-with-lm-data" select="for $i in $srcs-tokenized return
+      tan:get-src-1st-da-with-lms($i,$srcs-context-prepped[tan:TAN-LM/@src = $i/*/@src])"/>
    <xsl:variable name="self4" select="tan:get-self-expanded-4($self3, $srcs-tokenized)"/>
 
    <!-- CONTEXTUAL DATA -->
@@ -60,7 +62,7 @@
          <xsl:copy-of select="tan:get-self-expanded-2(., $srcs-resolved[*/@src = $this-src])"/>
       </xsl:for-each>
    </xsl:variable>
-   <xsl:variable name="srcs-context-3" select="tan:get-context-prepped($self3, $srcs-context-2, 
+   <xsl:variable name="srcs-context-prepped" select="tan:get-context-prepped($self3, $srcs-context-2, 
       $srcs-prepped, $srcs-resolved)" as="document-node()*"></xsl:variable>
 
 </xsl:stylesheet>

@@ -8,7 +8,7 @@
 
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Updated </xd:b>April 12, 2016</xd:p>
+         <xd:p><xd:b>Updated </xd:b>April 14, 2016</xd:p>
          <xd:p>Core variables and functions for class 2 TAN files (i.e., applicable to multiple
             class 2 TAN file types). Written principally for Schematron validation, but suitable for
             general use in other contexts.</xd:p>
@@ -84,7 +84,13 @@
       <xsl:param name="tan-doc" as="document-node()*"/>
       <xsl:param name="leave-breadcrumbs" as="xs:boolean"/>
       <xsl:for-each select="$tan-doc">
-         <xsl:variable name="self-breadcrumbed" select="tan:resolve-doc(., (), true())"/>
+         <xsl:variable name="self-breadcrumbed"
+            select="
+               if (/*/@base-uri) then
+                  .
+               else
+                  tan:resolve-doc(., (), $leave-breadcrumbs)"
+            as="document-node()"/>
          <xsl:document>
             <xsl:apply-templates mode="self-expanded-1" select="$self-breadcrumbed"/>
          </xsl:document>
@@ -1223,64 +1229,136 @@
       </xsl:for-each>
    </xsl:function>
 
-   <xsl:function name="tan:sequence-expand" xml:id="f-sequence-expand" as="xs:integer*">
-      <!-- input: one string of concise TAN selectors (used by @poss, @chars, @segs), 
-            and one integer defining the value of 'last'
-            output: a sequence of numbers representing the positions selected, unsorted, and retaining
-            duplicate values.
-            E.g., ("2 - 4, last-5 - last, 36", 50) -> (2, 3, 4, 45, 46, 47, 48, 49, 50, 36)
-            Errors will not be flagged; they must be processed by functions that invoke this one by
-            checking for values less than zero or greater than the max. The one exception are ranges
-            that ask for negative steps such as '4 - 2' or '1 - last-5' (where $max = 3), in which case 
-            each item will be simply -1.
-        -->
-      <xsl:param name="selector" as="xs:string?"/>
-      <xsl:param name="max" as="xs:integer?"/>
-      <!-- first normalize syntax -->
-      <xsl:variable name="pass-1" select="replace($selector, '(\d)\s*-\s*(last|\d)', '$1 - $2')"/>
-      <xsl:variable name="pass-2" select="replace($pass-1, '(\d)\s+(\d)', '$1, $2')"/>
-      <!-- replace 'last' with max value as string -->
-      <xsl:variable name="selector-norm" select="replace($pass-2, 'last', string($max))"/>
-      <xsl:variable name="seq-a" select="tokenize(normalize-space($selector-norm), '\s*,\s+')"/>
-      <xsl:copy-of
-         select="
-            for $i in $seq-a
-            return
-               if (matches($i, ' - '))
-               then
-                  for $j in tan:string-subtract(tokenize($i, ' - ')[1]),
-                     $k in tan:string-subtract(tokenize($i, ' - ')[2])
-                  return
-                     if ($j gt $k) then
-                        for $l in ($k to $j)
-                        return
-                           -1
-                     else
-                        ($j to $k)
-               else
-                  tan:string-subtract($i)"/>
-
-   </xsl:function>
-   <xsl:function name="tan:string-subtract" xml:id="f-string-subtract" as="xs:integer">
-      <!-- input: string of pattern \d+(-\d+)?
-        output: number giving the sum
-        E.g., "50-5" -> 45 -->
-      <xsl:param name="input" as="xs:string"/>
-      <xsl:copy-of
-         select="
-            xs:integer(if (matches($input, '\d+-\d+'))
-            then
-               number(tokenize($input, '-')[1]) - (number(tokenize($input, '-')[2]))
-            else
-               number($input))"
-      />
-   </xsl:function>
-
    <!-- This concludes functions and templates essential to transforming all class-2 files. 
       This is not the end of the story, however, since specific class-2 formats require further 
-      transformation for other purposes.
+      transformation for other purposes. Also, below are some helpful, optional transformations
    -->
 
+   <xsl:function name="tan:recombine-docs" as="document-node()*">
+      <!-- Input: any number of documents
+      Output: recombined documents
+      This function is useful for cases where you have both picked and culled
+      from a source, and you wish to combine the two documents into a single one
+      that strips away duplicates. 
+      NB, the results may not preserve the original document order of an original
+      document. It also treats non-leaf white-space text nodes as dispensible.
+      -->
+      <xsl:param name="docs-to-recombine" as="document-node()*"/>
+      <xsl:param name="ref-sort-key-docs" as="document-node()*"/>
+      <xsl:for-each-group select="$docs-to-recombine" group-by="tan:element-key(*)">
+         <xsl:variable name="this-src" select="current-group()[1]/*/@src"/>
+         <xsl:document>
+            <xsl:call-template name="merge-nodes">
+               <xsl:with-param name="nodes-to-merge" select="current-group()/node()"/>
+               <xsl:with-param name="ref-sequence"
+                  select="$ref-sort-key-docs/*[@src = $this-src]/tan:body//@ref"/>
+            </xsl:call-template>
+         </xsl:document>
+      </xsl:for-each-group>
+   </xsl:function>
+   <xsl:template name="merge-nodes" as="item()*">
+      <xsl:param name="nodes-to-merge" as="node()*"/>
+      <xsl:param name="ref-sequence" as="xs:string*"/>
+      <xsl:variable name="is-leaf-element" select="
+            not($nodes-to-merge[self::*])" as="xs:boolean"/>
+      <xsl:variable name="unique-child-nodes"
+         select="tan:strip-duplicate-nodes($nodes-to-merge, ())"/>
+      <xsl:copy-of
+         select="
+            $unique-child-nodes[self::processing-instruction() or self::comment() or self::text()[$is-leaf-element]]"
+      />
+      <xsl:for-each-group select="$unique-child-nodes[self::*]" group-by="tan:element-key(.)">
+         <xsl:sort
+            select="
+               if (@ref) then
+                  index-of($ref-sequence, @ref)
+               else
+                  0"
+         />
+         <xsl:variable name="first-item" select="current-group()[1]"/>
+         <xsl:variable name="root-name" select="name($first-item)"/>
+         <xsl:element name="{$root-name}">
+            <xsl:copy-of select="$first-item/@*"/>
+            <xsl:call-template name="merge-nodes">
+               <xsl:with-param name="nodes-to-merge" select="current-group()/node()"/>
+               <xsl:with-param name="ref-sequence" select="$ref-sequence"/>
+            </xsl:call-template>
+         </xsl:element>
+      </xsl:for-each-group>
+   </xsl:template>
+   <xsl:function name="tan:element-key" as="xs:string?">
+      <xsl:param name="node" as="node()"/>
+      <xsl:variable name="name" select="name($node)"/>
+      <xsl:variable name="attrs" as="xs:string*">
+         <xsl:for-each select="$node/@*">
+            <xsl:sort/>
+            <xsl:copy-of select="name()"/>
+            <xsl:copy-of select="."/>
+         </xsl:for-each>
+      </xsl:variable>
+      <xsl:value-of select="string-join(($name, $attrs), '%%%')"/>
+   </xsl:function>
+   <xsl:function name="tan:strip-duplicate-nodes" as="node()*">
+      <xsl:param name="nodes-to-check" as="node()*"/>
+      <xsl:param name="checked-nodes" as="node()*"/>
+      <xsl:choose>
+         <xsl:when test="count($nodes-to-check) = 0">
+            <xsl:copy-of select="$checked-nodes"/>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:choose>
+               <xsl:when
+                  test="
+                     some $i in $checked-nodes
+                        satisfies deep-equal($i, $nodes-to-check[1])">
+                  <xsl:copy-of
+                     select="tan:strip-duplicate-nodes($nodes-to-check[position() gt 1], ($checked-nodes))"
+                  />
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:copy-of
+                     select="tan:strip-duplicate-nodes($nodes-to-check[position() gt 1], ($checked-nodes, $nodes-to-check[1]))"
+                  />
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:function>
+
+
+   <xsl:function name="tan:get-src-1st-da-with-lms" as="document-node()">
+      <!-- For now, this function assumes that every TAN-LM document pertains to
+      the tokenized class-1 doc -->
+      <xsl:param name="tokenized-class-1-doc" as="document-node()"/>
+      <xsl:param name="prepped-tan-lm-docs" as="document-node()*"/>
+      <xsl:document>
+         <xsl:apply-templates select="$tokenized-class-1-doc" mode="add-lm-to-tok">
+            <xsl:with-param name="tan-lms" select="$prepped-tan-lm-docs"/>
+         </xsl:apply-templates>
+      </xsl:document>
+   </xsl:function>
+   <xsl:template match="node()" mode="add-lm-to-tok">
+      <xsl:param name="tan-lms" as="document-node()*"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:apply-templates mode="add-lm-to-tok">
+            <xsl:with-param name="tan-lms" select="$tan-lms"/>
+         </xsl:apply-templates>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:tok" mode="add-lm-to-tok">
+      <xsl:param name="tan-lms" as="document-node()*"/>
+      <xsl:variable name="this-ref" select="../@ref"/>
+      <xsl:variable name="this-n" select="@n"/>
+      <xsl:copy>
+         <xsl:copy-of select="node()"/>
+         <xsl:copy-of
+            select="
+               $tan-lms/tan:TAN-LM/tan:body/tan:ana[tan:tok[@ref = $this-ref
+               and @pos = $this-n]]/tan:lm"
+         />
+      </xsl:copy>
+   </xsl:template>
 
    <!-- PART III.
       CONTEXTUAL FUNCTIONS
@@ -1404,7 +1482,7 @@
                </xsl:when>
                <xsl:when
                   test="not(exists($this-rims-rdns) or exists($hub-rdns[tokenize((@src, '1')[1], '\s+') = $this-rims-src]))">
-                  <!-- If neither rim nor hub rename any div types, then just proceed -->                  
+                  <!-- If neither rim nor hub rename any div types, then just proceed -->
                   <xsl:sequence select="."/>
                </xsl:when>
                <xsl:otherwise>
@@ -1415,8 +1493,7 @@
                   Of these four files, we are missing only the second.
                   -->
                   <xsl:variable name="spokes-prepped-for-rim"
-                     select="tan:get-src-1st-da-prepped(., $srcs-resolved[*/@src = $this-rims-src])"
-                  />
+                     select="tan:get-src-1st-da-prepped(., $srcs-resolved[*/@src = $this-rims-src])"/>
                   <xsl:variable name="conversions" as="element()*">
                      <xsl:for-each select="$this-rims-src">
                         <xsl:variable name="this-src" select="."/>
@@ -1503,6 +1580,95 @@
             <xsl:with-param name="key" select="$key"/>
          </xsl:apply-templates>
       </xsl:copy>
+   </xsl:template>
+
+   <!-- Functions to be applied to TAN-LM files, as context or not -->
+   <xsl:function name="tan:unconsolidate-tan-lm" as="document-node()*">
+      <!-- Reformats TAN-LM files, such that each <ana> has one and only
+      one <tok> + <l> + <m> combination -->
+      <xsl:param name="tan-lm-docs" as="document-node()*"/>
+      <xsl:param name="srcs-tokenized" as="document-node()*"/>
+      <xsl:choose>
+         <xsl:when test="not(count($tan-lm-docs) = count($srcs-tokenized))">
+            <xsl:message>There must be an equal number of TAN-LM documents and their tokenized
+               sources</xsl:message>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:for-each select="$tan-lm-docs">
+               <xsl:variable name="pos" select="position()"/>
+               <xsl:document>
+                  <xsl:apply-templates mode="unconsolidate-anas">
+                     <xsl:with-param name="src-tokenized" select="$srcs-tokenized[$pos]"/>
+                  </xsl:apply-templates>
+               </xsl:document>
+            </xsl:for-each>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:function>
+   <xsl:template match="node()" mode="unconsolidate-anas">
+      <xsl:param name="src-tokenized" as="document-node()"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:apply-templates mode="unconsolidate-anas">
+            <xsl:with-param name="src-tokenized" select="$src-tokenized"/>
+         </xsl:apply-templates>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:head" mode="unconsolidate-anas">
+      <xsl:copy-of select="."/>
+   </xsl:template>
+   <xsl:template match="tan:ana" mode="unconsolidate-anas">
+      <xsl:param name="src-tokenized" as="document-node()"/>
+      <xsl:variable name="this-ana" select="."/>
+      <xsl:for-each select="tan:tok[not(@cont)]">
+         <xsl:variable name="this-tok" select="."/>
+         <!-- this has not yet been written to anticipate @ref with multiple values -->
+         <xsl:variable name="this-ref-norm" select="tan:normalize-refs(@ref)"/>
+         <xsl:variable name="this-val-norm" select="(@val, '.')[1]"/>
+         <xsl:variable name="that-div"
+            select="$src-tokenized/tan:TAN-T/tan:body//tan:div[@ref = $this-ref-norm]"/>
+         <xsl:variable name="tok-ceiling" select="count($that-div/tan:tok)"/>
+         <xsl:variable name="this-pos-norm"
+            select="
+               if (@pos) then
+                  tan:sequence-expand(@pos, $tok-ceiling)
+               else
+                  1"/>
+         <xsl:for-each select="$this-pos-norm">
+            <xsl:variable name="this-pos" select="."/>
+            <xsl:for-each select="$this-ana/tan:lm">
+               <xsl:variable name="this-lm" select="."/>
+               <xsl:for-each select="tan:l">
+                  <xsl:variable name="this-l" select="."/>
+                  <xsl:for-each select="$this-lm/tan:m">
+                     <xsl:variable name="this-m" select="."/>
+                     <ana>
+                        <xsl:copy-of select="$this-ana/(comment(), tan:comment)"/>
+                        <tok>
+                           <xsl:copy-of select="$this-tok/@*"/>
+                           <xsl:if test="not($this-pos = 1)">
+                              <xsl:attribute name="pos" select="$this-pos"/>
+                           </xsl:if>
+                           <xsl:copy-of select="$this-tok/comment()"/>
+                        </tok>
+                        <lm>
+                           <xsl:copy-of select="$this-lm/@*"/>
+                           <xsl:copy-of select="$this-lm/(comment(), tan:comment)"/>
+                           <l>
+                              <xsl:copy-of select="$this-l/@*"/>
+                              <xsl:copy-of select="$this-l/node()"/>
+                           </l>
+                           <m>
+                              <xsl:copy-of select="$this-m/@*"/>
+                              <xsl:copy-of select="$this-m/node()"/>
+                           </m>
+                        </lm>
+                     </ana>
+                  </xsl:for-each>
+               </xsl:for-each>
+            </xsl:for-each>
+         </xsl:for-each>
+      </xsl:for-each>
    </xsl:template>
 
    <!-- PART IV.
@@ -1653,12 +1819,12 @@
       />
    </xsl:function>
 
-   <xsl:function name="tan:ordinal" xml:id="f-ordinal" as="xs:string+">
+   <xsl:function name="tan:ordinal" xml:id="f-ordinal" as="xs:string*">
       <!-- Input: one or more numerals
         Output: one or more strings with the English form of the ordinal form of the input number
         E.g., (1, 4, 17)  ->  ('first','fourth','17th'). 
         -->
-      <xsl:param name="in" as="xs:integer+"/>
+      <xsl:param name="in" as="xs:integer*"/>
       <xsl:variable name="ordinals"
          select="
             ('first',
@@ -1691,7 +1857,10 @@
                then
                   $ordinals[$i]
                else
-                  concat(xs:string($i), $ordinal-suffixes[($i mod 10) + 1])"
+                  if ($i lt 1) then
+                     'none'
+                  else
+                     concat(xs:string($i), $ordinal-suffixes[($i mod 10) + 1])"
       />
    </xsl:function>
 

@@ -109,11 +109,14 @@ token-list =
     element tok {
         certainty-stamp,
         source-ref,
-        pointer-to-div-range,
+        reference-opt,
         (token-value-ref | item-pos-ref | (token-value-ref, item-pos-ref)),
-        char-ref,
+        char-ref?,
         continuation-opt?
     }
+
+## Reference option allows TAN-LM files to point to languages as a whole in lieu of specific sources
+reference-opt = pointer-to-div-range
 
 ##    Pointer (link) to a div in a TAN-T(EI) file
 pointer-to-div-range =
@@ -149,7 +152,7 @@ char-ref =
     ## list of one or more characters, specified through Arabic numerals, the keyword 'last' or 'last-X' (where X is a valid number), joined with commas or hyphens.
     
     ## Examples: '1', 'last', 'last-3 - last-1', '1, 3, 5, 7 - 11, last-8, last'
-    attribute chars { seq-picker }?
+    attribute chars { seq-picker }
 continuation-opt = empty
 continuation =
     

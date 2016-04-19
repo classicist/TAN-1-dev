@@ -21,9 +21,3 @@ text-div =
 type =
     ## indicates what type of textual unit <div> marks. Points to a <div-type> declared in <declarations>.
     attribute type { d:IDREFS }
-n =
-    
-    ## contains the name of the <div>. Consists of a string of word characters.
-    
-    ## Examples: '4', 'pr', 'Psalms'
-    attribute n { n-val }

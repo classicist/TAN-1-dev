@@ -7,7 +7,7 @@
     exclude-result-prefixes="xs math xd tan fn tei functx" version="3.0">
     <xd:doc scope="stylesheet">
         <xd:desc>
-            <xd:p><xd:b>Updated </xd:b>Mar 1, 2016</xd:p>
+            <xd:p><xd:b>Updated </xd:b>April 19, 2016</xd:p>
             <xd:p>Variables, functions, and templates for all TAN files. Written primarily for
                 Schematron validation, but suitable for general use in other contexts.</xd:p>
         </xd:desc>
@@ -375,6 +375,7 @@
         />
     </xsl:function>
 
+    <!-- Functions that take regular expressions, to support TAN extensions -->
     <xsl:function name="tan:matches" as="xs:boolean">
         <!-- two-param function of the three-param version below -->
         <xsl:param name="input" as="xs:string?"/>
@@ -388,6 +389,35 @@
         <xsl:param name="flags" as="xs:string"/>
         <xsl:copy-of select="matches($input, tan:regex($pattern), $flags)"/>
     </xsl:function>
+    <xsl:function name="tan:replace" as="xs:string">
+        <!-- three-param function of the four-param version below -->
+        <xsl:param name="input" as="xs:string?"/>
+        <xsl:param name="pattern" as="xs:string"/>
+        <xsl:param name="replacement" as="xs:string"/>
+        <xsl:copy-of select="tan:replace($input, $pattern, $replacement, '')"/>
+    </xsl:function>
+    <xsl:function name="tan:replace" as="xs:string">
+        <!-- Parallel to fn:replace(), but converts TAN-exceptions into classes. See tan:regex() for details. -->
+        <xsl:param name="input" as="xs:string?"/>
+        <xsl:param name="pattern" as="xs:string"/>
+        <xsl:param name="replacement" as="xs:string"/>
+        <xsl:param name="flags" as="xs:string"/>
+        <xsl:copy-of select="replace($input, tan:regex($pattern), $replacement, $flags)"/>
+    </xsl:function>
+    <xsl:function name="tan:tokenize" as="xs:string*">
+        <!-- two-param function of the three-param version below -->
+        <xsl:param name="input" as="xs:string?"/>
+        <xsl:param name="pattern" as="xs:string"/>
+        <xsl:copy-of select="tan:tokenize($input, $pattern, '')"/>
+    </xsl:function>
+    <xsl:function name="tan:tokenize" as="xs:string*">
+        <!-- Parallel to fn:tokenize(), but converts TAN-exceptions into classes. See tan:regex() for details. -->
+        <xsl:param name="input" as="xs:string?"/>
+        <xsl:param name="pattern" as="xs:string"/>
+        <xsl:param name="flags" as="xs:string"/>
+        <xsl:copy-of select="tokenize($input, tan:regex($pattern), $flags)"/>
+    </xsl:function>
+
     <xsl:function name="tan:regex" as="xs:string?">
         <!-- Input: string of a regex search
         Output: the same string, with TAN-reserved escape sequences replaced by characters class sequences
@@ -414,7 +444,7 @@
           '[\k{.greek.oxia}\k{.greek.tonos}\k{.greek.perispomeni}]\w*[\k{.greek.tonos}\k{.greek.oxia}]'
         -->
         <xsl:param name="regex" as="xs:string?"/>
-        <xsl:variable name="tan-regex" select="doc('tan-regex.xml')"/>
+        <xsl:variable name="tan-regex" select="doc('TAN-regex.xml')"/>
         <xsl:variable name="esc-seq" select="'\\k\{([^\}]+)\}'"/>
         <xsl:variable name="pass-1">
             <regex>
@@ -422,7 +452,7 @@
                     <xsl:matching-substring>
                         <match>
                             <xsl:value-of
-                                select="tan:process-regex-escape-u(regex-group(1), $tan-regex)"/>
+                                select="tan:process-regex-escape-k(regex-group(1), $tan-regex)"/>
                         </match>
                     </xsl:matching-substring>
                     <xsl:non-matching-substring>
@@ -438,9 +468,14 @@
         </xsl:variable>
         <xsl:value-of select="$pass-2//text()"/>
     </xsl:function>
-    <xsl:function name="tan:process-regex-escape-u" as="xs:string?">
+
+    <xsl:function name="tan:process-regex-escape-k" as="xs:string?">
         <xsl:param name="val-inside-braces" as="xs:string"/>
         <xsl:param name="unicode-db" as="document-node()"/>
+        <!-- characters used in the official character names -->
+        <xsl:variable name="ucd-name-class" select="'[-#\(\)a-zA-Z0-9]'"/>
+        <!-- characters allowed to separate items in a \k{} escape class -->
+        <xsl:variable name="sep-class" select="'[^-#\)\(\w]'"/>
         <xsl:choose>
             <xsl:when
                 test="matches($val-inside-braces, '^[0-9a-fA-F]{1,6}(\s*-\s*[0-9a-fA-F]{1,6})?(\s*,\s*[0-9a-fA-F]{1,6}(\s*-\s*[0-9a-fA-F]{1,6})?)$')">
@@ -457,18 +492,35 @@
                 <xsl:variable name="pass-2" select="tan:sequence-expand($pass-1, 1)"/>
                 <xsl:value-of select="codepoints-to-string($pass-2[. gt 1])"/>
             </xsl:when>
-            <xsl:when test="matches($val-inside-braces, '^(\W\w+)+$')">
-                <xsl:variable name="this-class"
-                    select="tokenize($val-inside-braces, '\W')[position() gt 1]"/>
+            <xsl:when
+                test="matches($val-inside-braces, concat('^(', $sep-class, $ucd-name-class, '+)+$'))">
+                <xsl:variable name="names-to-include" as="xs:string*">
+                    <xsl:analyze-string select="$val-inside-braces"
+                        regex="{concat(replace($sep-class,'\]','!]('),$ucd-name-class,'+)+')}">
+                        <xsl:matching-substring>
+                            <xsl:copy-of select="regex-group(1)"/>
+                        </xsl:matching-substring>
+                    </xsl:analyze-string>
+                </xsl:variable>
+                <xsl:variable name="names-to-exclude" as="xs:string*">
+                    <xsl:analyze-string select="$val-inside-braces"
+                        regex="{concat('!(',$ucd-name-class,'+)+')}">
+                        <xsl:matching-substring>
+                            <xsl:copy-of select="regex-group(1)"/>
+                        </xsl:matching-substring>
+                    </xsl:analyze-string>
+                </xsl:variable>
                 <xsl:variable name="pass-1"
                     select="
-                        $unicode-db/*/*[every $i in $this-class
-                            satisfies * = $i]/@cp"/>
+                        $unicode-db/*/*[every $i in $names-to-include
+                            satisfies * = $i and not(some $j in $names-to-exclude
+                            satisfies * = $j)]/@cp"/>
                 <xsl:value-of
                     select="
                         codepoints-to-string(for $i in $pass-1
                         return
-                            tan:hex-to-dec($i))"/>
+                            tan:hex-to-dec($i))"
+                />
             </xsl:when>
             <xsl:otherwise/>
         </xsl:choose>

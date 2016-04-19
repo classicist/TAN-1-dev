@@ -12,7 +12,10 @@ include "TAN-class-2.rnc" {
     decl-non-class-2 = decl-lexi+ & decl-morph+
     
     ## TAN-LM files point only to one source
-    source-list = source-item
+    source-list = source-item | lang-outside
+    
+    ## If a TAN-LM file points to a language, not a specific source, then @ref should be optional
+    reference-opt = pointer-to-div-range?
     
     ## Because TAN-LM files depend on only one source, no id references to sources are needed
     source-ref = empty

@@ -7,7 +7,7 @@
     exclude-result-prefixes="xs math xd tan fn tei functx" version="3.0">
     <xd:doc scope="stylesheet">
         <xd:desc>
-            <xd:p><xd:b>Updated </xd:b>Mar 1, 2016</xd:p>
+            <xd:p><xd:b>Updated </xd:b>April 19, 2016</xd:p>
             <xd:p>Variables, functions, and templates for all TAN files. Written primarily for
                 Schematron validation, but suitable for general use in other contexts.</xd:p>
         </xd:desc>
@@ -375,6 +375,7 @@
         />
     </xsl:function>
 
+    <!-- Functions that take regular expressions, to support TAN extensions -->
     <xsl:function name="tan:matches" as="xs:boolean">
         <!-- two-param function of the three-param version below -->
         <xsl:param name="input" as="xs:string?"/>
@@ -388,6 +389,35 @@
         <xsl:param name="flags" as="xs:string"/>
         <xsl:copy-of select="matches($input, tan:regex($pattern), $flags)"/>
     </xsl:function>
+    <xsl:function name="tan:replace" as="xs:string">
+        <!-- three-param function of the four-param version below -->
+        <xsl:param name="input" as="xs:string?"/>
+        <xsl:param name="pattern" as="xs:string"/>
+        <xsl:param name="replacement" as="xs:string"/>
+        <xsl:copy-of select="tan:replace($input, $pattern, $replacement, '')"/>
+    </xsl:function>
+    <xsl:function name="tan:replace" as="xs:string">
+        <!-- Parallel to fn:replace(), but converts TAN-exceptions into classes. See tan:regex() for details. -->
+        <xsl:param name="input" as="xs:string?"/>
+        <xsl:param name="pattern" as="xs:string"/>
+        <xsl:param name="replacement" as="xs:string"/>
+        <xsl:param name="flags" as="xs:string"/>
+        <xsl:copy-of select="replace($input, tan:regex($pattern), $replacement, $flags)"/>
+    </xsl:function>
+    <xsl:function name="tan:tokenize" as="xs:string*">
+        <!-- two-param function of the three-param version below -->
+        <xsl:param name="input" as="xs:string?"/>
+        <xsl:param name="pattern" as="xs:string"/>
+        <xsl:copy-of select="tan:tokenize($input, $pattern, '')"/>
+    </xsl:function>
+    <xsl:function name="tan:tokenize" as="xs:string*">
+        <!-- Parallel to fn:tokenize(), but converts TAN-exceptions into classes. See tan:regex() for details. -->
+        <xsl:param name="input" as="xs:string?"/>
+        <xsl:param name="pattern" as="xs:string"/>
+        <xsl:param name="flags" as="xs:string"/>
+        <xsl:copy-of select="tokenize($input, tan:regex($pattern), $flags)"/>
+    </xsl:function>
+
     <xsl:function name="tan:regex" as="xs:string?">
         <!-- Input: string of a regex search
         Output: the same string, with TAN-reserved escape sequences replaced by characters class sequences
@@ -414,7 +444,7 @@
           '[\k{.greek.oxia}\k{.greek.tonos}\k{.greek.perispomeni}]\w*[\k{.greek.tonos}\k{.greek.oxia}]'
         -->
         <xsl:param name="regex" as="xs:string?"/>
-        <xsl:variable name="tan-regex" select="doc('tan-regex.xml')"/>
+        <xsl:variable name="tan-regex" select="doc('TAN-regex.xml')"/>
         <xsl:variable name="esc-seq" select="'\\k\{([^\}]+)\}'"/>
         <xsl:variable name="pass-1">
             <regex>
@@ -438,6 +468,7 @@
         </xsl:variable>
         <xsl:value-of select="$pass-2//text()"/>
     </xsl:function>
+    
     <xsl:function name="tan:process-regex-escape-u" as="xs:string?">
         <xsl:param name="val-inside-braces" as="xs:string"/>
         <xsl:param name="unicode-db" as="document-node()"/>

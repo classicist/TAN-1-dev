@@ -32,16 +32,19 @@
       <active pattern="LM-edit-missing-ls"/>
    </phase>-->
    <phase id="edit-grouped-data">
+      <active pattern="LM-core"/>
       <active pattern="class-2-edit"/>
       <active pattern="LM-edit-grouped-data"/>
    </phase>
    <phase id="quarter">
       <active pattern="core"/>
+      <active pattern="LM-core"/>
       <active pattern="class-2-quarter"/>
       <active pattern="LM-quarter"/>
    </phase>
    <phase id="half">
       <active pattern="core"/>
+      <active pattern="LM-core"/>
       <active pattern="class-2-quarter"/>
       <active pattern="class-2-half"/>
       <active pattern="LM-quarter"/>
@@ -49,6 +52,7 @@
    </phase>
    <phase id="full">
       <active pattern="core"/>
+      <active pattern="LM-core"/>
       <active pattern="class-2-quarter"/>
       <active pattern="class-2-half"/>
       <active pattern="class-2-full"/>
@@ -153,6 +157,37 @@
          </sqf:fix>
       </rule>
    </pattern>-->
+   <pattern id="LM-core">
+      <let name="has-source"
+         value="
+            if (/tan:TAN-LM/tan:head/tan:source) then
+               true()
+            else
+               false()"/>
+      <rule context="tan:tok">
+         <let name="this-resolved" value="tan:resolve-include(.)"/>
+         <report
+            test="
+               ($has-source = true()) and (some $i in $this-resolved
+                  satisfies not($i/@ref))"
+            > Any TAN-LM file with a source must have a @ref for every &lt;tok>. </report>
+         <report
+            test="
+               ($has-source = false()) and (some $i in $this-resolved
+                  satisfies $i/@ref)"
+            > Any TAN-LM file without a source may not have @ref in any &lt;tok>. </report>
+         <report
+            test="
+               ($has-source = false()) and (some $i in $this-resolved
+                  satisfies $i/@pos)"
+            > Any TAN-LM file without a source may not have @pos in any &lt;tok>. </report>
+         <report
+            test="
+               ($has-source = false()) and (some $i in $this-resolved
+                  satisfies $i/@chars)"
+            > Any TAN-LM file without a source may not have @chars in any &lt;tok>. </report>
+      </rule>
+   </pattern>
    <pattern id="LM-edit-grouped-data">
       <!--<let name="features-grouped" value="tan:group-by-IRIs($mory-1st-da-resolved/tan:TAN-mor/tan:head/tan:declarations/tan:feature)"/>-->
       <rule context="tan:ana[parent::tan:group]">

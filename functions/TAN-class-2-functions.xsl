@@ -1260,21 +1260,20 @@
       <xsl:param name="nodes-to-merge" as="node()*"/>
       <xsl:param name="ref-sequence" as="xs:string*"/>
       <xsl:variable name="is-leaf-element" select="
-            not($nodes-to-merge[self::*])" as="xs:boolean"/>
+            not($nodes-to-merge[self::*])"
+         as="xs:boolean"/>
       <xsl:variable name="unique-child-nodes"
          select="tan:strip-duplicate-nodes($nodes-to-merge, ())"/>
       <xsl:copy-of
          select="
-            $unique-child-nodes[self::processing-instruction() or self::comment() or self::text()[$is-leaf-element]]"
-      />
+            $unique-child-nodes[self::processing-instruction() or self::comment() or self::text()[$is-leaf-element]]"/>
       <xsl:for-each-group select="$unique-child-nodes[self::*]" group-by="tan:element-key(.)">
          <xsl:sort
             select="
                if (@ref) then
                   index-of($ref-sequence, @ref)
                else
-                  0"
-         />
+                  0"/>
          <xsl:variable name="first-item" select="current-group()[1]"/>
          <xsl:variable name="root-name" select="name($first-item)"/>
          <xsl:element name="{$root-name}">
@@ -1911,9 +1910,9 @@
    <xsl:function name="tan:get-ucd-decomp" xml:id="v-ucd-decomp">
       <xsl:copy-of select="doc('string-base-translate.xml')"/>
    </xsl:function>
-   <xsl:function name="tan:string-base" xml:id="f-string-base" as="xs:string?">
+   <xsl:function name="tan:string-base" as="xs:string?">
       <!-- This function takes any string and replaces every character with its base Unicode character.
-      E.g., ἀνθρὠρους - > ανθρωρουσ
+      E.g., ἀνθρὠπους - > ανθρωπουσ
       This is useful for preparing text to be searched without respect to accents
       -->
       <xsl:param name="arg" as="xs:string?"/>
@@ -1922,8 +1921,35 @@
          select="translate($arg, $ucd-decomp/tan:translate/tan:mapString, $ucd-decomp/tan:translate/tan:transString)"
       />
    </xsl:function>
+   <xsl:function name="tan:string-composite" as="xs:string?">
+      <!-- This function is the inverse of tan:string-base, in that it replaces every character with
+         those Unicode characters that use it as a base. If none exist, then the character itself is 
+         returned.
+         E.g., 'Max' - > 'MᴹḾṀṂℳⅯⓂ㎆㎒㎫㎹㎿㏁Ｍ𝐌𝑀𝑴𝓜𝔐𝕄𝕸𝖬𝗠𝘔𝙈𝙼🄼🅋🅪🅫aªàáâãäåāăąǎǟǡǻȁȃȧᵃḁẚạảấầẩẫậắằẳẵặₐ℀℁ⓐ㏂ａ𝐚𝑎𝒂𝒶𝓪𝔞𝕒𝖆𝖺𝗮𝘢𝙖𝚊xˣẋẍₓⅹⅺⅻⓧｘ𝐱𝑥𝒙𝓍𝔁𝔵𝕩𝖝𝗑𝘅𝘹𝙭𝚡'
+         This is useful for preparing regex character classes to broaden a search. 
+      -->
+      <xsl:param name="arg" as="xs:string?"/>
+      <xsl:variable name="ucd-decomp" select="tan:get-ucd-decomp()"/>
+      <xsl:variable name="output" as="xs:string*">
+         <xsl:analyze-string select="$arg" regex=".">
+            <xsl:matching-substring>
+               <xsl:variable name="char" select="."/>
+               <xsl:variable name="reverse-translate-match"
+                  select="$ucd-decomp/tan:translate/tan:reverse/tan:transString[text() = $char]"/>
+               <xsl:value-of
+                  select="
+                     if (exists($reverse-translate-match)) then
+                        concat($char, string-join($reverse-translate-match/tan:mapString, ''))
+                     else
+                        $char"
+               />
+            </xsl:matching-substring>
+         </xsl:analyze-string>
+      </xsl:variable>
+      <xsl:value-of select="string-join($output, '')"/>
+   </xsl:function>
 
-   <xsl:function name="tan:expand-search" xml:id="f-expand-search" as="xs:string?">
+   <xsl:function name="tan:expand-search" as="xs:string?">
       <!-- This function takes a string representation of a regular expression pattern and replaces every unescaped
       character with a character class that lists all Unicode characters that would recursively decompose to that base
       character.
@@ -1933,28 +1959,41 @@
       -->
       <xsl:param name="regex" as="xs:string?"/>
       <xsl:variable name="ucd-decomp" select="tan:get-ucd-decomp()"/>
+      <xsl:variable name="output-prep-1">
+         <xsl:analyze-string select="$regex" regex="{concat('\\.|',$regex-escaping-characters)}">
+            <xsl:matching-substring>
+               <non-match>
+                  <xsl:value-of select="."/>
+               </non-match>
+            </xsl:matching-substring>
+            <xsl:non-matching-substring>
+               <xsl:analyze-string select="." regex=".">
+                  <xsl:matching-substring>
+                     <match>
+                        <xsl:value-of select="tan:string-composite(.)"/>
+                     </match>
+                  </xsl:matching-substring>
+               </xsl:analyze-string>
+            </xsl:non-matching-substring>
+         </xsl:analyze-string>
+      </xsl:variable>
       <xsl:variable name="output" as="xs:string*">
-         <xsl:for-each select="1 to string-length($regex)">
-            <xsl:variable name="pos" select="."/>
-            <xsl:variable name="char" select="substring($regex, $pos, 1)"/>
-            <xsl:variable name="prev-char" select="substring($regex, $pos - 1, 1)"/>
-            <xsl:variable name="reverse-translate-match"
-               select="$ucd-decomp/tan:translate/tan:reverse/tan:transString[text() = $char]"/>
-            <xsl:choose>
-               <xsl:when
-                  test="$prev-char = '\' or ($prev-char != '\' and matches($char, $regex-escaping-characters))">
-                  <xsl:value-of select="$char"/>
-               </xsl:when>
-               <xsl:when test="$reverse-translate-match">
-                  <xsl:value-of
-                     select="concat('[', $char, string-join($reverse-translate-match/tan:mapString, ''), ']')"
-                  />
-               </xsl:when>
-               <xsl:otherwise>
-                  <xsl:value-of select="$char"/>
-               </xsl:otherwise>
-            </xsl:choose>
-         </xsl:for-each>
+         <xsl:apply-templates select="$output-prep-1" mode="add-square-brackets"/>
+         <!--<xsl:analyze-string select="$regex" regex=".">
+            <xsl:matching-substring>
+               <!-\-<xsl:variable name="char" select="."/>
+               <xsl:variable name="reverse-translate-match"
+                  select="$ucd-decomp/tan:translate/tan:reverse/tan:transString[text() = $char]"/>
+               <xsl:value-of
+                  select="
+                     if (exists($reverse-translate-match)) then
+                        concat('[', $char, string-join($reverse-translate-match/tan:mapString, ''), ']')
+                     else
+                        $char"
+               />-\->
+               <xsl:value-of select="tan:string-composite(.)"/>
+            </xsl:matching-substring>
+         </xsl:analyze-string>-->
       </xsl:variable>
       <xsl:value-of select="string-join($output, '')"/>
    </xsl:function>

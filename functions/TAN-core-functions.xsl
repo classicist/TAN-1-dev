@@ -143,6 +143,24 @@
                     tan:resolve-doc(document($i))"/>
 
     <!-- CONTEXT INDEPENDENT FUNCTIONS -->
+    <xsl:variable name="hex-key" as="xs:string+"
+        select="
+            '0',
+            '1',
+            '2',
+            '3',
+            '4',
+            '5',
+            '6',
+            '7',
+            '8',
+            '9',
+            'A',
+            'B',
+            'C',
+            'D',
+            'E',
+            'F'"/>
     <xsl:function name="tan:dec-to-hex" as="xs:string">
         <!-- Change any integer into a hexadecimal string
             Input: xs:integer 
@@ -161,25 +179,30 @@
                         tan:dec-to-hex($in idiv 16)
                     else
                         '',
-                    substring('0123456789ABCDEF',
-                    ($in mod 16) + 1, 1))"
+                    $hex-key[($in mod 16) + 1])"
         />
     </xsl:function>
 
-    <xsl:function name="tan:hex-to-dec" as="xs:integer?">
+    <xsl:function name="tan:hex-to-dec" as="item()*">
         <!-- Change any hexadecimal string into an integer
          E.g., '1F' - > 31
       -->
-        <xsl:param name="str" as="xs:string?"/>
-        <xsl:variable name="str-u" select="upper-case($str)"/>
-        <xsl:variable name="len" select="string-length($str-u)"/>
-        <xsl:value-of
+        <xsl:param name="hex" as="xs:string?"/>
+        <xsl:variable name="split" as="xs:integer*">
+            <xsl:analyze-string select="$hex" regex="[0-9a-fA-F]">
+                <xsl:matching-substring>
+                    <xsl:copy-of select="index-of($hex-key, upper-case(.)) - 1"/>
+                </xsl:matching-substring>
+            </xsl:analyze-string>
+        </xsl:variable>
+        <xsl:variable name="split-rev" select="reverse($split)"/>
+        <!--<xsl:copy-of select="$split"/>-->
+        <xsl:copy-of
             select="
-                if ($len lt 1)
-                then
-                    0
-                else
-                    tan:hex-to-dec(substring($str-u, 1, $len - 1)) * 16 + string-length(substring-before('0123456789ABCDEF', substring($str-u, $len)))"
+                sum(for $i in (1 to count($split))
+                return
+                    $split-rev[$i]
+                    * (xs:integer(math:pow(16, $i - 1))))"
         />
     </xsl:function>
 
@@ -514,7 +537,7 @@
                     select="
                         $unicode-db/*/*[every $i in $names-to-include
                             satisfies * = $i and not(some $j in $names-to-exclude
-                            satisfies * = $j)]/@cp"/>
+                                satisfies * = $j)]/@cp"/>
                 <xsl:value-of
                     select="
                         codepoints-to-string(for $i in $pass-1
@@ -530,11 +553,13 @@
             <xsl:apply-templates mode="#current"/>
         </xsl:copy>
     </xsl:template>
-    <xsl:template match="tan:match" mode="add-square-brackets">
+    <xsl:template match="tan:match" name="prep-regex-char-class" mode="add-square-brackets">
         <xsl:variable name="preceding-text" as="xs:string?"
             select="string-join(preceding-sibling::tan:non-match/text(), '')"/>
+        <xsl:variable name="preceding-text-without-escaped-backslashes" as="xs:string?"
+            select="replace($preceding-text, '\\\\', '')"/>
         <xsl:variable name="preceding-text-without-escaped-brackets" as="xs:string?"
-            select="replace($preceding-text, '\\\[|\\\]', '')"/>
+            select="replace($preceding-text-without-escaped-backslashes, '\\\[|\\\]', '')"/>
         <xsl:variable name="preceding-text-char-classes" as="element()">
             <char-classes>
                 <xsl:analyze-string select="$preceding-text-without-escaped-brackets"
@@ -559,7 +584,6 @@
                 else
                     true()"/>
         <xsl:copy>
-            <!--<xsl:value-of select="concat(' *** ', ($preceding-text-char-classes/*)[last()], ' *** ')"/>-->
             <xsl:value-of
                 select="
                     if ($needs-brackets = true()) then

@@ -16,11 +16,28 @@
         <oneOrMore>
           <ref name="decl-morph"/>
         </oneOrMore>
+        <zeroOrMore>
+          <ref name="decl-key"/>
+        </zeroOrMore>
       </interleave>
     </define>
     <define name="source-list">
       <a:documentation>TAN-LM files point only to one source</a:documentation>
-      <ref name="source-item"/>
+      <choice>
+        <ref name="source-item"/>
+        <ref name="lang-outside"/>
+      </choice>
+    </define>
+    <define name="reference-opt">
+      <a:documentation>If a TAN-LM file points to a language, not a specific source, then @ref should be optional</a:documentation>
+      <optional>
+        <ref name="pointer-to-div-range"/>
+      </optional>
+    </define>
+    <define name="key-opt">
+      <optional>
+        <ref name="key"/>
+      </optional>
     </define>
     <define name="source-ref">
       <a:documentation>Because TAN-LM files depend on only one source, no id references to sources are needed</a:documentation>
@@ -28,11 +45,6 @@
     </define>
     <define name="id-option">
       <empty/>
-    </define>
-    <define name="TAN-body-core">
-      <ref name="lexicon-attr"/>
-      <ref name="grammar-attr"/>
-      <ref name="TAN-LM-body-core"/>
     </define>
     <define name="decl-supp-div-opt">
       <a:documentation>TAN-LM files may have no more than one suppress-div-type field. Multiple div-types should be space delimited in @div-type-ref</a:documentation>
@@ -42,6 +54,13 @@
     </define>
     <define name="continuation-opt">
       <ref name="continuation"/>
+    </define>
+    <define name="other-body-attributes">
+      <ref name="lexicon-attr"/>
+      <ref name="grammar-attr"/>
+    </define>
+    <define name="item">
+      <ref name="TAN-LM-item"/>
     </define>
   </include>
   <define name="decl-morph">
@@ -101,65 +120,75 @@
       <data type="IDREF"/>
     </attribute>
   </define>
-  <define name="TAN-LM-body-core">
-    <oneOrMore>
-      <element name="ana">
-        <a:documentation>contains a one or more assertions about the lexical or morphological properties of one or more tokens</a:documentation>
-        <choice>
-          <group>
-            <optional>
-              <ref name="ed-stamp"/>
-            </optional>
-            <ref name="inclusion"/>
-          </group>
-          <group>
-            <ref name="certainty-stamp"/>
-            <optional>
-              <ref name="internal-id"/>
-            </optional>
-            <interleave>
-              <zeroOrMore>
-                <ref name="comment"/>
-              </zeroOrMore>
-              <group>
-                <oneOrMore>
-                  <ref name="token-list"/>
-                </oneOrMore>
-                <oneOrMore>
-                  <element name="lm">
-                    <a:documentation>contains lexical or morphological data</a:documentation>
-                    <ref name="certainty-stamp"/>
-                    <interleave>
-                      <zeroOrMore>
-                        <ref name="comment"/>
-                      </zeroOrMore>
-                      <choice>
-                        <group>
-                          <oneOrMore>
-                            <ref name="lexeme"/>
-                          </oneOrMore>
-                          <zeroOrMore>
-                            <ref name="morph"/>
-                          </zeroOrMore>
-                        </group>
-                        <group>
-                          <zeroOrMore>
-                            <ref name="lexeme"/>
-                          </zeroOrMore>
-                          <oneOrMore>
-                            <ref name="morph"/>
-                          </oneOrMore>
-                        </group>
-                      </choice>
-                    </interleave>
-                  </element>
-                </oneOrMore>
-              </group>
-            </interleave>
-          </group>
-        </choice>
-      </element>
-    </oneOrMore>
+  <define name="decl-key">
+    <element name="key-type">
+      <a:documentation>defines the type of key that has used.</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <ref name="entity-nondigital-ref"/>
+      </choice>
+    </element>
+  </define>
+  <define name="TAN-LM-item">
+    <element name="ana">
+      <a:documentation>contains a one or more assertions about the lexical or morphological properties of one or more tokens</a:documentation>
+      <choice>
+        <group>
+          <optional>
+            <ref name="ed-stamp"/>
+          </optional>
+          <ref name="inclusion"/>
+        </group>
+        <group>
+          <ref name="certainty-stamp"/>
+          <optional>
+            <ref name="internal-id"/>
+          </optional>
+          <interleave>
+            <zeroOrMore>
+              <ref name="comment"/>
+            </zeroOrMore>
+            <group>
+              <oneOrMore>
+                <ref name="token-list"/>
+              </oneOrMore>
+              <oneOrMore>
+                <element name="lm">
+                  <a:documentation>contains lexical or morphological data</a:documentation>
+                  <ref name="certainty-stamp"/>
+                  <interleave>
+                    <zeroOrMore>
+                      <ref name="comment"/>
+                    </zeroOrMore>
+                    <choice>
+                      <group>
+                        <oneOrMore>
+                          <ref name="lexeme"/>
+                        </oneOrMore>
+                        <zeroOrMore>
+                          <ref name="morph"/>
+                        </zeroOrMore>
+                      </group>
+                      <group>
+                        <zeroOrMore>
+                          <ref name="lexeme"/>
+                        </zeroOrMore>
+                        <oneOrMore>
+                          <ref name="morph"/>
+                        </oneOrMore>
+                      </group>
+                    </choice>
+                  </interleave>
+                </element>
+              </oneOrMore>
+            </group>
+          </interleave>
+        </group>
+      </choice>
+    </element>
   </define>
   <define name="lexeme">
     <element name="l">
@@ -174,15 +203,12 @@
         </attribute>
       </optional>
       <ref name="certainty-stamp"/>
-      <optional>
-        <ref name="item-pos-ref"/>
-      </optional>
       <text/>
     </element>
   </define>
   <define name="morph">
     <element name="m">
-      <a:documentation>carries a morphological code that conforms to the rules or patterns established in the TAN-R-mor file upon which it depends.</a:documentation>
+      <a:documentation>carries a morphological code that conforms to the rules or patterns defined in the TAN-R-mor file upon which it depends.</a:documentation>
       <a:documentation>Codes are space-delimited. If a value of &lt;m&gt; violates the rules established by the TAN-R-mor file, an error will be generated. For more about how codes are built, and how they function, see main.xml#tan-lm.</a:documentation>
       <ref name="certainty-stamp"/>
       <optional>

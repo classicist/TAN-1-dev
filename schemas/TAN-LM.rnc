@@ -9,13 +9,14 @@ start =
 include "TAN-class-2.rnc" {
     
     ## TAN-LM files must each have at least one lexicon and one TAN-R-mor declaration
-    decl-non-class-2 = decl-lexi+ & decl-morph+
+    decl-non-class-2 = decl-lexi+ & decl-morph+ & decl-key*
     
     ## TAN-LM files point only to one source
     source-list = source-item | lang-outside
     
     ## If a TAN-LM file points to a language, not a specific source, then @ref should be optional
     reference-opt = pointer-to-div-range?
+    key-opt = key?
     
     ## Because TAN-LM files depend on only one source, no id references to sources are needed
     source-ref = empty
@@ -57,6 +58,10 @@ grammar-attr =
     
     ## This attribute is inheritable. See main.xml#inheritable_attributes
     attribute morphology { d:IDREF }
+decl-key =
+    
+    ## defines the type of key that has used.
+    element key-type { ed-stamp?, (inclusion | entity-nondigital-ref) }
 TAN-LM-item =
     
     ## contains a one or more assertions about the lexical or morphological properties of one or more tokens
@@ -89,7 +94,7 @@ lexeme =
     }
 morph =
     
-    ## carries a morphological code that conforms to the rules or patterns established in the TAN-R-mor file upon which it depends.
+    ## carries a morphological code that conforms to the rules or patterns defined in the TAN-R-mor file upon which it depends.
     
     ## Codes are space-delimited. If a value of <m> violates the rules established by the TAN-R-mor file, an error will be generated. For more about how codes are built, and how they function, see main.xml#tan-lm.
     element m {

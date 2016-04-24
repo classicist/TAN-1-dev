@@ -122,6 +122,14 @@
       <data type="language"/>
     </element>
   </define>
+  <define name="n">
+    <attribute name="n">
+      <a:documentation>names an element. Consists of a string of word characters.</a:documentation>
+      <a:documentation>In the context of a &lt;div&gt;, @n serves, concatenated with ancestral @ns, as an identifier. In the context of &lt;group&gt;, the value is arbitrary.</a:documentation>
+      <a:documentation>Examples: '4', 'pr', 'Psalms'</a:documentation>
+      <ref name="n-val"/>
+    </attribute>
+  </define>
   <define name="period-filter">
     <element name="when">
       <a:documentation>constrains an event to a period of time</a:documentation>
@@ -533,7 +541,9 @@
     </element>
   </define>
   <define name="group-attributes">
-    <empty/>
+    <optional>
+      <ref name="n"/>
+    </optional>
   </define>
   <define name="item">
     <empty/>

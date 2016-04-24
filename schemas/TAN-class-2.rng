@@ -163,8 +163,9 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) must include &l
     <element name="tok">
       <a:documentation>identifies one or more words or word fragments. Used by class 2 files to make assertions about specific words. </a:documentation>
       <ref name="certainty-stamp"/>
+      <ref name="key-opt"/>
       <ref name="source-ref"/>
-      <ref name="pointer-to-div-range"/>
+      <ref name="reference-opt"/>
       <choice>
         <ref name="token-value-ref"/>
         <ref name="item-pos-ref"/>
@@ -173,11 +174,25 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) must include &l
           <ref name="item-pos-ref"/>
         </group>
       </choice>
-      <ref name="char-ref"/>
+      <optional>
+        <ref name="char-ref"/>
+      </optional>
       <optional>
         <ref name="continuation-opt"/>
       </optional>
     </element>
+  </define>
+  <define name="key-opt">
+    <empty/>
+  </define>
+  <define name="key">
+    <attribute name="key">
+      <a:documentation>supplies a value intended to optimize searching for &lt;tok&gt;s, especially in applications that use XSLT and XPath key functions. </a:documentation>
+    </attribute>
+  </define>
+  <define name="reference-opt">
+    <a:documentation>Reference option allows TAN-LM files to point to languages as a whole in lieu of specific sources</a:documentation>
+    <ref name="pointer-to-div-range"/>
   </define>
   <define name="pointer-to-div-range">
     <a:documentation>   Pointer (link) to a div in a TAN-T(EI) file</a:documentation>
@@ -208,13 +223,11 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) must include &l
     </attribute>
   </define>
   <define name="char-ref">
-    <optional>
-      <attribute name="chars">
-        <a:documentation>list of one or more characters, specified through Arabic numerals, the keyword 'last' or 'last-X' (where X is a valid number), joined with commas or hyphens.</a:documentation>
-        <a:documentation>Examples: '1', 'last', 'last-3 - last-1', '1, 3, 5, 7 - 11, last-8, last'</a:documentation>
-        <ref name="seq-picker"/>
-      </attribute>
-    </optional>
+    <attribute name="chars">
+      <a:documentation>list of one or more characters, specified through Arabic numerals, the keyword 'last' or 'last-X' (where X is a valid number), joined with commas or hyphens.</a:documentation>
+      <a:documentation>Examples: '1', 'last', 'last-3 - last-1', '1, 3, 5, 7 - 11, last-8, last'</a:documentation>
+      <ref name="seq-picker"/>
+    </attribute>
   </define>
   <define name="continuation-opt">
     <empty/>

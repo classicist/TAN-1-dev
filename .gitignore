@@ -3,5 +3,7 @@
 *.xhtml
 *.pdf
 *.xml_xslt
+*.bak
 *0400.xml
 testing*
+private*

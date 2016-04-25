@@ -1,3 +1,6 @@
 [submodule "regex"]
 	path = functions/regex/
 	url = /Users/joelk/Dropbox/TAN/SERVER/release/1/dev/functions/regex/
+[submodule "functions/regex"]
+	path = functions/regex
+	url = https://github.com/textalign/TAN-regex.git

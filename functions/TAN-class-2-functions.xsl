@@ -1908,7 +1908,7 @@
    </xsl:function>
 
    <xsl:function name="tan:get-ucd-decomp" xml:id="v-ucd-decomp">
-      <xsl:copy-of select="doc('string-base-translate.xml')"/>
+      <xsl:copy-of select="doc('regex/ucd/string-base-translate.xml')"/>
    </xsl:function>
    <xsl:function name="tan:string-base" as="xs:string?">
       <!-- This function takes any string and replaces every character with its base Unicode character.

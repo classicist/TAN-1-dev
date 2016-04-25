@@ -2,6 +2,9 @@ Text Alignment Network version 1, development release
 
 For more about TAN visit http://textalign.net.
 
+This project has submodules, which must be invoked using the --recursive option:
+: git clone --recursive [PATH]
+
 This being a development release, all files are subject to change. Quite
 a lot of work remains before the TAN format can be used widely and reliably.
 Files valid one day might be rendered invalid the next. If you begin to 

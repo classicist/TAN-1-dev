@@ -27,6 +27,15 @@
     </head>
     <body in-progress="false" affects-element="key-type">
         <item>
+            <IRI>tag:textalign.net,2015:key-type:status</IRI>
+            <name>status</name>
+            <desc>@key is an arbitrary value indicating the stage of editing
+                for the datum. Possible values: "unchecked"; "to be reviewed";
+                "questionable". If a datum is completely edited, it is recommended
+                the @key be deleted altogether.
+            </desc>
+        </item>
+        <item>
             <IRI>tag:textalign.net,2015:key-type:base</IRI>
             <name>base</name>
             <desc>@key is the result of applying tan:string-base($i), where $i is

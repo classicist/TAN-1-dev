@@ -656,6 +656,7 @@
    <xsl:variable name="tok-grouping-key-key" as="element()">
       <tok-grouping-key-key>
          <tok attribute="ref"/>
+         <tok attribute="key"/>
          <tok attribute="val"/>
          <tok attribute="pos"/>
          <tok attribute="chars"/>
@@ -676,28 +677,6 @@
          <ana attribute="ed-when"/>
       </tok-grouping-key-key>
    </xsl:variable>
-   <!--<xsl:variable name="l-m-grouping-key-key" as="element()">
-        <l-grouping-key-key>
-            <l attribute="text()"/>
-            <l attribute="lexicon"/>
-            <l attribute="def-ref"/>
-            <l attribute="cert"/>
-            <l attribute="ed-who"/>
-            <l attribute="ed-when"/>
-            <m attribute="text()"/>
-            <m attribute="morphology"/>
-            <m attribute="cert"/>
-            <m attribute="ed-who"/>
-            <m attribute="ed-when"/>
-            <lm attribute="cert"/>
-            <lm attribute="ed-who"/>
-            <lm attribute="ed-when"/>
-            <ana attribute="xml:id"/>
-            <ana attribute="cert"/>
-            <ana attribute="ed-who"/>
-            <ana attribute="ed-when"/>
-        </l-grouping-key-key>
-    </xsl:variable>-->
    <xsl:variable name="l-grouping-key-key" as="element()">
       <l-grouping-key-key>
          <l attribute="text()"/>

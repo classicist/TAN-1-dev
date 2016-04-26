@@ -19,5 +19,14 @@ text-div =
          | (type, n, lang-of-content?, (text-div+ | text)))
     }
 type =
+    
     ## indicates what type of textual unit <div> marks. Points to a <div-type> declared in <declarations>.
     attribute type { d:IDREFS }
+n =
+    
+    ## names a <div>. Consists of a string of word characters.
+    
+    ## @n serves, concatenated with ancestral @ns, as an identifier.
+    
+    ## Examples: '4', 'pr', 'Psalms'
+    attribute n { n-val }

@@ -98,14 +98,6 @@ lang-outside =
     
     ## Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin). For more see main.xml#language
     element for-lang { xsd:language }
-n =
-    
-    ## names an element. Consists of a string of word characters.
-    
-    ## In the context of a <div>, @n serves, concatenated with ancestral @ns, as an identifier. In the context of <group>, the value is arbitrary.
-    
-    ## Examples: '4', 'pr', 'Psalms'
-    attribute n { n-val }
 period-filter =
     
     ## constrains an event to a period of time
@@ -316,11 +308,8 @@ TAN-body =
     element body { progress?, ed-stamp?, (comment* & TAN-body-core) }
 TAN-body-core = other-body-attributes, (body-group | item)+
 other-body-attributes = empty
-body-group =
+body-group = empty
     
-    ## collects a group of items that have a natural affinity
-    element group { group-attributes, (body-group | item)* }
-group-attributes = n?
 item = empty
 TAN-tail =
     

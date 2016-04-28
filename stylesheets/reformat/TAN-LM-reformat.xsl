@@ -79,8 +79,12 @@
 
    <!-- OUTPUT -->
    <xsl:template match="/">
-      <!--<xsl:copy-of select="$srcs-tokenized"/>-->
+      <!--<result>hi</result>-->
+      <!--<xsl:copy-of select="/"/>-->
+      <!--<xsl:copy-of select="$regrouped-doc"/>-->
       <!--<xsl:copy-of select="$revised-tok-doc"/>-->
+      <!--<xsl:copy-of select="$unconsolidated-doc"/>-->
+      <!--<xsl:copy-of select="$re-sorted-doc"/>-->
       <xsl:copy-of select="$final-results-with-feedback"/>
       <xsl:if test="$make-backup">
          <xsl:variable name="new-version-no" select="replace(string(current-dateTime()), '\D', '')"/>
@@ -108,7 +112,14 @@
       </xsl:document>
    </xsl:variable>
    <xsl:template match="tan:body" mode="re-group">
-      <xsl:copy-of select="tan:re-group-anas(., $p1-re-group-anas)"/>
+      <xsl:choose>
+         <xsl:when test="some $i in $p1-re-group-anas satisfies matches($i, '((last)|(last-\d+)|(\d+))(\s*-\s*((last)|(last-\d+)|(\d+)))?(\s*,?\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*|.*\?\?\?.*')">
+            <xsl:copy-of select="tan:re-group-anas(., $p1-re-group-anas)"/>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:copy-of select="."/>
+         </xsl:otherwise>
+      </xsl:choose>
    </xsl:template>
    <xsl:template match="tan:group" mode="no-groups">
       <xsl:apply-templates mode="#current"/>
@@ -210,9 +221,6 @@
    <xsl:variable name="unconsolidated-doc" as="document-node()">
       <xsl:choose>
          <xsl:when test="exists($combination-id)">
-            <!--<xsl:document>
-               <xsl:apply-templates select="$revised-tok-doc" mode="unconsolidate-anas"/>
-            </xsl:document>-->
             <xsl:copy-of select="tan:unconsolidate-tan-lm($revised-tok-doc, $srcs-tokenized)"/>
          </xsl:when>
          <xsl:otherwise>
@@ -311,7 +319,6 @@
          </xsl:for-each-group>
       </xsl:copy>
    </xsl:template>
-   
 
    <!-- STEP FOUR: RE-SORT -->
    <xsl:variable name="re-sorted-doc" as="document-node()">

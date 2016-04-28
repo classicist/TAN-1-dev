@@ -17,13 +17,7 @@
       <xsl:for-each select="$body">
          <xsl:copy>
             <xsl:copy-of select="@*"/>
-            <xsl:for-each
-               select="
-                  if (tan:is-flat-class-1($self-resolved) = true()) then
-                     (tei:div, tan:div)
-                  else
-                     (.//(tei:div, tan:div))"
-            >
+            <xsl:for-each select=".//(tei:div, tan:div)">
                <xsl:variable name="this-flatref" select="tan:flatref(.)"/>
                <xsl:copy>
                   <xsl:copy-of select="@*"/>

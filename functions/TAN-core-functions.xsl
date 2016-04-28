@@ -7,7 +7,7 @@
     exclude-result-prefixes="xs math xd tan fn tei functx" version="3.0">
     <xd:doc scope="stylesheet">
         <xd:desc>
-            <xd:p><xd:b>Updated </xd:b>April 24, 2016</xd:p>
+            <xd:p><xd:b>Updated </xd:b>April 28, 2016</xd:p>
             <xd:p>Variables, functions, and templates for all TAN files. Written primarily for
                 Schematron validation, but suitable for general use in other contexts.</xd:p>
         </xd:desc>
@@ -54,11 +54,12 @@
     <xsl:param name="schema-version-minor" select="'dev'"/>
 
     <xsl:variable name="TAN-keywords" as="element()*">
-        <xsl:variable name="TAN-keyword-files" as="document-node()+"
-            select="
-                doc('../TAN-key/div-types.TAN-key.xml'), doc('../TAN-key/relationships.TAN-key.xml'),
-                doc('../TAN-key/normalizations.TAN-key.xml'), doc('../TAN-key/token-definitions.TAN-key.xml'),
-                doc('../TAN-key/rights.TAN-key.xml'), doc('../TAN-key/features.TAN-key.xml')"/>
+      <xsl:variable name="TAN-keyword-files" as="document-node()+"
+         select="
+            doc('../TAN-key/div-types.TAN-key.xml'), doc('../TAN-key/key-types.TAN-key.xml'), doc('../TAN-key/relationships.TAN-key.xml'),
+            doc('../TAN-key/normalizations.TAN-key.xml'), doc('../TAN-key/token-definitions.TAN-key.xml'),
+            doc('../TAN-key/rights.TAN-key.xml'), doc('../TAN-key/features.TAN-key.xml'), doc('../TAN-key/modals.TAN-key.xml')"
+      />
         <xsl:apply-templates mode="resolve-href" select="$TAN-keyword-files/tan:TAN-key/tan:body"/>
     </xsl:variable>
     <xsl:variable name="relationship-keywords-for-tan-versions"
@@ -85,13 +86,7 @@
             return
                 tan:first-loc-available($i, base-uri($i))"/>
     <xsl:variable name="keys-1st-da"
-        select="
-            for $i in distinct-values($keys-1st-la)
-            return
-                if ($i = '') then
-                    $empty-doc
-                else
-                    document($i)"/>
+        select="tan:get-doc($keys-1st-la)"/>
     <xsl:variable name="doc-id" select="/*/@id"/>
     <xsl:variable name="doc-uri" select="base-uri(/*)"/>
     <xsl:variable name="doc-parent-directory" select="replace($doc-uri, '[^/]+$', '')"/>
@@ -124,7 +119,7 @@
         select="'tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-(0\d|1[0-2]))?(-([0-2]\d|3[01]))?:\S+'"/>
 
     <xsl:variable name="token-definitions-reserved"
-        select="$TAN-keywords//descendant-or-self::*[tokenize(@affects-element, '\s+') = 'token-definition']//tan:token-definition"/>
+        select="$TAN-keywords//tan:token-definition"/>
 
     <!-- If one wishes to see if the an entire string matches the following patterns defined by these 
         variables, they must appear between the regular expression anchors ^ and $. -->
@@ -133,18 +128,21 @@
     <xsl:variable name="letter-numeral-pattern"
         select="'a+|b+|c+|d+|e+|f+|g+|h+|i+|j+|k+|l+|m+|n+|o+|p+|q+|r+|s+|t+|u+|v+|w+|x+|y+|z+'"/>
 
-    <xsl:variable name="context-1st-da-locations"
+    <xsl:variable name="context-1st-da-locations" as="xs:string*"
         select="tan:first-loc-available($head/tan:see-also[tan:relationship/@which = 'context'])"/>
     <xsl:variable name="context-1st-da"
-        select="
-            for $i in $context-1st-da-locations
+        select="tan:get-doc($context-1st-da-locations)"/>
+
+    <!-- CONTEXT INDEPENDENT FUNCTIONS -->
+   <xsl:function name="tan:get-doc" as="document-node()*">
+      <xsl:param name="uris" as="xs:string*"/>
+      <xsl:copy-of select="for $i in $uris
             return
                 if ($i = '') then
                     $empty-doc
                 else
                     tan:resolve-doc(document($i))"/>
-
-    <!-- CONTEXT INDEPENDENT FUNCTIONS -->
+   </xsl:function>
     <xsl:function name="tan:rom-to-int" as="xs:integer?">
         <!-- Change any roman numeral less than 5000 into an integer
          E.g., 'xliv' - > 44

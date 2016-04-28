@@ -55,13 +55,17 @@
 
    <xsl:key name="item-via-affects-element" match="tan:item"
       use="tokenize((ancestor-or-self::*[@affects-element])[1]/@affects-element, '\s+')"/>
-   <xsl:variable name="TAN-keywords" as="element()*">
+   <xsl:variable name="TAN-keywords" as="document-node()*">
       <xsl:variable name="TAN-keyword-files" as="document-node()+"
          select="
             doc('../TAN-key/div-types.TAN-key.xml'), doc('../TAN-key/key-types.TAN-key.xml'), doc('../TAN-key/relationships.TAN-key.xml'),
             doc('../TAN-key/normalizations.TAN-key.xml'), doc('../TAN-key/token-definitions.TAN-key.xml'),
             doc('../TAN-key/rights.TAN-key.xml'), doc('../TAN-key/features.TAN-key.xml'), doc('../TAN-key/modals.TAN-key.xml')"/>
-      <xsl:apply-templates mode="resolve-href" select="$TAN-keyword-files/tan:TAN-key/tan:body"/>
+      <xsl:for-each select="$TAN-keyword-files">
+         <xsl:document>
+            <xsl:apply-templates mode="resolve-href"/>
+         </xsl:document>
+      </xsl:for-each>
    </xsl:variable>
    <xsl:variable name="relationship-keywords-for-tan-versions"
       select="tan:get-keywords('relationship', 'TAN version')"/>
@@ -72,8 +76,8 @@
    <xsl:variable name="relationship-keywords-for-tan-files"
       select="tan:get-keywords('relationship', 'TAN files')"/>
    <xsl:variable name="relationship-keywords-all" select="tan:get-keywords('relationship')"/>
-   <xsl:variable name="private-keywords" select="$keys-1st-da/tan:TAN-key/tan:body"/>
-   <xsl:variable name="all-keywords" select="$TAN-keywords, $private-keywords"/>
+   <xsl:variable name="private-keywords" select="$keys-1st-da"/>
+   <xsl:variable name="all-keywords" select="$TAN-keywords, $private-keywords" as="document-node()*"/>
 
    <xsl:variable name="root" select="/"/>
    <xsl:variable name="self-resolved" select="tan:resolve-doc($root)" as="document-node()"/>
@@ -419,8 +423,9 @@
                name($element-that-takes-attribute-which)"/>
       <xsl:copy-of
          select="
-            $private-keywords//tan:name[tokenize(ancestor::*[@affects-element][1]/@affects-element, '\s+') = $element-name],
-            $TAN-keywords[tokenize(@affects-element, '\s+') = $element-name]//tan:item/tan:name"
+            for $i in $all-keywords
+            return
+               key('item-via-affects-element', $element-name, $i)/tan:name"
       />
    </xsl:function>
    <xsl:function name="tan:get-keywords" as="xs:string*">
@@ -434,8 +439,9 @@
                name($element-that-takes-attribute-which)"/>
       <xsl:copy-of
          select="
-            $private-keywords//tan:name[tokenize(ancestor::*[@affects-element][1]/@affects-element, '\s+') = $element-name][ancestor::tan:group/tan:name = $group-name-filter],
-            $TAN-keywords[tokenize(@affects-element, '\s+') = $element-name]//tan:item/tan:name[ancestor::tan:group/tan:name = $group-name-filter]"
+            for $i in $all-keywords
+            return
+               key('item-via-affects-element', $element-name, $i)/tan:name[ancestor::tan:group/tan:name = $group-name-filter]"
       />
    </xsl:function>
 
@@ -930,8 +936,10 @@
       <xsl:variable name="this-which" select="tan:normalize-text(@which)"/>
       <xsl:variable name="first-matched-keyword-item"
          select="
-            ($private-keywords//tan:item[tokenize(ancestor::*[@affects-element][1]/@affects-element, '\s+') = $element-name][tan:name = $this-which],
-            $TAN-keywords[tokenize(@affects-element, '\s+') = $element-name]//tan:item[tan:name = $this-which])[1]"/>
+            (for $i in $all-keywords
+            return
+               key('item-via-affects-element', $element-name, $i)[tan:name = $this-which])[1]"
+      />
       <xsl:variable name="resolve-keyword" as="element()?">
          <xsl:element name="{$element-name}">
             <xsl:copy-of select="$this-element/@*[not(name() = 'which')]"/>

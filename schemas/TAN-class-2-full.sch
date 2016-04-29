@@ -2,7 +2,10 @@
 <pattern xmlns="http://purl.oclc.org/dsdl/schematron" xmlns:tan="tag:textalign.net,2015:ns"
    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="class-2-full">
-   <title>Schematron tests for class 2 TAN files, full phase.</title>
+   <title>Schematron tests for class 2 TAN files, full phase</title>
+   <p>This battery of tests is possibly quite time consuming, especially for class-2 files that
+      refer to lengthy sources. Includes tests that involve tokenization and tests on the sources
+      (e.g., checking that leaf divs are uniquely named).</p>
    <let name="srcs-tokenized" value="tan:get-src-1st-da-tokenized($self-expanded-2, $srcs-prepped)"/>
    <let name="self-expanded-4" value="tan:get-self-expanded-4($self-expanded-3, $srcs-tokenized)"/>
    <let name="duplicate-tok-siblings"
@@ -15,6 +18,34 @@
                $j
             else
                ()"/>
+   <rule context="tan:head">
+      <let name="duplicate-leafdiv-flatrefs"
+         value="
+         for $i in $srcs-prepped
+         return
+         tan:duplicate-values($i/tan:TAN-T/tan:body//tan:div[not(tan:div)]/@ref)"
+      />
+      <report test="exists($duplicate-leafdiv-flatrefs)" tan:does-not-apply-to="head"
+         subject="tan:source">Class 1 sources must preserve the leaf div uniqueness rule (violations
+         at <value-of
+            select="
+            for $i in $duplicate-leafdiv-flatrefs
+            return
+            concat(root($i)/*/@src, ': ', $i/@ref)"
+         />). </report>
+      <!-- needs to be diagnosed and fixed -->
+      <!--<sqf:fix id="use-new-edition">
+         <sqf:description>
+            <sqf:title>Replace with new version</sqf:title>
+            <sqf:p>If the source is found to have a see-also that has a relationship of
+               'new-version', choosing this option will replace the IRI + name pattern with the one
+               in the source file's see-also.</sqf:p>
+         </sqf:description>
+         <sqf:delete match="child::*"/>
+         <sqf:add match="."
+            select="$exists-new-version/* except $exists-new-version/tan:relationship"/>
+      </sqf:fix>-->
+   </rule>
    <rule context="tan:body">
       <report test="exists($duplicate-tok-siblings)"
             ><!-- Class 2 files should not have deeply equal elements in <body> --><value-of

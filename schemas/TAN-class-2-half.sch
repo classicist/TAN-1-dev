@@ -5,34 +5,6 @@
    <title>Schematron tests for class 2 TAN files, second level of expansion.</title>
    <let name="srcs-prepped" value="tan:get-src-1st-da-prepped($self-expanded-2, $srcs-resolved)"/>
    <let name="self-expanded-3" value="tan:get-self-expanded-3($self-expanded-2, $srcs-prepped)"/>
-   <rule context="tan:head">
-      <let name="duplicate-leafdiv-flatrefs"
-         value="
-            for $i in $srcs-prepped,
-               $j in $i/tan:TAN-T/tan:body
-            return
-               tan:duplicate-values($j//tan:div[not(tan:div)]/@ref)"/>
-      <report test="exists($duplicate-leafdiv-flatrefs)" tan:does-not-apply-to="head"
-         subject="tan:source">Class 1 sources must preserve the leaf div uniqueness rule (violations
-         at <value-of
-            select="
-               for $i in $duplicate-leafdiv-flatrefs
-               return
-                  concat(root($i)/*/@src, ': ', $i/@ref)"
-         />). </report>
-      <!-- needs to be diagnosed and fixed -->
-      <!--<sqf:fix id="use-new-edition">
-         <sqf:description>
-            <sqf:title>Replace with new version</sqf:title>
-            <sqf:p>If the source is found to have a see-also that has a relationship of
-               'new-version', choosing this option will replace the IRI + name pattern with the one
-               in the source file's see-also.</sqf:p>
-         </sqf:description>
-         <sqf:delete match="child::*"/>
-         <sqf:add match="."
-            select="$exists-new-version/* except $exists-new-version/tan:relationship"/>
-      </sqf:fix>-->
-   </rule>
    <rule
       context="
          tan:tok | tan:anchor-div-ref | tan:div-ref |
@@ -40,7 +12,7 @@
       <let name="this" value="."/>
       <let name="this-resolved" value="tan:resolve-include(.)"/>
       <let name="this-expanded" value="tan:expand-src-and-div-type-ref($this-resolved)"/>
-      <let name="these-elements-with-ref" value="$this-expanded//*[@ref]"/>
+      <let name="these-elements-with-ref" value="$this-expanded/descendant-or-self::*[@ref]"/>
       <let name="these-elements-with-ref-help-requested"
          value="
             for $i in $these-elements-with-ref
@@ -53,18 +25,24 @@
       <let name="matched-refs"
          value="
             for $i in $these-elements-with-ref,
-               $j in tokenize(tan:normalize-refs($i/@ref), ' [-,] ')
+               $j in tokenize(normalize-space(($i/@src, '1')[1]), ' '),
+               $k in tokenize(tan:normalize-refs($i/@ref), ' [-,] '),
+               $l in $srcs-prepped/*[@src = $j]
             return
-               $srcs-prepped/tan:TAN-T[@src = $i/@src]/tan:body//tan:div[@ref = $j]"/>
+               key('div-via-ref', $k, $l)"
+      />
       <let name="mismatched-refs"
          value="
             for $i in $these-elements-with-ref,
-               $j in tokenize(tan:normalize-refs($i/@ref), ' [-,] ')
+               $j in tokenize(normalize-space(($i/@src, '1')[1]), ' '),
+               $k in tokenize(tan:normalize-refs($i/@ref), ' [-,] ')
             return
-               if ($srcs-prepped/tan:TAN-T[@src = $i/@src]/tan:body//tan:div[@ref = $j]) then
+               if (some $l in $srcs-prepped/*[@src = $j]
+                  satisfies key('div-via-ref', $k, $l)) then
                   ()
                else
-                  ($i/@src, $j)"/>
+                  ($i/@src, $k)"
+      />
       <let name="possible-corrections"
          value="
             for $i in (1 to (count($mismatched-refs) idiv 2)),

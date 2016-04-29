@@ -16,6 +16,8 @@
    </xd:doc>
 
    <xsl:include href="TAN-core-functions.xsl"/>
+   
+   <xsl:key name="div-via-ref" match="tan:div" use="@ref"/>
 
    <!-- PART I.
       GLOBAL VARIABLES AND PARAMETERS -->
@@ -901,12 +903,6 @@
    <xsl:template match="tan:realign | tan:align | tan:split-leaf-div-at" mode="self-expanded-3">
       <xsl:param name="self-expanded-2" as="document-node()?"/>
       <xsl:param name="src-1st-da-prepped" as="document-node()*"/>
-      <!--<xsl:variable name="shallow-picks"
-         select="
-            if (@distribute = true()) then
-               true()
-            else
-               false()"/>-->
       <xsl:variable name="shallow-picks" select="true()"/>
       <xsl:variable name="distribute-for-works"
          select="self::tan:align and (not(@exclusive = true()))"/>
@@ -1036,6 +1032,10 @@
             <xsl:for-each select="$ref-range-seq-1">
                <xsl:variable name="start" select="tokenize(., ' - ')[1]"/>
                <xsl:variable name="end" select="tokenize(., ' - ')[2]"/>
+               <xsl:variable name="start-div"
+                  select="key('div-via-ref', $start, $src-1st-da-data-prepped)"/>
+               <xsl:variable name="end-div"
+                  select="key('div-via-ref', $end, $src-1st-da-data-prepped)"/>
                <xsl:choose>
                   <xsl:when test="exists($end)">
                      <xsl:variable name="start-hierarchy"
@@ -1043,6 +1043,11 @@
                      <xsl:variable name="start-hierarchy-depth" select="count($start-hierarchy)"/>
                      <xsl:choose>
                         <xsl:when test="$shallow-picks = false()">
+                           <!--<xsl:copy-of
+                              select="
+                              $start-div/(descendant-or-self::tan:div, following::tan:div) except
+                              $end-div/(following::tan:div, ancestor::tan:div)"
+                           />-->
                            <xsl:copy-of
                               select="
                                  $src-1st-da-data-prepped//tan:div[@ref = $start]/(descendant-or-self::tan:div, following::tan:div) except
@@ -1050,6 +1055,11 @@
                            />
                         </xsl:when>
                         <xsl:otherwise>
+                           <!--<xsl:copy-of
+                              select="
+                              $start-div/(self::tan:div, following::tan:div)[count(ancestor-or-self::tan:div) = $start-hierarchy-depth] except
+                              $end-div/(following::tan:div, ancestor::tan:div)"
+                           />-->
                            <xsl:copy-of
                               select="
                                  $src-1st-da-data-prepped//tan:div[@ref = $start]/(self::tan:div, following::tan:div)[count(ancestor-or-self::tan:div) = $start-hierarchy-depth] except
@@ -1061,6 +1071,11 @@
                   <xsl:otherwise>
                      <xsl:choose>
                         <xsl:when test="$shallow-picks = true()">
+                           <!--<xsl:copy-of
+                              select="
+                              $start-div except
+                              $start-div/descendant::tan:div"
+                           />-->
                            <xsl:copy-of
                               select="
                                  $src-1st-da-data-prepped//tan:div[@ref = $start] except
@@ -1068,6 +1083,7 @@
                            />
                         </xsl:when>
                         <xsl:otherwise>
+                           <!--<xsl:copy-of select="$start-div"/>-->
                            <xsl:copy-of
                               select="$src-1st-da-data-prepped//tan:div[@ref = $start]/descendant-or-self::tan:div"
                            />
@@ -1088,9 +1104,16 @@
       />
    </xsl:function>
    <xsl:function name="tan:get-src-1st-da-tokenized" as="document-node()*">
+      <xsl:param name="self-expanded-2" as="document-node()?"/>
+      <xsl:param name="prepped-class-1-doc" as="document-node()*"/>
+      <xsl:copy-of
+         select="tan:get-src-1st-da-tokenized($self-expanded-2, $prepped-class-1-doc, true())"/>
+   </xsl:function>
+   <xsl:function name="tan:get-src-1st-da-tokenized" as="document-node()*">
       <!-- Input: self-expanded-2 and prepped class 1 document; output: same document tokenized -->
       <xsl:param name="self-expanded-2" as="document-node()?"/>
       <xsl:param name="prepped-class-1-doc" as="document-node()*"/>
+      <xsl:param name="add-n-attr" as="xs:boolean"/>
       <xsl:variable name="token-definitions"
          select="$self-expanded-2/*/tan:head/tan:token-definition"/>
       <xsl:for-each select="$prepped-class-1-doc">
@@ -1115,7 +1138,7 @@
    <xsl:template match="tan:div[not(tan:div)]" mode="tokenize-prepped-class-1">
       <xsl:param name="token-definitions" as="element()*"/>
       <xsl:variable name="this-text" select="normalize-space(string-join(.//text(), ''))"/>
-      <xsl:variable name="this-analyzed" select="tan:analyze-string($this-text, $token-definitions)"/>
+      <xsl:variable name="this-analyzed" select="tan:tokenize-leaf-div($this-text, $token-definitions)"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:copy-of select="$this-analyzed/@max-toks"/>
@@ -1706,38 +1729,16 @@
          <!--<xsl:variable name="this-id" select="*/@id"/>-->
          <xsl:variable name="this-doc" select="."/>
          <xsl:variable name="this-src-id" select="*/@src"/>
-         <xsl:variable name="is-flat" select="tan:is-flat-class-1(.)"/>
          <n-types src="{$this-src-id}">
             <xsl:variable name="n-vals" as="element()*">
                <xsl:for-each select="*/tan:head/tan:declarations/tan:div-type">
                   <xsl:variable name="this-div-type-id" select="@xml:id"/>
                   <xsl:variable name="these-ns" as="xs:string*">
-                     <xsl:choose>
-                        <xsl:when test="$is-flat = true()">
-                           <xsl:for-each
-                              select="$this-doc/tan:TAN-T/tan:body/tan:div, tei:TEI/tei:text/tei:body/tei:div">
-                              <xsl:variable name="this-type" select="tokenize(@type, '\W+')"/>
-                              <xsl:variable name="this-n" select="tokenize(@n, '\W+')"/>
-                              <xsl:for-each select="$this-type">
-                                 <xsl:variable name="pos" select="position()"/>
-                                 <xsl:copy-of
-                                    select="
-                                       if (. = $this-div-type-id) then
-                                          $this-n[$pos]
-                                       else
-                                          ()"
-                                 />
-                              </xsl:for-each>
-                           </xsl:for-each>
-                        </xsl:when>
-                        <xsl:otherwise>
-                           <xsl:copy-of
-                              select="
-                                 $this-doc//(tan:div,
-                                 tei:div)[@type = $this-div-type-id]/@n"
-                           />
-                        </xsl:otherwise>
-                     </xsl:choose>
+                     <xsl:copy-of
+                        select="
+                           $this-doc//(tan:div,
+                           tei:div)[@type = $this-div-type-id]/@n"
+                     />
                   </xsl:variable>
                   <xsl:variable name="this-ns-types"
                      select="

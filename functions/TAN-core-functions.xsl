@@ -216,7 +216,7 @@
       </xsl:choose>
    </xsl:function>
 
-   <xsl:function name="tan:analyze-string" as="element()?">
+   <xsl:function name="tan:tokenize-leaf-div" as="element()?">
       <!-- Input: single string and a <tan:token-definition>. 
          Output: <tan:result> containing a sequence of elements, <tan:tok> and <tan:non-tok>,
         corresponding to fn:match and fn:non-match for fn:analyze-string() -->
@@ -225,7 +225,7 @@
       <xsl:variable name="regex"
          select="($token-definition/@regex, $token-definitions-reserved[1]/@regex)[1]"/>
       <xsl:variable name="flags" select="$token-definition/@flags"/>
-      <xsl:variable name="results">
+      <xsl:variable name="results" as="element()">
          <results regex="{$regex}" flags="{$flags}">
             <xsl:analyze-string select="$text" regex="{$regex}">
                <xsl:matching-substring>
@@ -241,7 +241,8 @@
             </xsl:analyze-string>
          </results>
       </xsl:variable>
-      <xsl:apply-templates select="$results" mode="count-tokens"/>
+      <xsl:copy-of select="$results"/>
+      <!--<xsl:apply-templates select="$results" mode="count-tokens"/>-->
    </xsl:function>
    <xsl:template match="tan:results" mode="count-tokens">
       <xsl:copy>

@@ -1122,23 +1122,28 @@
             <xsl:apply-templates select="node()" mode="tokenize-prepped-class-1">
                <xsl:with-param name="token-definitions"
                   select="$token-definitions[@src = $this-src]"/>
+               <xsl:with-param name="add-n-attr" select="$add-n-attr"/>
             </xsl:apply-templates>
          </xsl:copy>
       </xsl:for-each>
    </xsl:function>
    <xsl:template match="node()" mode="tokenize-prepped-class-1">
       <xsl:param name="token-definitions" as="element()*"/>
+      <xsl:param name="add-n-attr" as="xs:boolean"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:apply-templates mode="#current">
             <xsl:with-param name="token-definitions" select="$token-definitions"/>
+            <xsl:with-param name="add-n-attr" select="$add-n-attr"/>
          </xsl:apply-templates>
       </xsl:copy>
    </xsl:template>
    <xsl:template match="tan:div[not(tan:div)]" mode="tokenize-prepped-class-1">
       <xsl:param name="token-definitions" as="element()*"/>
+      <xsl:param name="add-n-attr" as="xs:boolean"/>
       <xsl:variable name="this-text" select="normalize-space(string-join(.//text(), ''))"/>
-      <xsl:variable name="this-analyzed" select="tan:tokenize-leaf-div($this-text, $token-definitions)"/>
+      <xsl:variable name="this-analyzed"
+         select="tan:tokenize-leaf-div($this-text, $token-definitions, $add-n-attr)"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:copy-of select="$this-analyzed/@max-toks"/>

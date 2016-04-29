@@ -28,7 +28,7 @@
    <xsl:param name="ref-filter" select="$self3//(tan:anchor-div-ref, tan:div-ref)" as="element()*"/>
    <xsl:variable name="srcs-prepped-and-filtered"
       select="tan:pick-prepped-class-1-data($ref-filter, $srcs-prepped, false())"/>
-   <xsl:variable name="srcs-tokenized" select="tan:get-src-1st-da-tokenized($self2, $srcs-prepped)"
+   <xsl:variable name="srcs-tokenized" select="tan:get-src-1st-da-tokenized($self2, $srcs-prepped, true())"
       as="document-node()*"/>
    <xsl:variable name="srcs-tokenized-and-filtered"
       select="tan:get-src-1st-da-tokenized($self2, $srcs-prepped-and-filtered)"

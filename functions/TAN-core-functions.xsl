@@ -77,20 +77,22 @@
       select="tan:get-keywords('relationship', 'TAN files')"/>
    <xsl:variable name="relationship-keywords-all" select="tan:get-keywords('relationship')"/>
    <xsl:variable name="private-keywords" select="$keys-1st-da"/>
-   <xsl:variable name="all-keywords" select="$TAN-keywords, $private-keywords" as="document-node()*"/>
 
    <xsl:variable name="root" select="/"/>
-   <xsl:variable name="self-resolved" select="tan:resolve-doc($root)" as="document-node()"/>
+   <xsl:variable name="self-resolved" select="tan:resolve-doc(/)" as="document-node()"/>
    <xsl:variable name="head" select="$self-resolved/*/tan:head"/>
    <xsl:variable name="body" select="$self-resolved/*/(tan:body, tei:text/tei:body)"/>
 
-   <xsl:variable name="inclusions-1st-da" select="tan:get-inclusions-1st-da(/)"/>
+   <xsl:variable name="inclusions-1st-da" select="tan:get-inclusions-1st-da(/)" as="document-node()*"/>
    <xsl:variable name="keys-1st-la"
       select="
          for $i in (/*/tan:head/tan:key, $inclusions-1st-da/*/tan:head/tan:key)
          return
-            tan:first-loc-available($i, base-uri($i))"/>
+            tan:first-loc-available($i, base-uri($i))"
+   />
    <xsl:variable name="keys-1st-da" select="tan:get-doc($keys-1st-la)"/>
+   <xsl:variable name="all-keywords" select="$keys-1st-da, $TAN-keywords" as="document-node()*"/>
+   
    <xsl:variable name="doc-id" select="/*/@id"/>
    <xsl:variable name="doc-uri" select="base-uri(/*)"/>
    <xsl:variable name="doc-parent-directory" select="replace($doc-uri, '[^/]+$', '')"/>
@@ -133,7 +135,7 @@
 
    <xsl:variable name="context-1st-da-locations" as="xs:string*"
       select="tan:first-loc-available($head/tan:see-also[tan:relationship/@which = 'context'])"/>
-   <xsl:variable name="context-1st-da" select="tan:get-doc($context-1st-da-locations)"/>
+   <xsl:variable name="context-1st-da" select="tan:resolve-doc(tan:get-doc($context-1st-da-locations))"/>
 
    <!-- CONTEXT INDEPENDENT FUNCTIONS -->
    <xsl:function name="tan:get-doc" as="document-node()*">
@@ -145,7 +147,7 @@
                if ($i = '') then
                   $empty-doc
                else
-                  tan:resolve-doc(document($i))"
+                  document($i)"
       />
    </xsl:function>
    <xsl:function name="tan:rom-to-int" as="xs:integer?">
@@ -216,12 +218,14 @@
       </xsl:choose>
    </xsl:function>
 
+
    <xsl:function name="tan:tokenize-leaf-div" as="element()?">
       <!-- Input: single string and a <tan:token-definition>. 
          Output: <tan:result> containing a sequence of elements, <tan:tok> and <tan:non-tok>,
         corresponding to fn:match and fn:non-match for fn:analyze-string() -->
       <xsl:param name="text" as="xs:string?"/>
       <xsl:param name="token-definition" as="element()?"/>
+      <xsl:param name="count-toks" as="xs:boolean"/>
       <xsl:variable name="regex"
          select="($token-definition/@regex, $token-definitions-reserved[1]/@regex)[1]"/>
       <xsl:variable name="flags" select="$token-definition/@flags"/>
@@ -241,8 +245,14 @@
             </xsl:analyze-string>
          </results>
       </xsl:variable>
-      <xsl:copy-of select="$results"/>
-      <!--<xsl:apply-templates select="$results" mode="count-tokens"/>-->
+      <xsl:choose>
+         <xsl:when test="$count-toks = false()">
+            <xsl:copy-of select="$results"/>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:apply-templates select="$results" mode="count-tokens"/>
+         </xsl:otherwise>
+      </xsl:choose>
    </xsl:function>
    <xsl:template match="tan:results" mode="count-tokens">
       <xsl:copy>
@@ -941,6 +951,11 @@
             return
                key('item-via-affects-element', $element-name, $i)[tan:name = $this-which])[1]"
       />
+      <!--<xsl:variable name="first-matched-keyword-item"
+         select="
+            ($private-keywords//tan:item[tokenize(ancestor::*[@affects-element][1]/@affects-element, '\s+') = $element-name][tan:name = $this-which],
+            $TAN-keywords//tan:body[tokenize(@affects-element, '\s+') = $element-name]//tan:item[tan:name = $this-which])[1]"
+      />-->
       <xsl:variable name="resolve-keyword" as="element()?">
          <xsl:element name="{$element-name}">
             <xsl:copy-of select="$this-element/@*[not(name() = 'which')]"/>

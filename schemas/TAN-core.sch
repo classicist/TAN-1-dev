@@ -10,7 +10,7 @@
    <rule context="/*" tan:applies-to="TAN-A-div TAN-A-tok">
       <report test="true()" role="warning"
          sqf:fix="get-morph-local get-morph-abs get-tok-local get-tok-abs get-incl-local get-incl-abs get-source-local get-source-abs"
-         >This version of TAN is unstable and unpublished. Use it at your own risk. <value-of select="$text-is-normalized"/></report>
+         >This version of TAN is unstable and unpublished. Use it at your own risk.</report>
       <sqf:fix id="get-source-local">
          <sqf:description>
             <sqf:title>Get local source element with this document's IRI + name pattern</sqf:title>

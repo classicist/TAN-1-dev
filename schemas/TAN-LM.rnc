@@ -16,7 +16,7 @@ include "TAN-class-2.rnc" {
     
     ## If a TAN-LM file points to a language, not a specific source, then @ref should be optional
     reference-opt = pointer-to-div-range?
-    key-opt = key?
+    class-opt = key?
     
     ## Because TAN-LM files depend on only one source, no id references to sources are needed
     source-ref = empty

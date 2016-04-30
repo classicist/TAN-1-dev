@@ -86,7 +86,7 @@ name-change =
 ## Option to include an internal id. Not needed in TAN-LM files.
 id-option = internal-id
 
-group-attributes = key?
+group-attributes = class?
 
 alignment =
     
@@ -115,18 +115,18 @@ token-list =
     ## identifies one or more words or word fragments. Used by class 2 files to make assertions about specific words. 
     element tok {
         certainty-stamp,
-        key-opt,
+        class-opt,
         source-ref,
         reference-opt,
         (token-value-ref | item-pos-ref | (token-value-ref, item-pos-ref)),
         char-ref?,
         continuation-opt?
     }
-key-opt = empty
-key =
+class-opt = empty
+class =
     
     ## supplies a value intended to optimize searching for <tok>s, especially in applications that use XSLT and XPath key functions. 
-    attribute key { text }
+    attribute class { text }
 
 ## Reference option allows TAN-LM files to point to languages as a whole in lieu of specific sources
 reference-opt = pointer-to-div-range

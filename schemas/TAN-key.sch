@@ -61,7 +61,8 @@
             within the body.</assert>
       </rule>
       <rule context="tan:item[not(tan:token-definition)]">
-         <report
+         <let name="applies-to" value="(ancestor-or-self::*/@affects-element)[1]"/>
+         <report sqf:fix="add-TAN-IRI"
             test="
                $is-reserved-TAN-key = true() and not(some $i in tan:IRI/text()
                   satisfies starts-with($i, $TAN-namespace))"
@@ -73,7 +74,7 @@
             <sqf:add position="before" match="(tan:IRI[1], tan:desc[1], *[1])[1]">
                <tan:IRI>
                   <xsl:value-of
-                     select="concat($TAN-namespace, ':div-type:', replace(../tan:keyword[1], '\s+', '_'))"
+                     select="concat($TAN-namespace, ':', $applies-to, ':', replace(../tan:keyword[1], '\s+', '_'))"
                   />
                </tan:IRI>
                <xsl:value-of select="'&#xA;'"/>

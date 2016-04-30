@@ -31,6 +31,13 @@
             return
                key('div-via-ref', $k, $l)"
       />
+      <let name="matched-leaf-divs" value="$matched-refs[not(tan:div)]"/>
+      <let name="duplicate-leaf-divs"
+         value="
+            tan:duplicate-values(for $i in $matched-leaf-divs
+            return
+               concat(root($i)/*/@src, ' ', $i/@ref))"
+      />
       <let name="mismatched-refs"
          value="
             for $i in $these-elements-with-ref,
@@ -84,6 +91,8 @@
                else
                   ()"
          />)</report>
+      <report test="exists($duplicate-leaf-divs)">@ref may not point to sources with duplicate leaf div references (
+         <value-of select="$duplicate-leaf-divs"/>)</report>
       <report test="exists($these-elements-with-ref-help-requested)"
          sqf:fix="fetch-content get-matched-divs" tan:does-not-apply-to="realign align ana split-leaf-div-at"
          ><!-- Putting $help-trigger in @ref will take the content of @ref and return matched refs or refs that have matched content -->Try

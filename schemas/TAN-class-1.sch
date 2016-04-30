@@ -4,12 +4,12 @@
    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
    <title>Core tests for class 1 TAN files.</title>
-   <let name="self-is-flat" value="tan:is-flat-class-1($self-resolved)"/>
-   <let name="self-flattened" value="tan:flatten-class-1-doc(/)"/>
-   <!--<let name="prep-body" value="tan:prep-body()"/>-->
-   <let name="self-flattened-body" value="$self-flattened/(tei:TEI/tei:text/tei:body, tan:TAN-T/tan:body)"/>
-   <let name="leafdiv-flatrefs" value="$self-flattened-body/(tan:div, tei:div)/@n"/>
-   <!--<let name="transcription-langs" value="$prep-body//@xml:lang"/>-->
+   <let name="leafdiv-flatrefs"
+      value="
+         for $i in $body//(tan:div, tei:div)[not(tan:div | tei:div)]
+         return
+            string-join($i/ancestor-or-self::*/@n, ' ')"
+   />
    <let name="div-types" value="$head/tan:declarations/tan:div-type/@xml:id"/>
    <rule context="tan:see-also">
       <let name="this-resolved" value="tan:resolve-include(.)"/>
@@ -147,9 +147,7 @@
       <let name="this-ref" value="tan:flatref(.)"/>
       <let name="is-leaf-div"
          value="
-            if ($self-is-flat = true()) then
-               exists(text())
-            else
+            
                if (not(tei:div | tan:div)) then
                   true()
                else
@@ -193,7 +191,7 @@
                return
                   $div-types[matches(., tan:escape($i))]"
          />)</report>
-      <report test="$is-leaf-div and not($self-is-flat) and not(@include) and not(matches(., '\S'))">Every leaf div 
+      <report test="$is-leaf-div and not(@include) and not(matches(., '\S'))">Every leaf div 
          in non-flat class 1 files must
          have at least some non-space text.</report>
       <report test="
@@ -205,22 +203,6 @@
          sqf:fix="remove-space-preceding-modifiers">No div may have a spacing character followed by
          a modifying character.</report>
       <assert test="count($these-types) = count($these-ns)">The values of @n and @type must balance.</assert>
-      <!-- reports specific to flat transcriptions -->
-      <assert
-         test="
-            if ($self-is-flat = true()) then
-               ($this-hierarchy-level = 1 or exists($first-ancestor-common-with-prev))
-            else
-               true()"
-         >In a flat transcription every div must either be at the top of a hierarchy or have an
-         ancestor in common with the preceding div.</assert>
-      <assert
-         test="
-            if ($self-is-flat = true() and not($is-leaf-div)) then
-               $foll-is-child
-            else
-               true()"
-         >In a flat transcription any non-leaf-div must be followed by a child div.</assert>
       <!-- SQFixes -->
       <sqf:fix id="remove-modifiers-starting-divs">
          <sqf:description>

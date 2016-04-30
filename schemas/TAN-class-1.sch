@@ -8,7 +8,7 @@
       value="
          for $i in $body//(tan:div, tei:div)[not(tan:div | tei:div)]
          return
-            string-join($i/ancestor-or-self::*/@n, ' ')"
+            tan:flatref($i)"
    />
    <let name="div-types" value="$head/tan:declarations/tan:div-type/@xml:id"/>
    <rule context="tan:see-also">
@@ -146,35 +146,10 @@
       <let name="faulty-types" value="$these-types[not(. = $div-types)]"/>
       <let name="this-ref" value="tan:flatref(.)"/>
       <let name="is-leaf-div"
-         value="
-            
-               if (not(tei:div | tan:div)) then
-                  true()
-               else
-                  false()"
-      />
-      <!-- variables for checking flat transcriptions -->
-      <let name="prec-ns"
-         value="tokenize(tan:normalize-text(preceding-sibling::*[1]/@n), $separator-hierarchy-regex)"
-      />
-      <let name="foll-ns"
-         value="tokenize(tan:normalize-text(following-sibling::*[1]/@n), $separator-hierarchy-regex)"
-      />
-      <let name="this-hierarchy-level" value="count($these-ns)"/>
-      <let name="first-ancestor-common-with-prev"
-         value="
-            for $i in (1 to $this-hierarchy-level)
-            return
-               if ($prec-ns[$i] = $these-ns[$i]) then
-                  $prec-ns[$i]
-               else
-                  ()"
-      />
-      <let name="foll-is-child"
-         value="
-            ($this-hierarchy-level + 1 = count($foll-ns)) and (every $i in (1 to count($this-hierarchy-level))
-               satisfies
-               $these-ns[$i] = $foll-ns[$i])"
+         value="if (not(tei:div | tan:div)) then
+               true()
+            else
+               false()"
       />
       <report
          test="

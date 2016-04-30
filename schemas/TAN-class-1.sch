@@ -141,9 +141,7 @@
          invoked.</report>
    </rule>
    <rule context="tei:div | tan:div">
-      <let name="these-types" value="tokenize(tan:normalize-text(@type),$separator-hierarchy-regex)"/>
-      <let name="these-ns" value="tokenize(tan:normalize-text(@n),$separator-hierarchy-regex)"/>
-      <let name="faulty-types" value="$these-types[not(. = $div-types)]"/>
+      <let name="faulty-types" value="tan:normalize-text(@type)[not(. = $div-types)]"/>
       <let name="this-ref" value="tan:flatref(.)"/>
       <let name="is-leaf-div"
          value="if (not(tei:div | tan:div)) then
@@ -166,8 +164,7 @@
                return
                   $div-types[matches(., tan:escape($i))]"
          />)</report>
-      <report test="$is-leaf-div and not(@include) and not(matches(., '\S'))">Every leaf div 
-         in non-flat class 1 files must
+      <report test="$is-leaf-div and not(@include) and not(matches(., '\S'))">Every leaf div must
          have at least some non-space text.</report>
       <report test="
             some $i in text()
@@ -177,7 +174,6 @@
       <report test="matches(string-join(text(), ''), '\s\p{M}')"
          sqf:fix="remove-space-preceding-modifiers">No div may have a spacing character followed by
          a modifying character.</report>
-      <assert test="count($these-types) = count($these-ns)">The values of @n and @type must balance.</assert>
       <!-- SQFixes -->
       <sqf:fix id="remove-modifiers-starting-divs">
          <sqf:description>

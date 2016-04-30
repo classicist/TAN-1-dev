@@ -10,7 +10,7 @@
    <rule context="/*" tan:applies-to="TAN-A-div TAN-A-tok">
       <report test="true()" role="warning"
          sqf:fix="get-morph-local get-morph-abs get-tok-local get-tok-abs get-incl-local get-incl-abs get-source-local get-source-abs"
-         >This version of TAN is unstable and unpublished. Use it at your own risk.</report>
+         >This version of TAN is unstable and unpublished. Use it at your own risk. <value-of select="$text-is-normalized"/></report>
       <sqf:fix id="get-source-local">
          <sqf:description>
             <sqf:title>Get local source element with this document's IRI + name pattern</sqf:title>
@@ -161,8 +161,10 @@
          value="tokenize(replace(normalize-unicode(.), '(.)', '$1 '), ' ')"/>
       <let name="this-non-nfc-seq"
          value="distinct-values($this-raw-char-seq[not(. = $this-nfc-char-seq)])"/>
-      <assert test=". = normalize-unicode(.)" sqf:fix="normalize-unicode">All text needs to be
-         normalized (NFC). Errors: <value-of
+      <report
+         test="
+            not(. = normalize-unicode(.))"
+         sqf:fix="normalize-unicode">All text needs to be normalized (NFC). Errors: <value-of
             select="
                for $i in $this-non-nfc-seq
                return
@@ -171,7 +173,7 @@
                   string-join(for $j in index-of($this-raw-char-seq, $i)
                   return
                      string($j), ' ')), ' '"
-         /></assert>
+         /></report>
       <sqf:fix id="normalize-unicode">
          <sqf:description>
             <sqf:title>Convert to normalized (NFC) Unicode</sqf:title>

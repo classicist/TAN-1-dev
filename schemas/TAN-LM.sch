@@ -187,6 +187,11 @@
                   satisfies $i/@chars)"
             > Any TAN-LM file without a source may not have @chars in any &lt;tok>. </report>
       </rule>
+      <rule context="tan:declarations">
+         <report test="not($head/tan:declarations/tan:class-type) and $body//@class">@class may be invoked
+            only if it is defined by &lt;class-type>.
+         </report>
+      </rule>
    </pattern>
    <pattern id="LM-edit-grouped-data">
       <!--<let name="features-grouped" value="tan:group-by-IRIs($mory-1st-da-resolved/tan:TAN-mor/tan:head/tan:declarations/tan:feature)"/>-->

@@ -14,6 +14,7 @@ include "TAN-class-3.rnc" {
     keyword-ref = empty
     decl-non-core = TAN-key-decl
     other-body-attributes = element-scope?
+    body-group-opt = body-group*
     group-attributes = metadata-human, element-scope?
     item = TAN-key-item
 }

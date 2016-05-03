@@ -522,7 +522,7 @@
             <sqf:title>Get all valid keywords</sqf:title>
          </sqf:description>
          <sqf:replace match="." node-type="attribute" target="which"
-            select="string-join($close-matches, ' ')"/>
+            select="string-join($close-matches, '&#xA;')"/>
       </sqf:fix>
       <sqf:fix id="explicate">
          <sqf:description>

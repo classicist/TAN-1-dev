@@ -46,6 +46,10 @@ help-opt =
     
     ## requests help on the context element
     attribute help { empty }
+element-scope =
+    
+    ## names one or more TAN elements that the keywords apply to
+    attribute affects-element { text }
 href-opt =
     
     ## points to the location of a file, either as part of <location> or in elements that refer to TAN files, to be used to invoke a schematron quick fix to populate the <IRI> and <location> child elements.
@@ -306,10 +310,14 @@ TAN-body =
     
     ## contains the data
     element body { progress?, ed-stamp?, (comment* & TAN-body-core) }
-TAN-body-core = other-body-attributes, (body-group | item)+
+TAN-body-core = other-body-attributes, (body-group-opt | item)+
 other-body-attributes = empty
-body-group = empty
+body-group-opt = empty
+body-group =
     
+    ## collects a group of items that have a natural affinity
+    element group { group-attributes, (body-group | item)* }
+group-attributes = empty
 item = empty
 TAN-tail =
     

@@ -61,7 +61,7 @@ grammar-attr =
 decl-class =
     
     ## defines the type of key that has used.
-    element class-type { ed-stamp?, (inclusion | entity-nondigital-ref) }
+    element class-type { ed-stamp?, element-scope?, (inclusion | entity-nondigital-ref) }
 TAN-LM-item =
     
     ## contains a one or more assertions about the lexical or morphological properties of one or more tokens

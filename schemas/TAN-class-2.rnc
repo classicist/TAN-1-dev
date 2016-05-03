@@ -5,17 +5,15 @@ namespace ns1 = "tag:textalign.net,2015:ns"
 
 include "TAN-core.rnc" inherit = ns1 {
     decl-non-core = decl-class-2 & decl-non-class-2
-    
+    group-attributes = class?
+
     ## All sources are TAN files, so no source rights should be declared--they're already stated
     source-rights = empty
     source-ref =
         
         ## refers to the ID of one or more <source>s 
         attribute src { text }
-        
-    body-group =     ## collects a group of items that have a natural affinity
-    element group { group-attributes, (body-group | item)* }
-
+body-group-opt = body-group*
 }
 
 ## Reserved for declarations common to all class 2 files
@@ -85,9 +83,6 @@ name-change =
 
 ## Option to include an internal id. Not needed in TAN-LM files.
 id-option = internal-id
-
-group-attributes = class?
-
 alignment =
     
     ## declares one or more groups of words or divs that should be aligned with each other. If in a TAN-A-tok file, <align> governs <tok>s (words); in TAN-A-div files, <div-ref> (divs and segments)

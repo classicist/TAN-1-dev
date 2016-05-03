@@ -28,7 +28,3 @@ TAN-key-item =
          | entity-nondigital-ref
          | entity-tok-def)
     }
-element-scope =
-    
-    ## names one or more TAN elements that the keywords apply to
-    attribute affects-element { text }

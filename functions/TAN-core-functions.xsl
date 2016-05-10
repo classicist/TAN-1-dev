@@ -60,7 +60,8 @@
          select="
             doc('../TAN-key/div-types.TAN-key.xml'), doc('../TAN-key/class-types.TAN-key.xml'), doc('../TAN-key/relationships.TAN-key.xml'),
             doc('../TAN-key/normalizations.TAN-key.xml'), doc('../TAN-key/token-definitions.TAN-key.xml'),
-            doc('../TAN-key/rights.TAN-key.xml'), doc('../TAN-key/features.TAN-key.xml'), doc('../TAN-key/modals.TAN-key.xml')"/>
+            doc('../TAN-key/rights.TAN-key.xml'), doc('../TAN-key/features.TAN-key.xml'), doc('../TAN-key/modals.TAN-key.xml'), 
+            doc('../TAN-key/bitext-relations.TAN-key.xml'), doc('../TAN-key/reuse-types.TAN-key.xml')"/>
       <xsl:for-each select="$TAN-keyword-files">
          <xsl:document>
             <xsl:apply-templates mode="resolve-href"/>

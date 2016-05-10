@@ -16,7 +16,7 @@ include "TAN-class-2.rnc" {
     
     ## TAN-A-tok sources must be named
     source-id-opt = internal-id
-    decl-non-class-2 = decl-brel+, decl-reus+
+    decl-non-class-2 = decl-brel+ & decl-reus+ & decl-class*
     other-body-attributes = bitext-relation-attr, reuse-type-attr 
     item = alignment
     

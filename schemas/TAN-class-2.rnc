@@ -172,3 +172,7 @@ continuation =
     attribute cont {
         xsd:boolean { pattern = "true|1" }
     }
+decl-class =
+    
+    ## defines the type of key that has used.
+    element class-type { ed-stamp?, element-scope?, (inclusion | entity-nondigital-ref) }

@@ -39,6 +39,12 @@
       <active pattern="A-div-half"/>
       <active pattern="A-div-full"/>
    </phase>
+   <!--<pattern id="A-div-edit">
+      <let name="srcs-1st-da" value="tan:get-src-1st-da()"/>
+      <let name="srcs-resolved" value="tan:get-src-1st-da-resolved($srcs-1st-da, $src-ids)"/>
+      <let name="all-refs" value="distinct-values($srcs-resolved/*)"/>
+      
+   </pattern>-->
    <pattern id="A-div-quarter">
       <let name="equate-works" value="$self-expanded-2/tan:TAN-A-div/tan:body/tan:group[tan:work]"/>
       <let name="equate-div-types"
@@ -178,7 +184,60 @@
       </rule>
 
    </pattern>
-   <pattern id="A-div-half"> </pattern>
+   <pattern id="A-div-half">
+      <let name="all-refs" value="distinct-values($srcs-prepped/tan:TAN-T/tan:body//@ref)"/>
+      <let name="orphan-refs"
+         value="
+            for $i in $all-refs
+            return
+               if (count($srcs-prepped/tan:TAN-T/tan:body//tan:div[@ref = $i]) = 1 and
+               not($body/tan:realign[tan:div-ref[@ref = $i]])) then
+                  $srcs-prepped/tan:TAN-T/tan:body//tan:div[@ref = $i]
+               else
+                  ()"/>
+      <rule context="tan:realign">
+         <report test="tan:help-requested(.) and exists($orphan-refs)"
+            sqf:fix="first-orphan all-orphans"
+            ><!-- Requesting help on <realign> 
+         with phase = "half" or higher returns @refs that are orphaned, and could be candidates for realignment -->
+            Possible divs to realign: <value-of
+               select="
+                  for $i in $orphan-refs
+                  return
+                     concat(root($i)/*/@src, ' ', $i/@ref)"
+            />
+         </report>
+         <sqf:fix id="first-orphan">
+            <sqf:description>
+               <sqf:title>Set up first orphan to be reanchored</sqf:title>
+            </sqf:description>
+            <sqf:replace>
+               <tan:realign>
+                  <xsl:text>&#xA;</xsl:text>
+                  <tan:anchor-div-ref src="" ref=""/>
+                  <xsl:text>&#xA;</xsl:text>
+                  <tan:div-ref src="{root($orphan-refs[1])/*/@src}" ref="{$orphan-refs[1]/@ref}"/>
+                  <xsl:text>&#xA;</xsl:text>
+               </tan:realign>
+            </sqf:replace>
+         </sqf:fix>
+         <sqf:fix id="all-orphans">
+            <sqf:description>
+               <sqf:title>Set up all orphans to be reanchored</sqf:title>
+            </sqf:description>
+            <sqf:replace>
+               <xsl:for-each select="$orphan-refs">
+                  <tan:realign>
+                     <xsl:text>&#xA;</xsl:text>
+                     <tan:anchor-div-ref src="" ref=""/>
+                     <xsl:text>&#xA;</xsl:text>
+                     <tan:div-ref src="{root()/*/@src}" ref="{@ref}"/>
+                     <xsl:text>&#xA;</xsl:text>
+                  </tan:realign></xsl:for-each>
+            </sqf:replace>
+         </sqf:fix>
+      </rule>
+   </pattern>
 
    <pattern id="A-div-full">
       <let name="srcs-segmented"

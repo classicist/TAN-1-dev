@@ -4,7 +4,13 @@
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="class-2-edit">
    <title>Schematron tests for class 2 TAN files, edits only.</title>
    <p>This pattern facilitates quick, on-the-fly help for editing class 2 files.</p>
-   <let name="srcs-prepped-edit" value="(/tan:*/tan:tail, tan:get-src-1st-da-prepped())[1]"/>
+   <let name="this-tail" value="/tan:*/tan:tail"/>
+   <let name="srcs-prepped-edit"
+      value="
+         if (exists($this-tail)) then
+            $this-tail
+         else
+            tan:get-src-1st-da-prepped()"/>
    <rule context="/*[2]" tan:applies-to="tail">
       <!-- XPath is /*[2] to avoid triggering guidelines for tan:body -->
       <assert test="/*/tan:tail" role="warning" sqf:fix="make-tail-srcs-prepped">This editing phase
@@ -42,13 +48,13 @@
                $srcs-pass-1"/>
       <let name="these-refs" value="tokenize(tan:normalize-text(@ref), ' [-,] ')"/>
       <let name="matched-refs"
-         value="$srcs-prepped-edit/*[@src = $these-srcs]/(tei:text/tei:body, tan:body)/(tan:div, tei:div)[@ref = $these-refs]"/>
+         value="$srcs-prepped-edit/*[@src = $these-srcs]/tan:body//tan:div[@ref = $these-refs]"/>
       <let name="mismatched-refs"
          value="
             for $i in $these-srcs,
                $j in $these-refs
             return
-               if ($srcs-prepped-edit/*[@src = $i]/(tei:text/tei:body, tan:body)/(tan:div, tei:div)[@ref = $j]) then
+               if ($srcs-prepped-edit/*[@src = $i]/tan:body//tan:div[@ref = $j]) then
                   ()
                else
                   ($i, $j)"/>
@@ -58,13 +64,13 @@
                $j in $mismatched-refs[($i * 2) - 1],
                $k in $mismatched-refs[($i * 2)]
             return
-               $srcs-prepped-edit/*[@src = $j]/(tei:text/tei:body, tan:body)/(tan:div, tei:div)[matches(@ref, $k)]/@ref"/>
+               $srcs-prepped-edit/*[@src = $j]/tan:body//tan:div[matches(@ref, $k)]/@ref"/>
       <let name="help-requested-ref-matches"
          value="
             for $i in $these-srcs,
                $j in $these-refs
             return
-               $srcs-prepped-edit/*[@src = $i]/(tei:text/tei:body, tan:body)/(tan:div, tei:div)[matches(@ref, $j)]"/>
+               $srcs-prepped-edit/*[@src = $i]/tan:body//tan:div[matches(@ref, $j)]"/>
       <let name="help-requested-searched-matches"
          value="
             for $i in tan:normalize-text(@ref),
@@ -73,13 +79,16 @@
                else
                   $i)
             return
-               $srcs-prepped-edit/*[@src = $these-srcs]/(tei:text/tei:body, tan:body)/(tan:div, tei:div)[matches(., $j, $match-flags)]"/>
+               $srcs-prepped-edit/*[@src = $these-srcs]/tan:body//tan:div[matches(., $j, $match-flags)]"/>
       <report test="exists($mismatched-refs) or $help-requested = true()"
          sqf:fix="fetch-content get-matched-divs"
          ><!-- Putting $help-trigger in @ref will take the content of @ref and return matching refs or refs that point to 
             <div>s where the regular expression is found -->Try
             <value-of select="$help-requested-ref-matches/@ref"/> (@ref matches) or <value-of
-            select="$help-requested-searched-matches/@ref"/> (text matches) </report>
+            select="$help-requested-searched-matches/@ref"/> (text matches) <value-of
+            select="count($srcs-prepped-edit)"/>
+         <!--<value-of
+            select="$srcs-prepped-edit/*/tan:body//tan:div[@ref = 'Col 1 4']"/>--></report>
 
       <!-- SCHEMATRON QUICK FIXES -->
       <sqf:fix id="fetch-content" use-when="exists($matched-refs)">

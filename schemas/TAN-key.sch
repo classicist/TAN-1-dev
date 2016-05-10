@@ -66,7 +66,7 @@
             test="
                $is-reserved-TAN-key = true() and not(some $i in tan:IRI/text()
                   satisfies starts-with($i, $TAN-namespace))"
-            >Every reserved TAN keyword will have an IRI assigned from the TAN namespace</report>
+            >Every reserved TAN keyword will have an IRI assigned from the TAN namespace (<value-of select="$TAN-namespace"/>)</report>
          <sqf:fix id="add-TAN-IRI">
             <sqf:description>
                <sqf:title>Add TAN IRI</sqf:title>

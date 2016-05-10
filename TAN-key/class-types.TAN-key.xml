@@ -27,7 +27,7 @@
     </head>
     <body in-progress="false" affects-element="class-type">
         <item>
-            <IRI>tag:textalign.net,2015:key-type:status</IRI>
+            <IRI>tag:textalign.net,2015:class-type:status</IRI>
             <name>status</name>
             <desc>@class is an arbitrary value indicating the stage of editing
                 for the datum. Possible values: "unchecked"; "to be reviewed";
@@ -36,54 +36,54 @@
             </desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:key-type:base</IRI>
+            <IRI>tag:textalign.net,2015:class-type:base</IRI>
             <name>base</name>
             <desc>@class is the result of applying tan:string-base($i), where $i is
                 the value of the token chosen.
             </desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:key-type:root</IRI>
+            <IRI>tag:textalign.net,2015:class-type:root</IRI>
             <name>root</name>
             <desc>@class is the root of the token chosen</desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:key-type:start1</IRI>
+            <IRI>tag:textalign.net,2015:class-type:start1</IRI>
             <name>^.</name>
             <name>start1</name>
             <name>a</name>
             <desc>@class is the first letter of the token chosen</desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:key-type:start2</IRI>
+            <IRI>tag:textalign.net,2015:class-type:start2</IRI>
             <name>^..</name>
             <name>start2</name>
             <name>ab</name>
             <desc>@class is the first two letters of the token chosen</desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:key-type:start3</IRI>
+            <IRI>tag:textalign.net,2015:class-type:start3</IRI>
             <name>^...</name>
             <name>start3</name>
             <name>abc</name>
             <desc>@class is the first three letters of the token chosen</desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:key-type:end1</IRI>
+            <IRI>tag:textalign.net,2015:class-type:end1</IRI>
             <name>.$</name>
             <name>end1</name>
             <name>z</name>
             <desc>@class is the last letter of the token chosen</desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:key-type:end2</IRI>
+            <IRI>tag:textalign.net,2015:class-type:end2</IRI>
             <name>..$</name>
             <name>end2</name>
             <name>yz</name>
             <desc>@class is the last two letters of the token chosen</desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:key-type:end3</IRI>
+            <IRI>tag:textalign.net,2015:class-type:end3</IRI>
             <name>...$</name>
             <name>end3</name>
             <name>xyz</name>

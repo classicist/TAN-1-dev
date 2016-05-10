@@ -13,6 +13,11 @@
       value="$srcs-resolved/*/tan:head/tan:see-also[tan:relationship/tan:IRI = $TAN-keywords//tan:item[tan:name = 'update']/tan:IRI]"/>
    <let name="n-types" value="tan:get-n-types($srcs-resolved)"/>
 
+   <rule context="tan:declarations">
+      <report test="not($head/tan:declarations/tan:class-type) and $body//@class">@class may be invoked
+         only if it is defined by &lt;class-type>.
+      </report>
+   </rule>
    <rule context="tan:source">
       <let name="this-resolved" value="tan:resolve-include(.)"/>
       <let name="new-versions" value="$new-src-versions[root()/*/@src = $this-resolved/@xml:id]"/>

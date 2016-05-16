@@ -60,7 +60,7 @@
          select="
             doc('../TAN-key/div-types.TAN-key.xml'), doc('../TAN-key/class-types.TAN-key.xml'), doc('../TAN-key/relationships.TAN-key.xml'),
             doc('../TAN-key/normalizations.TAN-key.xml'), doc('../TAN-key/token-definitions.TAN-key.xml'),
-            doc('../TAN-key/rights.TAN-key.xml'), doc('../TAN-key/features.TAN-key.xml'), doc('../TAN-key/modals.TAN-key.xml'), 
+            doc('../TAN-key/rights.TAN-key.xml'), doc('../TAN-key/features.TAN-key.xml'), doc('../TAN-key/modals.TAN-key.xml'),
             doc('../TAN-key/bitext-relations.TAN-key.xml'), doc('../TAN-key/reuse-types.TAN-key.xml')"/>
       <xsl:for-each select="$TAN-keyword-files">
          <xsl:document>
@@ -68,6 +68,8 @@
          </xsl:document>
       </xsl:for-each>
    </xsl:variable>
+   <xsl:key name="item-via-affects-element" match="tan:item"
+      use="tokenize((ancestor-or-self::*/@affects-element)[1], '\s+')"/>
    <xsl:variable name="relationship-keywords-for-tan-versions"
       select="tan:get-keywords('relationship', 'TAN version')"/>
    <xsl:variable name="relationship-keywords-for-tan-editions"
@@ -84,16 +86,16 @@
    <xsl:variable name="head" select="$self-resolved/*/tan:head"/>
    <xsl:variable name="body" select="$self-resolved/*/(tan:body, tei:text/tei:body)"/>
 
-   <xsl:variable name="inclusions-1st-da" select="tan:get-inclusions-1st-da(/)" as="document-node()*"/>
+   <xsl:variable name="inclusions-1st-da" select="tan:get-inclusions-1st-da(/)"
+      as="document-node()*"/>
    <xsl:variable name="keys-1st-la"
       select="
          for $i in (/*/tan:head/tan:key, $inclusions-1st-da/*/tan:head/tan:key)
          return
-            tan:first-loc-available($i, base-uri($i))"
-   />
+            tan:first-loc-available($i, base-uri($i))"/>
    <xsl:variable name="keys-1st-da" select="tan:get-doc($keys-1st-la)"/>
    <xsl:variable name="all-keywords" select="$keys-1st-da, $TAN-keywords" as="document-node()*"/>
-   
+
    <xsl:variable name="doc-id" select="/*/@id"/>
    <xsl:variable name="doc-uri" select="base-uri(/*)"/>
    <xsl:variable name="doc-parent-directory" select="replace($doc-uri, '[^/]+$', '')"/>
@@ -136,7 +138,8 @@
 
    <xsl:variable name="context-1st-da-locations" as="xs:string*"
       select="tan:first-loc-available($head/tan:see-also[tan:relationship/@which = 'context'])"/>
-   <xsl:variable name="context-1st-da" select="tan:resolve-doc(tan:get-doc($context-1st-da-locations))"/>
+   <xsl:variable name="context-1st-da"
+      select="tan:resolve-doc(tan:get-doc($context-1st-da-locations))"/>
 
    <!-- CONTEXT INDEPENDENT FUNCTIONS -->
    <xsl:function name="tan:get-doc" as="document-node()*">
@@ -368,7 +371,7 @@
       <xsl:param name="max" as="xs:integer?"/>
       <!-- first normalize syntax -->
       <xsl:variable name="pass-1"
-         select="replace($selector, '(\d)\s*-\s*(last|all|max|\d)', '$1 - $2')"/>
+         select="replace(tan:normalize-text($selector), '(\d)\s*-\s*(last|all|max|\d)', '$1 - $2')"/>
       <xsl:variable name="pass-2" select="replace($pass-1, '(\d)\s+(\d)', '$1, $2')"/>
       <!-- replace 'last' with max value as string -->
       <xsl:variable name="selector-norm" select="replace($pass-2, 'last|all|max', string($max))"/>
@@ -950,8 +953,7 @@
          select="
             (for $i in $all-keywords
             return
-               key('item-via-affects-element', $element-name, $i)[tan:name = $this-which])[1]"
-      />
+               key('item-via-affects-element', $element-name, $i)[tan:name = $this-which])[1]"/>
       <!--<xsl:variable name="first-matched-keyword-item"
          select="
             ($private-keywords//tan:item[tokenize(ancestor::*[@affects-element][1]/@affects-element, '\s+') = $element-name][tan:name = $this-which],

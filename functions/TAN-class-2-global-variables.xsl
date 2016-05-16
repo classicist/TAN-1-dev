@@ -25,7 +25,7 @@
    <xsl:variable name="srcs-prepped" select="tan:get-src-1st-da-prepped($self2, $srcs-resolved)"
       as="document-node()*"/>
    <xsl:variable name="self3" select="tan:get-self-expanded-3($self2, $srcs-prepped)"/>
-   <xsl:param name="ref-filter" select="$self3//(tan:anchor-div-ref, tan:div-ref)" as="element()*"/>
+   <xsl:param name="ref-filter" select="$self3//(tan:anchor-div-ref, tan:div-ref, tan:tok)" as="element()*"/>
    <xsl:variable name="srcs-prepped-and-filtered"
       select="tan:pick-prepped-class-1-data($ref-filter, $srcs-prepped, false())"/>
    <xsl:variable name="srcs-tokenized" select="tan:get-src-1st-da-tokenized($self2, $srcs-prepped, true())"
@@ -35,7 +35,7 @@
       as="document-node()*"/>
    <xsl:variable name="srcs-with-lm-data" select="for $i in $srcs-tokenized return
       tan:get-src-1st-da-with-lms($i,$srcs-context-prepped[tan:TAN-LM/@src = $i/*/@src])"/>
-   <xsl:variable name="self4" select="tan:get-self-expanded-4($self3, $srcs-tokenized)"/>
+   <xsl:variable name="self4" select="tan:get-self-expanded-4($self3, $srcs-tokenized-and-filtered)"/>
 
    <!-- CONTEXTUAL DATA -->
    <xsl:variable name="srcs-context-1st-da-locations" as="element()*">

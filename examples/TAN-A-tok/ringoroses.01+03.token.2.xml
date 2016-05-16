@@ -25,12 +25,6 @@
             <name>German version of Ring around the Roses</name>
             <location href="../ring-o-roses.deu.1897.xml" when-accessed="2015-05-24-04:00"/>
         </source>
-        <see-also>
-            <relationship which="cousin edition"/>
-            <IRI>tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring03</IRI>
-            <name>Edition that keeps source's nomenclature for div types, values</name>
-            <location href="ringoroses.01+03.token.1.xml" when-accessed="2015-08-04"/>
-        </see-also>
         <declarations>
             <bitext-relation xml:id="unclear">
                 <IRI>tag:kalvesmaki@gmail.com,2014:bitext-relation:unclear</IRI>

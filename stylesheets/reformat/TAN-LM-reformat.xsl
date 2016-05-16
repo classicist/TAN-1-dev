@@ -182,7 +182,7 @@
          select="($pos-or-val-override, $p2-convert-tok-refs-to-pos-or-val)[1]"/>
       <xsl:variable name="this-tok" select="."/>
       <xsl:variable name="this-ref-norm" select="tan:normalize-refs(@ref)"/>
-      <xsl:variable name="this-val-norm" select="(@val, '.')[1]"/>
+      <xsl:variable name="this-val-norm" select="(@val, '.+')[1]"/>
       <xsl:variable name="that-div"
          select="$srcs-tokenized/tan:TAN-T/tan:body//tan:div[@ref = $this-ref-norm]"/>
       <xsl:variable name="tok-ceiling" select="count($that-div/tan:tok)"/>
@@ -195,7 +195,7 @@
       <xsl:for-each select="$this-pos-norm">
          <xsl:variable name="pos" select="."/>
          <xsl:variable name="that-tok"
-            select="($that-div/tan:tok[matches(., $this-val-norm)])[$pos]"/>
+            select="($that-div/tan:tok[tan:matches(., $this-val-norm)])[$pos]"/>
          <tok>
             <xsl:copy-of select="$this-tok/(@ref, @cert, @chars, @cont, @ed-when, @ed-who)"/>
             <xsl:choose>

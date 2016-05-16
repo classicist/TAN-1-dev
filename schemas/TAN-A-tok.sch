@@ -7,12 +7,38 @@
    <ns prefix="tei" uri="http://www.tei-c.org/ns/1.0"/>
    <ns prefix="xs" uri="http://www.w3.org/2001/XMLSchema"/>
 
-   <!-- common core below -->
    <include href="TAN-core.sch"/>
+   <include href="TAN-class-2-edit.sch"/>
    <include href="TAN-class-2-quarter.sch"/>
-   <!--<include href="TAN-class-2-half.sch"/>-->
-   <!--<include href="TAN-class-2-full.sch"/>-->
-   <pattern xmlns:sqf="http://www.schematron-quickfix.com/validator/process">
+   <include href="TAN-class-2-half.sch"/>
+   <include href="TAN-class-2-full.sch"/>
+   <phase id="edit">
+      <active pattern="class-2-edit"/>
+   </phase>
+   <phase id="quarter">
+      <active pattern="core"/>
+      <active pattern="class-2-quarter"/>
+      <active pattern="A-tok-quarter"/>
+   </phase>
+   <phase id="half">
+      <active pattern="core"/>
+      <active pattern="class-2-quarter"/>
+      <active pattern="class-2-half"/>
+      <active pattern="A-tok-quarter"/>
+      <active pattern="A-tok-half"/>
+   </phase>
+   <phase id="full">
+      <active pattern="core"/>
+      <active pattern="class-2-quarter"/>
+      <active pattern="class-2-half"/>
+      <active pattern="class-2-full"/>
+      <active pattern="A-tok-quarter"/>
+      <active pattern="A-tok-half"/>
+      <active pattern="A-tok-full"/>
+   </phase>
+   
+   <pattern id="A-tok-quarter"
+      xmlns:sqf="http://www.schematron-quickfix.com/validator/process">
       <let name="head-inclusion" value="/tan:TAN-A-tok/tan:head/tan:inclusion[@xml:id = following-sibling::tan:source/@include]"/>
       <let name="incl-1st-loc-avail" value="tan:first-loc-available($head-inclusion)"/>
       <let name="incl-1st-da" value="doc(resolve-uri($incl-1st-loc-avail, $doc-uri))"/>
@@ -66,6 +92,8 @@
          </sqf:fix>
       </rule>
    </pattern>
+   <pattern id="A-tok-half"></pattern>
+   <pattern id="A-tok-full"></pattern>
    <!-- FUNCTIONS -->
    <xsl:include href="../functions/TAN-A-tok-functions.xsl"/>
 </schema>

@@ -48,6 +48,12 @@
                 translation is paraphrastic.</desc>
         </item>
         <item>
+            <IRI>tag:textalign.net,2015:reuse-type:translation:questionable</IRI>
+            <name>questionable translation</name>
+            <desc>One version is a translation of the other. The quality of the
+                translation is questionable or wrong.</desc>
+        </item>
+        <item>
             <IRI>tag:textalign.net,2015:reuse-type:paraphrase</IRI>
             <name>paraphrase</name>
             <desc>One version is a paraphrase of the other.</desc>

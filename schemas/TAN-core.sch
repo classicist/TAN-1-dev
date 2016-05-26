@@ -676,10 +676,14 @@
                time when accessed.</sqf:p>
          </sqf:description>
          <sqf:add match="..">
+            <xsl:text>&#xA;</xsl:text>
             <tan:IRI>
                <value-of select="$href-doc/*/@id"/></tan:IRI>
+            <xsl:text>&#xA;</xsl:text>
             <tan:name><value-of select="$href-doc/*/tan:head/tan:name[1]"/></tan:name>
+            <xsl:text>&#xA;</xsl:text>
             <tan:location when-accessed="{current-dateTime()}" href="{$href-resolved}"/>
+            <xsl:text>&#xA;</xsl:text>
          </sqf:add>
          <sqf:delete match="."/>
       </sqf:fix>

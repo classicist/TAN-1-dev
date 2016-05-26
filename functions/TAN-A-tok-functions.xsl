@@ -65,11 +65,11 @@
          <xsl:when test="exists($relevant-filters)">
             <xsl:variable name="class-breadcrumb"
                select="
-                  if (exists($relevant-filters[not(@chars)]/ancestor-or-self::*/@q)) then
+                  if (exists($relevant-filters[not(@chars)]/ancestor::*/@q)) then
                      for $i in $relevant-filters[not(@chars)]
                      return
                         concat('q', string-join(
-                        $i/ancestor-or-self::*/@q, '-'))
+                        $i/ancestor::*/@q, '-'))
                   else
                      ()"
             />
@@ -102,10 +102,13 @@
          <xsl:when test="exists($relevant-filters)">
             <xsl:variable name="class-breadcrumb"
                select="
-                  if (exists($relevant-filters/ancestor-or-self::*/@q)) then
-                     for $i in $relevant-filters return concat('q', string-join($i/ancestor-or-self::*/@q, '-'))
+                  if (exists($relevant-filters/ancestor::*/@q)) then
+                     for $i in $relevant-filters
+                     return
+                        concat('q', string-join($i/ancestor::*/@q, '-'))
                   else
-                     ()"/>
+                     ()"
+            />
             <xsl:variable name="class-reuse"
                select="$relevant-filters/ancestor-or-self::*[@reuse-type][1]/@reuse-type"/>
             <xsl:variable name="class-cert"

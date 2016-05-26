@@ -1324,7 +1324,11 @@
    <xsl:template match="tan:div" mode="char-setup analysis-stamp">
       <xsl:param name="ref-tok-filter" as="element()*"/>
       <xsl:choose>
-         <xsl:when test="some $i in $ref-tok-filter, $j in descendant-or-self::tan:div satisfies matches($j/@ref, $i/@ref)">
+         <xsl:when
+            test="
+               some $i in $ref-tok-filter,
+                  $j in descendant-or-self::tan:div
+                  satisfies matches($j/@ref, $i/@ref)">
             <xsl:copy>
                <xsl:copy-of select="@*"/>
                <xsl:apply-templates mode="#current">
@@ -1341,7 +1345,8 @@
       <xsl:param name="ref-tok-filter" as="element()*"/>
       <xsl:variable name="this-ref" select="parent::tan:div/@ref"/>
       <xsl:choose>
-         <xsl:when test="(count(preceding-sibling::tan:tok) + 1) = $ref-tok-filter[@ref = $this-ref][@chars]/@n">
+         <xsl:when
+            test="(count(preceding-sibling::tan:tok) + 1) = $ref-tok-filter[@ref = $this-ref][@chars]/@n">
             <xsl:variable name="regex" select="'\P{M}\p{M}*'"/>
             <xsl:copy>
                <xsl:copy-of select="@*"/>
@@ -1359,7 +1364,7 @@
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
-   
+
 
    <!-- This concludes functions and templates essential to transforming all class-2 files. 
       This is not the end of the story, however, since specific class-2 formats require further 
@@ -1456,6 +1461,51 @@
       </xsl:choose>
    </xsl:function>
 
+   <xsl:function name="tan:shallow-equal" as="xs:boolean">
+      <!-- Input: any two elements. Output: true if shallowly equal.
+         Two elements are shallowly equal if (1) they both have the same name; (2) the name of every 
+         attribute in one is the name of an attribute in the other; and (3) for every pair of attributes,
+         every space-separated value in one is found in the other. Any descendants are ignored.
+         Example: 
+         Input:
+            <div class="gum mug droop">Testing</div>
+            <div class="droop mug gum droop">Different text</div>
+         Output: true
+      -->
+      <xsl:param name="element-1" as="element()?"/>
+      <xsl:param name="element-2" as="element()?"/>
+      <xsl:variable name="have-same-name" select="name($element-1) = name($element-2)"
+         as="xs:boolean"/>
+      <xsl:variable name="attr-names-1"
+         select="
+            for $i in $element-1/@*
+            return
+               name($i)"/>
+      <xsl:variable name="attr-names-2"
+         select="
+            for $i in $element-2/@*
+            return
+               name($i)"/>
+      <xsl:variable name="have-same-attribute-names"
+         select="
+            (every $i in $attr-names-1
+               satisfies ($i = $attr-names-2)) and
+            (every $j in $attr-names-2
+               satisfies ($j = $attr-names-1))"/>
+      <xsl:variable name="have-same-attribute-values"
+         select="
+            every $i in $attr-names-1
+               satisfies (
+               (every $j in tokenize($element-1/@*[name() = $i], '\s+')
+                  satisfies $j = tokenize($element-2/@*[name() = $i], '\s+'))
+               and
+               (every $j in tokenize($element-2/@*[name() = $i], '\s+')
+                  satisfies $j = tokenize($element-1/@*[name() = $i], '\s+'))
+               )"
+         as="xs:boolean"/>
+      <xsl:value-of
+         select="$have-same-name and $have-same-attribute-names and $have-same-attribute-values"/>
+   </xsl:function>
 
    <xsl:function name="tan:get-src-1st-da-with-lms" as="document-node()">
       <!-- For now, this function assumes that every TAN-LM document pertains to

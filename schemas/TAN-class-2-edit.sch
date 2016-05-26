@@ -74,7 +74,7 @@
       <let name="picked-tok-nos"
          value="
             for $i in $matched-divs-tokenized,
-               $j in tan:get-tok-nos($i, self::tan:tok)
+               $j in tan:get-toks($i, self::tan:tok)
             return
                $i/tan:tok[$j]"
       />

@@ -14,8 +14,19 @@
       </xd:desc>
    </xd:doc>
 
+   <xsl:variable name="ref-filter-tan-a-tok" as="element()*">
+      <xsl:for-each-group select="$self3//(tan:tok)" group-by="@ref">
+         <tan:tok src="{$head/tan:source[1]/@xml:id}" ref="{current-grouping-key()}"/>
+         <tan:tok src="{$head/tan:source[2]/@xml:id}" ref="{current-grouping-key()}"/>
+      </xsl:for-each-group> 
+   </xsl:variable>
+   <xsl:variable name="srcs-prepped-and-filtered-tan-a-tok"
+      select="tan:pick-prepped-class-1-data($ref-filter-tan-a-tok, $srcs-prepped, false())"/>
+   <xsl:variable name="srcs-tokenized-and-filtered-tan-a-tok"
+      select="tan:get-src-1st-da-tokenized($self2, $srcs-prepped-and-filtered-tan-a-tok)"
+      as="document-node()*"/>
    <xsl:variable name="srcs-charred-and-filtered"
-      select="tan:get-src-1st-da-chars-picked($self4, $srcs-tokenized-and-filtered)"/>
+      select="tan:get-src-1st-da-chars-picked($self4, $srcs-tokenized-and-filtered-tan-a-tok)"/>
    <xsl:variable name="srcs-analyzed-and-filtered"
       select="tan:get-src-1st-da-analysis-stamped($self4, $srcs-charred-and-filtered)"/>
 

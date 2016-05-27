@@ -5,13 +5,16 @@
    <title>Schematron tests for class 2 TAN files, edits only.</title>
    <p>This pattern facilitates quick, on-the-fly help for editing class 2 files.</p>
    <let name="this-tail" value="/tan:*/tan:tail"/>
-   <let name="self-2" value="tan:get-self-expanded-2()"/>
+   <let name="self2" value="tan:get-self-expanded-2()"/>
    <let name="srcs-prepped-edit"
       value="
          if (exists($this-tail)) then
             $this-tail
          else
             tan:get-src-1st-da-prepped()"/>
+   <xsl:variable name="srcs-common-skeleton" select="tan:get-src-skeleton($srcs-prepped-edit)"/>
+   <!-- self3 used for TAN-A-div checks on div refs to reconcile -->
+   <xsl:variable name="self3" select="tan:get-self-expanded-3($self2, $srcs-prepped-edit)"/>
    <let name="class-type-is-status"
       value="
          if ($head/tan:declarations/tan:class-type/tan:IRI =
@@ -69,7 +72,7 @@
          value="
             for $i in $srcs-pass-1
             return
-               tan:tokenize-div($matched-refs, $self-2/*/tan:head/tan:declarations/tan:token-definition[@src = $i])"
+               tan:tokenize-div($matched-refs, $self2/*/tan:head/tan:declarations/tan:token-definition[@src = $i])"
       />
       <let name="picked-tok-nos"
          value="

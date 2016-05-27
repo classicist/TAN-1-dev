@@ -17,6 +17,7 @@
    <include href="TAN-class-2-full.sch"/>
    <phase id="edit">
       <active pattern="class-2-edit"/>
+      <active pattern="A-div-edit"/>
    </phase>
    <phase id="quarter">
       <active pattern="core"/>
@@ -39,12 +40,42 @@
       <active pattern="A-div-half"/>
       <active pattern="A-div-full"/>
    </phase>
-   <!--<pattern id="A-div-edit">
-      <let name="srcs-1st-da" value="tan:get-src-1st-da()"/>
-      <let name="srcs-resolved" value="tan:get-src-1st-da-resolved($srcs-1st-da, $src-ids)"/>
-      <let name="all-refs" value="distinct-values($srcs-resolved/*)"/>
-      
-   </pattern>-->
+   <pattern id="A-div-edit">
+      <let name="defective-alignments"
+         value="
+            $srcs-common-skeleton//tan:div[@src][not(
+            some $i in $self3/tan:TAN-A-div/tan:body/tan:realign/*
+               satisfies
+               ($i/@src = tokenize(@src, '\s+') and $i/@ref = @ref))]"/>
+      <rule context="tan:body" role="warning">
+         <report test="exists($defective-alignments)"
+            sqf:fix="prepare-defective-refs-for-realignment">Defective alignments exist. The
+            following refs are not found in every version of the work: <value-of
+               select="
+                  for $i in $defective-alignments
+                  return
+                     concat(($i/@ref),
+                     ' [', $i/@src, ']')"
+            />
+         </report>
+         <sqf:fix id="prepare-defective-refs-for-realignment">
+            <sqf:description>
+               <sqf:title>Imprint a copy of defective divs, i.e., divs whose refs do not match in
+                  every source</sqf:title>
+            </sqf:description>
+            <sqf:add match="(*[not(self::tan:align)])[last()]" position="after">
+               <xsl:text>&#xA;</xsl:text>
+               <realign xmlns="tag:textalign.net,2015:ns">
+                  <xsl:for-each select="$defective-alignments">
+                     <xsl:text>&#xA;</xsl:text>
+                     <div-ref src="{@src}" ref="{@ref}"/>
+                  </xsl:for-each>
+               </realign>
+            </sqf:add>
+         </sqf:fix>
+      </rule>
+
+   </pattern>
    <pattern id="A-div-quarter">
       <let name="equate-works" value="$self-expanded-2/tan:TAN-A-div/tan:body/tan:group[tan:work]"/>
       <let name="equate-div-types"

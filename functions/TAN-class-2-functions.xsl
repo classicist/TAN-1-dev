@@ -1376,9 +1376,9 @@
       Output: recombined documents
       This function is useful for cases where you have both picked and culled
       from a source, and you wish to combine the two documents into a single one
-      that strips away duplicates. 
-      NB, the results may not preserve the original document order of an original
-      document. It also treats non-leaf white-space text nodes as dispensible.
+      that strips away duplicates. NB, the results may not preserve the original 
+      document order of an original document. It also treats non-leaf white-
+      space text nodes as dispensible.
       -->
       <xsl:param name="docs-to-recombine" as="document-node()*"/>
       <xsl:param name="ref-sort-key-docs" as="document-node()*"/>
@@ -2066,5 +2066,251 @@
          as="xs:integer+"/>
       <xsl:value-of select="$last - max($input-3)"/>
    </xsl:function>
+
+   <xsl:function name="tan:analyze-stats" as="element()?">
+      <!-- Takes a series of integers, doubles, or other numbers and returns basic statistics
+      as attributes in a single element -->
+      <xsl:param name="arg" as="xs:anyAtomicType*"/>
+      <xsl:variable name="this-avg" select="avg($arg)"/>
+      <xsl:variable name="these-deviations"
+         select="
+            for $i in $arg
+            return
+               math:pow(($i - $this-avg), 2)"/>
+      <xsl:variable name="this-variance" select="avg($these-deviations)"/>
+      <xsl:variable name="this-standard-deviation" select="math:sqrt($this-variance)"/>
+      <stats xmlns="tag:textalign.net,2015:ns">
+         <xsl:attribute name="count" select="count($arg)"/>
+         <xsl:attribute name="sum" select="sum($arg)"/>
+         <xsl:attribute name="avg" select="$this-avg"/>
+         <xsl:attribute name="max" select="max($arg)"/>
+         <xsl:attribute name="min" select="min($arg)"/>
+         <xsl:attribute name="var" select="$this-variance"/>
+         <xsl:attribute name="std" select="$this-standard-deviation"/>
+         <xsl:for-each select="$arg">
+            <xsl:variable name="pos" select="position()"/>
+            <xsl:element name="d" namespace="tag:textalign.net,2015:ns">
+               <xsl:attribute name="dev" select="$these-deviations[$pos]"/>
+               <xsl:value-of select="."/>
+            </xsl:element>
+         </xsl:for-each>
+      </stats>
+   </xsl:function>
+
+   <xsl:function name="tan:get-src-skeleton" as="document-node()*">
+      <xsl:param name="src-1st-da-prepped" as="document-node()*"/>
+      <xsl:variable name="srcs-as-skeletons" as="document-node()*">
+         <xsl:for-each select="$src-1st-da-prepped">
+            <xsl:document>
+               <xsl:apply-templates select="." mode="make-skeleton"/>
+            </xsl:document>
+         </xsl:for-each>
+      </xsl:variable>
+      
+      <!--<xsl:copy-of select="$srcs-as-skeletons"/>-->
+      <xsl:copy-of select="tan:merge-src-skeletons($srcs-as-skeletons)"/>
+   </xsl:function>
+
+   <xsl:template match="processing-instruction()" mode="make-skeleton"/>
+   <xsl:template match="*" mode="make-skeleton">
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:div" mode="make-skeleton">
+      <xsl:variable name="this-src" select="root(.)/tan:TAN-T/@src"/>
+      <xsl:copy>
+         <xsl:copy-of select="@ref"/>
+         <xsl:copy-of select="$this-src"/>
+         <xsl:apply-templates mode="#current"/>
+         <!--<xsl:if test="tan:div">
+         </xsl:if>-->
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:head" mode="make-skeleton">
+      <xsl:copy-of select="."/>
+   </xsl:template>
+   <xsl:template match="text()" mode="make-skeleton"/>
+
+   <xsl:function name="tan:merge-src-skeletons" as="document-node()?">
+      <!-- one-param version of the version below -->
+      <xsl:param name="skeletons-to-be-merged" as="document-node()*"/>
+      <xsl:copy-of select="tan:merge-src-skeletons($skeletons-to-be-merged, true())"/>
+   </xsl:function>
+   <xsl:function name="tan:merge-src-skeletons" as="document-node()?">
+      <!-- Input: one or more skeletons
+         Output: a single skeleton that merges all other skeletons, based upon shared values of @ref in the divs
+      -->
+      <xsl:param name="skeletons-to-be-merged" as="document-node()*"/>
+      <xsl:param name="add-stats" as="xs:boolean"/>
+      <xsl:variable name="skeleton-srcs"
+         select="
+            distinct-values(for $i in $skeletons-to-be-merged/*/@src
+            return
+               tokenize($i, '\s+'))"
+         as="xs:string*"/>
+      <xsl:variable name="root-name" select="name($skeletons-to-be-merged[1]/*)"/>
+      <xsl:variable name="body-stats-merged"
+         select="tan:merge-analyzed-stats($skeletons-to-be-merged/*/tan:body, $add-stats)"/>
+      <xsl:variable name="skeleton-prep" as="document-node()?">
+         <xsl:document>
+            <xsl:element name="{$root-name}" namespace="tag:textalign.net,2015:ns">
+               <xsl:attribute name="src" select="string-join($skeleton-srcs, ' ')"/>
+               <xsl:attribute name="id" namespace="http://www.w3.org/XML/1998/namespace"
+                  select="
+                     concat(string-join($skeletons-to-be-merged/*/@xml:id, '--'), (if ($add-stats = true()) then
+                        ('---add')
+                     else
+                        ('---diff')))"/>
+               <xsl:copy-of select="$skeletons-to-be-merged/*/tan:head"/>
+               <!--<test><xsl:copy-of select="$body-stats-merged"/></test>-->
+               <xsl:element name="body" namespace="tag:textalign.net,2015:ns">
+                  <xsl:copy-of select="$body-stats-merged/(@*, node())"/>
+                  <xsl:copy-of select="$skeletons-to-be-merged/*/tan:body/tan:div"/>
+               </xsl:element>
+            </xsl:element>
+         </xsl:document>
+      </xsl:variable>
+      <!--<xsl:copy-of select="$skeleton-prep"/>-->
+      <xsl:copy-of select="tan:clean-up-src-skeleton($skeleton-prep, 1, $add-stats)"/>
+   </xsl:function>
+
+   <xsl:function name="tan:merge-analyzed-stats" as="element()">
+      <!-- Takes a group of elements that follow the pattern that results from tan:analyze-stats and
+      synthesizes them into a single element. If $add-stats is true, then they are added; if false, the
+      sum of the 2nd - last elements is subtracted from the first. Will work on elements of any name,
+      so long as they have tan:d children, with the data points to be merged. -->
+      <xsl:param name="analyzed-stats" as="element()*"/>
+      <xsl:param name="add-stats" as="xs:boolean"/>
+      <xsl:variable name="datum-counts" as="xs:integer*"
+         select="
+            for $i in $analyzed-stats
+            return
+               count($i/tan:d)"/>
+      <xsl:variable name="data-summed" as="xs:anyAtomicType*"
+         select="
+            for $i in (1 to $datum-counts[1])
+            return
+               sum($analyzed-stats/tan:d[$i])"/>
+      <xsl:variable name="data-diff" as="element()">
+         <stats>
+            <xsl:attribute name="count"
+               select="(avg($analyzed-stats[position() gt 1]/@count)) - $analyzed-stats[1]/@count"/>
+            <xsl:attribute name="sum"
+               select="(avg($analyzed-stats[position() gt 1]/@sum)) - $analyzed-stats[1]/@sum"/>
+            <xsl:attribute name="avg"
+               select="(avg($analyzed-stats[position() gt 1]/@avg)) - $analyzed-stats[1]/@avg"/>
+            <xsl:attribute name="max"
+               select="(avg($analyzed-stats[position() gt 1]/@max)) - $analyzed-stats[1]/@max"/>
+            <xsl:attribute name="min"
+               select="(avg($analyzed-stats[position() gt 1]/@min)) - $analyzed-stats[1]/@min"/>
+            <xsl:attribute name="var"
+               select="(avg($analyzed-stats[position() gt 1]/@var)) - $analyzed-stats[1]/@var"/>
+            <xsl:attribute name="std"
+               select="(avg($analyzed-stats[position() gt 1]/@std)) - $analyzed-stats[1]/@std"/>
+            <xsl:for-each select="$analyzed-stats[1]/tan:d">
+               <xsl:variable name="pos" select="position()"/>
+               <d>
+                  <xsl:copy-of
+                     select="avg($analyzed-stats[position() gt 1]/tan:d[$pos]) - $analyzed-stats[1]/tan:d[$pos]"
+                  />
+               </d>
+            </xsl:for-each>
+         </stats>
+      </xsl:variable>
+      <stats>
+         <xsl:choose>
+            <xsl:when test="$analyzed-stats/tan:d and count(distinct-values($datum-counts)) gt 1">
+               <xsl:attribute name="error"
+                  select="concat('Cannot merge mismatched sets: ', $datum-counts)"/>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:choose>
+                  <xsl:when test="$add-stats = true() and $analyzed-stats/tan:d">
+                     <xsl:copy-of select="tan:analyze-stats($data-summed)/(@*, node())"/>
+                  </xsl:when>
+                  <xsl:when test="$add-stats = false() and $analyzed-stats/tan:d">
+                     <xsl:copy-of select="$data-diff/(@*, node())"/>
+                     <!--<xsl:copy-of select="tan:analyze-stats($data-diff)/(@*, node())"/>-->
+                  </xsl:when>
+               </xsl:choose>
+            </xsl:otherwise>
+         </xsl:choose>
+      </stats>
+   </xsl:function>
+
+   <xsl:function name="tan:clean-up-src-skeleton" as="document-node()?">
+      <!-- This takes a rough skeleton, created by a raw concatenation of the bodies of
+         a skeleton, and joins sibling <div>s that share a common @ref. 
+         Further, if any statistics are present and $add-stats is true, then the matching 
+         attributes in merged <div>s are added or averaged, as required. If $add-stats is false
+         then the statistics are subtracted (the sum of the tail is subtracted from the head)
+      -->
+      <xsl:param name="skeleton-to-be-merged" as="document-node()?"/>
+      <xsl:param name="depth" as="xs:integer"/>
+      <xsl:param name="add-stats" as="xs:boolean"/>
+      <xsl:variable name="max-depth" as="xs:integer"
+         select="
+            max(((for $i in $skeleton-to-be-merged/*/tan:body//tan:div[not(tan:div)]
+            return
+               count($i/ancestor-or-self::tan:div)), 0))"/>
+      <xsl:choose>
+         <xsl:when test="$depth gt $max-depth">
+            <xsl:copy-of select="$skeleton-to-be-merged"/>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:variable name="new-skeleton">
+               <xsl:document>
+                  <xsl:apply-templates select="$skeleton-to-be-merged"
+                     mode="synthesize-src-skeleton">
+                     <xsl:with-param name="depth" select="$depth" tunnel="yes"/>
+                     <xsl:with-param name="add-stats" select="$add-stats" tunnel="yes"/>
+                  </xsl:apply-templates>
+               </xsl:document>
+            </xsl:variable>
+            <xsl:copy-of select="tan:clean-up-src-skeleton($new-skeleton, $depth + 1, $add-stats)"/>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:function>
+
+   <xsl:template match="node()" mode="synthesize-src-skeleton">
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:div | tan:body" mode="synthesize-src-skeleton">
+      <xsl:param name="depth" as="xs:integer" tunnel="yes"/>
+      <xsl:param name="add-stats" as="xs:boolean" tunnel="yes"/>
+      <xsl:variable name="this-depth" select="count(ancestor::*)"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:if test="self::tan:body">
+            <xsl:attribute name="add-stats" select="$add-stats"/>
+         </xsl:if>
+         <xsl:choose>
+            <xsl:when test="$this-depth lt $depth">
+               <xsl:apply-templates mode="synthesize-src-skeleton"/>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:copy-of select="tan:d"/>
+               <xsl:for-each-group select="tan:div" group-by="@ref">
+                  <xsl:variable name="these-merged"
+                     select="tan:merge-analyzed-stats(current-group(), $add-stats)"/>
+                  <div ref="{current-grouping-key()}" xmlns="tag:textalign.net,2015:ns">
+                     <xsl:if test="count(current-group()) lt count(tokenize(root()/*/@src, '\s+'))">
+                        <xsl:attribute name="src">
+                           <xsl:value-of select="current-group()/@src"/>
+                        </xsl:attribute>
+                     </xsl:if>
+                     <xsl:copy-of select="$these-merged/(@*, node())"/>
+                     <xsl:copy-of select="current-group()/tan:div"/>
+                  </div>
+               </xsl:for-each-group>
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:copy>
+   </xsl:template>
 
 </xsl:stylesheet>

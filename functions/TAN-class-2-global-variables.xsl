@@ -24,10 +24,24 @@
    <xsl:variable name="self2" select="tan:get-self-expanded-2($self1, $srcs-resolved)"/>
    <xsl:variable name="srcs-prepped" select="tan:get-src-1st-da-prepped($self2, $srcs-resolved)"
       as="document-node()*"/>
+   <xsl:variable name="srcs-common-skeleton">
+      <xsl:choose>
+         <xsl:when test="$self2/tan:TAN-A-div">
+            <xsl:for-each select="$self2/tan:TAN-A-div/tan:body/tan:group[tan:work]">
+               <xsl:variable name="these-works" select="tan:work/@src"/>
+               <xsl:copy-of select="tan:get-src-skeleton($srcs-prepped[*/@src = $these-works])"/>
+            </xsl:for-each> 
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:copy-of select="tan:get-src-skeleton($srcs-prepped)"/>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:variable>
    <xsl:variable name="self3" select="tan:get-self-expanded-3($self2, $srcs-prepped)"/>
    <xsl:param name="ref-filter" select="$self3//(tan:anchor-div-ref, tan:div-ref, tan:tok)" as="element()*"/>
    <xsl:variable name="srcs-prepped-and-filtered"
       select="tan:pick-prepped-class-1-data($ref-filter, $srcs-prepped, false())"/>
+   <xsl:variable name="srcs-common-skeleton-filtered" select="tan:get-src-skeleton($srcs-prepped-and-filtered)"/>
    <xsl:variable name="srcs-tokenized" select="tan:get-src-1st-da-tokenized($self2, $srcs-prepped, true())"
       as="document-node()*"/>
    <xsl:variable name="srcs-tokenized-and-filtered"

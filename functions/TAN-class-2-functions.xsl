@@ -2299,7 +2299,7 @@
                   <xsl:variable name="these-merged"
                      select="tan:merge-analyzed-stats(current-group(), $add-stats)"/>
                   <div ref="{current-grouping-key()}" xmlns="tag:textalign.net,2015:ns">
-                     <xsl:if test="count(current-group()) lt count(tokenize(root()/*/@src, '\s+'))">
+                     <xsl:if test="count(current-group()) lt count(tokenize((ancestor::*/@src)[last()], '\s+'))">
                         <xsl:attribute name="src">
                            <xsl:value-of select="current-group()/@src"/>
                         </xsl:attribute>

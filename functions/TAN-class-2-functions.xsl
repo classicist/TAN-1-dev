@@ -2106,7 +2106,7 @@
             </xsl:document>
          </xsl:for-each>
       </xsl:variable>
-      
+
       <!--<xsl:copy-of select="$srcs-as-skeletons"/>-->
       <xsl:copy-of select="tan:merge-src-skeletons($srcs-as-skeletons)"/>
    </xsl:function>

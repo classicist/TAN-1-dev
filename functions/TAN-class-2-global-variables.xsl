@@ -24,7 +24,7 @@
    <xsl:variable name="self2" select="tan:get-self-expanded-2($self1, $srcs-resolved)"/>
    <xsl:variable name="srcs-prepped" select="tan:get-src-1st-da-prepped($self2, $srcs-resolved)"
       as="document-node()*"/>
-   <xsl:variable name="srcs-common-skeleton">
+   <xsl:variable name="srcs-common-skeleton" as="document-node()*">
       <xsl:choose>
          <xsl:when test="$self2/tan:TAN-A-div">
             <xsl:for-each select="$self2/tan:TAN-A-div/tan:body/tan:group[tan:work]">

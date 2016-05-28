@@ -751,12 +751,20 @@
                         for $i in $these-inclusions
                         return
                            tan:first-loc-available($i, $this-base-uri)"/>
+                  <xsl:variable name="these-inclusion-1st-las-resolved" select="for $i in $these-inclusion-1st-las
+                     return resolve-uri($i, $this-base-uri)"/>
                   <xsl:variable name="this-name" select="name()"/>
-                  <xsl:variable name="these-replacement-elements"
+                  <xsl:variable name="these-replacement-element-docs"
                      select="
-                        for $i in $these-inclusion-1st-las
+                        for $i in $these-inclusion-1st-las-resolved
                         return
-                           doc(resolve-uri($i, $this-base-uri))//*[name(.) = $this-name][not(parent::tan:div)]"/>
+                           doc($i)"
+                  />
+                  <xsl:variable name="these-replacement-elements" as="element()*">
+                     <xsl:apply-templates
+                        select="$these-replacement-element-docs//*[name(.) = $this-name][not(parent::tan:div)]"
+                        mode="resolve-href"/>
+                  </xsl:variable>
                   <xsl:variable name="these-errors" as="xs:integer?">
                      <xsl:choose>
                         <xsl:when test="not(exists($these-replacement-elements))">
@@ -805,7 +813,7 @@
          </xsl:otherwise>
       </xsl:choose>
    </xsl:function>
-
+   
    <!-- TRANSFORMATIVE TEMPLATES -->
    <!-- Default templates -->
 
@@ -983,7 +991,8 @@
    </xsl:template>
 
    <xsl:template match="*[@href]" mode="resolve-href">
-      <xsl:variable name="this-doc-uri" select="document-uri(/)"/>
+      <xsl:param name="picked-uri" as="xs:string?" tunnel="yes"/>
+      <xsl:variable name="this-doc-uri" select="($picked-uri, document-uri(/))[1]"/>
       <xsl:copy>
          <xsl:copy-of select="@* except @href"/>
          <xsl:attribute name="href">

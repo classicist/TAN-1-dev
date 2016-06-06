@@ -62,6 +62,15 @@
          </xsl:apply-templates>
       </xsl:copy>
    </xsl:template>
+   <xsl:template match="tan:div[not((tan:tok, tan:div))]" mode="segment-tokd-prepped-class-1">
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+            <seg n="1">
+            <xsl:copy-of select="text()"/>
+            </seg>
+         <xsl:sequence select="tei:*"/>
+      </xsl:copy>
+   </xsl:template>
    <xsl:template match="tan:div[tan:tok]" mode="segment-tokd-prepped-class-1">
       <xsl:param name="all-leaf-div-splits" as="element()*"/>
       <xsl:variable name="this-div" select="."/>
@@ -162,7 +171,7 @@
             <!--<xsl:copy-of select="tan:expand-seg(*, $src-1st-da-segmented)"/>-->
          </group>
       </xsl:variable>
-      <xsl:variable name="div-refs-grouped" as="element()+">
+      <xsl:variable name="div-refs-grouped" as="element()*">
          <!--<xsl:for-each-group select="$div-refs-expanded/*"
             group-by="count(preceding-sibling::*[not(@cont)])">
             <group>
@@ -304,11 +313,11 @@
    </xsl:function>
    <xsl:function name="tan:get-src-1st-da-realigned" as="document-node()*">
       <xsl:param name="self-expanded-5" as="document-node()?"/>
-      <xsl:param name="src-1st-da-segmented" as="document-node()*"/>
-      <xsl:for-each select="$src-1st-da-segmented">
+      <xsl:param name="src-1st-da-prepped-or-segmented" as="document-node()*"/>
+      <xsl:for-each select="$src-1st-da-prepped-or-segmented">
          <xsl:copy>
             <xsl:apply-templates mode="realign-segmented-class-1">
-               <xsl:with-param name="self-expanded-5" select="$self-expanded-5"/>
+               <xsl:with-param name="self-expanded-5" select="$self-expanded-5" tunnel="yes"/>
             </xsl:apply-templates>
          </xsl:copy>
       </xsl:for-each>
@@ -317,27 +326,30 @@
       <xsl:param name="self-expanded-5" as="document-node()?"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
-         <xsl:apply-templates mode="#current">
-            <xsl:with-param name="self-expanded-5" select="$self-expanded-5"/>
-         </xsl:apply-templates>
+         <xsl:apply-templates mode="#current"/>
       </xsl:copy>
    </xsl:template>
    <xsl:template match="tan:div" mode="realign-segmented-class-1">
-      <xsl:param name="self-expanded-5" as="document-node()?"/>
+      <xsl:param name="self-expanded-5" as="document-node()?" tunnel="yes"/>
       <xsl:variable name="this-src" select="root(.)/*/@src"/>
       <xsl:variable name="this-ref" select="@ref"/>
-      <xsl:variable name="explicit-realign-groups"
-         select="$self-expanded-5/tan:TAN-A-div/tan:body/tan:realign/tan:group[tan:div-ref[@src = $this-src][@ref = $this-ref]]"/>
+      <!--<xsl:variable name="explicit-realign-groups"
+         select="$self-expanded-5/tan:TAN-A-div/tan:body/tan:realign/tan:group[tan:div-ref[@src = $this-src][@ref = $this-ref]]"/>-->
+      <xsl:variable name="explicit-realign-div-ref"
+         select="$self-expanded-5/tan:TAN-A-div/tan:body/tan:realign/tan:group/tan:div-ref[@src = $this-src][matches($this-ref, 
+         concat('^', @ref, '\W|^', @ref, '$'))]"
+      />
       <xsl:variable name="explicit-realign-anchor"
-         select="($explicit-realign-groups/../tan:group/tan:anchor-div-ref[1])[1]"/>
+         select="($explicit-realign-div-ref/../../tan:group/tan:anchor-div-ref[1])[1]"/>
       <xsl:variable name="explicit-realign-unanchored"
-         select="($explicit-realign-groups/../tan:group/tan:div-ref[1])[1]"/>
+         select="($explicit-realign-div-ref/../../tan:group/tan:div-ref[1])[1]"/>
       <xsl:variable name="explicit-realign-div-ref-eq"
          select="
             if (exists($explicit-realign-unanchored)) then
                concat('#' (:adding the # ensures it is removed from auto alignment :), $explicit-realign-unanchored/@ref)
             else
                ()"/>
+      <!-- need to adapt the next variable such that descendants of realigned refs get realigned -->
       <xsl:variable name="realigned-ref"
          select="
             ($explicit-realign-anchor/@ref, $explicit-realign-div-ref-eq,
@@ -345,17 +357,27 @@
       />
       <xsl:copy>
          <xsl:copy-of select="@*"/>
-         <xsl:if test="not($this-ref = $realigned-ref)">
-            <xsl:attribute name="ref" select="$realigned-ref"/>
-            <xsl:attribute name="orig-ref" select="$this-ref"/>
-         </xsl:if>
+         <xsl:choose>
+            <xsl:when test="count($explicit-realign-div-ref) = 1">
+               <!--<xsl:attribute name="ref" select="$realigned-ref"/>-->
+               <xsl:attribute name="ref"
+                  select="replace($this-ref, concat('^', $explicit-realign-div-ref/@ref), $realigned-ref)"
+               />
+               <xsl:attribute name="orig-ref" select="$this-ref"/>
+            </xsl:when>
+            <xsl:when test="count($explicit-realign-div-ref) gt 1">
+               <xsl:attribute name="ref" select="$this-ref"/>
+               <xsl:attribute name="error" select="'rea01'"/>
+               <xsl:copy-of select="$errors//tan:error[@xml:id = 'rea01']"/>
+            </xsl:when>
+         </xsl:choose>
          <xsl:apply-templates mode="#current">
-            <xsl:with-param name="self-expanded-5" select="$self-expanded-5"/>
+            <!--<xsl:with-param name="self-expanded-5" select="$self-expanded-5"/>-->
          </xsl:apply-templates>
       </xsl:copy>
    </xsl:template>
    <xsl:template match="tan:seg" mode="realign-segmented-class-1">
-      <xsl:param name="self-expanded-5" as="document-node()?"/>
+      <xsl:param name="self-expanded-5" as="document-node()?" tunnel="yes"/>
       <xsl:variable name="this-seg" select="."/>
       <xsl:variable name="this-src" select="root(.)/*/@src"/>
       <xsl:variable name="inherited-ref" select="../@ref"/>
@@ -379,7 +401,7 @@
                $inherited-ref)[1]"/>
          <xsl:attribute name="seg"
             select="($explicit-realign-anchor/@seg, $explicit-realign-unanchored/@seg, @n)[1]"/>
-         <xsl:apply-templates mode="#current"> </xsl:apply-templates>
+         <xsl:apply-templates mode="#current"/>
       </xsl:copy>
    </xsl:template>
 

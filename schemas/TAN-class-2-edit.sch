@@ -12,7 +12,16 @@
             $this-tail
          else
             tan:get-src-1st-da-prepped()"/>
-   <xsl:variable name="srcs-common-skeleton" select="tan:get-src-skeleton($srcs-prepped-edit)"/>
+   <xsl:variable name="srcs-common-skeleton"
+      select="
+         if ($self2/tan:TAN-A-div)
+         then
+            for $i in $self2/tan:TAN-A-div/tan:body/tan:group[tan:work]
+            return
+               tan:get-src-skeleton($srcs-prepped-edit[*/@src = $i/tan:work/@src])
+         else
+            tan:get-src-skeleton($srcs-prepped-edit)"
+   />
    <!-- self3 used for TAN-A-div checks on div refs to reconcile -->
    <xsl:variable name="self3" select="tan:get-self-expanded-3($self2, $srcs-prepped-edit)"/>
    <let name="class-type-is-status"

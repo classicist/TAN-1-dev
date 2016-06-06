@@ -49,7 +49,14 @@
       as="document-node()*"/>
    <xsl:variable name="srcs-with-lm-data" select="for $i in $srcs-tokenized return
       tan:get-src-1st-da-with-lms($i,$srcs-context-prepped[tan:TAN-LM/@src = $i/*/@src])"/>
-   <xsl:variable name="self4" select="tan:get-self-expanded-4($self3, $srcs-tokenized-and-filtered)"/>
+   <xsl:variable name="self4"
+      select="
+         tan:get-self-expanded-4($self3, if ($self3/tan:TAN-A-div/tan:body/tan:split-leaf-div-at)
+         then
+            $srcs-tokenized-and-filtered
+         else
+            $srcs-prepped-and-filtered)"
+   />
 
    <!-- CONTEXTUAL DATA -->
    <xsl:variable name="srcs-context-1st-da-locations" as="element()*">

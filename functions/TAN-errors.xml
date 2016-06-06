@@ -23,6 +23,9 @@
         <error xml:id="tok02">&lt;tok> does not reference a leaf &lt;div>.</error>
         <error xml:id="tok03">&lt;tok> does not reference &lt;div>.</error>
     </group>
+    <group affects-element="div realign">
+        <error xml:id="rea01">&lt;div> has been realigned more than one time.</error>
+    </group>
     <group affects-element="equate-works equate-div-types">
         <error xml:id="equ01">Item has been equated more than once.</error>
         <error xml:id="equ02">Items that share IRI values are being equated.</error>

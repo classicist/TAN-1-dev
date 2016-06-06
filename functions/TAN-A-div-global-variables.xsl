@@ -14,7 +14,12 @@
       </xd:desc>
    </xd:doc>
 
-   <xsl:variable name="srcs-segmented" select="tan:get-src-1st-da-segmented($self4, $srcs-tokenized)"
+   <xsl:variable name="srcs-segmented"
+      select="
+         tan:get-src-1st-da-segmented($self4, if ($self4/tan:TAN-A-div/tan:body/tan:split-leaf-div-at) then
+            $srcs-tokenized
+         else
+            $srcs-prepped)"
       as="document-node()*"/>
    <xsl:variable name="srcs-segmented-and-filtered" select="tan:get-src-1st-da-segmented($self4, $srcs-tokenized-and-filtered)"
       as="document-node()*"/>

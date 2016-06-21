@@ -27,7 +27,7 @@
                </xsl:copy>
             </xsl:for-each>
          </xsl:copy>
-         
+
       </xsl:for-each>
       <!--<xsl:element name="tan:body">
          <xsl:attribute name="xml:lang" select="$self-resolved/tan:TAN-T/tan:body/@xml:lang | $self-resolved/tei:TEI/tei:text/tei:body/@xml:lang"></xsl:attribute>
@@ -76,6 +76,32 @@
          </xsl:for-each>
 
       </xsl:element>
+   </xsl:function>
+
+   <xsl:function name="tan:normalize-div-text" as="xs:string">
+      <!-- Returns a normalized text, per TAN requirements. It is assumed that each member 
+         of the sequence of strings represents the content of a single leaf div, and that the
+         user wishes to concatenate them per TAN specifications. Any adjacent leaf divs are joined
+         by a space, unless if ZWJ U+200D or SOFT HYPHEN U+AD falls at the end of the first of a pair of leaf divs. In that 
+         case, the terminal mark is deleted, no intervening space is introduced, and the text of
+         the two divs is effectively fused. After joining all divs, text is space-normalized.
+         *** In a future version, this function is likely to probe the semantics of a div, to determine
+         whether the space should be SPACE U+20 or END OF LINE U+A. ***
+      -->
+      <xsl:param name="leaf-divs" as="element()*"/>
+      <xsl:variable name="new-sequence" as="xs:string*">
+         <xsl:for-each select="$leaf-divs">
+            <xsl:choose>
+               <xsl:when test="matches(., '[&#x200D;&#xAD;]$')">
+                  <xsl:value-of select="replace(., '[&#x200D;&#xAD;]$', '')"/>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:value-of select="concat(., ' ')"/>
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:for-each>
+      </xsl:variable>
+      <xsl:value-of select="normalize-space(string-join($new-sequence,''))"/>
    </xsl:function>
 
    <xsl:include href="TAN-core-functions.xsl"/>

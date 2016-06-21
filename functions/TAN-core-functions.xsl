@@ -345,7 +345,8 @@
       />
    </xsl:function>
    <xsl:function name="tan:normalize-text" as="xs:string*">
-      <!-- Used to normalize a string before being checked. Removes any help requested and normalizes space -->
+      <!-- Used to normalize a string before being checked for validity. Removes any help requested 
+         and normalizes space -->
       <xsl:param name="text" as="xs:string*"/>
       <xsl:copy-of
          select="

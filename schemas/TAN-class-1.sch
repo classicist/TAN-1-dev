@@ -61,43 +61,53 @@
             for $i in count($this-resolved)
             return
                $body/@xml:lang = $first-docs[$i]//(tan:body, tei:body)/@xml:lang"/>
-      <let name="this-text" value="normalize-space(string-join($body//text(), ''))"/>
+      <!--<let name="this-text" value="normalize-space(string-join($body//text(), ''))"/>-->
+      <let name="this-text" value="tan:normalize-div-text($body//(tan:div, tei:div)[not((tan:div, tei:div))])"/>
       <let name="resolved-docs" value="tan:resolve-doc($first-docs)"/>
       <let name="resolved-bodies"
          value="$resolved-docs/(tei:TEI/tei:text/tei:body, tan:TAN-T/tan:body)"/>
+      <!--<let name="alternative-text"
+         value="
+            for $i in $resolved-bodies
+            return
+               normalize-space(string-join($i//text(), ''))"/>-->
       <let name="alternative-text"
          value="
             for $i in $resolved-bodies
             return
-               normalize-space(string-join($i//text(), ''))"/>
+               tan:normalize-div-text($i//(tan:div, tei:div)[not((tan:div, tei:div))])"
+      />
       <let name="is-same-text"
          value="
-            for $i in count($this-resolved)
+            for $i in (1 to count($this-resolved))
             return
                if ($this-text = $alternative-text[$i]) then
                   true()
                else
-                  false()"/>
+                  false()"
+      />
       <let name="discrepancies-here"
          value="
-            for $i in count($this-resolved)
+            for $i in (1 to count($this-resolved))
             return
                string-join(for $j in //(tan:div, tei:div)[not((tan:div, tei:div))]
                return
-                  if (contains($alternative-text[$i], normalize-space(string-join($j//text(), '')))) then
+                  if (contains($alternative-text[$i], tan:normalize-div-text($j))) then
                      ()
                   else
-                     tan:flatref($j), ', ')"/>
+                     tan:flatref($j), ', ')"
+      />
       <let name="discrepancies-there"
          value="
-            for $i in count($this-resolved)
+            for $i in (1 to count($this-resolved))
             return
                string-join(for $j in $first-docs[$i]//(tan:div, tei:div)[not((tan:div, tei:div))]
                return
-                  if (contains($this-text, normalize-space(string-join($j//text(), '')))) then
+                  if (contains($this-text, tan:normalize-div-text($j))) then
                      ()
                   else
-                     tan:flatref($j), ', ')"/>
+                     tan:flatref($j), ', ')"
+      />
       <report
          test="
             for $i in count($this-resolved)
@@ -118,10 +128,11 @@
          >In class 1 files, alternative editions must share the same work-version.</report>
       <report
          test="
-            for $i in count($this-resolved)
-            return
+            some $i in (1 to count($this-resolved))
+            satisfies
                $is-alternatively-divided-edition[$i] and not($is-same-text[$i])"
-         >In class 1 files, alternatively divided editions must preserve identical transcriptions.
+         ><value-of select="string-length($this-text)"/> <value-of select="count($alternative-text)"/> 
+         <value-of select="string-length($alternative-text[1])"/>In class 1 files, alternatively divided editions must preserve identical transcriptions.
             <value-of
             select="
                if (exists($discrepancies-here)) then

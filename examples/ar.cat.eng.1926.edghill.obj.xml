@@ -24,7 +24,7 @@
          </name>
       </source>
       <see-also>
-         <relationship which="different work version"/>
+         <relationship which="model"/>
          <IRI>tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:object-refs</IRI>
          <name>Categories, Aristotle, Greek text by Minio-Paluello</name>
          <location href="ar.cat.grc.1949.minio-paluello-obj.xml"

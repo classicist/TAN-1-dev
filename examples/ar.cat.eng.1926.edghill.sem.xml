@@ -21,7 +21,7 @@
                 1926. </name>
         </source>
         <see-also>
-            <relationship which="different work version"/>
+            <relationship which="model"/>
             <IRI>tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:semantic-refs</IRI>
             <name>Categories, Aristotle, Greek text by Minio-Paluello</name>
             <location href="ar.cat.grc.1949.minio-paluello-sem.xml"
@@ -44,6 +44,7 @@
             <div-type xml:id="par" which="paragraph"/>
             <div-type xml:id="s" which="sentence"/>
             <div-type xml:id="ic" which="clause (grammatical)"/>
+            
             
             <filter>
                 <normalization which="no hyphens"/>

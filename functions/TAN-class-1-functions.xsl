@@ -6,49 +6,25 @@
    xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" exclude-result-prefixes="xs math xd" version="3.0">
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Udpated</xd:b>Aug 31, 2015</xd:p>
+         <xd:p><xd:b>Udpated</xd:b>June 20, 2016</xd:p>
          <xd:p>Variables and functions for class 1 TAN files (i.e., applicable to multiple class 1
             TAN file types). Written principally for Schematron validation, but suitable for general
             use in other contexts.</xd:p>
       </xd:desc>
    </xd:doc>
 
-   <xsl:function name="tan:prep-body" as="element()*">
-      <xsl:for-each select="$body">
-         <xsl:copy>
-            <xsl:copy-of select="@*"/>
-            <xsl:for-each select=".//(tei:div, tan:div)">
-               <xsl:variable name="this-flatref" select="tan:flatref(.)"/>
-               <xsl:copy>
-                  <xsl:copy-of select="@*"/>
-                  <xsl:attribute name="ref" select="$this-flatref"/>
-                  <xsl:attribute name="impl-ref" select="$this-flatref"/>
-                  <xsl:copy-of select="normalize-space(string-join(text(), ''))"/>
-               </xsl:copy>
-            </xsl:for-each>
-         </xsl:copy>
-
+   <xsl:function name="tan:get-div-types-in-use" as="element()*">
+      <xsl:param name="resolved-class-1-doc" as="document-node()*"/>
+      <xsl:for-each select="$resolved-class-1-doc">
+         <xsl:variable name="type-ids-in-use"
+            select="distinct-values($resolved-class-1-doc/(tei:TEI/tei:text/tei:body, tan:TAN-T/tan:body)//(tan:div, tei:div)/@type)"
+         />
+         <class-1-doc>
+            <xsl:copy-of select="*/@*"/>
+            <xsl:copy-of select="*/tan:head/tan:declarations/tan:div-type[@xml:id = $type-ids-in-use]"/>
+         </class-1-doc>
       </xsl:for-each>
-      <!--<xsl:element name="tan:body">
-         <xsl:attribute name="xml:lang" select="$self-resolved/tan:TAN-T/tan:body/@xml:lang | $self-resolved/tei:TEI/tei:text/tei:body/@xml:lang"></xsl:attribute>
-         <xsl:for-each
-            select="
-               $body//(tan:div,
-               tei:div)[not((tan:div,
-               tei:div))]">
-            <xsl:variable name="this-flatref" select="tan:flatref(.)"/>
-            <xsl:element name="tan:div">
-               <xsl:copy-of select="@*"/>
-               <xsl:attribute name="ref" select="$this-flatref"/>
-               <xsl:attribute name="impl-ref"
-                  select="replace($this-flatref, concat('\w+', $separator-type-and-n-regex), '')"/>
-               <xsl:copy-of select="normalize-space(string-join(.//text(), ''))"/>
-            </xsl:element>
-         </xsl:for-each>
-      </xsl:element>-->
    </xsl:function>
-   <!--<xsl:variable name="languages-used" select="distinct-values($body//@xml:lang)"/>-->
-
    <xsl:function name="tan:locate-modifiers" as="element()?">
       <!-- Locates all modifying letters in a string
          Input: string

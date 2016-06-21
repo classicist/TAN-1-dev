@@ -28,16 +28,17 @@
             for $i in $this-resolved
             return
                $i/tan:relationship/@which = 'alternatively divided edition'"/>
-      <let name="is-alternatively-normalized-edition"
-         value="
-            for $i in $this-resolved
-            return
-               $i/tan:relationship/@which = 'alternatively normalized edition'"/>
       <let name="is-strict-alternative"
          value="
             for $i in count($this-resolved)
             return
-               ($is-alternatively-divided-edition[$i] or $is-alternatively-normalized-edition[$i])"/>
+               ($is-alternatively-divided-edition[$i])"/>
+      <let name="is-model"
+         value="
+            for $i in $this-resolved
+            return
+               $i/tan:relationship/@which = 'model'"
+      />
       <let name="shares-same-source"
          value="
             for $i in count($this-resolved)
@@ -61,16 +62,10 @@
             for $i in count($this-resolved)
             return
                $body/@xml:lang = $first-docs[$i]//(tan:body, tei:body)/@xml:lang"/>
-      <!--<let name="this-text" value="normalize-space(string-join($body//text(), ''))"/>-->
       <let name="this-text" value="tan:normalize-div-text($body//(tan:div, tei:div)[not((tan:div, tei:div))])"/>
       <let name="resolved-docs" value="tan:resolve-doc($first-docs)"/>
       <let name="resolved-bodies"
          value="$resolved-docs/(tei:TEI/tei:text/tei:body, tan:TAN-T/tan:body)"/>
-      <!--<let name="alternative-text"
-         value="
-            for $i in $resolved-bodies
-            return
-               normalize-space(string-join($i//text(), ''))"/>-->
       <let name="alternative-text"
          value="
             for $i in $resolved-bodies
@@ -108,6 +103,10 @@
                   else
                      tan:flatref($j), ', ')"
       />
+      <let name="div-types-here" value="tan:get-div-types-in-use($self-resolved)"/>
+      <let name="div-types-there" value="tan:get-div-types-in-use($first-docs)"/>
+      <let name="div-types-used-here-but-not-there" value="$div-types-here/tan:div-type[not(tan:IRI = $div-types-there//tan:IRI)]"/>
+      <let name="div-types-used-there-but-not-here" value="$div-types-there/tan:div-type[not(tan:IRI = $div-types-here//tan:IRI)]"/>
       <report
          test="
             for $i in count($this-resolved)
@@ -146,6 +145,26 @@
                else
                   ()"
          /></report>
+      <report test="$is-model = true() and $shares-same-work = false()">A class 1 file and its model
+         must have the same work. (here: <value-of select="$head/tan:declarations/tan:work/tan:name"/>;
+         there: 
+         <value-of select="$first-docs/*/tan:head/tan:declarations/tan:work/tan:name"/></report>
+      <report
+         test="
+            if ($is-model = true()) then
+               exists($div-types-used-here-but-not-there)
+            else
+               false()"
+         >A class 1 file may not use div types that are not used in its model (<value-of
+            select="$div-types-used-here-but-not-there/@xml:id"/>)</report>
+      <report
+         test="
+            if ($is-model = true()) then
+               exists($div-types-used-there-but-not-here)
+            else
+               false()"
+         >A class 1 file should use all div types that are used by its model (<value-of
+            select="$div-types-used-there-but-not-here/@xml:id"/>)</report>
    </rule>
    <rule context="tan:work">
       <report test="count(tokenize(@include, '\s+')) gt 1">No more than one inclusion may be

@@ -2106,8 +2106,6 @@
             </xsl:document>
          </xsl:for-each>
       </xsl:variable>
-
-      <!--<xsl:copy-of select="$srcs-as-skeletons"/>-->
       <xsl:copy-of select="tan:merge-src-skeletons($srcs-as-skeletons)"/>
    </xsl:function>
 
@@ -2124,8 +2122,6 @@
          <xsl:copy-of select="@ref"/>
          <xsl:copy-of select="$this-src"/>
          <xsl:apply-templates mode="#current"/>
-         <!--<xsl:if test="tan:div">
-         </xsl:if>-->
       </xsl:copy>
    </xsl:template>
    <xsl:template match="tan:head" mode="make-skeleton">

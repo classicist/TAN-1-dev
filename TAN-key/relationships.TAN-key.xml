@@ -46,12 +46,6 @@
                 <name>dependent</name>
                 <desc>Points to a TAN file that uses the current file as a source.</desc>
             </item>
-            <item>
-                <IRI>tag:textalign.net,2015:relationship:different-work-version</IRI>
-                <name>different work version</name>
-                <desc>Used by a class 1 TAN file to point to another that offers the same work but
-                    in a different version.</desc>
-            </item>
             <group>
                 <name>TAN-rdf</name>
                 <desc>Keywords that must point exclusively to the TAN-rdf format.</desc>
@@ -64,7 +58,7 @@
             </group>
             <group>
                 <name>TAN edition</name>
-                <desc>Keywords that must point to TAN editions.</desc>
+                <desc>Keywords that must point to comparable editions.</desc>
                 <desc>Two TAN files are different editions if they are genetically related to each
                     other, but neither one supersedes the other. They share a common editorial
                     history and treat the same basic material but with a different approach.
@@ -118,6 +112,19 @@
                         stream. The alterations have not been significant enough to warrant a new
                         @id in the rootmost element. This is useful for officially deprecating a TAN
                         file without deleting it.</desc>
+                </item>
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:different-work-version</IRI>
+                    <name>different work version</name>
+                    <desc>Used by a class 1 TAN file to point to another that offers the same work but
+                        in a different version.</desc>
+                </item>
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:model</IRI>
+                    <name>model</name>
+                    <desc>Used by a class 1 TAN file to point to another that has the structure the
+                        source file has adopted for structuring div elements and assigning values to
+                        @n and @type.</desc>
                 </item>
             </group>
         </group>

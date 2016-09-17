@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <collection stable="true">
    <doc href="bitext-relations.TAN-key.xml"/>
+   <doc href="collection.xml"/>
    <doc href="div-types.TAN-key.xml"/>
    <doc href="features.TAN-key.xml"/>
    <doc href="group-types.TAN-key.xml"/>

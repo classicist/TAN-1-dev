@@ -11,15 +11,24 @@
             <xsl:for-each select="collection('.?select=*.x[ms]l')">
                 <doc href="{replace(base-uri(.),'.+[/\\]([^/\\]+)$','$1')}"/>
             </xsl:for-each>
+            <xsl:for-each select="collection('incl/.?select=*.x[ms]l')">
+                <doc href="{replace(base-uri(.),'.+[/\\]([^/\\]+)$','incl/$1')}"/>
+            </xsl:for-each>
         </collection>
     </xsl:variable>
     <xsl:variable name="schema-URIs">
         <collection stable="true">
             <xsl:for-each
                 select="
-                    collection('../schemas?select=*.sch;recurse=yes'),
-                    collection('../schemas?select=*.rng;recurse=yes')">
+                    collection('../schemas?select=*.sch'),
+                    collection('../schemas?select=*.rng')">
                 <doc href="{replace(base-uri(.),'.+[/\\]([^/\\]+)$','$1')}"/>
+            </xsl:for-each>
+            <xsl:for-each
+                select="
+                collection('../schemas/incl?select=*.sch'),
+                collection('../schemas/incl?select=*.rng')">
+                <doc href="{replace(base-uri(.),'.+[/\\]([^/\\]+)$','incl/$1')}"/>
             </xsl:for-each>
         </collection>
     </xsl:variable>

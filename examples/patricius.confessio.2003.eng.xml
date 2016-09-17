@@ -152,7 +152,8 @@
             <name>SHA-1</name>
             <value>91D95564ABDF2B2C1B9EEF016CBA51E8179646CC</value>
          </checksum>
-         <location href="http://www.confessio.ie/sites/confessio.ie/files/downloads/confessio_english.xml" when-accessed="2015-01-25"/>
+         <location href="confessio_english_temp.xml" when-accessed="2016-09-09"/>
+         <!--<location href="http://www.confessio.ie/sites/confessio.ie/files/downloads/confessio_english.xml" when-accessed="2015-01-25"/>-->
       </source>
       <declarations>
          <work>

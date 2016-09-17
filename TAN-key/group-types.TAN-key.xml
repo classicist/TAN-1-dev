@@ -2,11 +2,11 @@
 <?xml-model href="../schemas/TAN-key.rnc" type="application/relax-ng-compact-syntax"?>
 <?xml-model href="../schemas/TAN-key.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
 <TAN-key xmlns="tag:textalign.net,2015:ns" TAN-version="1/dev"
-    id="tag:textalign.net,2015:tan-key:class-types">
+    id="tag:textalign.net,2015:tan-key:group-types">
     <head>
-        <name>TAN keywords for types of classes</name>
-        <desc>Definitive list of key terms used for types of classes.</desc>
-        <master-location href="http://textalign.net/release/1/dev/TAN-key/class-types.TAN-key.xml"/>
+        <name>TAN keywords for types of groups</name>
+        <desc>Definitive list of key terms used for types of groups.</desc>
+        <master-location href="http://textalign.net/release/1/dev/TAN-key/group-types.TAN-key.xml"/>
         <rights-excluding-sources rights-holder="kalvesmaki">
             <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
             <name>Creative Commons Attribution 4.0 International License</name>
@@ -25,69 +25,69 @@
         </role>
         <change when="2016-04-23" who="kalvesmaki">Started file</change>
     </head>
-    <body in-progress="false" affects-element="class-type">
+    <body in-progress="false" affects-element="group-type">
         <item>
-            <IRI>tag:textalign.net,2015:class-type:status</IRI>
+            <IRI>tag:textalign.net,2015:group-type:status</IRI>
             <name>status</name>
-            <desc>@class is an arbitrary value indicating the stage of editing
+            <desc>@n is an arbitrary value indicating the stage of editing
                 for the datum. Possible values: "unchecked"; "to be reviewed";
                 "questionable". If a datum is completely edited, it is recommended
-                the @class be deleted altogether.
+                the &lt;group> be avoided altogether.
             </desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:class-type:base</IRI>
+            <IRI>tag:textalign.net,2015:group-type:base</IRI>
             <name>base</name>
-            <desc>@class is the result of applying tan:string-base($i), where $i is
+            <desc>@n is the result of applying tan:string-base($i), where $i is
                 the value of the token chosen.
             </desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:class-type:root</IRI>
+            <IRI>tag:textalign.net,2015:group-type:root</IRI>
             <name>root</name>
-            <desc>@class is the root of the token chosen</desc>
+            <desc>@n is the root of the token chosen</desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:class-type:start1</IRI>
+            <IRI>tag:textalign.net,2015:group-type:start1</IRI>
             <name>^.</name>
             <name>start1</name>
             <name>a</name>
-            <desc>@class is the first letter of the token chosen</desc>
+            <desc>@n is the first letter of the token chosen</desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:class-type:start2</IRI>
+            <IRI>tag:textalign.net,2015:group-type:start2</IRI>
             <name>^..</name>
             <name>start2</name>
             <name>ab</name>
-            <desc>@class is the first two letters of the token chosen</desc>
+            <desc>@n is the first two letters of the token chosen</desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:class-type:start3</IRI>
+            <IRI>tag:textalign.net,2015:group-type:start3</IRI>
             <name>^...</name>
             <name>start3</name>
             <name>abc</name>
-            <desc>@class is the first three letters of the token chosen</desc>
+            <desc>@n is the first three letters of the token chosen</desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:class-type:end1</IRI>
+            <IRI>tag:textalign.net,2015:group-type:end1</IRI>
             <name>.$</name>
             <name>end1</name>
             <name>z</name>
-            <desc>@class is the last letter of the token chosen</desc>
+            <desc>@n is the last letter of the token chosen</desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:class-type:end2</IRI>
+            <IRI>tag:textalign.net,2015:group-type:end2</IRI>
             <name>..$</name>
             <name>end2</name>
             <name>yz</name>
-            <desc>@class is the last two letters of the token chosen</desc>
+            <desc>@n is the last two letters of the token chosen</desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:class-type:end3</IRI>
+            <IRI>tag:textalign.net,2015:group-type:end3</IRI>
             <name>...$</name>
             <name>end3</name>
             <name>xyz</name>
-            <desc>@class is the last three letters of the token chosen</desc>
+            <desc>@n is the last three letters of the token chosen</desc>
         </item>
     </body>
 </TAN-key>

@@ -4,43 +4,29 @@
    xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tei="http://www.tei-c.org/ns/1.0"
    xmlns:math="http://www.w3.org/2005/xpath-functions/math"
    xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" exclude-result-prefixes="tan fn tei xs math xd"
-   version="3.0">
+   version="2.0">
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Updated </xd:b>Oct. 1, 2015</xd:p>
+         <xd:p><xd:b>Updated </xd:b>Sept 10, 2016</xd:p>
          <xd:p>Set of functions for TAN-LM files. Used by Schematron validation, but suitable for
             other contexts.</xd:p>
       </xd:desc>
    </xd:doc>
    <xsl:include href="TAN-class-2-functions.xsl"/>
 
-   <xsl:variable name="morphologies" select="$head/tan:declarations/tan:morphology"/>
-   <xsl:variable name="morphologies-prepped" as="element()*">
-      <xsl:for-each select="$morphologies">
-         <xsl:variable name="first-la" select="tan:first-loc-available(.)"/>
-         <xsl:copy>
-            <xsl:copy-of select="@*"/>
-            <location href="{resolve-uri($first-la, $doc-uri)}"/>
-         </xsl:copy>
-      </xsl:for-each>
-   </xsl:variable>
-   <!--<xsl:variable name="morphologies-1st-la"
-        select="
-            for $i in $morphologies
-            return
-                tan:first-loc-available($i)"/>-->
-   <!--<xsl:variable name="mory-1st-da"
-        select="
-            for $i in $morphologies-1st-la
-            return
-                doc(resolve-uri($i, $doc-uri))"/>-->
-   <xsl:variable name="mory-1st-da-resolved"
-      select="
-         for $i in $morphologies-prepped
-         return
-            tan:resolve-doc(doc($i/tan:location/@href), $i/@xml:id, false())"/>
+   <!-- PART I. GLOBAL VARIABLES AND PARAMETERS -->
+
+   <xsl:variable name="self-and-sources-prepped"
+      select="tan:prep-TAN-LM-doc-prepped(tan:prep-resolved-class-2-doc($self-core-errors-marked))"/>
+   <!--<xsl:variable name="self-and-sources-prepped"
+      select="tan:prep-resolved-class-2-doc($self-core-errors-marked)"/>-->
+   <xsl:variable name="self-prepped" select="$self-and-sources-prepped[1]"/>
+   <xsl:variable name="sources-prepped" select="$self-and-sources-prepped[position() gt 1]"/>
+
+   <xsl:variable name="morphologies-1st-da"
+      select="tan:prep-TAN-mor(tan:resolve-doc(tan:get-1st-doc($head/tan:declarations/tan:morphology), 'morphology', $head/tan:declarations/tan:morphology/@xml:id, false()))"/>
    <xsl:variable name="features-prepped" as="element()*">
-      <xsl:for-each select="$mory-1st-da-resolved/tan:TAN-mor/tan:head/tan:declarations/tan:feature">
+      <xsl:for-each select="$morphologies-1st-da/tan:TAN-mor/tan:head/tan:declarations/tan:feature">
          <xsl:variable name="this-id" select="@xml:id"/>
          <xsl:variable name="this-code"
             select="root(current())/tan:TAN-mor/tan:body//tan:option[@feature = $this-id]/@code"/>
@@ -68,6 +54,167 @@
         </xsl:for-each>
     </xsl:variable>-->
 
+   <!-- PART II. PROCESSING SELF -->
+
+   <xsl:function name="tan:prep-TAN-LM-doc-prepped" as="document-node()*">
+      <xsl:param name="self-and-sources-class-2-prepped" as="document-node()*"/>
+      <xsl:for-each select="$self-and-sources-class-2-prepped">
+         <xsl:document>
+            <xsl:apply-templates mode="prep-tan-lm"/>
+         </xsl:document>
+      </xsl:for-each>
+   </xsl:function>
+
+   <xsl:template match="node()" mode="prep-tan-lm">
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:f[text()]" mode="prep-tan-lm">
+      <xsl:param name="mory" as="document-node()?"/>
+      <xsl:param name="mory-categories" as="element()*"/>
+      <xsl:param name="mory-category-qty" as="xs:double?"/>
+      <xsl:variable name="this-pos" select="xs:integer(@n)"/>
+      <xsl:variable name="this-code" select="tan:normalize-text(.)"/>
+      <xsl:variable name="help-requested" select="tan:help-requested(.)"/>
+      <xsl:variable name="those-target-features" as="element()*"
+         select="
+            if ($mory-category-qty gt 0) then
+               $mory-categories[$this-pos]/tan:feature[@code]
+            else
+               $mory/tan:TAN-mor/tan:body/tan:feature"/>
+      <xsl:variable name="this-feature"
+         select="$those-target-features[lower-case(@code) = $this-code]"/>
+      <xsl:variable name="close-features"
+         select="
+            $those-target-features[matches(@code, if (string-length($this-code) gt 0) then
+               tan:escape($this-code)
+            else
+               '.+', 'i')]"
+      />
+      <xsl:copy-of select="."/>
+      <!-- unlike all other error reports, these errors are set as following siblings of the errant element because
+      we need to tether it as a child to an element that was in the original. -->
+      <xsl:if test="not(exists($this-feature)) or $help-requested = true()">
+         <xsl:variable name="this-message" as="xs:string*">
+            <xsl:value-of select="concat($this-code, ' not found; ')"/>
+            <xsl:if test="exists($close-features)">
+               <xsl:value-of
+                  select="
+                     for $i in $close-features
+                     return
+                        concat($i/@code, ' (', $i/tan:name[1], ')')"/>
+               <xsl:text>; </xsl:text>
+            </xsl:if>
+            <xsl:text>all codes: </xsl:text>
+            <xsl:value-of
+               select="
+                  for $i in $those-target-features
+                  return
+                     concat($i/@code, ' (', $i/tan:name[1], ')')"
+            />
+         </xsl:variable>
+         <xsl:copy-of select="tan:error('tlm03', string-join($this-message, ''))"/>
+      </xsl:if>
+   </xsl:template>
+   <xsl:function name="tan:obeyed-by-m" as="xs:boolean?">
+      <!-- Input: any TAN-LM <m> that has been prepped (i.e., has @orig-code and has children <f>);
+         any TAN-mor <report> or <assert> 
+      Output: a boolean value indicating whether all the conditions made by the assert (or report) are true (false).
+      Function assumes that all features have been space-normalized and rendered lowercase.
+      This function is used primarily to pick out <assert>s and <report>s that an <m> violates -->
+      <xsl:param name="assert-or-report-prepped" as="element()"/>
+      <xsl:param name="m-element-prepped" as="element()?"/>
+      <xsl:variable name="is-assert" select="exists($assert-or-report-prepped/self::tan:assert)"/>
+      <xsl:variable name="is-report" select="exists($assert-or-report-prepped/self::tan:report)"/>
+      <xsl:variable name="context-items" select="tokenize($assert-or-report-prepped/@context, ' ')"
+      />
+      <xsl:variable name="these-codes" select="$m-element-prepped/tan:f"/>
+      <xsl:variable name="pass1" as="xs:boolean*">
+         <xsl:if test="$assert-or-report-prepped/@feature-qty-test">
+            <xsl:copy-of select="some $i in tokenize($assert-or-report-prepped/@feature-qty-test, ' ')
+               satisfies number($i) = count($these-codes)"/>
+         </xsl:if>
+         <xsl:if test="$assert-or-report-prepped/@feature-test">
+            <xsl:copy-of
+               select="
+                  some $i in tan:feature-test-to-groups($assert-or-report-prepped/@feature-test)
+                     satisfies every $j in $i/tan:item
+                        satisfies $j = $these-codes"
+            />
+         </xsl:if>
+         <xsl:if test="$assert-or-report-prepped/@matches-m">
+            <xsl:copy-of select="(tan:matches($m-element-prepped/@orig-code, $assert-or-report-prepped/@matches-m))"/>
+         </xsl:if>
+         <xsl:if test="$assert-or-report-prepped/@matches-tok">
+            <xsl:copy-of select="every $i in $m-element-prepped/ancestor::tan:ana/tan:tok
+               satisfies tan:matches($i, $assert-or-report-prepped/@matches-tok)"/>
+         </xsl:if>
+      </xsl:variable>
+      <xsl:choose>
+         <xsl:when test="exists($context-items) and not($context-items = $m-element-prepped/tan:f)">
+            <xsl:value-of select="true()"/>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:choose>
+               <xsl:when test="$is-assert = true()">
+                  <xsl:copy-of select="not($pass1 = false())"/>
+               </xsl:when>
+               <xsl:when test="$is-report = true()">
+                  <xsl:copy-of select="not($pass1 = true())"/>
+               </xsl:when>
+            </xsl:choose>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:function>
+   <xsl:template match="tan:m" mode="prep-tan-lm">
+      <xsl:variable name="this-m" select="."/>
+      <xsl:variable name="these-codes" select="tan:f"/>
+      <xsl:variable name="these-toks" select="ancestor::tan:ana/tan:tok"/>
+      <xsl:variable name="this-mory-id" select="(ancestor-or-self::*/@morphology)[last()]"/>
+      <xsl:variable name="this-mory" select="$morphologies-1st-da[*/@morphology = $this-mory-id]"/>
+      <xsl:variable name="this-mory-cats" select="$this-mory/tan:TAN-mor/tan:body/tan:category"/>
+      <xsl:variable name="this-mory-cat-qty" select="count($this-mory-cats)"/>
+      <!-- check for asserts and reports -->
+      <xsl:variable name="disobeyed-asserts-and-reports"
+         select="$this-mory/tan:TAN-mor/tan:body/(tan:assert, tan:report)[tan:obeyed-by-m(., $this-m) = false()]"
+      />
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:if test="$this-mory-cat-qty gt 0 and count($these-codes) gt $this-mory-cat-qty">
+            <xsl:copy-of select="tan:error('tlm02', concat('max ', $this-mory-cat-qty))"/>
+         </xsl:if>
+         <xsl:for-each select="$disobeyed-asserts-and-reports[not(@cert)]">
+            <error xml:id="tlm04">
+               <xsl:copy-of select="."/>
+               <xsl:if test="exists(@matches-tok)">
+                  <message>
+                     <xsl:value-of
+                        select="concat('targets token(s): ', string-join($these-toks/text(), ' '))"/></message>
+               </xsl:if>
+            </error>
+            <!--<xsl:copy-of select="tan:error('tlm04', .)"/>-->
+         </xsl:for-each>
+         <xsl:for-each select="$disobeyed-asserts-and-reports[@cert]">
+            <warning xml:id="tlm05">
+               <xsl:copy-of select="."/>
+            </warning>
+         </xsl:for-each>
+         <!--<test><xsl:for-each select="$this-mory/tan:TAN-mor/tan:body/(tan:assert, tan:report)">
+            <xsl:copy>
+               <xsl:copy-of select="@*"/>
+                  <xsl:copy-of select="tan:obeyed-by-m(., $this-m)"/>
+            </xsl:copy>
+         </xsl:for-each></test>-->
+         <xsl:apply-templates mode="prep-tan-lm">
+            <xsl:with-param name="mory" select="$this-mory"/>
+            <xsl:with-param name="mory-categories" select="$this-mory-cats"/>
+            <xsl:with-param name="mory-category-qty" select="$this-mory-cat-qty"/>
+         </xsl:apply-templates>
+      </xsl:copy>
+   </xsl:template>
+
    <xsl:function name="tan:all-morph-codes" as="xs:string*">
       <!-- Change any sequence of morphological codes into a sequence of synonymous morphological codes
             Input: node() picking a TAN-R-mor file, a sequence of strings, each item being the value of
@@ -75,7 +222,7 @@
          Output: sequence of strings returning all equivalent lowercased values of each tan:option/@code or tan:feature/@xml:id 
          E.g., ('NN','comma','.') - > ('nn','comma',',','.','period')
       -->
-      <xsl:param name="morph" as="node()?"/>
+      <xsl:param name="morph" as="item()*"/>
       <xsl:param name="codes" as="xs:string*"/>
       <xsl:variable name="codes-norm"
          select="
@@ -111,7 +258,7 @@
          <xsl:for-each select="$m">
             <xsl:variable name="this-morphology-id" select="(ancestor-or-self::*/@morphology)[1]"/>
             <xsl:variable name="this-mory"
-               select="$mory-1st-da-resolved[tan:TAN-mor/@src = $this-morphology-id]"/>
+               select="$morphologies-1st-da[tan:TAN-mor/@src = $this-morphology-id]"/>
             <xsl:variable name="this-mory-is-categorized"
                select="
                   if ($this-mory/tan:TAN-mor/tan:body/tan:category) then
@@ -237,7 +384,7 @@
       -->
       <xsl:param name="code" as="xs:string"/>
       <xsl:param name="feature-expr" as="xs:string"/>
-      <xsl:param name="morph" as="node()?"/>
+      <xsl:param name="morph" as="item()*"/>
       <xsl:variable name="this-expr-norm"
          select="normalize-space(replace($feature-expr, '([\(\),|])', ' $1 '))"/>
       <xsl:variable name="this-expr-seq" select="tokenize($this-expr-norm, ' ')"/>
@@ -361,8 +508,7 @@
    </xsl:function>
    <xsl:template match="tan:m" mode="convert-code-to-features">
       <xsl:variable name="this-mory-id" select="(ancestor-or-self::*/@morphology)[1]"/>
-      <xsl:variable name="this-mory"
-         select="$mory-1st-da-resolved/tan:TAN-mor[@src = $this-mory-id]"/>
+      <xsl:variable name="this-mory" select="$morphologies-1st-da/tan:TAN-mor[@src = $this-mory-id]"/>
       <xsl:variable name="this-mory-categories" select="$this-mory/tan:body/tan:category"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>

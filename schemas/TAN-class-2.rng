@@ -11,6 +11,12 @@
         <ref name="decl-non-class-2"/>
       </interleave>
     </define>
+    <define name="group-attributes">
+      <ref name="type"/>
+      <optional>
+        <ref name="n"/>
+      </optional>
+    </define>
     <define name="source-rights">
       <a:documentation>All sources are TAN files, so no source rights should be declared--they're already stated</a:documentation>
       <empty/>
@@ -19,6 +25,11 @@
       <attribute name="src">
         <a:documentation>refers to the ID of one or more &lt;source&gt;s </a:documentation>
       </attribute>
+    </define>
+    <define name="body-group-opt">
+      <zeroOrMore>
+        <ref name="body-group"/>
+      </zeroOrMore>
     </define>
   </include>
   <define name="decl-class-2">
@@ -35,10 +46,10 @@
   </define>
   <define name="decl-token-opt">
     <a:documentation>Reserved for modification in different types of Class 2 files, to specify how many tokenization declarations are allowed.
-Class 2 files that do not require tokenization (i.e., TAN-A-div) must include &lt;token-definition&gt; only if the file uses elements (e.g., &lt;split-leaf-div-at&gt;) that assume tokenization. </a:documentation>
-    <oneOrMore>
+Class 2 files that do not require tokenization (i.e., TAN-A-div) may include &lt;token-definition&gt; only if the file uses elements (e.g., &lt;split-leaf-div-at&gt;) that assume tokenization. </a:documentation>
+    <zeroOrMore>
       <ref name="decl-tok-def"/>
-    </oneOrMore>
+    </zeroOrMore>
   </define>
   <define name="decl-supp-div-opt">
     <a:documentation>Reserved for modification in different types of Class 2 files, to specify how many suppress-div-type declarations are allowed.</a:documentation>
@@ -160,33 +171,92 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) must include &l
     </attribute>
   </define>
   <define name="token-list">
+    <oneOrMore>
+      <ref name="tok-item"/>
+    </oneOrMore>
+  </define>
+  <define name="tok-item">
+    <choice>
+      <ref name="tok-regular"/>
+      <ref name="tok-sequence"/>
+    </choice>
+  </define>
+  <define name="tok-regular">
     <element name="tok">
       <a:documentation>identifies one or more words or word fragments. Used by class 2 files to make assertions about specific words. </a:documentation>
-      <ref name="certainty-stamp"/>
-      <ref name="key-opt"/>
-      <ref name="source-ref"/>
-      <ref name="reference-opt"/>
-      <choice>
-        <ref name="token-value-ref"/>
-        <ref name="item-pos-ref"/>
-        <group>
-          <ref name="token-value-ref"/>
-          <ref name="item-pos-ref"/>
-        </group>
-      </choice>
-      <optional>
-        <ref name="char-ref"/>
-      </optional>
-      <optional>
-        <ref name="continuation-opt"/>
-      </optional>
+      <ref name="tok-attr-regular"/>
     </element>
   </define>
-  <define name="key-opt">
+  <define name="tok-sequence">
+    <ref name="tok-with-src-and-cont"/>
+    <zeroOrMore>
+      <ref name="tok-with-cont-but-no-src"/>
+    </zeroOrMore>
+    <ref name="tok-without-cont-or-src"/>
+  </define>
+  <define name="tok-with-src-and-cont">
+    <element name="tok">
+      <ref name="tok-attr-with-src-and-cont"/>
+    </element>
+  </define>
+  <define name="tok-with-cont-but-no-src">
+    <element name="tok">
+      <ref name="tok-attr-with-cont-but-no-src"/>
+    </element>
+  </define>
+  <define name="tok-without-cont-or-src">
+    <element name="tok">
+      <ref name="tok-attr-without-cont-or-src"/>
+    </element>
+  </define>
+  <define name="tok-attr-core">
+    <optional>
+      <ref name="ed-stamp"/>
+    </optional>
+    <ref name="reference-opt"/>
+    <choice>
+      <ref name="token-value-ref"/>
+      <ref name="item-pos-ref"/>
+      <group>
+        <ref name="token-value-ref"/>
+        <ref name="item-pos-ref"/>
+      </group>
+    </choice>
+    <optional>
+      <ref name="char-ref"/>
+    </optional>
+  </define>
+  <define name="tok-attr-regular">
+    <ref name="tok-attr-core"/>
+    <ref name="source-ref"/>
+    <ref name="class-opt"/>
+    <ref name="cert-opt"/>
+  </define>
+  <define name="tok-attr-with-src-and-cont">
+    <ref name="tok-attr-core"/>
+    <ref name="source-ref"/>
+    <ref name="continuation-opt"/>
+    <optional>
+      <ref name="cert-claim"/>
+    </optional>
+  </define>
+  <define name="tok-attr-with-cont-but-no-src">
+    <ref name="tok-attr-core"/>
+    <ref name="continuation-opt"/>
+  </define>
+  <define name="tok-attr-without-cont-or-src">
+    <ref name="tok-attr-core"/>
+  </define>
+  <define name="cert-opt">
+    <optional>
+      <ref name="cert-claim"/>
+    </optional>
+  </define>
+  <define name="class-opt">
     <empty/>
   </define>
-  <define name="key">
-    <attribute name="key">
+  <define name="class">
+    <attribute name="class">
       <a:documentation>supplies a value intended to optimize searching for &lt;tok&gt;s, especially in applications that use XSLT and XPath key functions. </a:documentation>
     </attribute>
   </define>
@@ -241,5 +311,14 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) must include &l
         <param name="pattern">true|1</param>
       </data>
     </attribute>
+  </define>
+  <define name="decl-class">
+    <zeroOrMore>
+      <!-- element class-type { ed-stamp?, element-scope?, (inclusion | entity-nondigital-ref) } -->
+      <element name="group-type">
+        <a:documentation>defines types of classes, used primarily to explain the nature of &lt;group&gt;s.</a:documentation>
+        <ref name="decl-pattern-default"/>
+      </element>
+    </zeroOrMore>
   </define>
 </grammar>

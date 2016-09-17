@@ -6,13 +6,13 @@
    xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" exclude-result-prefixes="xs math xd" version="3.0">
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Created on:</xd:b> February 2, 2016</xd:p>
-         <xd:p><xd:b>Author:</xd:b> Joel</xd:p>
+         <xd:p><xd:b>Updated </xd:b>September 10, 2016</xd:p>
          <xd:p>Set of functions for TAN-rdf files. Used by Schematron validation, but suitable for
             general use in other contexts </xd:p>
       </xd:desc>
    </xd:doc>
    
+   <xsl:variable name="self-prepped" select="$self-core-errors-marked"/>
    <xsl:include href="TAN-class-3-functions.xsl"/>
    <!-- CONTEXT INDEPEDENT FUNCTIONS -->
    <!-- CONTEXT DEPEDENT FUNCTIONS -->

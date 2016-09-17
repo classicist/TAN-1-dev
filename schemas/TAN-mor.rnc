@@ -1,29 +1,57 @@
 default namespace local = "tag:textalign.net,2015:ns"
 
-datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
-
 start =
     
     ## specifies that the TAN file contains definitions for the parts of speech for a language, the codes for those parts, and the rules for combining them. Root element.
     element TAN-mor { TAN-root }
 include "TAN-class-3.rnc" {
     
-    ## all declarations must have ids
-    decl-id-ref-opt = internal-id
+    ## no declarations may have ids
+    decl-id-ref-opt = empty
     
     ## every TAN-R-mor file has one or more src-lang and feature elements
-    decl-non-class-3 = lang-outside+ & decl-morph-feature+
+    decl-non-class-3 = empty
     TAN-body-core = TAN-R-mor-body
 }
 
-## TAN-R-mor files declare the morphological features that are allowed for a given language
-decl-morph-feature =
-    
-    ## names, through its IRI + name pattern, a grammatical concept (e.g., plural, subjunctive, 1st person) that characterizes a language.
-    element feature { decl-pattern-default }
-
 ## TAN-R-mor body consists of zero or more assert, report, category, or options
-TAN-R-mor-body = assert* & report* & category* & options*
+TAN-R-mor-body =
+    lang-outside+,
+    ((feature-list | category-list) & assert* & report*)
+feature-list = feature*
+category-list = category*
+
+## TAN-R-mor files declare the morphological features that are allowed for a given language
+feature =
+    
+    ## names, through its IRI + name pattern, a grammatical feature or concept (e.g., plural, subjunctive, 1st person) that characterizes a language. In the context of <feature> a @code is always included. The first <feature> of a <category> never has @code, and refers to the grammatical feature that characterizes the category.
+    element feature { feature-pattern }
+feature-pattern =
+    ed-stamp?,
+    (inclusion
+     | (code, (comment* & entity-nondigital-ref)))
+feature-pattern-no-code =
+    ed-stamp?,
+    (inclusion | (comment* & entity-nondigital-ref))
+# code, decl-pattern-default
+category-feature = element feature { feature-pattern-no-code }
+category =
+    
+    ## creates a set of features that share a common grammatical trait such as gender, number, etc.
+    element category {
+        ed-stamp?,
+        (inclusion
+         | (comment* & (category-feature, feature+)))
+    }
+code =
+    
+    ## contains a string that can be used as an alternative code for a <feature>.
+    attribute code {
+        
+        ## hyphen reserved for "not applicable"; spaces and (),| reserved for @feature-test expressions
+        xsd:string { pattern = "[^\-\+\s]|[^\+\s]+" }
+    }
+# reports and asserts
 assert =
     
     ## names a pattern that, if found to be false in any <m> in a dependent TAN-LM file, will return the enclosed message upon validation of the dependent file, along with an error or warning. Modeled loosely on Schematron <report>.
@@ -37,63 +65,34 @@ report =
 test-pattern =
     certainty-stamp?,
     (inclusion
-     | (filter?, (code-regex-test | token-regex-test | feature-test | feature-qty-test), text))
+     | (filter?, (matches-m | matches-tok | feature-test | feature-qty-test), text))
 filter =
     
-    ## specifies that when a dependent TAN-LM file is validated and the condition for the parent <report> or <assert> is triggered by the value of a given <m>, the message should be returned only if the <m> has at least one of the features mentioned by @feature-filter.
-    attribute feature-filter { text }
-code-regex-test =
+    ## specifies under what conditions a particular <assert> or <report> will be tested. When an <m> in a dependent TAN-LM file is validated, if it contains the codes for the features in question, the other conditions of the <assert> or <report> will be checked.
+    attribute context { text }
+matches-m =
     
-    ## asserts a pattern in the form of a regular expression that is to be used to check matches in codes in <m>s in a dependent TAN-LM file.
-    
-    ## One of four tests for determining the truth value that will trigger the message in a <report> or <assert> 
-    attribute code-regex-test { text }
-token-regex-test =
-    
-    ## carries a regular expression that is to be used to check the truth value of a <report> or <assert>. When a dependent TAN-LM file is validated, if the pattern matches the resolved value of any <tok>, the value will be true, and affect whether a message is triggered in any <m> elements that share an <ana> ancestor.
+    ## takes a regular expression. If an <m> matches the pattern, then the condition will be true. 
     
     ## One of four tests for determining the truth value that will trigger the message in a <report> or <assert> 
-    attribute token-regex-test { text }
+    attribute matches-m { text }
+matches-tok =
+    
+    ## takes a regular expression. When validating a given <m>, a test will be made against each companion <tok> (i.e., those <toks> that have the same ancestral <ana>). The condition will be treated as true only if there is a match with the resolved value of every such <tok>, and false if there is any nonmatch. 
+    
+    ## One of four tests for determining the truth value that will trigger the message in a <report> or <assert> 
+    attribute matches-tok { text }
 feature-test =
     
-    ## indicates one or more features that are used to check the truth value of a <report> or <assert>. When a dependent TAN-LM file is validated, this attribute returns true for any feature that is found in an <m> element, and false otherwise.
+    ## specifies one or more features separated by spaces or the padded + (a plus sign with surrounding spaces). A plain space is treated  as meaning "or" and the padded + as meaning "and." If there is at least one match between the list and the value of the codes in an <m> then condition will be treated as true. The padded plus sign specifies that all the items need to be found in the <m>. 
     
-    ## One of four tests for determining the truth value that will trigger the message in a <report> or <assert> 
-    attribute feature-test { text }
+    ## For example, @feature-test="A B + C D + E" means that the condition will be true for a given <m> only if it has A or B and C or D and E. This test is one of four tests for determining the truth value that will trigger the message in a <report> or <assert> 
+    attribute feature-test {
+        xsd:string { pattern = "[^\s\+]+(\s(\+\s)?[^\s\+]+)*" }
+    }
 feature-qty-test =
     
-    ## specifies a number greater than one indicating how many of the features in @feature-filter must be present for the condition to be true. This is useful for situations where it is desired to flag values of <m> that try to combine incompatible features.
+    ## specifies a sequence of integers (e.g., 2-4). If the quantity of features in an <m> matches a number from that sequence, the condition is true, and false otherwise. If the keyword 'last' or 'max' is used, the number of features will be adopted as the ceiling. 
     
-    ## One of four tests for determining the truth value that will trigger the message in a <report> or <assert> 
-    attribute feature-qty-test { xsd:integer }
-category =
-    
-    ## creates a set of features that share a common grammatical trait such as gender, number, etc.
-    element category {
-        ed-stamp?,
-        (inclusion
-         | (comment* & (feature-ref, options+)))
-    }
-options =
-    
-    ## refer to a feature.
-    
-    ## If its parent is <category>, this element indicates a feature that is allowed in that area.
-    
-    ## If its parent is <body> it markes a supplemental way to refer to the feature other than the assigned @xml:id. Useful for situations where a code requires a value that is otherwise disallowed by @xml:id, e.g., colons.
-    element option {
-        ed-stamp?,
-        (inclusion | (feature-ref, code?))
-    }
-feature-ref =
-    
-    ## refers to a feature by means of its @xml:id
-    attribute feature { d:IDREF }
-code =
-    
-    ## contains a string that can be used as an alternative code for a <feature>.
-    attribute code {
-        
-        ## hyphen reserved for "not applicable"; spaces and (),| reserved for @feature-test expressions
-        xsd:string { pattern = "[^\-\(\),|\s]|[^\(\),|\s]+" }
-    }
+    ## This test is useful for non-category based languages to put a limit on the number of features that can be declared in an <m>. It is one of four tests for determining the truth value that will determin whether a <report> or <assert> will be acted upon. 
+    attribute feature-qty-test { seq-picker }

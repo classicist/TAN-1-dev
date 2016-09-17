@@ -59,6 +59,11 @@
       <empty/>
     </attribute>
   </define>
+  <define name="element-scope">
+    <attribute name="affects-element">
+      <a:documentation>names one or more TAN elements that the keywords apply to</a:documentation>
+    </attribute>
+  </define>
   <define name="href-opt">
     <attribute name="href">
       <a:documentation>points to the location of a file, either as part of &lt;location&gt; or in elements that refer to TAN files, to be used to invoke a schematron quick fix to populate the &lt;IRI&gt; and &lt;location&gt; child elements.</a:documentation>
@@ -86,10 +91,18 @@
       <param name="pattern">[a-zA-Z][\-.+a-zA-Z0-9]+:\S+</param>
     </data>
   </define>
+  <define name="n">
+    <attribute name="n">
+      <a:documentation>names a &lt;div&gt; or &lt;group&gt;. Consists of a string of word characters.</a:documentation>
+      <a:documentation>@n serves, concatenated with ancestral @ns, as an identifier for &lt;div&gt;s.</a:documentation>
+      <a:documentation>Examples: '4', 'pr', 'Psalms'</a:documentation>
+      <ref name="n-val"/>
+    </attribute>
+  </define>
   <define name="n-val">
     <a:documentation>Acceptable values of @n, used by class 1 and class 2 files</a:documentation>
     <data type="string">
-      <param name="pattern">\w+</param>
+      <param name="pattern">\w+|\w*\?\?\?\w*</param>
     </data>
   </define>
   <define name="TAN-ver">
@@ -121,14 +134,6 @@
       <a:documentation>Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin). For more see main.xml#language</a:documentation>
       <data type="language"/>
     </element>
-  </define>
-  <define name="n">
-    <attribute name="n">
-      <a:documentation>names an element. Consists of a string of word characters.</a:documentation>
-      <a:documentation>In the context of a &lt;div&gt;, @n serves, concatenated with ancestral @ns, as an identifier. In the context of &lt;group&gt;, the value is arbitrary.</a:documentation>
-      <a:documentation>Examples: '4', 'pr', 'Psalms'</a:documentation>
-      <ref name="n-val"/>
-    </attribute>
   </define>
   <define name="period-filter">
     <element name="when">
@@ -176,6 +181,11 @@
   </define>
   <define name="source-ref">
     <empty/>
+  </define>
+  <define name="type">
+    <attribute name="type">
+      <a:documentation>indicates what type of textual unit &lt;div&gt; marks. Points to a &lt;div-type&gt; declared in &lt;declarations&gt;.</a:documentation>
+    </attribute>
   </define>
   <define name="URI-tag">
     <a:documentation>Tag URN, mandatory pattern for the IRI name of every TAN file </a:documentation>
@@ -520,12 +530,15 @@
     <ref name="other-body-attributes"/>
     <oneOrMore>
       <choice>
-        <ref name="body-group"/>
+        <ref name="body-group-opt"/>
         <ref name="item"/>
       </choice>
     </oneOrMore>
   </define>
   <define name="other-body-attributes">
+    <empty/>
+  </define>
+  <define name="body-group-opt">
     <empty/>
   </define>
   <define name="body-group">
@@ -541,9 +554,7 @@
     </element>
   </define>
   <define name="group-attributes">
-    <optional>
-      <ref name="n"/>
-    </optional>
+    <empty/>
   </define>
   <define name="item">
     <empty/>
@@ -636,21 +647,21 @@
   </define>
   <define name="key-item">
     <element name="key">
-      <a:documentation>specifies a TAN-key file that defines the use of @which for various elements. TAN-compliant validators and processors will substitute any element with @which with the IRI + name pattern of the entity that is named.</a:documentation>
+      <a:documentation>specifies a tan:item from a TAN-key (predefined, or declared in a &lt;key&gt;) that defines the meaning of an element that has @which.</a:documentation>
       <a:documentation>You may include as many &lt;key&gt;s as you wish, and do not have to use them all. All &lt;key&gt;s must have &lt;item&gt;s with unique names for the element touched by @affects-elements.</a:documentation>
       <a:documentation>For more on this, see main.xml#TAN-key</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
-      <optional>
-        <ref name="internal-id"/>
-      </optional>
-      <interleave>
-        <zeroOrMore>
-          <ref name="comment"/>
-        </zeroOrMore>
-        <ref name="entity-digital-tan-other-ref"/>
-      </interleave>
+      <choice>
+        <ref name="inclusion"/>
+        <interleave>
+          <zeroOrMore>
+            <ref name="comment"/>
+          </zeroOrMore>
+          <ref name="entity-digital-tan-other-ref"/>
+        </interleave>
+      </choice>
     </element>
   </define>
   <define name="source-list">

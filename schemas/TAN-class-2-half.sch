@@ -3,15 +3,16 @@
    xmlns:sqf="http://www.schematron-quickfix.com/validator/process"
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="class-2-half">
    <title>Schematron tests for class 2 TAN files, second level of expansion.</title>
-   <let name="srcs-prepped" value="tan:get-src-1st-da-prepped($self-expanded-2, $srcs-resolved)"/>
-   <let name="self-expanded-3" value="tan:get-self-expanded-3($self-expanded-2, $srcs-prepped)"/>
-   <rule
+   <!--<let name="srcs-prepped" value="tan:prep-resolved-class-1-doc($self-expanded-2, $srcs-resolved)"/>
+   <let name="self-expanded-3" value="tan:get-self-expanded-3($self-expanded-2, $srcs-prepped, false())"/>
+   <let name="self3-errors" value="$self-expanded-3//*[tan:error]"/>-->
+   <!--<rule
       context="
          tan:tok | tan:anchor-div-ref | tan:div-ref |
          tan:realign[@include] | tan:align[@include] | tan:ana[@include] | tan:split-leaf-div-at[@include]">
       <let name="this" value="."/>
-      <let name="this-resolved" value="tan:resolve-include(.)"/>
-      <let name="this-expanded" value="tan:expand-src-and-div-type-ref($this-resolved)"/>
+      <let name="this-resolved" value="$empty-doc"/>
+      <let name="this-expanded" value="tan:expand-src-and-div-type-ref($this-resolved/*)"/>
       <let name="these-elements-with-ref" value="$this-expanded/descendant-or-self::*[@ref]"/>
       <let name="these-elements-with-ref-help-requested"
          value="
@@ -75,7 +76,7 @@
                $srcs-prepped/tan:TAN-T[@src = $i/@src]/tan:body//tan:div[matches(., $k, $match-flags)]"/>
       <let name="cont-with-disjoint-srcs"
          value="$this-resolved/descendant-or-self::*[@cont][not(@src = following-sibling::*/@src)]"/>
-      <report test="exists($mismatched-refs)" tan:does-not-apply-to="realign align ana split-leaf-div-at"
+      <!-\-<report test="exists($mismatched-refs)" tan:does-not-apply-to="realign align ana split-leaf-div-at"
          tan:applies-to="ref">Every @ref must be found in every
          source (<value-of
             select="
@@ -90,24 +91,24 @@
                   ('; try ', $possible-corrections)
                else
                   ()"
-         />)</report>
-      <report test="exists($duplicate-leaf-divs)">@ref may not point to sources with duplicate leaf div references (
-         <value-of select="$duplicate-leaf-divs"/>)</report>
-      <report test="exists($these-elements-with-ref-help-requested)"
+         />)</report>-\->
+      <!-\-<report test="exists($duplicate-leaf-divs)">@ref may not point to sources with duplicate leaf div references (
+         <value-of select="$duplicate-leaf-divs"/>)</report>-\->
+      <!-\-<report test="exists($these-elements-with-ref-help-requested)"
          sqf:fix="fetch-content get-matched-divs" tan:does-not-apply-to="realign align ana split-leaf-div-at"
-         ><!-- Putting $help-trigger in @ref will take the content of @ref and return matched refs or refs that have matched content -->Try
+         ><!-\\- Putting $help-trigger in @ref will take the content of @ref and return matched refs or refs that have matched content -\\->Try
             <value-of select="$help-requested-ref-matches/@ref"/> (@ref matches) or <value-of
-            select="$help-requested-searched-matches/@ref"/> (text matches) </report>
-      <report tan:does-not-apply-to="realign align ana split-leaf-div-at"
+            select="$help-requested-searched-matches/@ref"/> (text matches) </report>-\->
+      <!-\-<report tan:does-not-apply-to="realign align ana split-leaf-div-at"
          test="
             some $i in preceding-sibling::*
                satisfies deep-equal($i, $this)"
-         >May not be duplicated by siblings</report>
-      <report test="exists($cont-with-disjoint-srcs)"
+         >May not be duplicated by siblings</report>-\->
+      <!-\-<report test="exists($cont-with-disjoint-srcs)"
          tan:does-not-apply-to="realign align ana split-leaf-div-at" tan:applies-to="cont">@cont may
-         not be used to join references from different sources.</report>
+         not be used to join references from different sources.</report>-\->
 
-      <!-- SCHEMATRON QUICK FIXES -->
+      <!-\- SCHEMATRON QUICK FIXES -\->
       <sqf:fix id="fetch-content" use-when="exists($matched-refs)">
          <sqf:description>
             <sqf:title>Append text content of the divs being referred to</sqf:title>
@@ -142,6 +143,12 @@
          </sqf:add>
       </sqf:fix>
 
-   </rule>
+   </rule>-->
+   <!--<rule context="*">
+      <let name="this-element-name" value="name(.)"/>
+      <let name="this-q" value="count(preceding-sibling::*[name() = $this-element-name]) + 1"/>
+      <let name="errors" value="$self3-errors[name(.) = $this-element-name][@q = $this-q]/tan:error"/>
+      <report test="exists($errors)">ERROR: <value-of select="$errors"/></report>
+   </rule>-->
 
 </pattern>

@@ -13,12 +13,21 @@
       </xd:desc>
    </xd:doc>
    <xsl:include href="TAN-class-2-functions.xsl"/>
-   <xsl:function name="tan:get-src-1st-da-chars-picked" as="document-node()*">
-      <!-- zero-parameter version of the next function -->
+   
+   <!-- PART I. GLOBAL VARIABLES AND PARAMETERS -->
+   
+   <xsl:variable name="self-and-sources-prepped" select="tan:prep-resolved-class-2-doc($self-core-errors-marked)"/>
+   <xsl:variable name="self-prepped" select="$self-and-sources-prepped[1]"/>
+   <xsl:variable name="sources-prepped" select="$self-and-sources-prepped[position() gt 1]"/>
+   
+   <!-- PART II. PROCESSING SELF -->
+   
+   <!--<xsl:function name="tan:get-src-1st-da-chars-picked" as="document-node()*">
+      <!-\- zero-parameter version of the next function -\->
       <xsl:copy-of
          select="tan:get-src-1st-da-chars-picked(tan:get-self-expanded-4(), tan:get-src-1st-da-tokenized())"
       />
-   </xsl:function>
+   </xsl:function>-->
    <xsl:function name="tan:get-src-1st-da-chars-picked" as="document-node()*">
       <xsl:param name="self-expanded-4" as="document-node()?"/>
       <xsl:param name="tokenized-class-1-doc" as="document-node()*"/>

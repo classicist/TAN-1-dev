@@ -40,15 +40,16 @@
         </item>
         <group>
             <name>TAN files</name>
-            <desc>Keywords that must point exclusively to TAN files:</desc>
+            <desc>Relationships where the parent &lt;see-also> must point exclusively to TAN files:</desc>
             <item>
                 <IRI>tag:textalign.net,2015:relationship:dependent</IRI>
+                <name>class 2</name>
                 <name>dependent</name>
                 <desc>Points to a TAN file that uses the current file as a source.</desc>
             </item>
             <group>
                 <name>TAN-rdf</name>
-                <desc>Keywords that must point exclusively to the TAN-rdf format.</desc>
+                <desc>Relationships where the parent &lt;see-also> must point exclusively to the TAN-rdf format.</desc>
                 <item>
                     <IRI>tag:textalign.net,2015:relationship:context</IRI>
                     <name>context</name>
@@ -57,8 +58,29 @@
                 </item>
             </group>
             <group>
+                <name>copies</name>
+                <desc>Relationships where the parent &lt;see-also> points to a file that is a duplicate
+                of the current document. Used primarily by class 1 files that need to reflect different
+                ways of structuring or presenting the same text.</desc>
+                <item>
+                    <IRI>tag:textalign.net,2015:relationship:alternatively-divided-edition</IRI>
+                    <name>alternatively divided edition</name>
+                    <name>alternatively divided copy</name>
+                    <name>alternatively segmented edition</name>
+                    <name>alternatively segmented copy</name>
+                    <name>resegmented copy</name>
+                    <desc>Used by a class 1 file to point to another class 1 file that contains the
+                        identical transcription for the same version of the same work on the same
+                        textual object, but divides that transcription into a different reference
+                        system. If this value is invoked, the text-joined text content of
+                        &lt;body&gt; must be identical, following TAN rules for joining leaf divs.
+                        This &lt;relationship&gt; is useful for developing a concordance between
+                        alternative reference systems for the same text.</desc>
+                </item>
+            </group>
+            <!--<group>
                 <name>TAN edition</name>
-                <desc>Keywords that must point to comparable editions.</desc>
+                <desc>Relationships where the parent &lt;see-also> must point to comparable editions.</desc>
                 <desc>Two TAN files are different editions if they are genetically related to each
                     other, but neither one supersedes the other. They share a common editorial
                     history and treat the same basic material but with a different approach.
@@ -69,34 +91,12 @@
                     <name>alternative edition</name>
                     <desc>An alternative edition.</desc>
                 </item>
-                <group>
-                    <name>TAN class 1</name>
-                    <desc>Keywords that can be used only by class 1 files, to point to other class 1
-                        files:</desc>
-                    <item>
-                        <IRI>tag:textalign.net,2015:relationship:alternatively-divided-edition</IRI>
-                        <name>alternatively divided edition</name>
-                        <desc>Used by a class 1 file to point to another class 1 file that contains
-                            the identical transcription for the same version of the same work on the
-                            same textual object, but divides that transcription into a different
-                            reference system. If this value is invoked, the concatenated text
-                            content of &lt;body&gt; must be identical, after space normalization.
-                            This &lt;relationship&gt; is useful for developing a concordance between
-                            alternative reference systems for the same text.</desc>
-                    </item>
-                </group>
-            </group>
+                
+            </group>-->
             <group>
-                <name>TAN version</name>
-                <desc>Keywords that must point to TAN versions.</desc>
-                <desc>One TAN file is a version of another if it derives from it (either directly or
-                    through a chain of versions) and if the later version supersedes the older one.
-                    Versions of a TAN file stand on a linear path of editorial labor. Differences
-                    tend to be minor and reflect a progressive effort to correct errors. Versions
-                    have the same TAN id and are distinguished exclusively by the latest
-                    ISO-compliant date (see @when and @ed-when). This is used either to document in
-                    full the version history of a TAN file, or to help redirect users to newly
-                    corrected or updates versions.</desc>
+                <name>versions</name>
+                <desc>Relationships where the parent &lt;see-also> must point to another version of
+                    the current TAN file or its underlying work.</desc>
                 <item>
                     <IRI>tag:textalign.net,2015:relationship:old-version</IRI>
                     <name>old version</name>

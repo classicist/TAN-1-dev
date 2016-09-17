@@ -17,10 +17,15 @@
    <ns prefix="xsl" uri="http://www.w3.org/1999/XSL/Transform"/>
 
    <include href="TAN-core.sch"/>
+   <pattern id="self-prepped" is-a="tan-file-resolved">
+      <param name="self-version" value="$self-prepped"/>
+   </pattern>
+   
+   <!--<include href="TAN-class-2.sch"/>
    <include href="TAN-class-2-edit.sch"/>
    <include href="TAN-class-2-quarter.sch"/>
    <include href="TAN-class-2-half.sch"/>
-   <include href="TAN-class-2-full.sch"/>
+   <include href="TAN-class-2-full.sch"/>-->
    <!--<phase id="edit-no-SQFs">
       <active pattern="LM-edit-no-SQFs"/>
    </phase>-->
@@ -31,19 +36,21 @@
       <!-\-<active pattern="class-2-edit"/>-\->
       <active pattern="LM-edit-missing-ls"/>
    </phase>-->
-   <phase id="edit-grouped-data">
+   <!--<phase id="edit-grouped-data">
       <active pattern="LM-core"/>
       <active pattern="class-2-edit"/>
       <active pattern="LM-edit-grouped-data"/>
    </phase>
    <phase id="quarter">
       <active pattern="core"/>
-      <active pattern="LM-core"/>
+      <active pattern="class-2"/>
+      <!-\-<active pattern="LM-core"/>-\->
       <active pattern="class-2-quarter"/>
-      <active pattern="LM-quarter"/>
+      <!-\-<active pattern="LM-quarter"/>-\->
    </phase>
    <phase id="half">
       <active pattern="core"/>
+      <active pattern="class-2"/>
       <active pattern="LM-core"/>
       <active pattern="class-2-quarter"/>
       <active pattern="class-2-half"/>
@@ -52,6 +59,7 @@
    </phase>
    <phase id="full">
       <active pattern="core"/>
+      <active pattern="class-2"/>
       <active pattern="LM-core"/>
       <active pattern="class-2-quarter"/>
       <active pattern="class-2-half"/>
@@ -59,7 +67,7 @@
       <active pattern="LM-quarter"/>
       <active pattern="LM-half"/>
       <active pattern="LM-full"/>
-   </phase>
+   </phase>-->
 
    <sqf:fixes>
       <sqf:fix id="delete-chosen-l-or-m">
@@ -99,7 +107,7 @@
                   (count($i/preceding-sibling::tan:lm) + 1,
                   count($j/preceding-sibling::tan:l) + 1,
                   count($k/preceding-sibling::tan:m) + 1)"/>
-         <report test="count($l-and-m-combos) idiv 3 gt 1"> &lt;ana> has <value-of
+         <!-\-<report test="count($l-and-m-combos) idiv 3 gt 1"> &lt;ana> has <value-of
                select="count($l-and-m-combos) idiv 3"/> l+m combos (<value-of
                select="
                   for $i in tan:lm,
@@ -107,17 +115,17 @@
                   return
                      concat(string(number($j/@n) + count($i/preceding-sibling::tan:lm/tan:m)), ': ',
                      string-join($j/tan:feature[number(@count) lt max((count($i/tan:m), 2))]/@xml:id, ' '))"
-            />) </report>
+            />) </report>-\->
       </rule>
       <rule context="tan:l[ancestor::tan:group]">
          <let name="fellow-ls" value="../../tan:lm/tan:l"/>
          <report test="count($fellow-ls) gt 1">Multiple &lt;l>s</report>
       </rule>
-      <rule context="tan:m[ancestor::tan:group]">
+      <!-\-<rule context="tan:m[ancestor::tan:group]">
          <let name="fellow-ms" value="../../tan:lm/tan:m"/>
          <report test="count($fellow-ms) gt 1"><value-of
                select="tan:expand-m(., false())/tan:feature/@xml:id"/></report>
-      </rule>
+      </rule>-\->
    </pattern>-->
    <!--<pattern id="LM-edit-test">
       <rule context="tan:ana">
@@ -127,8 +135,9 @@
       </rule>
    </pattern>-->
    <!--<pattern id="LM-edit-missing-ls">
-      <let name="master-lexicon"
-         value="doc('../../../pre-TAN%20dev%20aids/pre-TAN-LM/grc/morphology%20grc.xml')"/>
+      <!-\-<let name="master-lexicon"
+         value="doc('../../../pre-TAN%20dev%20aids/pre-TAN-LM/grc/morphology%20grc.xml')"/>-\->
+      <let name="master-lexicon" value="$empty-doc"/>
       <rule context="tan:l">
          <let name="this-token" value="comment()"/>
          <report test="not(text())">value missing</report>
@@ -157,7 +166,7 @@
          </sqf:fix>
       </rule>
    </pattern>-->
-   <pattern id="LM-core">
+   <!--<pattern id="LM-core">
       <let name="has-source"
          value="
             if (/tan:TAN-LM/tan:head/tan:source) then
@@ -165,31 +174,31 @@
             else
                false()"/>
       <rule context="tan:tok">
-         <let name="this-resolved" value="tan:resolve-include(.)"/>
-         <report
+         <let name="this-resolved" value="$empty-doc"/>
+         <!-\-<report
             test="
                ($has-source = true()) and (some $i in $this-resolved
                   satisfies not($i/@ref))"
-            > Any TAN-LM file with a source must have a @ref for every &lt;tok>. </report>
-         <report
+            > Any TAN-LM file with a source must have a @ref for every &lt;tok>. </report>-\->
+         <!-\-<report
             test="
                ($has-source = false()) and (some $i in $this-resolved
                   satisfies $i/@ref)"
-            > Any TAN-LM file without a source may not have @ref in any &lt;tok>. </report>
-         <report
+            > Any TAN-LM file without a source may not have @ref in any &lt;tok>. </report>-\->
+         <!-\-<report
             test="
                ($has-source = false()) and (some $i in $this-resolved
                   satisfies $i/@pos)"
-            > Any TAN-LM file without a source may not have @pos in any &lt;tok>. </report>
-         <report
+            > Any TAN-LM file without a source may not have @pos in any &lt;tok>. </report>-\->
+         <!-\-<report
             test="
                ($has-source = false()) and (some $i in $this-resolved
                   satisfies $i/@chars)"
-            > Any TAN-LM file without a source may not have @chars in any &lt;tok>. </report>
+            > Any TAN-LM file without a source may not have @chars in any &lt;tok>. </report>-\->
       </rule>
-   </pattern>
-   <pattern id="LM-edit-grouped-data">
-      <!--<let name="features-grouped" value="tan:group-by-IRIs($mory-1st-da-resolved/tan:TAN-mor/tan:head/tan:declarations/tan:feature)"/>-->
+   </pattern>-->
+   <!--<pattern id="LM-edit-grouped-data">
+      <!-\-<let name="features-grouped" value="tan:group-by-IRIs($mory-1st-da-resolved/tan:TAN-mor/tan:head/tan:declarations/tan:feature)"/>-\->
       <rule context="tan:ana[parent::tan:group]">
          <let name="this-ana" value="."/>
          <let name="l-and-m-combos"
@@ -416,7 +425,7 @@
             </sqf:call-fix>
          </sqf:fix>
       </rule>
-   </pattern>
+   </pattern>-->
    <!--<let name="morphology-ids" value="/tan:TAN-LM/tan:head/tan:declarations/tan:morphology/@xml:id"/>
    <let name="morphologies-1st-loc-avail"
       value="/tan:TAN-LM/tan:head/tan:declarations/tan:morphology/tan:location[doc-available(resolve-uri(@href,$doc-uri))][1]"/>
@@ -424,10 +433,10 @@
       value="for $i in $morphologies-1st-loc-avail
          return
             doc(resolve-uri($i,$doc-uri))"/>-->
-   <pattern id="LM-quarter">
-      <!--<rule context="tan:morphology">
+   <!--<pattern id="LM-quarter">
+      <!-\-<rule context="tan:morphology">
          <report test="true()"><xsl:value-of select="$morphologies-1st-la"></xsl:value-of></report>
-      </rule>-->
+      </rule>-\->
       <rule context="tan:ana">
          <let name="single-tok-test"
             value="
@@ -436,19 +445,19 @@
                   tan:joined)) + count(tan:tok/@ref[matches(., '\s+[,-]\s+')]) + count(tan:tok/@pos[matches(., '\s*[,-]\s+')])
                else
                   ()"/>
-         <report test="$single-tok-test gt 1">Any ana with an @xml:id must point to no more than one
-            token.</report>
+         <!-\-<report test="$single-tok-test gt 1">Any ana with an @xml:id must point to no more than one
+            token.</report>-\->
       </rule>
       <rule context="tan:tok">
-         <report test="@cont = 'false'" role="warning">@cont with the value 'false' will still be
+         <!-\-<report test="@cont = 'false'" role="warning">@cont with the value 'false' will still be
             treated as true. If you do not wish a &lt;tok> to be continued, delete this
-            attribute.</report>
+            attribute.</report>-\->
       </rule>
       <rule context="tan:m">
          <let name="this" value="."/>
          <let name="this-val" value="tokenize(lower-case(.), '\s+')"/>
          <let name="this-mory-id" value="(ancestor-or-self::*/@morphology)[1]"/>
-         <let name="this-mory" value="$mory-1st-da-resolved[$this-mory-id]"/>
+         <let name="this-mory" value="$morphologies-1st-da[$this-mory-id]"/>
          <let name="this-morph-cat-qty"
             value="
                if ($this-mory//tan:category) then
@@ -481,37 +490,37 @@
                      else
                         $i"/>
          <let name="reports"
-            value="$this-mory//tan:report[$this-val = tokenize(lower-case(@feature-filter), '\s+')], $this-mory//tan:report[not(@feature-filter)]"/>
+            value="$this-mory//tan:report[$this-val = tokenize(lower-case(@context), '\s+')], $this-mory//tan:report[not(@context)]"/>
          <let name="asserts"
-            value="$this-mory//tan:assert[$this-val = tokenize(lower-case(@feature-filter), '\s+')], $this-mory//tan:assert[not(@feature-filter)]"/>
+            value="$this-mory//tan:assert[$this-val = tokenize(lower-case(@context), '\s+')], $this-mory//tan:assert[not(@context)]"/>
          <let name="feature-qty-test"
             value="
                for $i in $reports[@feature-qty-test]
                return
-                  if (count($this-val[. = (tan:all-morph-codes($this-mory, tokenize($i/@feature-filter, '\s+')))]) ge number($i/@feature-qty-test))
+                  if (count($this-val[. = (tan:all-morph-codes($this-mory, tokenize($i/@context, '\s+')))]) ge number($i/@feature-qty-test))
                   then
                      $i
                   else
                      (),
                for $i in $asserts[@feature-qty-test]
                return
-                  if (not(count($this-val[. = (tan:all-morph-codes($this-mory, tokenize($i/@feature-filter, '\s+')))]) ge number($i/@feature-qty-test)))
+                  if (not(count($this-val[. = (tan:all-morph-codes($this-mory, tokenize($i/@context, '\s+')))]) ge number($i/@feature-qty-test)))
                   then
                      $i
                   else
                      ()"/>
-         <let name="code-regex-test"
+         <let name="matches-m"
             value="
-               for $i in $reports[@code-regex-test]
+               for $i in $reports[@matches-m]
                return
-                  if (matches($this, $i/@code-regex-test, 'i'))
+                  if (matches($this, $i/@matches-m, 'i'))
                   then
                      $i
                   else
                      (),
-               for $i in $asserts[@code-regex-test]
+               for $i in $asserts[@matches-m]
                return
-                  if (not(matches($this, $i/@code-regex-test, 'i')))
+                  if (not(matches($this, $i/@matches-m, 'i')))
                   then
                      $i
                   else
@@ -532,21 +541,21 @@
                      $i
                   else
                      ()"/>
-         <let name="all-tests" value="$feature-qty-test, $code-regex-test, $feature-test"/>
-         <report
+         <let name="all-tests" value="$feature-qty-test, $matches-m, $feature-test"/>
+         <!-\-<report
             test="
                if (exists($this-morph-cat-qty)) then
                   count($this-val) gt $this-morph-cat-qty
                else
                   ()"
-            >&lt;m> may not have more codes than allowed by the underlying TAN-R-mor file.</report>
-         <report test="exists($invalid-codes) and not(exists($this-morph-cat-qty))"
-            ><!-- If any invalid values are found during validation a list of possible valid values will be returned. -->Invalid
+            >&lt;m> may not have more codes than allowed by the underlying TAN-R-mor file.</report>-\->
+         <!-\-<report test="exists($invalid-codes) and not(exists($this-morph-cat-qty))"
+            ><!-\\- If any invalid values are found during validation a list of possible valid values will be returned. -\\->Invalid
             value(s) (<value-of select="$invalid-codes"/>); valid values: <value-of
                select="$features-grouped/tan:feature[@src = $this-mory-id]/(@code, @xml:id)"
-            /></report>
-         <report test="exists($invalid-codes) and exists($this-morph-cat-qty)"
-            ><!-- If an invalid code is found in a particular location, a list of valid values for that location will be returned -->Invalid
+            /></report>-\->
+         <!-\-<report test="exists($invalid-codes) and exists($this-morph-cat-qty)"
+            ><!-\\- If an invalid code is found in a particular location, a list of valid values for that location will be returned -\\->Invalid
             codes at position(s) <value-of select="$invalid-codes"/>; valid values: <value-of
                select="
                   for $i in $invalid-codes
@@ -555,19 +564,19 @@
                      return
                         concat($j/@code, ' (', $j/@feature, ') '),
                      ' '), '] ')"
-            /></report>
-         <report test="exists($all-tests[@cert])" role="warning"
-               ><!-- If <m> matches a rule in the underlying TAN-R-mor file that is qualified by some uncertainty, the element will be marked as valid, but a warning will be returned --><value-of
+            /></report>-\->
+         <!-\-<report test="exists($all-tests[@cert])" role="warning"
+               ><!-\\- If <m> matches a rule in the underlying TAN-R-mor file that is qualified by some uncertainty, the element will be marked as valid, but a warning will be returned -\\-><value-of
                select="
                   for $i in $all-tests[@cert]
                   return
                      concat('Confidence ', $i/@cert, ' : ', $i/text())"
-            /></report>
-         <report test="exists($all-tests[not(@cert)])">All codes must adhere to the rules declared
+            /></report>-\->
+         <!-\-<report test="exists($all-tests[not(@cert)])">All codes must adhere to the rules declared
             in the underlying TAN-R-mor file (<xsl:value-of select="$all-tests[not(@cert)]/text()"
-            />)</report>
+            />)</report>-\->
       </rule>
-   </pattern>
+   </pattern>-->
    <pattern id="LM-half"/>
    <pattern id="LM-full"/>
 

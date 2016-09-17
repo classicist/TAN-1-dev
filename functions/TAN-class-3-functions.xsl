@@ -15,5 +15,5 @@
       </xd:desc>
    </xd:doc>
    <xsl:include href="TAN-core-functions.xsl"/>
-   
+   <xsl:include href="TAN-class-2-and-3-functions.xsl"/>   
 </xsl:stylesheet>

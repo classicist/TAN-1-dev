@@ -45,6 +45,7 @@
             <location href="../../../LM/TAN-mor/grc.kalvesmaki.com,2014.1.xml"
                       when-accessed="2016-04-05"/>
          </morphology>
+         <class-type which="status"></class-type>
       </declarations>
       <agent xml:id="stylesheet" roles="editor">
          <IRI>tag:textalign.net,2015:stylesheet:create:tan-lm-from-tan-t</IRI>
@@ -65,7 +66,7 @@
          </change>
    </head>
    <body lexicon="LSJ Lampe new" morphology="Perseus">
-      <group>
+      <group type="test">
          <ana>
             <tok ref="2 2 1 1" pos="5"><!--ὄντων τὰ μὲν *** καθ *** ὑποκειμένου τινὸς λέγεται--></tok>
             <lm>

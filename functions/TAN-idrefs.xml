@@ -10,7 +10,7 @@
     <id element="source">
         <idrefs attribute="src"/>
     </id>
-    <id element="div-type">
+    <id element="div-type group-type">
         <idrefs attribute="type"/>
     </id>
     <id element="lexicon">

@@ -31,6 +31,7 @@
             <IRI>http://www.tei-c.org/ns/1.0/abstract</IRI>
             <IRI>http://dbpedia.org/resource/Abstract_(summary)</IRI>
             <name>abstract</name>
+            <name>summary</name>
         </item>
         <item>
             <IRI>tag:textalign.net,2015:div-type:ad_praeterea</IRI>
@@ -407,6 +408,7 @@
             <IRI>tag:textalign.net,2015:div-type:section</IRI>
             <IRI>http://dbpedia.org/resource/Section_(typography)</IRI>
             <name>section</name>
+            <desc>A generic block of text.</desc>
         </item>
         <item>
             <IRI>tag:textalign.net,2015:div-type:sed_contra</IRI>
@@ -445,6 +447,11 @@
             <name>stanza</name>
         </item>
         <item>
+            <IRI>tag:textalign.net,2015:div-type:subchapter</IRI>
+            <name>subchapter</name>
+            <desc>Otherwise unnamed divisions of a chapter.</desc>
+        </item>
+        <item>
             <IRI>tag:textalign.net,2015:div-type:subcolumn</IRI>
             <name>subcolumn</name>
             <desc>Divisions of a column. Many early large books with two columns per page were
@@ -455,6 +462,7 @@
         <item>
             <IRI>tag:textalign.net,2015:div-type:subsection</IRI>
             <name>subsection</name>
+            <desc>Otherwise unnamed divisions of a section.</desc>
         </item>
         <item>
             <IRI>tag:textalign.net,2015:div-type:syllogism</IRI>

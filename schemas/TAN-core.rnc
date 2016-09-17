@@ -72,8 +72,16 @@ internal-id =
 ## Any generic IRI identifier.
 IRI-gen = xsd:anyURI { pattern = "[a-zA-Z][\-.+a-zA-Z0-9]+:\S+" }
 
+n =
+    
+    ## names a <div> or <group>. Consists of a string of word characters.
+    
+    ## @n serves, concatenated with ancestral @ns, as an identifier for <div>s.
+    
+    ## Examples: '4', 'pr', 'Psalms'
+    attribute n { n-val }
 ## Acceptable values of @n, used by class 1 and class 2 files
-n-val = xsd:string { pattern = "\w+" }
+n-val = xsd:string { pattern = "\w+|\w*\?\?\?\w*" }
 TAN-ver =
     
     ## specifies the version of TAN schemas used (version 1 or 1/dev). 
@@ -139,6 +147,12 @@ seq-picker =
             "((last)|(last-\d+)|(\d+))(\s*-\s*((last)|(last-\d+)|(\d+)))?(\s*,?\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*|.*\?\?\?.*"
     }
 source-ref = empty
+
+type =
+    
+    ## indicates what type of textual unit <div> marks. Points to a <div-type> declared in <declarations>.
+    attribute type { text }
+
 
 ## Tag URN, mandatory pattern for the IRI name of every TAN file 
 URI-tag =
@@ -358,12 +372,12 @@ inclusion-item =
 key-list = key-item*
 key-item =
     
-    ## specifies a TAN-key file that defines the use of @which for various elements. TAN-compliant validators and processors will substitute any element with @which with the IRI + name pattern of the entity that is named.
+    ## specifies a tan:item from a TAN-key (predefined, or declared in a <key>) that defines the meaning of an element that has @which.
     
     ## You may include as many <key>s as you wish, and do not have to use them all. All <key>s must have <item>s with unique names for the element touched by @affects-elements.
     
     ## For more on this, see main.xml#TAN-key
-    element key { ed-stamp?, internal-id?, (comment* & entity-digital-tan-other-ref) }
+    element key { ed-stamp?, (inclusion | (comment* & entity-digital-tan-other-ref)) }
 source-list = source-item
 source-item =
     

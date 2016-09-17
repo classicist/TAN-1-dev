@@ -4734,8 +4734,8 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                <para>An <code><link linkend="element-assert">&lt;assert></link></code> and
                         <code><link linkend="element-report">&lt;report></link></code> may be
                   restricted to specific features through <code><link
-                        linkend="attribute-feature-filter">@feature-filter</link></code>. If
-                        <code><link linkend="attribute-feature-filter">@feature-filter</link></code>
+                        linkend="attribute-context">@context</link></code>. If
+                        <code><link linkend="attribute-context">@context</link></code>
                   is present, then <code><link linkend="element-assert">&lt;assert></link></code>
                   and <code><link linkend="element-report">&lt;report></link></code> declarations
                   will be checked in a TAN-LM file only against values of <code><link
@@ -4746,14 +4746,14 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                <para>
                   <itemizedlist>
                      <listitem>
-                        <para><code><link linkend="attribute-code-regex-test"
-                                 >@code-regex-test</link></code>: indicates a regular expression
+                        <para><code><link linkend="attribute-matches-m"
+                                 >@matches-m</link></code>: indicates a regular expression
                            pattern to be checked against the code in an <code><link
                                  linkend="element-m">&lt;m></link></code>.</para>
                      </listitem>
                      <listitem>
-                        <para><code><link linkend="attribute-token-regex-test"
-                                 >@token-regex-test</link></code>: indicates a regular expression
+                        <para><code><link linkend="attribute-matches-tok"
+                                 >@matches-tok</link></code>: indicates a regular expression
                            pattern to be checked against the tokens picked by the values of
                                  <code><link linkend="element-tok">&lt;tok></link></code> in a
                            dependent TAN-LM file.</para>
@@ -4775,7 +4775,7 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   that for any <code><link linkend="element-m">&lt;m></link></code> in any dependent
                   TAN-LM file, if the test proves false, and if the <code><link linkend="element-m"
                         >&lt;m></link></code> has a feature declared in <code><link
-                        linkend="attribute-feature-filter">@feature-filter</link></code>, then the
+                        linkend="attribute-context">@context</link></code>, then the
                         <code><link linkend="element-m">&lt;m></link></code> should be marked as
                   erroneous (or merely a warning should be returned, if <code><link
                         linkend="attribute-code">@cert</link></code> is present) and the message

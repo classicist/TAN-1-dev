@@ -6,7 +6,7 @@
    <p>This battery of tests is possibly quite time consuming, especially for class-2 files that
       refer to lengthy sources. Includes tests that involve tokenization and tests on the sources
       (e.g., checking that leaf divs are uniquely named).</p>
-   <let name="srcs-tokenized" value="tan:get-src-1st-da-tokenized($self-expanded-2, $srcs-prepped)"/>
+   <!--<let name="srcs-tokenized" value="tan:get-src-1st-da-tokenized($self-expanded-2, $srcs-prepped)"/>
    <let name="self-expanded-4" value="tan:get-self-expanded-4($self-expanded-3, $srcs-tokenized)"/>
    <let name="duplicate-tok-siblings"
       value="
@@ -17,15 +17,15 @@
             if ($j/@src = $k/@src and $j/@ref = $k/@ref and $j/@n = $k/@n) then
                $j
             else
-               ()"/>
-   <rule context="tan:body">
+               ()"/>-->
+   <!--<rule context="tan:body">
       <report test="exists($duplicate-tok-siblings)"
-            ><!-- Class 2 files should not have deeply equal elements in <body> --><value-of
+            ><!-\- Class 2 files should not have deeply equal elements in <body> -\-><value-of
             select="$duplicate-tok-siblings/@*"/></report>
-   </rule>
-   <rule
+   </rule>-->
+   <!--<rule
       context="tan:tok | tan:ana[@include] | tan:split-leaf-div-at[@include] | tan:align[root()/tan:TAN-A-tok][@include]">
-      <let name="this-resolved" value="tan:resolve-include(.)"/>
+      <let name="this-resolved" value="$empty-doc"/>
       <let name="these-toks"
          value="tan:expand-src-and-div-type-ref((self::tan:tok, $this-resolved/tan:tok))"/>
       <let name="these-toks-expanded" value="tan:expand-tok($these-toks, $srcs-tokenized)"/>
@@ -107,17 +107,17 @@
                $these-toks-expanded[@n = '1']
             else
                ()"/>
-      <report test="exists($tokens-not-found)">Tokens must be locatable ( <value-of
+      <!-\-<report test="exists($tokens-not-found)">Tokens must be locatable ( <value-of
             select="
                for $i in $tokens-not-found
                return
                   ($i/(@ref),
                   $errors//tan:group[@affects-element = 'tok']/tan:error[abs(xs:integer($i/@n))])"
-         />)</report>
-      <report test="exists($these-duplicate-siblings)"
+         />)</report>-\->
+      <!-\-<report test="exists($these-duplicate-siblings)"
          tan:does-not-apply-to="ana split-leaf-div-at align">Sibling &lt;tok>s may not point to the
-         same token (<value-of select="$these-duplicate-siblings/@*"/>).</report>
-      <report test="exists($toks-with-incorrect-chars)" tan:does-not-apply-to="ana split-leaf-div-at align"
+         same token (<value-of select="$these-duplicate-siblings/@*"/>).</report>-\->
+      <!-\-<report test="exists($toks-with-incorrect-chars)" tan:does-not-apply-to="ana split-leaf-div-at align"
          tan:applies-to="chars">@chars may not exceed the number of
          characters in a token picked (<value-of
             select="
@@ -126,28 +126,28 @@
                   $k in $toks-with-incorrect-chars[($i * 2)]
                return
                   concat($j/@src, ':', $j/@ref, ':', $j/@n, ' = ', $k)"
-         />) </report>
-      <report test="exists($these-toks-with-pos-help-requested-values-without-val)" tan:applies-to="pos"
-         tan:does-not-apply-to="ana split-leaf-div-at align"><!-- Putting $help-trigger in @pos when there
-         is no @val will return the maximum number of tokens allowed -->max <value-of
-            select="$these-toks-with-pos-help-requested-values-without-val"/></report>
-      <report test="exists($these-toks-with-pos-help-requested-values-with-val)" tan:applies-to="pos"
-         tan:does-not-apply-to="ana split-leaf-div-at align"><!-- Putting $help-trigger in @pos while @val 
-            exists will return the maximum number of tokens that match the value of @val -->max <value-of
+         />) </report>-\->
+      <!-\-<report test="exists($these-toks-with-pos-help-requested-values-without-val)" tan:applies-to="pos"
+         tan:does-not-apply-to="ana split-leaf-div-at align"><!-\\- Putting $help-trigger in @pos when there
+         is no @val will return the maximum number of tokens allowed -\\->max <value-of
+            select="$these-toks-with-pos-help-requested-values-without-val"/></report>-\->
+      <!-\-<report test="exists($these-toks-with-pos-help-requested-values-with-val)" tan:applies-to="pos"
+         tan:does-not-apply-to="ana split-leaf-div-at align"><!-\\- Putting $help-trigger in @pos while @val 
+            exists will return the maximum number of tokens that match the value of @val -\\->max <value-of
             select="$these-toks-with-pos-help-requested-values-with-val"/>
-      </report>
-      <report tan:applies-to="chars" 
-         test="exists($these-toks-with-chars-help-requested)"><!-- Putting $help-trigger in @chars will return the maximum number of characters allowed --><value-of
+      </report>-\->
+      <!-\-<report tan:applies-to="chars" 
+         test="exists($these-toks-with-chars-help-requested)"><!-\\- Putting $help-trigger in @chars will return the maximum number of characters allowed -\\-><value-of
             select="
                for $i in $these-toks-with-chars-help-requested,
                   $j in $srcs-tokenized/tan:TAN-T[@src = $i/@src]/tan:body/tan:div[@ref = $i/@ref]/tan:tok[@n = $i/@n]
                return
                   concat('max ', string-length($j), ' (', $j, ') ')"
-         /></report>
-      <report test="exists($splits-at-first-tok)" tan:does-not-apply-to="ana align">&lt;tok> splits
-         may not be made at the first token in a div.</report>
-      <report test="exists($these-toks-with-val-help-requested-suggestions)"><!-- Putting $help-trigger in @val 
-         will return distinct values of tokens along with the number of times each one occurs -->Possible values and
+         /></report>-\->
+      <!-\-<report test="exists($splits-at-first-tok)" tan:does-not-apply-to="ana align">&lt;tok> splits
+         may not be made at the first token in a div.</report>-\->
+      <report test="exists($these-toks-with-val-help-requested-suggestions)"><!-\- Putting $help-trigger in @val 
+         will return distinct values of tokens along with the number of times each one occurs -\->Possible values and
          counts: <value-of select="$these-toks-with-val-help-requested-suggestions"/></report>
-   </rule>
+   </rule>-->
 </pattern>

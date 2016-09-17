@@ -11,7 +11,7 @@
          if (exists($this-tail)) then
             $this-tail
          else
-            tan:get-src-1st-da-prepped()"/>
+            tan:prep-resolved-class-1-doc()"/>
    <xsl:variable name="srcs-common-skeleton"
       select="
          if ($self2/tan:TAN-A-div)
@@ -23,7 +23,8 @@
             tan:get-src-skeleton($srcs-prepped-edit)"
    />
    <!-- self3 used for TAN-A-div checks on div refs to reconcile -->
-   <xsl:variable name="self3" select="tan:get-self-expanded-3($self2, $srcs-prepped-edit)"/>
+   <xsl:variable name="self3" select="tan:get-self-expanded-3($self2, $srcs-prepped-edit, false())"
+   />
    <let name="class-type-is-status"
       value="
          if ($head/tan:declarations/tan:class-type/tan:IRI =
@@ -45,7 +46,7 @@
             <sqf:title>Create tail with content of prepped sources (time-consuming)</sqf:title>
             <sqf:p>In the edit phase of validation, invoking this SQF will delete the current
                &lt;tail> (if present and add a new &lt;tail> that contains a copy of all sources
-               prepared (result of the function tan:get-src-1st-da-prepped()). Very useful for
+               prepared (result of the function tan:prep-resolved-class-1-doc()). Very useful for
                getting editing help in the context of numerous, long source files. The procedure is
                very lengthy, however, and can be shortened by using the official TAN stylesheet to
                create a clone and work from there.</sqf:p>
@@ -130,22 +131,22 @@
                   $i)
             return
                $srcs-prepped-edit/*[@src = $these-srcs]/tan:body//tan:div[matches(., $j, $match-flags)]"/>
-      <report test="$help-requested or $node-subject-to-revision" sqf:fix="fetch-content"
-         role="warning"><!-- If the class-type 
+      <!--<report test="$help-requested or $node-subject-to-revision" sqf:fix="fetch-content"
+         role="warning"><!-\- If the class-type 
       has been set to the status keyword, then editing help will be applied to any <tok> that takes, or is governed
-      by an element that takes, @class. -->Matched:
+      by an element that takes, @class. -\->Matched:
          <value-of select="$picked-chars"/>
-         <!--<value-of select="$picked-tok-nos"/>-->
-         <!--<value-of select="$matched-divs-tokenized"/>--></report>
-      <report test="exists($mismatched-refs) or $help-requested = true()"
+         <!-\-<value-of select="$picked-tok-nos"/>-\->
+         <!-\-<value-of select="$matched-divs-tokenized"/>-\-></report>-->
+      <!--<report test="exists($mismatched-refs) or $help-requested = true()"
          sqf:fix="fetch-content get-matched-divs"
-         ><!-- Putting $help-trigger in @ref will take the content of @ref and return matching refs or refs that point to 
-            <div>s where the regular expression is found -->Try
+         ><!-\- Putting $help-trigger in @ref will take the content of @ref and return matching refs or refs that point to 
+            <div>s where the regular expression is found -\->Try
             <value-of select="$help-requested-ref-matches/@ref"/> (@ref matches) or <value-of
             select="$help-requested-searched-matches/@ref"/> (text matches) <value-of
             select="count($srcs-prepped-edit)"/>
-         <!--<value-of
-            select="$srcs-prepped-edit/*/tan:body//tan:div[@ref = 'Col 1 4']"/>--></report>
+         <!-\-<value-of
+            select="$srcs-prepped-edit/*/tan:body//tan:div[@ref = 'Col 1 4']"/>-\-></report>-->
 
       <!-- SCHEMATRON QUICK FIXES -->
       <sqf:fix id="fetch-content" use-when="exists($matched-refs)">

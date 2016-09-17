@@ -1,26 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+<xsl:stylesheet xmlns="tag:textalign.net,2015:ns"
+   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tan="tag:textalign.net,2015:ns"
    xmlns:fn="http://www.w3.org/2005/xpath-functions"
    xmlns:math="http://www.w3.org/2005/xpath-functions/math"
    xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" exclude-result-prefixes="xs math xd" version="3.0">
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Updated </xd:b>Oct. 1, 2015</xd:p>
+         <xd:p><xd:b>Updated </xd:b>September 10, 2016</xd:p>
          <xd:p>Set of functions for TAN-R-mor files. Used by Schematron validation, but suitable for
             general use in other contexts.</xd:p>
       </xd:desc>
    </xd:doc>
 
    <xsl:include href="TAN-class-3-functions.xsl"/>
-   <!-- CONTEXT INDEPEDENT FUNCTIONS -->
-   <xsl:function name="tan:feature-test-seq" as="item()+">
-      <!-- Recursive function written for strings normalized by tan:normalize-feature-test().
+   
+   <xsl:variable name="self-prepped" as="document-node()">
+      <xsl:document>
+         <xsl:apply-templates select="$self-core-errors-marked" mode="prep-tan-mor"/>
+      </xsl:document>
+   </xsl:variable>
+
+   <!-- Sept 2016: I think this can be deleted; based on old model -->
+   <!--<xsl:function name="tan:feature-test-seq" as="item()+">
+      <!-\- Recursive function written for strings normalized by tan:normalize-feature-test().
       Input: sequence of strings created by tan:normalize-feature-test() and an integer indicating the number of the last matched parenthesis
       Output: sequence of feature id-refs, operators, and matched parentheses; the first two returned as strings, 
       the last as integers. 
       E.g., "red, ((noun | adj() | conj), (pres, impv))" - > ('red', ',', 1, 2, 'noun', '|', 
-      'adj', 3, 3, '|', 'conj', 2, ',', 2, 'pres', ',' 'impv', 2, 1)-->
+      'adj', 3, 3, '|', 'conj', 2, ',', 2, 'pres', ',' 'impv', 2, 1)-\->
       <xsl:param name="in" as="xs:string"/>
       <xsl:param name="paren-number" as="xs:integer"/>
       <xsl:variable name="in-seq" select="tokenize($in, ' ')"/>
@@ -66,8 +74,6 @@
                else
                   $first-paren-replacement"
       />
-   </xsl:function>
-
-   <!-- CONTEXT DEPEDENT FUNCTIONS -->
+   </xsl:function>-->
 
 </xsl:stylesheet>

@@ -28,9 +28,12 @@ include "TAN-class-2.rnc" {
     alignment-attributes-non-class-2 = strength-claim?, exclusive-claim?, distribute-claim?
     
     ## alignments must contain either one or more div-refs or a list of IDREFS to other alignments
-    alignment-content-non-class-2 = align-div-list?
+    alignment-content-non-class-2 = align-div-list
     decl-non-class-2 = decl-topics*
     non-class-2-opt = topic-opt?
+    
+    ## alignments suppres @cert in <tok> (used only to split leaf divs)
+    cert-opt = empty
 }
 decl-topics =
     
@@ -46,15 +49,6 @@ topic-opt =
     
     ## TAN does not stipluate what can be inferred via @topic. If ref A is aligned with B via topic x, and B with C via topic y, no guarantee is made as to what relationship A has to C. 
     attribute topic { text }
-div-ref-list =
-    
-    ## collects one or more <div>s (or segments of <div>s) in one or more sources
-    
-    ## In most cases, the texts pointed to in <div-ref> will be treated as a collective set. If passage A is found three times in X, Y, and Z, then in an <align> four different <div-ref>s should be used. But if A is found once, spanning X, Y, and Z, then the last three should be gathered in a single <div-ref>, or, optionally, in a <div-ref> with a @cont.
-    element div-ref { div-ref-pattern }
-div-ref-pattern =
-    ed-stamp?, strength-claim?, source-ref, pointer-to-div-range, seg-ref?, continuation?
-# TAN-A-div structure
 work-equiv =
     
     ## declares an ad hoc equivalence between works that are not defined by their sources as being identical.
@@ -90,7 +84,7 @@ split =
     ## Each split creates a segment, a textual subdivision of leaf <div>s introduced by the TAN-A-div file.
     element split-leaf-div-at {
         ed-stamp?,
-        (inclusion | (comment* & token-list+))
+        (inclusion | (comment* & tok-regular+))
     }
 strength-claim =
     
@@ -122,19 +116,11 @@ realignment =
     element realign {
         ed-stamp?,
         (inclusion
-         | (comment* & (distribute-claim?, anchor?, realign-div-list?)))
+         | (distribute-claim?,
+            (comment* & (anchor?, realign-div-list))))
     }
-anchor =
-    
-    ## defines a <div> to which other <div>s in other versions of the same work should be realigned (via <div-ref>s that follow). The first child of a <realign>, it is constructed exactly like <div-ref>, except that the mandatory @src may point only to a single source. 
-    
-    ## <anchor-div-ref> is always followed by one or more <div-ref>s. 
-    
-    ## If <anchor-div-ref> points to only one reference (i.e., @src, @ref, and @seg [if present] each have only one value) then however many references are made in subsequent <div-ref>s, they will all be realigned to that one anchor reference. 
-    
-    ## But if <anchor-div-ref> has more than one reference, then distribution is in effect. Every nth reference will be the anchor for the nth reference in subsequent <div-ref>s (grouped by source).
-    element anchor-div-ref { div-ref-pattern }
-realign-div-list = div-ref-list+
+anchor = anchor-div-ref-item
+realign-div-list = div-ref-item+
 exclusive-claim =
     
     ## indicates whether an alignment should be treated as non-transitive or transitive. If there is no @exclusive, then if X is aligned with Y, then anything that aligns with X will align with anything that aligns with Y. If @exclusive is present then the alignment holds only between the specified references. The latter is useful, e.g., for specifying cases where one version of a work uniquely quotes from another. Value must be 1 or true, implied by the very presence of the attribute. If you wish to decare it to be false, delete the attribute altogether.
@@ -155,7 +141,43 @@ distribute-claim =
     attribute distribute {
         xsd:boolean { pattern = "true|1" }
     }
-align-div-list = div-ref-list+
+align-div-list = div-ref-item+
+# <div-ref> and <anchor-div-ref> 
+anchor-div-ref-item = anchor-div-ref-regular | anchor-div-ref-sequence
+anchor-div-ref-regular =
+    
+    ## defines a <div> to which other <div>s in other versions of the same work should be realigned (via <div-ref>s that follow). The first child of a <realign>, it is constructed exactly like <div-ref>, except that the mandatory @src may point only to a single source. 
+    
+    ## <anchor-div-ref> is always followed by one or more <div-ref>s. 
+    
+    ## If <anchor-div-ref> points to only one reference (i.e., @src, @ref, and @seg [if present] each have only one value) then however many references are made in subsequent <div-ref>s, they will all be realigned to that one anchor reference. 
+    
+    ## But if <anchor-div-ref> has more than one reference, then distribution is in effect. Every nth reference will be the anchor for the nth reference in subsequent <div-ref>s (grouped by source).
+    element anchor-div-ref { div-ref-attr-regular }
+anchor-div-ref-sequence =
+    anchor-div-ref-with-src-and-cont,
+    anchor-div-ref-with-cont-but-no-src*,
+    anchor-div-ref-without-cont-or-src
+anchor-div-ref-with-src-and-cont = element anchor-div-ref { div-ref-attr-with-src-and-cont }
+anchor-div-ref-with-cont-but-no-src = element anchor-div-ref { div-ref-attr-with-cont-but-no-src }
+anchor-div-ref-without-cont-or-src = element anchor-div-ref { div-ref-attr-without-cont-or-src }
+div-ref-item = div-ref-regular | div-ref-sequence
+div-ref-regular =
+    
+    ## collects one or more <div>s (or segments of <div>s) in one or more sources
+    
+    ## In most cases, the texts pointed to in <div-ref> will be treated as a collective set. If passage A is found three times in X, Y, and Z, then in an <align> four different <div-ref>s should be used. But if A is found once, spanning X, Y, and Z, then the last three should be gathered in a single <div-ref>, or, optionally, in a <div-ref> with a @cont.
+    element div-ref { div-ref-attr-regular }
+div-ref-sequence =
+    div-ref-with-src-and-cont, div-ref-with-cont-but-no-src*, div-ref-without-cont-or-src
+div-ref-with-src-and-cont = element div-ref { div-ref-attr-with-src-and-cont }
+div-ref-with-cont-but-no-src = element div-ref { div-ref-attr-with-cont-but-no-src }
+div-ref-without-cont-or-src = element div-ref { div-ref-attr-without-cont-or-src }
+div-ref-attr-core = ed-stamp?, pointer-to-div-range, seg-ref?
+div-ref-attr-regular = div-ref-attr-core, source-ref, strength-claim?
+div-ref-attr-with-src-and-cont = div-ref-attr-core, source-ref, continuation, strength-claim?
+div-ref-attr-with-cont-but-no-src = div-ref-attr-core, continuation
+div-ref-attr-without-cont-or-src = div-ref-attr-core
 seg-ref =
     
     ## picks specific segments in a leaf div (and only to leaf divs). There must be an appropriate number of splits declared for those leaf divs in <split-leaf-div-at>.

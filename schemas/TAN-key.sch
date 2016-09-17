@@ -8,12 +8,13 @@
    <ns prefix="tei" uri="http://www.tei-c.org/ns/1.0"/>
    <ns prefix="xs" uri="http://www.w3.org/2001/XMLSchema"/>
    <ns prefix="sqf" uri="http://www.schematron-quickfix.com/validator/process"/>
-   <!-- common core below -->
    <include href="TAN-core.sch"/>
-   <include href="TAN-class-3.sch"/>
 
-   <!-- FUNCTIONS -->
-   <xsl:include href="../functions/TAN-key-functions.xsl"/>
+   <pattern id="self-prepped" is-a="tan-file-resolved">
+      <param name="self-version" value="$self-prepped"/>
+   </pattern>
+   
+   
    <let name="all-names" value="$body//tan:name"/>
    <let name="duplicate-names" value="$all-names[index-of($all-names, .)[2]]"/>
    <let name="is-reserved-TAN-key"
@@ -26,23 +27,23 @@
       <rule context="tan:name">
          <let name="affected-elements"
             value="tokenize(ancestor::*[@affects-element][1]/@affects-element, '\s+')"/>
-         <report
+         <!--<report
             test="not($is-reserved-TAN-key) and . = $TAN-keywords//tan:name[tokenize(ancestor::*[@affects-element][1]/@affects-element, '\s+') = $affected-elements]"
-            >Names may not duplicate reserved TAN keywords for the affected element.</report>
-         <report test=". = $duplicate-names">Names may not duplicate each other.</report>
+            >Names may not duplicate reserved TAN keywords for the affected element.</report>-->
+         <!--<report test=". = $duplicate-names">Names may not duplicate each other.</report>-->
       </rule>
       <rule context="@affects-element">
          <let name="these-elements" value="tokenize(., '\s+')"/>
          <let name="matching-element-names" value="for $i in $these-elements
             return
             $TAN-elements-that-take-the-attribute-which/@name[matches(., $i)]"/>
-         <assert sqf:fix="get-element-names"
+         <!--<assert sqf:fix="get-element-names"
             test="
                every $i in $these-elements
                   satisfies $i = $TAN-elements-that-take-the-attribute-which/@name"
             >Items and groups must be about elements that take @which (did you mean 
             <xsl:value-of select="$matching-element-names"/>?) (all values: <xsl:value-of
-               select="$TAN-elements-that-take-the-attribute-which/@name"/>)</assert>
+               select="$TAN-elements-that-take-the-attribute-which/@name"/>)</assert>-->
          <sqf:fix id="get-element-names">
             <sqf:description>
                <sqf:title>Replace affects-element with similar element names</sqf:title>
@@ -55,18 +56,18 @@
             </sqf:replace>
          </sqf:fix>
       </rule>
-      <rule context="tan:IRI[parent::tan:item]">
+      <!--<rule context="tan:IRI[parent::tan:item]">
          <let name="count" value="count(index-of($all-body-iris, .))"/>
          <assert test="$count = 1">Every IRI in invoked in the body of a TAN-key should be unique
             within the body.</assert>
-      </rule>
+      </rule>-->
       <rule context="tan:item[not(tan:token-definition)]">
          <let name="applies-to" value="(ancestor-or-self::*/@affects-element)[1]"/>
-         <report sqf:fix="add-TAN-IRI"
+         <!--<report sqf:fix="add-TAN-IRI"
             test="
                $is-reserved-TAN-key = true() and not(some $i in tan:IRI/text()
                   satisfies starts-with($i, $TAN-namespace))"
-            >Every reserved TAN keyword will have an IRI assigned from the TAN namespace (<value-of select="$TAN-namespace"/>)</report>
+            >Every reserved TAN keyword will have an IRI assigned from the TAN namespace (<value-of select="$TAN-namespace"/>)</report>-->
          <sqf:fix id="add-TAN-IRI">
             <sqf:description>
                <sqf:title>Add TAN IRI</sqf:title>
@@ -82,5 +83,8 @@
          </sqf:fix>
       </rule>
    </pattern>
+
+   <!-- FUNCTIONS -->
+   <xsl:include href="../functions/TAN-key-functions.xsl"/>
 
 </schema>

@@ -25,10 +25,10 @@
    <xsl:variable name="srcs-tokenized-and-filtered-tan-a-tok"
       select="tan:get-src-1st-da-tokenized($self2, $srcs-prepped-and-filtered-tan-a-tok)"
       as="document-node()*"/>
-   <xsl:variable name="srcs-charred-and-filtered"
-      select="tan:get-src-1st-da-chars-picked($self4, $srcs-tokenized-and-filtered-tan-a-tok)"/>
-   <xsl:variable name="srcs-analyzed-and-filtered"
-      select="tan:get-src-1st-da-analysis-stamped($self4, $srcs-charred-and-filtered)"/>
+   <!--<xsl:variable name="srcs-charred-and-filtered"
+      select="tan:get-src-1st-da-chars-picked($self4, $srcs-tokenized-and-filtered-tan-a-tok)"/>-->
+   <!--<xsl:variable name="srcs-analyzed-and-filtered"
+      select="tan:get-src-1st-da-analysis-stamped($self4, $srcs-charred-and-filtered)"/>-->
 
 
 </xsl:stylesheet>

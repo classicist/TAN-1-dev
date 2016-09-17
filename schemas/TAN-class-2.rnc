@@ -5,15 +5,15 @@ namespace ns1 = "tag:textalign.net,2015:ns"
 
 include "TAN-core.rnc" inherit = ns1 {
     decl-non-core = decl-class-2 & decl-non-class-2
-    group-attributes = class?
-
+    group-attributes = type, n?
+    
     ## All sources are TAN files, so no source rights should be declared--they're already stated
     source-rights = empty
     source-ref =
         
         ## refers to the ID of one or more <source>s 
         attribute src { text }
-body-group-opt = body-group*
+    body-group-opt = body-group*
 }
 
 ## Reserved for declarations common to all class 2 files
@@ -23,8 +23,8 @@ decl-class-2 = decl-token-opt & decl-supp-div-opt & decl-rename-n-opt
 decl-non-class-2 = empty
 
 ## Reserved for modification in different types of Class 2 files, to specify how many tokenization declarations are allowed.
-## Class 2 files that do not require tokenization (i.e., TAN-A-div) must include <token-definition> only if the file uses elements (e.g., <split-leaf-div-at>) that assume tokenization. 
-decl-token-opt = decl-tok-def+
+## Class 2 files that do not require tokenization (i.e., TAN-A-div) may include <token-definition> only if the file uses elements (e.g., <split-leaf-div-at>) that assume tokenization. 
+decl-token-opt = decl-tok-def*
 
 ## Reserved for modification in different types of Class 2 files, to specify how many suppress-div-type declarations are allowed.
 decl-supp-div-opt = decl-supp-div-type*
@@ -105,18 +105,26 @@ div-type-ref =
     
     ## is used by class-2 files to point to one or more <div-type>s in class-1 files. Permits multiple values separated by spaces.
     attribute div-type-ref { text }
-token-list =
+token-list = tok-item+
+tok-item = tok-regular | tok-sequence
+tok-regular =
     
     ## identifies one or more words or word fragments. Used by class 2 files to make assertions about specific words. 
-    element tok {
-        certainty-stamp,
-        class-opt,
-        source-ref,
-        reference-opt,
-        (token-value-ref | item-pos-ref | (token-value-ref, item-pos-ref)),
-        char-ref?,
-        continuation-opt?
-    }
+    element tok { tok-attr-regular }
+tok-sequence = tok-with-src-and-cont, tok-with-cont-but-no-src*, tok-without-cont-or-src
+tok-with-src-and-cont = element tok { tok-attr-with-src-and-cont }
+tok-with-cont-but-no-src = element tok { tok-attr-with-cont-but-no-src }
+tok-without-cont-or-src = element tok { tok-attr-without-cont-or-src }
+tok-attr-core =
+    ed-stamp?,
+    reference-opt,
+    (token-value-ref | item-pos-ref | (token-value-ref, item-pos-ref)),
+    char-ref?
+tok-attr-regular = tok-attr-core, source-ref, class-opt, cert-opt
+tok-attr-with-src-and-cont = tok-attr-core, source-ref, continuation-opt, cert-claim?
+tok-attr-with-cont-but-no-src = tok-attr-core, continuation-opt
+tok-attr-without-cont-or-src = tok-attr-core
+cert-opt = cert-claim?
 class-opt = empty
 class =
     
@@ -173,6 +181,10 @@ continuation =
         xsd:boolean { pattern = "true|1" }
     }
 decl-class =
+    # element class-type { ed-stamp?, element-scope?, (inclusion | entity-nondigital-ref) }
     
-    ## defines the type of key that has used.
-    element class-type { ed-stamp?, element-scope?, (inclusion | entity-nondigital-ref) }
+    ## defines types of classes, used primarily to explain the nature of <group>s.
+    element group-type {
+        ed-stamp?,
+        (inclusion | (internal-id, entity-nondigital-ref))
+    }*

@@ -6,50 +6,123 @@
       <ref name="TAN-root"/>
     </element>
   </start>
-  <include href="incl/TAN-class-3.rng">
+  <include href="TAN-class-3.rng">
     <define name="decl-id-ref-opt">
-      <a:documentation>all declarations must have ids</a:documentation>
-      <ref name="internal-id"/>
+      <a:documentation>no declarations may have ids</a:documentation>
+      <empty/>
     </define>
     <define name="decl-non-class-3">
       <a:documentation>every TAN-R-mor file has one or more src-lang and feature elements</a:documentation>
-      <interleave>
-        <oneOrMore>
-          <ref name="lang-outside"/>
-        </oneOrMore>
-        <oneOrMore>
-          <ref name="decl-morph-feature"/>
-        </oneOrMore>
-      </interleave>
+      <empty/>
     </define>
     <define name="TAN-body-core">
       <ref name="TAN-R-mor-body"/>
     </define>
   </include>
-  <define name="decl-morph-feature">
-    <a:documentation>TAN-R-mor files declare the morphological features that are allowed for a given language</a:documentation>
-    <element name="feature">
-      <a:documentation>names, through its IRI + name pattern, a grammatical concept (e.g., plural, subjunctive, 1st person) that characterizes a language.</a:documentation>
-      <ref name="decl-pattern-default"/>
-    </element>
-  </define>
   <define name="TAN-R-mor-body">
     <a:documentation>TAN-R-mor body consists of zero or more assert, report, category, or options</a:documentation>
+    <oneOrMore>
+      <ref name="lang-outside"/>
+    </oneOrMore>
     <interleave>
+      <choice>
+        <ref name="feature-list"/>
+        <ref name="category-list"/>
+      </choice>
       <zeroOrMore>
         <ref name="assert"/>
       </zeroOrMore>
       <zeroOrMore>
         <ref name="report"/>
       </zeroOrMore>
-      <zeroOrMore>
-        <ref name="category"/>
-      </zeroOrMore>
-      <zeroOrMore>
-        <ref name="options"/>
-      </zeroOrMore>
     </interleave>
   </define>
+  <define name="feature-list">
+    <zeroOrMore>
+      <ref name="feature"/>
+    </zeroOrMore>
+  </define>
+  <define name="category-list">
+    <zeroOrMore>
+      <ref name="category"/>
+    </zeroOrMore>
+  </define>
+  <define name="feature">
+    <a:documentation>TAN-R-mor files declare the morphological features that are allowed for a given language</a:documentation>
+    <element name="feature">
+      <a:documentation>names, through its IRI + name pattern, a grammatical feature or concept (e.g., plural, subjunctive, 1st person) that characterizes a language. In the context of &lt;feature&gt; a @code is always included. The first &lt;feature&gt; of a &lt;category&gt; never has @code, and refers to the grammatical feature that characterizes the category.</a:documentation>
+      <ref name="feature-pattern"/>
+    </element>
+  </define>
+  <define name="feature-pattern">
+    <optional>
+      <ref name="ed-stamp"/>
+    </optional>
+    <choice>
+      <ref name="inclusion"/>
+      <group>
+        <ref name="code"/>
+        <interleave>
+          <zeroOrMore>
+            <ref name="comment"/>
+          </zeroOrMore>
+          <ref name="entity-nondigital-ref"/>
+        </interleave>
+      </group>
+    </choice>
+  </define>
+  <define name="feature-pattern-no-code">
+    <optional>
+      <ref name="ed-stamp"/>
+    </optional>
+    <choice>
+      <ref name="inclusion"/>
+      <interleave>
+        <zeroOrMore>
+          <ref name="comment"/>
+        </zeroOrMore>
+        <ref name="entity-nondigital-ref"/>
+      </interleave>
+    </choice>
+  </define>
+  <!-- code, decl-pattern-default -->
+  <define name="category-feature">
+    <element name="feature">
+      <ref name="feature-pattern-no-code"/>
+    </element>
+  </define>
+  <define name="category">
+    <element name="category">
+      <a:documentation>creates a set of features that share a common grammatical trait such as gender, number, etc.</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <interleave>
+          <zeroOrMore>
+            <ref name="comment"/>
+          </zeroOrMore>
+          <group>
+            <ref name="category-feature"/>
+            <oneOrMore>
+              <ref name="feature"/>
+            </oneOrMore>
+          </group>
+        </interleave>
+      </choice>
+    </element>
+  </define>
+  <define name="code">
+    <attribute name="code">
+      <a:documentation>contains a string that can be used as an alternative code for a &lt;feature&gt;.</a:documentation>
+      <data type="string">
+        <a:documentation>hyphen reserved for "not applicable"; spaces and (),| reserved for @feature-test expressions</a:documentation>
+        <param name="pattern">[^\-\+\s]|[^\+\s]+</param>
+      </data>
+    </attribute>
+  </define>
+  <!-- reports and asserts -->
   <define name="assert">
     <element name="assert">
       <a:documentation>names a pattern that, if found to be false in any &lt;m&gt; in a dependent TAN-LM file, will return the enclosed message upon validation of the dependent file, along with an error or warning. Modeled loosely on Schematron &lt;report&gt;.</a:documentation>
@@ -74,8 +147,8 @@
           <ref name="filter"/>
         </optional>
         <choice>
-          <ref name="code-regex-test"/>
-          <ref name="token-regex-test"/>
+          <ref name="matches-m"/>
+          <ref name="matches-tok"/>
           <ref name="feature-test"/>
           <ref name="feature-qty-test"/>
         </choice>
@@ -84,89 +157,36 @@
     </choice>
   </define>
   <define name="filter">
-    <attribute name="feature-filter">
-      <a:documentation>specifies that when a dependent TAN-LM file is validated and the condition for the parent &lt;report&gt; or &lt;assert&gt; is triggered by the value of a given &lt;m&gt;, the message should be returned only if the &lt;m&gt; has at least one of the features mentioned by @feature-filter.</a:documentation>
+    <attribute name="context">
+      <a:documentation>specifies under what conditions a particular &lt;assert&gt; or &lt;report&gt; will be tested. When an &lt;m&gt; in a dependent TAN-LM file is validated, if it contains the codes for the features in question, the other conditions of the &lt;assert&gt; or &lt;report&gt; will be checked.</a:documentation>
     </attribute>
   </define>
-  <define name="code-regex-test">
-    <attribute name="code-regex-test">
-      <a:documentation>asserts a pattern in the form of a regular expression that is to be used to check matches in codes in &lt;m&gt;s in a dependent TAN-LM file.</a:documentation>
+  <define name="matches-m">
+    <attribute name="matches-m">
+      <a:documentation>takes a regular expression. If an &lt;m&gt; matches the pattern, then the condition will be true. </a:documentation>
       <a:documentation>One of four tests for determining the truth value that will trigger the message in a &lt;report&gt; or &lt;assert&gt; </a:documentation>
     </attribute>
   </define>
-  <define name="token-regex-test">
-    <attribute name="token-regex-test">
-      <a:documentation>carries a regular expression that is to be used to check the truth value of a &lt;report&gt; or &lt;assert&gt;. When a dependent TAN-LM file is validated, if the pattern matches the resolved value of any &lt;tok&gt;, the value will be true, and affect whether a message is triggered in any &lt;m&gt; elements that share an &lt;ana&gt; ancestor.</a:documentation>
+  <define name="matches-tok">
+    <attribute name="matches-tok">
+      <a:documentation>takes a regular expression. When validating a given &lt;m&gt;, a test will be made against each companion &lt;tok&gt; (i.e., those &lt;toks&gt; that have the same ancestral &lt;ana&gt;). The condition will be treated as true only if there is a match with the resolved value of every such &lt;tok&gt;, and false if there is any nonmatch. </a:documentation>
       <a:documentation>One of four tests for determining the truth value that will trigger the message in a &lt;report&gt; or &lt;assert&gt; </a:documentation>
     </attribute>
   </define>
   <define name="feature-test">
     <attribute name="feature-test">
-      <a:documentation>indicates one or more features that are used to check the truth value of a &lt;report&gt; or &lt;assert&gt;. When a dependent TAN-LM file is validated, this attribute returns true for any feature that is found in an &lt;m&gt; element, and false otherwise.</a:documentation>
-      <a:documentation>One of four tests for determining the truth value that will trigger the message in a &lt;report&gt; or &lt;assert&gt; </a:documentation>
+      <a:documentation>specifies one or more features separated by spaces or the padded + (a plus sign with surrounding spaces). A plain space is treated  as meaning "or" and the padded + as meaning "and." If there is at least one match between the list and the value of the codes in an &lt;m&gt; then condition will be treated as true. The padded plus sign specifies that all the items need to be found in the &lt;m&gt;. </a:documentation>
+      <a:documentation>For example, @feature-test="A B + C D + E" means that the condition will be true for a given &lt;m&gt; only if it has A or B and C or D and E. This test is one of four tests for determining the truth value that will trigger the message in a &lt;report&gt; or &lt;assert&gt; </a:documentation>
+      <data type="string">
+        <param name="pattern">[^\s\+]+(\s(\+\s)?[^\s\+]+)*</param>
+      </data>
     </attribute>
   </define>
   <define name="feature-qty-test">
     <attribute name="feature-qty-test">
-      <a:documentation>specifies a number greater than one indicating how many of the features in @feature-filter must be present for the condition to be true. This is useful for situations where it is desired to flag values of &lt;m&gt; that try to combine incompatible features.</a:documentation>
-      <a:documentation>One of four tests for determining the truth value that will trigger the message in a &lt;report&gt; or &lt;assert&gt; </a:documentation>
-      <data type="integer"/>
-    </attribute>
-  </define>
-  <define name="category">
-    <element name="category">
-      <a:documentation>creates a set of features that share a common grammatical trait such as gender, number, etc.</a:documentation>
-      <optional>
-        <ref name="ed-stamp"/>
-      </optional>
-      <choice>
-        <ref name="inclusion"/>
-        <interleave>
-          <zeroOrMore>
-            <ref name="comment"/>
-          </zeroOrMore>
-          <group>
-            <ref name="feature-ref"/>
-            <oneOrMore>
-              <ref name="options"/>
-            </oneOrMore>
-          </group>
-        </interleave>
-      </choice>
-    </element>
-  </define>
-  <define name="options">
-    <element name="option">
-      <a:documentation>refer to a feature.</a:documentation>
-      <a:documentation>If its parent is &lt;category&gt;, this element indicates a feature that is allowed in that area.</a:documentation>
-      <a:documentation>If its parent is &lt;body&gt; it markes a supplemental way to refer to the feature other than the assigned @xml:id. Useful for situations where a code requires a value that is otherwise disallowed by @xml:id, e.g., colons.</a:documentation>
-      <optional>
-        <ref name="ed-stamp"/>
-      </optional>
-      <choice>
-        <ref name="inclusion"/>
-        <group>
-          <ref name="feature-ref"/>
-          <optional>
-            <ref name="code"/>
-          </optional>
-        </group>
-      </choice>
-    </element>
-  </define>
-  <define name="feature-ref">
-    <attribute name="feature">
-      <a:documentation>refers to a feature by means of its @xml:id</a:documentation>
-      <data type="IDREF" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
-    </attribute>
-  </define>
-  <define name="code">
-    <attribute name="code">
-      <a:documentation>contains a string that can be used as an alternative code for a &lt;feature&gt;.</a:documentation>
-      <data type="string">
-        <a:documentation>hyphen reserved for "not applicable"; spaces and (),| reserved for @feature-test expressions</a:documentation>
-        <param name="pattern">[^\-\(\),|\s]|[^\(\),|\s]+</param>
-      </data>
+      <a:documentation>specifies a sequence of integers (e.g., 2-4). If the quantity of features in an &lt;m&gt; matches a number from that sequence, the condition is true, and false otherwise. If the keyword 'last' or 'max' is used, the number of features will be adopted as the ceiling. </a:documentation>
+      <a:documentation>This test is useful for non-category based languages to put a limit on the number of features that can be declared in an &lt;m&gt;. It is one of four tests for determining the truth value that will determin whether a &lt;report&gt; or &lt;assert&gt; will be acted upon. </a:documentation>
+      <ref name="seq-picker"/>
     </attribute>
   </define>
 </grammar>

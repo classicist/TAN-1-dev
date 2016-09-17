@@ -3,7 +3,16 @@
   <include href="TAN-LM-core.rng">
     <define name="source-list">
       <a:documentation>TAN-LM files point only to one source</a:documentation>
-      <ref name="source-item"/>
+      <ref name="lang-outside"/>
+    </define>
+    <define name="source-ref">
+      <empty/>
+    </define>
+    <define name="tok-attr-core">
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <ref name="token-value-ref"/>
     </define>
   </include>
 </grammar>

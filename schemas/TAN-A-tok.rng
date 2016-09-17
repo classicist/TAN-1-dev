@@ -6,7 +6,7 @@
       <ref name="TAN-root"/>
     </element>
   </start>
-  <include href="incl/TAN-class-2.rng">
+  <include href="TAN-class-2.rng">
     <define name="source-list">
       <a:documentation>TAN-A-tok files take exactly two sources</a:documentation>
       <ref name="source-item"/>
@@ -21,19 +21,24 @@
       <ref name="internal-id"/>
     </define>
     <define name="decl-non-class-2">
-      <oneOrMore>
-        <ref name="decl-brel"/>
-      </oneOrMore>
-      <oneOrMore>
-        <ref name="decl-reus"/>
-      </oneOrMore>
+      <interleave>
+        <oneOrMore>
+          <ref name="decl-brel"/>
+        </oneOrMore>
+        <oneOrMore>
+          <ref name="decl-reus"/>
+        </oneOrMore>
+        <zeroOrMore>
+          <ref name="decl-class"/>
+        </zeroOrMore>
+      </interleave>
     </define>
-    <define name="TAN-body-core">
+    <define name="other-body-attributes">
       <ref name="bitext-relation-attr"/>
       <ref name="reuse-type-attr"/>
-      <oneOrMore>
-        <ref name="alignment"/>
-      </oneOrMore>
+    </define>
+    <define name="item">
+      <ref name="alignment"/>
     </define>
     <define name="alignment-attributes-non-class-2">
       <a:documentation>alignments may claim bitext relations and reuse type</a:documentation>

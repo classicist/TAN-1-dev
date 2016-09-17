@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0">
+<grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <start>
     <element name="TAN-rdf">
       <a:documentation>specifies that the TAN file makes assertions subject a conceptual work. Root element.</a:documentation>
       <ref name="TAN-root"/>
     </element>
   </start>
-  <include href="incl/TAN-class-3.rng">
+  <include href="TAN-class-3.rng">
     <define name="decl-id-ref-opt">
       <a:documentation>all declarations must have ids</a:documentation>
       <ref name="internal-id"/>
@@ -19,8 +19,12 @@
     <define name="decl-non-core">
       <ref name="TAN-rdf-decl"/>
     </define>
-    <define name="TAN-body-core">
-      <ref name="TAN-rdf-body"/>
+    <define name="item">
+      <ref name="TAN-rdf-item"/>
+    </define>
+    <define name="other-body-attributes">
+      <ref name="claimant"/>
+      <ref name="subject"/>
     </define>
   </include>
   <define name="TAN-rdf-decl">
@@ -43,6 +47,9 @@
       <zeroOrMore>
         <ref name="decl-mode"/>
       </zeroOrMore>
+      <zeroOrMore>
+        <ref name="decl-vers"/>
+      </zeroOrMore>
     </interleave>
   </define>
   <define name="decl-place">
@@ -55,8 +62,27 @@
     <element name="verb">
       <a:documentation>contains an IRI + name pattern identifying a property, relationship, action, or something else that is used to say something about something. </a:documentation>
       <a:documentation>The preferred term "verb" is equivalent to RDF "predicate." The latter term is avoided as being misleading -- most who use TAN will understand "predicate," grammatically speaking, to refer to everything in a sentence that is not the subject,</a:documentation>
+      <optional>
+        <ref name="object-datatype"/>
+      </optional>
+      <optional>
+        <ref name="object-lexical-constraint"/>
+      </optional>
       <ref name="decl-pattern-default"/>
     </element>
+  </define>
+  <define name="object-datatype">
+    <attribute name="object-datatype">
+      <a:documentation>specifies the type of data that the object must take. Use this attribute if and only if the object is not an entity defined by the</a:documentation>
+      <data type="string">
+        <param name="pattern">string|boolean|decimal|float|double|duration|dateTime|time|date|gYearMonth|gYear|gMonthDay|gDay|gMonth|hexBinary|base64Binary|anyURI|QName|NOTATION|normalizedString|token|language|NMTOKEN|NMTOKENS|Name|NCName|ID|IDREF|IDREFS|ENTITY|ENTITIES|integer|nonPositiveInteger|negativeInteger|long|int|short|byte|nonNegativeInteger|unsignedLong|unsignedInt|unsignedShort|unsignedByte|positiveInteger</param>
+      </data>
+    </attribute>
+  </define>
+  <define name="object-lexical-constraint">
+    <attribute name="object-lexical-constraint">
+      <a:documentation>specifies a regular expression that constrains the value of any &lt;object&gt;</a:documentation>
+    </attribute>
   </define>
   <define name="decl-unit">
     <element name="unit">
@@ -67,6 +93,7 @@
   <define name="decl-pers">
     <element name="person">
       <a:documentation>contains an IRI + name pattern identifying a person. This element is very similar to &lt;agent&gt;, but does not imply that the person had anything to do with the data in the TAN file.</a:documentation>
+      <a:documentation>Although person implies a single individual, this element may be applied to corporate entities, or natural groups of more than one person.</a:documentation>
       <ref name="decl-pattern-default"/>
     </element>
   </define>
@@ -76,9 +103,7 @@
       <ref name="decl-pattern-default"/>
     </element>
   </define>
-  <define name="TAN-rdf-body">
-    <ref name="claimant"/>
-    <ref name="subject"/>
+  <define name="TAN-rdf-item">
     <oneOrMore>
       <ref name="claim"/>
     </oneOrMore>
@@ -119,20 +144,20 @@
     <attribute name="claimant">
       <a:documentation>points to an &lt;agent&gt; or &lt;person&gt; who makes a claim. @claimant within &lt;body&gt; indicates the default persons to be credited or blamed for an assertion.</a:documentation>
       <a:documentation>Claimants are not to be confused with the editor of a TAN file. If an editor X writes a TAN-rdf file that says that person Y makes such-and-such a claim, then the implication is that X claims that Y claims that....  </a:documentation>
-      <data type="IDREFS"/>
+      <data type="IDREFS" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
     </attribute>
   </define>
   <define name="subject">
     <attribute name="subject">
       <a:documentation>points to one or more ID refs of entities defined in &lt;head&gt; that serve as the grammatical subject of a claim. @subject within &lt;body&gt; indicates the default subject(s) for &lt;claim&gt;s. </a:documentation>
-      <data type="IDREFS"/>
+      <data type="IDREFS" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
     </attribute>
   </define>
   <define name="verb">
     <a:documentation>points to one or more &lt;verb&gt;s that serve to assert something of the @subject.</a:documentation>
     <attribute name="verb">
       <a:documentation>The preferred term "verb" is equivalent to RDF "predicate." The latter term is avoided as being misleading -- most who use TAN will understand "predicate," grammatically speaking, to refer to everything in a sentence that is not the subject,</a:documentation>
-      <data type="IDREFS"/>
+      <data type="IDREFS" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
     </attribute>
   </define>
   <define name="object">
@@ -160,19 +185,19 @@
   <define name="units">
     <attribute name="units">
       <a:documentation>points to the ID ref of a &lt;unit&gt;, defining the type of units.</a:documentation>
-      <data type="IDREF"/>
+      <data type="IDREF" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
     </attribute>
   </define>
   <define name="place-filter">
     <attribute name="where">
       <a:documentation>restricts the &lt;claim&gt; to a specific &lt;place&gt; </a:documentation>
-      <data type="IDREFS"/>
+      <data type="IDREFS" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
     </attribute>
   </define>
   <define name="modal-claim">
     <attribute name="adverb">
       <a:documentation>names a &lt;modal&gt; that qualifies the claim.</a:documentation>
-      <data type="IDREF"/>
+      <data type="IDREF" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
     </attribute>
   </define>
 </grammar>

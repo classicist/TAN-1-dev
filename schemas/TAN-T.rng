@@ -6,7 +6,7 @@
       <ref name="TAN-root"/>
     </element>
   </start>
-  <include href="incl/TAN-class-1.rng">
+  <include href="TAN-class-1.rng">
     <define name="other-body-attributes">
       <ref name="lang-of-content"/>
     </define>
@@ -37,13 +37,5 @@
         </group>
       </choice>
     </element>
-  </define>
-  <define name="n">
-    <attribute name="n">
-      <a:documentation>names a &lt;div&gt;. Consists of a string of word characters.</a:documentation>
-      <a:documentation>@n serves, concatenated with ancestral @ns, as an identifier.</a:documentation>
-      <a:documentation>Examples: '4', 'pr', 'Psalms'</a:documentation>
-      <ref name="n-val"/>
-    </attribute>
   </define>
 </grammar>

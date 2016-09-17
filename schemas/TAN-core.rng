@@ -1,0 +1,899 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <!-- PART ONE OF TWO: PATTERNS REPEATEDLY USED ACROSS DIFFERENT TAN FILES -->
+  <!--   1A. ATOMIC PATTERNS (alphabetical) -->
+  <define name="agent-ref">
+    <attribute name="who">
+      <a:documentation>names an &lt;agent&gt;</a:documentation>
+    </attribute>
+  </define>
+  <define name="decl-id-ref-opt">
+    <empty/>
+  </define>
+  <define name="div-range-ref">
+    <a:documentation>String that specifies a range of divs using the div-ref pattern joined by a hyphen or a comma.</a:documentation>
+    <a:documentation>For more see main.xml#leaf_div_uniqueness_rule</a:documentation>
+    <data type="string">
+      <param name="pattern">(\w+(\W\w+)*)((\s*,|\s+-)\s+(\w+(\W\w+)*))*|.*\?\?\?.*</param>
+    </data>
+  </define>
+  <define name="ed-agent">
+    <attribute name="ed-who">
+      <a:documentation>refers to one or more &lt;agent&gt;s who have edited (added or modified) an element or its content.</a:documentation>
+      <a:documentation>Along with @ed-when, this forms the Edit Stamp pattern. See main.xml#edit_stamp</a:documentation>
+      <a:documentation>This attribute is inheritable. See main.xml#inheritable_attributes</a:documentation>
+    </attribute>
+  </define>
+  <define name="ed-time">
+    <attribute name="ed-when">
+      <a:documentation>marks the date or time when an element or its content was edited (added or modified)</a:documentation>
+      <a:documentation>The value of must always conform to an ISO date or dateTime pattern. See main.xml#date_and_datetime.</a:documentation>
+      <a:documentation>Along with @ed-who, this forms the Edit Stamp pattern. See main.xml#edit_stamp</a:documentation>
+      <choice>
+        <data type="dateTime"/>
+        <data type="date"/>
+      </choice>
+    </attribute>
+  </define>
+  <define name="certainty-stamp">
+    <optional>
+      <ref name="cert-claim"/>
+    </optional>
+    <optional>
+      <ref name="ed-stamp"/>
+    </optional>
+  </define>
+  <define name="cert-claim">
+    <attribute name="cert">
+      <a:documentation>states how certain an agent is of the data governed by the parent element. High = "is probably"; low = "is probably not"; all other values expressed as a real number from 0 (no certainty) to 1 (completely certainty).</a:documentation>
+      <a:documentation> This attribute is taken into account after other attributes. That is, @cert is to be interpreted to mean: "Assuming the abovementioned inheritable attributes to be true, I have @cert confidence about the following data:...."</a:documentation>
+      <a:documentation>This attribute is inheritable. See main.xml#inheritable_attributes</a:documentation>
+      <data type="string">
+        <param name="pattern">(high)|(low)|(0\.\d+)</param>
+      </data>
+    </attribute>
+  </define>
+  <define name="help-opt">
+    <attribute name="help">
+      <a:documentation>requests help on the context element</a:documentation>
+      <empty/>
+    </attribute>
+  </define>
+  <define name="element-scope">
+    <attribute name="affects-element">
+      <a:documentation>names one or more TAN elements that the keywords apply to</a:documentation>
+    </attribute>
+  </define>
+  <define name="href-opt">
+    <attribute name="href">
+      <a:documentation>points to the location of a file, either as part of &lt;location&gt; or in elements that refer to TAN files, to be used to invoke a schematron quick fix to populate the &lt;IRI&gt; and &lt;location&gt; child elements.</a:documentation>
+      <a:documentation>The first use is a convenience for XML editors that autocomplete filenames or allow users to open the referred file (oftentimes with control+click)</a:documentation>
+      <a:documentation>The second use of this attribute is pragmatic, used only as a convenience to TAN users who wish to include the metadata of another TAN file without leaving the current file. It is associated with a warning message that is linked to a Schematron Quick Fix that will supply the correct metadata and remove the attribute.</a:documentation>
+    </attribute>
+  </define>
+  <define name="inclusion-att">
+    <attribute name="include">
+      <a:documentation>signals that the parent element is to be replaced by all elements of the same name found in the referred &lt;inclusion&gt;.</a:documentation>
+      <data type="IDREFS" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
+    </attribute>
+  </define>
+  <define name="internal-id">
+    <attribute name="xml:id">
+      <a:documentation>identifies an entity described within an element. Must be unique within a given file. Must consist only of word characters.</a:documentation>
+      <data type="ID" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0">
+        <param name="pattern">\w\S*</param>
+      </data>
+    </attribute>
+  </define>
+  <define name="IRI-gen">
+    <a:documentation>Any generic IRI identifier.</a:documentation>
+    <data type="anyURI">
+      <param name="pattern">[a-zA-Z][\-.+a-zA-Z0-9]+:\S+</param>
+    </data>
+  </define>
+  <define name="n">
+    <attribute name="n">
+      <a:documentation>names a &lt;div&gt; or &lt;group&gt;. Consists of a string of word characters.</a:documentation>
+      <a:documentation>@n serves, concatenated with ancestral @ns, as an identifier for &lt;div&gt;s.</a:documentation>
+      <a:documentation>Examples: '4', 'pr', 'Psalms'</a:documentation>
+      <ref name="n-val"/>
+    </attribute>
+  </define>
+  <define name="n-val">
+    <a:documentation>Acceptable values of @n, used by class 1 and class 2 files</a:documentation>
+    <data type="string">
+      <param name="pattern">\w+|\w*\?\?\?\w*</param>
+    </data>
+  </define>
+  <define name="TAN-ver">
+    <attribute name="TAN-version">
+      <a:documentation>specifies the version of TAN schemas used (version 1 or 1/dev). </a:documentation>
+      <a:documentation>Must indicate at least the major version; may include the minor version.</a:documentation>
+      <data type="string">
+        <param name="pattern">1(\W+dev)?</param>
+      </data>
+    </attribute>
+  </define>
+  <define name="keyword-ref">
+    <attribute name="which">
+      <a:documentation>used to point to a reserved keyword, either a reserved tokenization pattern or a relationship.</a:documentation>
+    </attribute>
+  </define>
+  <define name="lang-of-content">
+    <attribute name="xml:lang">
+      <a:documentation>specifies a language code that names the language of the text enclosed by the parent element. Values are inherited by all descendants except for those that have an @xml:lang and their descendants.  </a:documentation>
+      <a:documentation>Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see main.xml#language.</a:documentation>
+      <a:documentation>Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin) </a:documentation>
+      <data type="language"/>
+    </attribute>
+  </define>
+  <define name="lang-outside">
+    <element name="for-lang">
+      <a:documentation>specifies a language that is being discussed. This element does NOT name the language of the text enclosed by the parent element, which is the province of @xml:lang.</a:documentation>
+      <a:documentation>Values should adhere to BCP (Best Common Practices) 47, http://www.rfc-editor.org/rfc/bcp/bcp47.txt. For more details see main.xml#language.</a:documentation>
+      <a:documentation>Examples: 'eng' (English), 'grc' (classical Greek), 'lat' (Latin). For more see main.xml#language</a:documentation>
+      <data type="language"/>
+    </element>
+  </define>
+  <define name="period-filter">
+    <element name="when">
+      <a:documentation>constrains an event to a period of time</a:documentation>
+      <attribute name="from">
+        <a:documentation>specifies the beginning of a period of time</a:documentation>
+        <choice>
+          <data type="dateTime"/>
+          <data type="date"/>
+        </choice>
+      </attribute>
+      <attribute name="to">
+        <a:documentation>specifies the end of a period of time</a:documentation>
+        <choice>
+          <data type="dateTime"/>
+          <data type="date"/>
+        </choice>
+      </attribute>
+    </element>
+  </define>
+  <define name="progress">
+    <a:documentation>specifies whether the creation and editing of the data is still in progress. Default value is true.</a:documentation>
+    <attribute name="in-progress">
+      <a:documentation>specifies whether the editors of the current file have not yet finished supplying the data, intend to make important changes, or wish to otherwise reserve the right to make major changes. </a:documentation>
+      <a:documentation>This attribute does not claim that the data is perfect or that it will not be changed. Rather, it signals to users, especially those who would use the file the object of a &lt;source&gt;, &lt;see-also&gt;, or &lt;inclusion&gt;, the possibility of major, disruptive work. </a:documentation>
+      <data type="boolean"/>
+    </attribute>
+  </define>
+  <define name="rights-holder">
+    <attribute name="rights-holder">
+      <a:documentation>specifies one or more &lt;agent&gt;s who hold the rights over the material specified by the parent element (either the data of the current file, or of the source that forms the basis for the data).</a:documentation>
+      <a:documentation>A missing @rights-holder implies only only silence, not that the rightsholder is unknown or nonexistent. For more, see main.xml#license</a:documentation>
+    </attribute>
+  </define>
+  <define name="role-ref">
+    <attribute name="roles">
+      <a:documentation>refers to the ID of one or more &lt;role&gt;s</a:documentation>
+    </attribute>
+  </define>
+  <define name="seq-picker">
+    <a:documentation>   String that specifies a range of tokens: digits or "last(-digit)?" joined by space-delimited hyphens or vertical lines (pipe character)</a:documentation>
+    <data type="string">
+      <param name="pattern">((last)|(last-\d+)|(\d+))(\s*-\s*((last)|(last-\d+)|(\d+)))?(\s*,?\s+((last)|(last-\d+)|(\d+))(\s+-\s+((last)|(last-\d+)|(\d+)))?)*|.*\?\?\?.*</param>
+    </data>
+  </define>
+  <define name="source-ref">
+    <empty/>
+  </define>
+  <define name="type">
+    <attribute name="type">
+      <a:documentation>indicates what type of textual unit &lt;div&gt; marks. Points to a &lt;div-type&gt; declared in &lt;declarations&gt;.</a:documentation>
+    </attribute>
+  </define>
+  <define name="URI-tag">
+    <a:documentation>Tag URN, mandatory pattern for the IRI name of every TAN file </a:documentation>
+    <data type="anyURI">
+      <param name="pattern">tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-(0\d|1[0-2]))?(-([0-2]\d|3[01]))?:\S+</param>
+    </data>
+  </define>
+  <define name="when-claim">
+    <attribute name="when">
+      <a:documentation>indicates a date or date and time</a:documentation>
+      <choice>
+        <data type="dateTime"/>
+        <data type="date"/>
+      </choice>
+    </attribute>
+  </define>
+  <!--
+    
+      1B. NON-ATOMIC PATTERNS (alphabetical)
+  -->
+  <define name="checksum">
+    <element name="checksum">
+      <a:documentation>specifies some checksum that can be used to confirm the identity of a digital file being referred to. This element contains other elements that define the type and value of the checksum. Must begin with an IRI + name pattern that defines the type of checksum being used (e.g., SHA-1).</a:documentation>
+      <a:documentation>This element is useful when it is imperative to ensure that one is using the identical version of a source file. </a:documentation>
+      <a:documentation>The checksum will not be generated, checked, or validated by TAN schemas. Validation must be provided by an external tool.</a:documentation>
+      <ref name="entity-nondigital-ref"/>
+      <element name="value">
+        <a:documentation>states the value of a &lt;checksum&gt;</a:documentation>
+        <data type="string" datatypeLibrary=""/>
+      </element>
+    </element>
+  </define>
+  <define name="comment">
+    <element name="comment">
+      <a:documentation>discusses issues relevant to nearby data. Must credit an &lt;agent&gt;, specified by @who, and a time the comment was made, specified by @when.</a:documentation>
+      <ref name="when-claim"/>
+      <ref name="agent-ref"/>
+      <text/>
+    </element>
+  </define>
+  <define name="decl-pattern-default">
+    <optional>
+      <ref name="ed-stamp"/>
+    </optional>
+    <choice>
+      <ref name="inclusion"/>
+      <group>
+        <ref name="decl-id-ref-opt"/>
+        <interleave>
+          <zeroOrMore>
+            <ref name="comment"/>
+          </zeroOrMore>
+          <ref name="entity-nondigital-ref"/>
+        </interleave>
+      </group>
+    </choice>
+  </define>
+  <define name="decl-pattern-language">
+    <optional>
+      <ref name="ed-stamp"/>
+    </optional>
+    <choice>
+      <ref name="inclusion"/>
+      <group>
+        <ref name="decl-id-ref-opt"/>
+        <interleave>
+          <zeroOrMore>
+            <ref name="comment"/>
+          </zeroOrMore>
+          <group>
+            <zeroOrMore>
+              <ref name="lang-outside"/>
+            </zeroOrMore>
+            <ref name="entity-nondigital-ref"/>
+          </group>
+        </interleave>
+      </group>
+    </choice>
+  </define>
+  <define name="decl-tok-def">
+    <element name="token-definition">
+      <a:documentation>defines through a regular expression the definition of a word token. This element will be used to segment a string into token and non-token components. </a:documentation>
+      <a:documentation>This element takes attributes that function as the parameters for the function xsl:analyze-string (see https://www.w3.org/TR/xslt-30/#element-analyze-string).</a:documentation>
+      <a:documentation>For more see main.xml#defining_tokens</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <ref name="source-ref"/>
+          <choice>
+            <ref name="keyword-ref"/>
+            <group>
+              <ref name="func-param-pattern"/>
+              <optional>
+                <ref name="func-param-flags"/>
+              </optional>
+            </group>
+          </choice>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="ed-stamp">
+    <a:documentation>Editorial stamp: who created or edited the enclosed data and when. </a:documentation>
+    <ref name="ed-agent"/>
+    <ref name="ed-time"/>
+  </define>
+  <!--
+    
+       FOUR TYPES OF ENTITIES THAT CAN BE REFERENCED USING THE IRI+NAME PATTERN
+  -->
+  <define name="entity-digital-tan-other-ref">
+    <a:documentation>Reference to an external digital entity that is a TAN file; unlike other types, the keyword-ref option much be turned on and off for specific elements (e.g., not advisable for &lt;inclusion&gt;)</a:documentation>
+    <choice>
+      <ref name="href-opt"/>
+      <group>
+        <ref name="IRI-gen-ref"/>
+        <ref name="metadata-human"/>
+        <zeroOrMore>
+          <ref name="checksum"/>
+        </zeroOrMore>
+        <oneOrMore>
+          <ref name="loc-src"/>
+        </oneOrMore>
+      </group>
+    </choice>
+  </define>
+  <define name="entity-digital-generic-ref">
+    <a:documentation>Reference to an external digital entity that is not a TAN file</a:documentation>
+    <choice>
+      <group>
+        <oneOrMore>
+          <ref name="IRI-gen-ref"/>
+        </oneOrMore>
+        <ref name="metadata-human"/>
+        <zeroOrMore>
+          <ref name="checksum"/>
+        </zeroOrMore>
+        <oneOrMore>
+          <ref name="loc-src"/>
+        </oneOrMore>
+      </group>
+      <ref name="keyword-ref"/>
+    </choice>
+  </define>
+  <define name="entity-digital-tan-self-ref">
+    <a:documentation>Reference to self as digital entity (i.e., TAN file)</a:documentation>
+    <ref name="metadata-human"/>
+    <zeroOrMore>
+      <ref name="loc-self"/>
+    </zeroOrMore>
+  </define>
+  <define name="entity-nondigital-ref">
+    <a:documentation>Reference to an external non-digital entity (e.g., agents, roles, works, topics)</a:documentation>
+    <choice>
+      <group>
+        <oneOrMore>
+          <ref name="IRI-gen-ref"/>
+        </oneOrMore>
+        <ref name="metadata-human"/>
+      </group>
+      <ref name="keyword-ref"/>
+    </choice>
+  </define>
+  <define name="entity-tok-def">
+    <ref name="decl-tok-def"/>
+    <ref name="metadata-human"/>
+  </define>
+  <define name="func-param-pattern">
+    <attribute name="regex">
+      <a:documentation>specifies a regular expression pattern to be searched for or matched</a:documentation>
+      <a:documentation>For more see https://www.w3.org/TR/xpath-functions-30/#regex-syntax</a:documentation>
+    </attribute>
+  </define>
+  <define name="func-param-flags">
+    <attribute name="flags">
+      <a:documentation>specifies flags to be applied in an XPath expression using regular expressions.</a:documentation>
+      <a:documentation>s = dot-all mode; m = multi-line mode; i = case-insensitive mode; x = remove whitespace characters from regular expression; q = no metacharacters </a:documentation>
+      <a:documentation>For more see http://www.w3.org/TR/xpath-functions-30/#flags</a:documentation>
+      <data type="string">
+        <param name="pattern">[smixq]+</param>
+      </data>
+    </attribute>
+  </define>
+  <define name="inclusion">
+    <ref name="inclusion-att"/>
+    <optional>
+      <ref name="help-opt"/>
+    </optional>
+  </define>
+  <define name="IRI-gen-ref">
+    <element name="IRI">
+      <a:documentation>contains an International Resource Identifier that serves as a name for the a concept, person, or thing referred to by the parent element. IRIs are explained at main.xml#IRIs_and_linked_data.</a:documentation>
+      <a:documentation>Any kind of IRIs are allowed: URLs, tag URNs, UUIDs, etc. For names of well-known resources, a URL identifier might be preferred (http://...), to facilitate linked data. If an entity/resource lacks a suitable URL-type name, you may use or coin any other valid IRI, such as a UUID, a tag URN, or an OID. Some concepts may be difficult to find IRIs for. See iris.xml for guidance.</a:documentation>
+      <a:documentation>Sibling &lt;IRI&gt;s are to be treated as names for the same thing, not as names of different things. Nevertheless, they are not synonymous, only poecilonymic. In the terms of Web Ontology Language (http://www.w3.org/TR/owl-ref/), sibling &lt;IRI&gt;s cannot be assumed to share the relationship owl:sameAs, because they will draw from independent vocabularies that may define similar concepts differently. An element defined with multiple &lt;IRI&gt;s is to be understood as being within the intersection of those definitions.</a:documentation>
+      <a:documentation>The element is named IRI instead of URI to encourage internationalization. Alphabets other than the Latin are welcome. </a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <ref name="IRI-gen"/>
+    </element>
+  </define>
+  <define name="loc-self">
+    <element name="master-location">
+      <a:documentation>points to a location where a master copy of the file is to be found. When you use &lt;master-location&gt; you commit yourself to updating the TAN file in those locations. Similarly, if you have completed work on a TAN file and signal that through @in-progress, you must commit yourself to a &lt;master-location&gt;.</a:documentation>
+      <a:documentation>The URL may be absolute or relative to the current document. </a:documentation>
+      <a:documentation>&lt;master-location&gt; does not disallow the file from being published or distributed elsewhere. It merely points to the main locations where an authoritative version of the file is to be found. </a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <ref name="href-opt"/>
+    </element>
+  </define>
+  <define name="loc-src">
+    <element name="location">
+      <a:documentation>declares where an electronic file was found, when. </a:documentation>
+      <a:documentation>The URL may be absolute or relative to the current document. </a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <attribute name="when-accessed">
+        <a:documentation>specifies when an electronic file was last examined</a:documentation>
+        <choice>
+          <data type="date"/>
+          <data type="dateTime"/>
+        </choice>
+      </attribute>
+      <ref name="href-opt"/>
+    </element>
+  </define>
+  <define name="metadata-desc">
+    <optional>
+      <ref name="ed-stamp"/>
+    </optional>
+    <group>
+      <optional>
+        <ref name="lang-of-content"/>
+      </optional>
+      <data type="string">
+        <param name="pattern">(.|\n)+</param>
+      </data>
+    </group>
+  </define>
+  <define name="metadata-human">
+    <oneOrMore>
+      <element name="name">
+        <a:documentation>provides a human-readable name of a concept, person, or thing referred to by the parent element (or the current document, if the parent element is &lt;head&gt;)</a:documentation>
+        <a:documentation>Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script.</a:documentation>
+        <ref name="metadata-desc"/>
+      </element>
+    </oneOrMore>
+    <zeroOrMore>
+      <element name="desc">
+        <a:documentation>provides a description of a concept, person, or thing referred to by the parent element (or the current document, if the parent element is &lt;head&gt;). &lt;desc&gt; is, in effect, a &lt;comment&gt; about that concept, person, or thing. It has two possible structures, one human-readable and the other computer-readable.</a:documentation>
+        <a:documentation>The first, human-readable approach defines &lt;desc&gt; as taking merely a string that comments on the entity. Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script. If you provide a comment in multiple languages, it best to make sure that each version says roughly the same thing.</a:documentation>
+        <a:documentation>The second, computer-readable approach has &lt;desc&gt; take an IRI + name pattern plus @href in &lt;location&gt; pointing to a &lt;TAN-rdf&gt; file, providing more information about the concept, person, or thing. </a:documentation>
+        <choice>
+          <ref name="metadata-desc"/>
+          <choice>
+            <ref name="keyword-ref"/>
+            <ref name="entity-digital-tan-other-ref"/>
+          </choice>
+        </choice>
+      </element>
+    </zeroOrMore>
+  </define>
+  <!-- PART TWO OF TWO: STRUCTURE COMMON TO ALL TAN FILES (rootmost nodes first) -->
+  <!-- 1st level of any TAN file. -->
+  <define name="TAN-root">
+    <attribute name="id">
+      <a:documentation>contains a tag URN that permanently and uniquely names the current file, the so-called IRI Name of the current file. See main.xml#iri_name for discussion.</a:documentation>
+      <a:documentation>For more on the syntax of tag URNs see main.xml#tag_urn</a:documentation>
+      <ref name="URI-tag"/>
+    </attribute>
+    <ref name="TAN-ver"/>
+    <optional>
+      <ref name="ed-stamp"/>
+    </optional>
+    <ref name="TAN-head"/>
+    <ref name="TAN-body"/>
+    <ref name="TAN-tail"/>
+  </define>
+  <!-- 2nd level of any TAN file. -->
+  <define name="TAN-head">
+    <element name="head">
+      <a:documentation>contains the metadata (data about the data contained by &lt;body&gt;)</a:documentation>
+      <a:documentation>Indicates at a bare minimum the name of the file, the sources, the most significant parts of the editorial history; the linguistic or scholarly conventions that have been adopted in creating the data; the license, i.e., who holds what rights to the data, and what kind of reuse is allowed; the persons, organizations, or entities that helped create the data, and the roles played by each.</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <interleave>
+        <zeroOrMore>
+          <ref name="comment"/>
+        </zeroOrMore>
+        <group>
+          <ref name="entity-digital-tan-self-ref"/>
+          <ref name="nonsource-rights"/>
+          <interleave>
+            <ref name="inclusion-list"/>
+            <ref name="key-list"/>
+            <ref name="source-list"/>
+            <ref name="see-also-list"/>
+          </interleave>
+          <ref name="decl-opt"/>
+          <oneOrMore>
+            <ref name="agent-list"/>
+          </oneOrMore>
+          <oneOrMore>
+            <ref name="role-list"/>
+          </oneOrMore>
+          <zeroOrMore>
+            <ref name="agent-role-list"/>
+          </zeroOrMore>
+          <oneOrMore>
+            <!-- Changes, which must indicate through @who and @when who made the change, when  -->
+            <ref name="change-list"/>
+          </oneOrMore>
+        </group>
+      </interleave>
+    </element>
+  </define>
+  <define name="TAN-body">
+    <element name="body">
+      <a:documentation>contains the data</a:documentation>
+      <optional>
+        <ref name="progress"/>
+      </optional>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <interleave>
+        <zeroOrMore>
+          <ref name="comment"/>
+        </zeroOrMore>
+        <ref name="TAN-body-core"/>
+      </interleave>
+    </element>
+  </define>
+  <define name="TAN-body-core">
+    <ref name="other-body-attributes"/>
+    <oneOrMore>
+      <choice>
+        <ref name="body-group-opt"/>
+        <ref name="item"/>
+      </choice>
+    </oneOrMore>
+  </define>
+  <define name="other-body-attributes">
+    <empty/>
+  </define>
+  <define name="body-group-opt">
+    <empty/>
+  </define>
+  <define name="body-group">
+    <element name="group">
+      <a:documentation>collects a group of items that have a natural affinity</a:documentation>
+      <ref name="group-attributes"/>
+      <zeroOrMore>
+        <choice>
+          <ref name="body-group"/>
+          <ref name="item"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="group-attributes">
+    <empty/>
+  </define>
+  <define name="item">
+    <empty/>
+  </define>
+  <define name="TAN-tail">
+    <optional>
+      <element name="tail">
+        <a:documentation>permits any arbitrary content. Suitable as a placeholder for temporary data, especially to facilitate time-consuming validation routines. </a:documentation>
+        <ref name="any_content"/>
+      </element>
+    </optional>
+  </define>
+  <define name="any_content">
+    <interleave>
+      <zeroOrMore>
+        <ref name="any_element"/>
+      </zeroOrMore>
+      <text/>
+    </interleave>
+  </define>
+  <define name="any_element">
+    <element>
+      <anyName/>
+      <zeroOrMore>
+        <ref name="any_attribute"/>
+      </zeroOrMore>
+      <ref name="any_content"/>
+    </element>
+  </define>
+  <define name="any_attribute">
+    <attribute>
+      <anyName/>
+    </attribute>
+  </define>
+  <!--
+    
+    3rd level of any TAN file, head metadata only (the body, which differs widely across TAN file types, are defined in other schema files)
+  -->
+  <define name="nonsource-rights">
+    <element name="rights-excluding-sources">
+      <a:documentation>states the license under which the data is distributed and the rights associated with it, EXCLUSIVE of any rights attached to the source.</a:documentation>
+      <a:documentation>If parts of your TAN data fall under two or more licenses, you should (1) split the file (one for each license), (2) find a license that sythesizes the desired licenses, or (3) release the entire file under the most restrictive of the possible licenses.</a:documentation>
+      <a:documentation>Diligently check to ensure that the license you have claimed respects the rights of your sources' rightsholders. It is recommended that you license your data under a license that is similar to or slightly more liberal than the one under which your sources have been released.</a:documentation>
+      <a:documentation>For more discussion, see main.xml#license</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <ref name="rights-holder"/>
+          <interleave>
+            <zeroOrMore>
+              <ref name="comment"/>
+            </zeroOrMore>
+            <ref name="entity-nondigital-ref"/>
+          </interleave>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="inclusion-list">
+    <zeroOrMore>
+      <ref name="inclusion-item"/>
+    </zeroOrMore>
+  </define>
+  <define name="inclusion-item">
+    <element name="inclusion">
+      <a:documentation>specifies a TAN file that is available for inclusion. An inclusion occurs whenever an element X points to this inclusion by means of @include. TAN-compliant validators and processors will find every X that is found in the included file (checked recursively, against any inclusions adopted by the inclusion) and insert them at that place in the main document.</a:documentation>
+      <a:documentation>Only the elements of that name X will be included, not the entire inclusion file. It is up to you to specify exactly which elements should be included.</a:documentation>
+      <a:documentation>You may include as many &lt;inclusion&gt;s as you wish, and do not have to use them all.</a:documentation>
+      <a:documentation>If you are using an &lt;inclusion&gt; primarily for metadata (&lt;head&gt;) it is recommended to put the value of @xml:id in uppercase. &lt;body&gt; inclusions should be set in lowercase.</a:documentation>
+      <a:documentation>For more on this, see main.xml#inclusions</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <ref name="internal-id"/>
+      <interleave>
+        <zeroOrMore>
+          <ref name="comment"/>
+        </zeroOrMore>
+        <ref name="entity-digital-tan-other-ref"/>
+      </interleave>
+    </element>
+  </define>
+  <define name="key-list">
+    <zeroOrMore>
+      <ref name="key-item"/>
+    </zeroOrMore>
+  </define>
+  <define name="key-item">
+    <element name="key">
+      <a:documentation>specifies a tan:item from a TAN-key (predefined, or declared in a &lt;key&gt;) that defines the meaning of an element that has @which.</a:documentation>
+      <a:documentation>You may include as many &lt;key&gt;s as you wish, and do not have to use them all. All &lt;key&gt;s must have &lt;item&gt;s with unique names for the element touched by @affects-elements.</a:documentation>
+      <a:documentation>For more on this, see main.xml#TAN-key</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <interleave>
+          <zeroOrMore>
+            <ref name="comment"/>
+          </zeroOrMore>
+          <ref name="entity-digital-tan-other-ref"/>
+        </interleave>
+      </choice>
+    </element>
+  </define>
+  <define name="source-list">
+    <ref name="source-item"/>
+  </define>
+  <define name="source-item">
+    <element name="source">
+      <a:documentation>identifies the source upon which the data in the &lt;body&gt; of the current file depends.</a:documentation>
+      <a:documentation>TAN-T and TAN-LM allow only one &lt;source&gt;. TAN-A-tok allows exactly two. All other TAN formats require one or more. </a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <ref name="source-id-opt"/>
+          <interleave>
+            <zeroOrMore>
+              <ref name="comment"/>
+            </zeroOrMore>
+            <group>
+              <choice>
+                <ref name="entity-nondigital-ref"/>
+                <ref name="entity-digital-generic-ref"/>
+                <ref name="entity-digital-tan-other-ref"/>
+              </choice>
+              <optional>
+                <ref name="source-rights"/>
+              </optional>
+            </group>
+          </interleave>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="source-rights">
+    <element name="rights-source-only">
+      <a:documentation>states license and rights that are attached to the source of the data.</a:documentation>
+      <a:documentation>For more discussion, see main.xml#license</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <interleave>
+          <zeroOrMore>
+            <ref name="comment"/>
+          </zeroOrMore>
+          <group>
+            <zeroOrMore>
+              <ref name="rights-holder"/>
+            </zeroOrMore>
+            <ref name="entity-nondigital-ref"/>
+          </group>
+        </interleave>
+      </choice>
+    </element>
+  </define>
+  <define name="source-id-opt">
+    <a:documentation>Parameter to indicate whether &lt;source&gt; should be allowed to take xml:id (forbidden for TAN files with only one source; mandated otherwise)</a:documentation>
+    <empty/>
+  </define>
+  <define name="see-also-list">
+    <zeroOrMore>
+      <ref name="see-also-item"/>
+    </zeroOrMore>
+  </define>
+  <define name="see-also-item">
+    <element name="see-also">
+      <a:documentation>identifies auxiliary entities that were materially helpful in creating or editing the data, or are helpful in understanding the data.</a:documentation>
+      <a:documentation>This element is especially useful for may be used to credit 3rd parties who provide a set of raw data that you then edit to bring into better conformity with the &lt;source&gt;. </a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <interleave>
+          <zeroOrMore>
+            <ref name="comment"/>
+          </zeroOrMore>
+          <group>
+            <ref name="relationship"/>
+            <choice>
+              <ref name="entity-nondigital-ref"/>
+              <ref name="entity-digital-generic-ref"/>
+              <ref name="entity-digital-tan-other-ref"/>
+            </choice>
+          </group>
+        </interleave>
+      </choice>
+    </element>
+  </define>
+  <define name="relationship">
+    <element name="relationship">
+      <a:documentation>specifies the role that the item named by the parent &lt;see-also&gt; played. This may be either a reserved keyword or an IRI + name pattern that identifies a specific kind of relationship.</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <ref name="entity-nondigital-ref"/>
+      </choice>
+    </element>
+  </define>
+  <define name="decl-opt">
+    <element name="declarations">
+      <a:documentation>contains assumptions or decisions made that materially affect the interpretation of the data in &lt;body&gt;</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <interleave>
+        <zeroOrMore>
+          <ref name="comment"/>
+        </zeroOrMore>
+        <ref name="decl-list"/>
+      </interleave>
+    </element>
+  </define>
+  <define name="agent-list">
+    <element name="agent">
+      <a:documentation>specifies a person or organization that played a direct or indirect role in preparing, creating, or editing the data.</a:documentation>
+      <a:documentation>At least one &lt;agent&gt; must have an &lt;IRI&gt; that is a tag URN whose namespace matches that of the IRI name. By default, the first such &lt;agent&gt; is taken to be the person or organization ultimately responsible for the current file. </a:documentation>
+      <a:documentation>May also be applied to a computer or algorithm that performed a task. This feature is useful for crediting software, e.g., an OCR program used to convert an image, or an algorithm that estimates word-to-word alignments.</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <optional>
+            <ref name="role-ref"/>
+          </optional>
+          <ref name="internal-id"/>
+          <interleave>
+            <zeroOrMore>
+              <ref name="comment"/>
+            </zeroOrMore>
+            <ref name="entity-nondigital-ref"/>
+          </interleave>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="role-list">
+    <element name="role">
+      <a:documentation>specifies a role (responsibility, task, or activity) that one or more &lt;agent&gt;s did in creating or editing the data.</a:documentation>
+      <a:documentation>A role may be any activity, e.g., editor, funder, supervisor, data-processor, peer reviewer, patron, defined through the enclosed IRI + name pattern.</a:documentation>
+      <a:documentation>For suggestions on IRI vocabularies for this element, see iris.xml.</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <ref name="internal-id"/>
+          <interleave>
+            <zeroOrMore>
+              <ref name="comment"/>
+            </zeroOrMore>
+            <ref name="entity-nondigital-ref"/>
+          </interleave>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="agent-role-list">
+    <element name="agentrole">
+      <a:documentation>specifies a time period when one or more &lt;agent&gt;s held one or more &lt;role&gt;s.</a:documentation>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <optional>
+            <ref name="ed-stamp"/>
+          </optional>
+          <ref name="agent-ref"/>
+          <ref name="role-ref"/>
+          <oneOrMore>
+            <ref name="period-filter"/>
+          </oneOrMore>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="change-list">
+    <element name="change">
+      <a:documentation>declares a change made to the current file. Must credit an &lt;agent&gt;, specified by @who, and a time the change was made, specified by @when.</a:documentation>
+      <a:documentation>Collectively, &lt;change&gt; elements are called the changelog, the revision history of the document. </a:documentation>
+      <a:documentation>The editor has discretion as to how long or detailed a &lt;change&gt; should be, or how many should be retained in a changelog. Ideally, &lt;change&gt;s documenting every published version should be retained.</a:documentation>
+      <a:documentation>&lt;change&gt; elements may appear in any order, but it is good practice to put the most recent at the top.</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <ref name="when-claim"/>
+      <ref name="agent-ref"/>
+      <text/>
+    </element>
+  </define>
+  <!-- 4th level of any TAN file, specifically the /*/head/declarations element -->
+  <define name="decl-list">
+    <a:documentation>Empty declaration element. See other TAN schemas for redefinitions appropriate to a particular type of TAN file. </a:documentation>
+    <interleave>
+      <ref name="decl-core"/>
+      <ref name="decl-non-core"/>
+    </interleave>
+  </define>
+  <define name="decl-core">
+    <a:documentation>Reserved for any declarations that are shared across classes</a:documentation>
+    <empty/>
+  </define>
+  <define name="decl-non-core">
+    <a:documentation>decl-non-core to be filled out by each TAN-class-X.rnc file</a:documentation>
+    <empty/>
+  </define>
+  <!--
+    
+    Declaration patterns that are shared across formats
+  -->
+  <define name="decl-work">
+    <element name="work">
+      <a:documentation>indicates a creative work. Must be a conceptual entity, not a physical one.</a:documentation>
+      <a:documentation>The term "work" is only pragmatically defined in TAN. Any text that has enough unity to be referred to in ordinary conversation as a single entity may be defined as a work. A work may be composed of other works, be a part of other works, or even overlap with other works. E.g., the Lord's Prayer, the Gospel of Luke, the Tetravengelion, the New Testament, and the Bible are all valid works, despite the complex relationship between each of these concepts.</a:documentation>
+      <a:documentation>This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works</a:documentation>
+      <ref name="decl-pattern-default"/>
+    </element>
+  </define>
+  <define name="decl-vers">
+    <element name="version">
+      <a:documentation>identifies the version of a work. Applicable to works that go through multiple versions, whether through revision, translation, or some other process. Like &lt;work&gt;, &lt;version&gt; points to a conceptual entity, not a physical one.</a:documentation>
+      <a:documentation>In the context of a class 1 file, the entity identified by &lt;version&gt; is assumed to be a version of the entity defined in &lt;work&gt;. In class 3 files, however, the relationship between &lt;version&gt; and &lt;work&gt; must be explicitly declared in a TAN-rdf file. </a:documentation>
+      <a:documentation>Very few work-versions have their own URN names. It is advisable to assign a tag URN or a UUID. If you have used an IRI for &lt;work&gt; that you are entitled to modify, you may wish to add a suffix that will name the version. If you need to specify exactly where on a text-bearing object a version appears, &lt;desc&gt; or &lt;comment&gt; should be used.</a:documentation>
+      <a:documentation>This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works</a:documentation>
+      <ref name="decl-pattern-default"/>
+    </element>
+  </define>
+</grammar>

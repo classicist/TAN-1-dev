@@ -6,7 +6,7 @@ start =
     
     ## specifies that the file is a TAN file containing lexico-morphology data about a text. Root element.
     element TAN-LM { TAN-root }
-include "incl/TAN-class-2.rnc" {
+include "TAN-class-2.rnc" {
     
     ## TAN-LM files must each have at least one lexicon and one TAN-R-mor declaration
     decl-non-class-2 = decl-lexi+ & decl-morph+ & decl-class*

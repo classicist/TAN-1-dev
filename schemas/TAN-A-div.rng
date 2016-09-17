@@ -6,7 +6,7 @@
       <ref name="TAN-root"/>
     </element>
   </start>
-  <include href="incl/TAN-class-2.rng">
+  <include href="TAN-class-2.rng">
     <define name="source-list">
       <a:documentation>TAN-A-div files must have one or more sources</a:documentation>
       <oneOrMore>
@@ -34,6 +34,7 @@
       </zeroOrMore>
     </define>
     <define name="TAN-body-core">
+      <a:documentation>This statement also does away with groups in TAN-A-div files</a:documentation>
       <zeroOrMore>
         <ref name="work-equiv"/>
       </zeroOrMore>
@@ -64,9 +65,7 @@
     </define>
     <define name="alignment-content-non-class-2">
       <a:documentation>alignments must contain either one or more div-refs or a list of IDREFS to other alignments</a:documentation>
-      <optional>
-        <ref name="align-div-list"/>
-      </optional>
+      <ref name="align-div-list"/>
     </define>
     <define name="decl-non-class-2">
       <zeroOrMore>
@@ -77,6 +76,10 @@
       <optional>
         <ref name="topic-opt"/>
       </optional>
+    </define>
+    <define name="cert-opt">
+      <a:documentation>alignments suppres @cert in &lt;tok&gt; (used only to split leaf divs)</a:documentation>
+      <empty/>
     </define>
   </include>
   <define name="decl-topics">
@@ -105,30 +108,6 @@
       <a:documentation>TAN does not stipluate what can be inferred via @topic. If ref A is aligned with B via topic x, and B with C via topic y, no guarantee is made as to what relationship A has to C. </a:documentation>
     </attribute>
   </define>
-  <define name="div-ref-list">
-    <element name="div-ref">
-      <a:documentation>collects one or more &lt;div&gt;s (or segments of &lt;div&gt;s) in one or more sources</a:documentation>
-      <a:documentation>In most cases, the texts pointed to in &lt;div-ref&gt; will be treated as a collective set. If passage A is found three times in X, Y, and Z, then in an &lt;align&gt; four different &lt;div-ref&gt;s should be used. But if A is found once, spanning X, Y, and Z, then the last three should be gathered in a single &lt;div-ref&gt;, or, optionally, in a &lt;div-ref&gt; with a @cont.</a:documentation>
-      <ref name="div-ref-pattern"/>
-    </element>
-  </define>
-  <define name="div-ref-pattern">
-    <optional>
-      <ref name="ed-stamp"/>
-    </optional>
-    <optional>
-      <ref name="strength-claim"/>
-    </optional>
-    <ref name="source-ref"/>
-    <ref name="pointer-to-div-range"/>
-    <optional>
-      <ref name="seg-ref"/>
-    </optional>
-    <optional>
-      <ref name="continuation"/>
-    </optional>
-  </define>
-  <!-- TAN-A-div structure -->
   <define name="work-equiv">
     <element name="equate-works">
       <a:documentation>declares an ad hoc equivalence between works that are not defined by their sources as being identical.</a:documentation>
@@ -189,7 +168,7 @@ If work X of source A is stated to be equivalent to work Y of source B, then any
             <ref name="comment"/>
           </zeroOrMore>
           <oneOrMore>
-            <ref name="token-list"/>
+            <ref name="tok-regular"/>
           </oneOrMore>
         </interleave>
       </choice>
@@ -220,37 +199,31 @@ If work X of source A is stated to be equivalent to work Y of source B, then any
       </optional>
       <choice>
         <ref name="inclusion"/>
-        <interleave>
-          <zeroOrMore>
-            <ref name="comment"/>
-          </zeroOrMore>
-          <group>
-            <optional>
-              <ref name="distribute-claim"/>
-            </optional>
-            <optional>
-              <ref name="anchor"/>
-            </optional>
-            <optional>
+        <group>
+          <optional>
+            <ref name="distribute-claim"/>
+          </optional>
+          <interleave>
+            <zeroOrMore>
+              <ref name="comment"/>
+            </zeroOrMore>
+            <group>
+              <optional>
+                <ref name="anchor"/>
+              </optional>
               <ref name="realign-div-list"/>
-            </optional>
-          </group>
-        </interleave>
+            </group>
+          </interleave>
+        </group>
       </choice>
     </element>
   </define>
   <define name="anchor">
-    <element name="anchor-div-ref">
-      <a:documentation>defines a &lt;div&gt; to which other &lt;div&gt;s in other versions of the same work should be realigned (via &lt;div-ref&gt;s that follow). The first child of a &lt;realign&gt;, it is constructed exactly like &lt;div-ref&gt;, except that the mandatory @src may point only to a single source. </a:documentation>
-      <a:documentation>&lt;anchor-div-ref&gt; is always followed by one or more &lt;div-ref&gt;s. </a:documentation>
-      <a:documentation>If &lt;anchor-div-ref&gt; points to only one reference (i.e., @src, @ref, and @seg [if present] each have only one value) then however many references are made in subsequent &lt;div-ref&gt;s, they will all be realigned to that one anchor reference. </a:documentation>
-      <a:documentation>But if &lt;anchor-div-ref&gt; has more than one reference, then distribution is in effect. Every nth reference will be the anchor for the nth reference in subsequent &lt;div-ref&gt;s (grouped by source).</a:documentation>
-      <ref name="div-ref-pattern"/>
-    </element>
+    <ref name="anchor-div-ref-item"/>
   </define>
   <define name="realign-div-list">
     <oneOrMore>
-      <ref name="div-ref-list"/>
+      <ref name="div-ref-item"/>
     </oneOrMore>
   </define>
   <define name="exclusive-claim">
@@ -275,8 +248,112 @@ If work X of source A is stated to be equivalent to work Y of source B, then any
   </define>
   <define name="align-div-list">
     <oneOrMore>
-      <ref name="div-ref-list"/>
+      <ref name="div-ref-item"/>
     </oneOrMore>
+  </define>
+  <!-- <div-ref> and <anchor-div-ref> -->
+  <define name="anchor-div-ref-item">
+    <choice>
+      <ref name="anchor-div-ref-regular"/>
+      <ref name="anchor-div-ref-sequence"/>
+    </choice>
+  </define>
+  <define name="anchor-div-ref-regular">
+    <element name="anchor-div-ref">
+      <a:documentation>defines a &lt;div&gt; to which other &lt;div&gt;s in other versions of the same work should be realigned (via &lt;div-ref&gt;s that follow). The first child of a &lt;realign&gt;, it is constructed exactly like &lt;div-ref&gt;, except that the mandatory @src may point only to a single source. </a:documentation>
+      <a:documentation>&lt;anchor-div-ref&gt; is always followed by one or more &lt;div-ref&gt;s. </a:documentation>
+      <a:documentation>If &lt;anchor-div-ref&gt; points to only one reference (i.e., @src, @ref, and @seg [if present] each have only one value) then however many references are made in subsequent &lt;div-ref&gt;s, they will all be realigned to that one anchor reference. </a:documentation>
+      <a:documentation>But if &lt;anchor-div-ref&gt; has more than one reference, then distribution is in effect. Every nth reference will be the anchor for the nth reference in subsequent &lt;div-ref&gt;s (grouped by source).</a:documentation>
+      <ref name="div-ref-attr-regular"/>
+    </element>
+  </define>
+  <define name="anchor-div-ref-sequence">
+    <ref name="anchor-div-ref-with-src-and-cont"/>
+    <zeroOrMore>
+      <ref name="anchor-div-ref-with-cont-but-no-src"/>
+    </zeroOrMore>
+    <ref name="anchor-div-ref-without-cont-or-src"/>
+  </define>
+  <define name="anchor-div-ref-with-src-and-cont">
+    <element name="anchor-div-ref">
+      <ref name="div-ref-attr-with-src-and-cont"/>
+    </element>
+  </define>
+  <define name="anchor-div-ref-with-cont-but-no-src">
+    <element name="anchor-div-ref">
+      <ref name="div-ref-attr-with-cont-but-no-src"/>
+    </element>
+  </define>
+  <define name="anchor-div-ref-without-cont-or-src">
+    <element name="anchor-div-ref">
+      <ref name="div-ref-attr-without-cont-or-src"/>
+    </element>
+  </define>
+  <define name="div-ref-item">
+    <choice>
+      <ref name="div-ref-regular"/>
+      <ref name="div-ref-sequence"/>
+    </choice>
+  </define>
+  <define name="div-ref-regular">
+    <element name="div-ref">
+      <a:documentation>collects one or more &lt;div&gt;s (or segments of &lt;div&gt;s) in one or more sources</a:documentation>
+      <a:documentation>In most cases, the texts pointed to in &lt;div-ref&gt; will be treated as a collective set. If passage A is found three times in X, Y, and Z, then in an &lt;align&gt; four different &lt;div-ref&gt;s should be used. But if A is found once, spanning X, Y, and Z, then the last three should be gathered in a single &lt;div-ref&gt;, or, optionally, in a &lt;div-ref&gt; with a @cont.</a:documentation>
+      <ref name="div-ref-attr-regular"/>
+    </element>
+  </define>
+  <define name="div-ref-sequence">
+    <ref name="div-ref-with-src-and-cont"/>
+    <zeroOrMore>
+      <ref name="div-ref-with-cont-but-no-src"/>
+    </zeroOrMore>
+    <ref name="div-ref-without-cont-or-src"/>
+  </define>
+  <define name="div-ref-with-src-and-cont">
+    <element name="div-ref">
+      <ref name="div-ref-attr-with-src-and-cont"/>
+    </element>
+  </define>
+  <define name="div-ref-with-cont-but-no-src">
+    <element name="div-ref">
+      <ref name="div-ref-attr-with-cont-but-no-src"/>
+    </element>
+  </define>
+  <define name="div-ref-without-cont-or-src">
+    <element name="div-ref">
+      <ref name="div-ref-attr-without-cont-or-src"/>
+    </element>
+  </define>
+  <define name="div-ref-attr-core">
+    <optional>
+      <ref name="ed-stamp"/>
+    </optional>
+    <ref name="pointer-to-div-range"/>
+    <optional>
+      <ref name="seg-ref"/>
+    </optional>
+  </define>
+  <define name="div-ref-attr-regular">
+    <ref name="div-ref-attr-core"/>
+    <ref name="source-ref"/>
+    <optional>
+      <ref name="strength-claim"/>
+    </optional>
+  </define>
+  <define name="div-ref-attr-with-src-and-cont">
+    <ref name="div-ref-attr-core"/>
+    <ref name="source-ref"/>
+    <ref name="continuation"/>
+    <optional>
+      <ref name="strength-claim"/>
+    </optional>
+  </define>
+  <define name="div-ref-attr-with-cont-but-no-src">
+    <ref name="div-ref-attr-core"/>
+    <ref name="continuation"/>
+  </define>
+  <define name="div-ref-attr-without-cont-or-src">
+    <ref name="div-ref-attr-core"/>
   </define>
   <define name="seg-ref">
     <attribute name="seg">

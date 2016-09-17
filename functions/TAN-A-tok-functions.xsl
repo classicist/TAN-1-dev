@@ -12,7 +12,7 @@
             validation, suitable for other contexts only if parameters are honored</xd:p>
       </xd:desc>
    </xd:doc>
-   <xsl:include href="TAN-class-2-functions.xsl"/>
+   <xsl:include href="incl/TAN-class-2-functions.xsl"/>
    
    <!-- PART I. GLOBAL VARIABLES AND PARAMETERS -->
    

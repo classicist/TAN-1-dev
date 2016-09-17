@@ -4,7 +4,7 @@ start =
     
     ## specifies that the file is a div-based TAN alignment file. Root element.
     element TAN-A-div { TAN-root }
-include "TAN-class-2.rnc" {
+include "incl/TAN-class-2.rnc" {
     
     ## TAN-A-div files must have one or more sources
     source-list = source-item+

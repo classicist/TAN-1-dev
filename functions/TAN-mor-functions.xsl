@@ -13,7 +13,7 @@
       </xd:desc>
    </xd:doc>
 
-   <xsl:include href="TAN-class-3-functions.xsl"/>
+   <xsl:include href="incl/TAN-class-3-functions.xsl"/>
    
    <xsl:variable name="self-prepped" as="document-node()">
       <xsl:document>

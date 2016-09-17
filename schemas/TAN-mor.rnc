@@ -4,7 +4,7 @@ start =
     
     ## specifies that the TAN file contains definitions for the parts of speech for a language, the codes for those parts, and the rules for combining them. Root element.
     element TAN-mor { TAN-root }
-include "TAN-class-3.rnc" {
+include "incl/TAN-class-3.rnc" {
     
     ## no declarations may have ids
     decl-id-ref-opt = empty

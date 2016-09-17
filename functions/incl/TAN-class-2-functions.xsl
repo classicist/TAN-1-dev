@@ -18,7 +18,7 @@
    <xsl:include href="TAN-core-functions.xsl"/>
    <xsl:include href="TAN-class-1-and-2-functions.xsl"/>
    <xsl:include href="TAN-class-2-and-3-functions.xsl"/>
-   <xsl:include href="errors/TAN-class-2-errors.xsl"/>
+   <xsl:include href="../errors/TAN-class-2-errors.xsl"/>
 
    <xsl:key name="div-via-ref" match="tan:div" use="@ref"/>
 

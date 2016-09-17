@@ -15,7 +15,7 @@
 
    <xsl:include href="TAN-core-functions.xsl"/>
    <xsl:include href="TAN-class-1-and-2-functions.xsl"/>
-   <xsl:include href="errors/TAN-class-1-errors.xsl"/>
+   <xsl:include href="../errors/TAN-class-1-errors.xsl"/>
 
    <!-- CLASS 1 GLOBAL VARIABLES -->
    <xsl:variable name="self-prepped" select="tan:prep-resolved-class-1-doc($self-core-errors-marked)"

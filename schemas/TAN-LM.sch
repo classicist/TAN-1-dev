@@ -16,7 +16,7 @@
    <ns prefix="xs" uri="http://www.w3.org/2001/XMLSchema"/>
    <ns prefix="xsl" uri="http://www.w3.org/1999/XSL/Transform"/>
 
-   <include href="TAN-core.sch"/>
+   <include href="incl/TAN-core.sch"/>
    <pattern id="self-prepped" is-a="tan-file-resolved">
       <param name="self-version" value="$self-prepped"/>
    </pattern>

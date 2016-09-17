@@ -13,7 +13,7 @@
    </xd:doc>
    
    <xsl:variable name="self-prepped" select="$self-core-errors-marked"/>
-   <xsl:include href="TAN-class-3-functions.xsl"/>
+   <xsl:include href="incl/TAN-class-3-functions.xsl"/>
    <!-- CONTEXT INDEPEDENT FUNCTIONS -->
    <!-- CONTEXT DEPEDENT FUNCTIONS -->
    

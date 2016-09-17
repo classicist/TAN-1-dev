@@ -7,7 +7,7 @@
    <ns prefix="tei" uri="http://www.tei-c.org/ns/1.0"/>
    <ns prefix="xs" uri="http://www.w3.org/2001/XMLSchema"/>
 
-   <include href="TAN-core.sch"/>
+   <include href="incl/TAN-core.sch"/>
    <!--<phase id="basic">
       <active pattern="self-prepped"/>
    </phase>

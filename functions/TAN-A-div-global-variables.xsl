@@ -14,7 +14,7 @@
       </xd:desc>
    </xd:doc>
 
-   <xsl:include href="TAN-class-2-global-variables.xsl"/>
+   <xsl:include href="incl/TAN-class-2-global-variables.xsl"/>
 
    <xsl:variable name="srcs-segmented"
       select="

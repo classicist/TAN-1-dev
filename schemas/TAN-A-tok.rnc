@@ -6,7 +6,7 @@ start =
     
     ## specifies that the file is a token-based TAN alignment file. Root element.
     element TAN-A-tok { TAN-root }
-include "TAN-class-2.rnc" {
+include "incl/TAN-class-2.rnc" {
     
     ## TAN-A-tok files take exactly two sources
     source-list = source-item, source-item

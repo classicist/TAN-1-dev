@@ -6,7 +6,7 @@ start =
     
     ## specifies that the TAN file makes assertions subject a conceptual work. Root element.
     element TAN-rdf { TAN-root }
-include "TAN-class-3.rnc" {
+include "incl/TAN-class-3.rnc" {
     
     ## all declarations must have ids
     decl-id-ref-opt = internal-id

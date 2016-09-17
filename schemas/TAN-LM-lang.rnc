@@ -1,6 +1,6 @@
 default namespace = "tag:textalign.net,2015:ns"
 
-include "TAN-LM-core.rnc" {
+include "incl/TAN-LM-core.rnc" {
     ## TAN-LM files point only to one source
     source-list = lang-outside
     source-ref = empty

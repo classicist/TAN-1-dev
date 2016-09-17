@@ -13,8 +13,8 @@
       </xd:desc>
    </xd:doc>
 
-   <xsl:include href="regex/regex-ext-tan-functions.xsl"/>
-   <xsl:include href="errors/TAN-core-errors.xsl"/>
+   <xsl:include href="../regex/regex-ext-tan-functions.xsl"/>
+   <xsl:include href="../errors/TAN-core-errors.xsl"/>
    <xsl:include href="diff-for-xslt2.xsl"/>
 
    <xsl:character-map name="tan">
@@ -72,8 +72,8 @@
    <xsl:variable name="tag-urn-regex-pattern"
       select="'tag:([\-a-zA-Z0-9._%+]+@)?[\-a-zA-Z0-9.]+\.[A-Za-z]{2,4},\d{4}(-(0\d|1[0-2]))?(-([0-2]\d|3[01]))?:\S+'"/>
    
-   <xsl:variable name="all-functions" select="collection('collection.xml')"/>
-   <xsl:variable name="all-schemas" select="collection('../schemas/collection.xml')"/>
+   <xsl:variable name="all-functions" select="collection('../collection.xml')"/>
+   <xsl:variable name="all-schemas" select="collection('../../schemas/collection.xml')"/>
 
    <xsl:variable name="TAN-namespace" select="'tag:textalign.net,2015'"/>
    <xsl:variable name="id-idrefs" select="doc('TAN-idrefs.xml')"/>
@@ -132,7 +132,7 @@
    <xsl:key name="item-via-node-name" match="tan:item"
       use="tokenize(concat((ancestor-or-self::*/@affects-element)[last()], (ancestor-or-self::*/@affects-attribute)[last()]), '\s+')"/>
    <xsl:variable name="TAN-keyword-files" as="document-node()*"
-      select="collection('../TAN-key/collection.xml')"/>
+      select="collection('../../TAN-key/collection.xml')"/>
    <xsl:variable name="TAN-keywords" as="document-node()*">
       <xsl:for-each select="$TAN-keyword-files">
          <xsl:document>

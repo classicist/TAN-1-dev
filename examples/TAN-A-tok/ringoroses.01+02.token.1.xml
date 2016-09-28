@@ -90,7 +90,7 @@
             <tok src="ring1881" ref="2" val="posies"/>
             <tok src="ring1987" ref="2" val="posies"/>
         </align>
-        <!-- Examples of picking tokens by number with commas, hyphens, and 'last' -->
+        <!-- Examples of picking ranges of tokens -->
         <align>
             <tok src="ring1881" ref="3" pos="1, 2"/>
             <tok src="ring1987" ref="3" pos="1"/>
@@ -110,6 +110,7 @@
             <tok src="ring1881" ref="4" pos="3"/>
             <tok src="ring1987" ref="4" pos="2"/>
         </align>
+        <!-- examples of using "last" -->
         <align>
             <tok src="ring1881" ref="4" pos="last-1"/>
             <tok src="ring1987" ref="4" pos="last-1"/>

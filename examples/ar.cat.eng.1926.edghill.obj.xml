@@ -5,7 +5,7 @@
 <?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-T.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>-->
 <TAN-T xmlns="tag:textalign.net,2015:ns"
        id="tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:model-object-refs"
-       TAN-version="1">
+       TAN-version="1 dev">
    <head>
       <name>Categories, Aristotle, English translation by E. M. Edghill</name>
       <rights-excluding-sources rights-holder="kalvesmaki">

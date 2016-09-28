@@ -16,12 +16,16 @@
     <xd:doc scope="stylesheet">
         <xd:desc>
             <xd:p><xd:b>Updated </xd:b>February 2, 2016</xd:p>
-            <xd:p>Functions for analyzing the TAN schemas, using ../schemas/*.rng for
-                analysis</xd:p>
+            <xd:p>Functions for analyzing the TAN schemas, using ../schemas/*.rng for analysis. This
+                stylesheet is used primarily to generate the documentation, not for core validation,
+                but it may be useful in other contexts.</xd:p>
         </xd:desc>
     </xd:doc>
 
-    <xsl:variable name="rng-collection" select="collection('../schemas/?select=*.rng;recurse=yes')"/>
+    <xsl:variable name="schema-collection" select="collection('../../schemas/collection.xml')"/>
+    <!--<xsl:variable name="schema-collection" as="document-node()*"/>-->
+    <!--<xsl:variable name="rng-collection" select="collection('../schemas/?select=*.rng;recurse=yes')"/>-->
+    <xsl:variable name="rng-collection" select="$schema-collection[rng:*]"/>
     <xsl:variable name="rng-collection-without-TEI"
         select="$rng-collection[not(matches(base-uri(.), 'TAN-TEI'))]"/>
     
@@ -54,7 +58,4 @@
         </xsl:choose>
     </xsl:function>
     
-    <!--<xsl:template match="/">
-        <xsl:copy-of select="$TAN-elements-that-take-the-attribute-which"></xsl:copy-of>
-    </xsl:template>-->
 </xsl:stylesheet>

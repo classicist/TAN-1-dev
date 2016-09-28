@@ -13,8 +13,8 @@
       </xd:desc>
    </xd:doc>
 
-   <xsl:include href="TAN-class-3-functions.xsl"/>
-   <xsl:include href="TAN-schema-functions.xsl"/>
+   <xsl:include href="incl/TAN-class-3-functions.xsl"/>
+   <xsl:include href="incl/TAN-schema-functions.xsl"/>
    <!--<xsl:variable name="self-prepped" select="$self-core-errors-marked"/>-->
    <xsl:variable name="self-prepped" as="document-node()">
       <xsl:variable name="pass-1">

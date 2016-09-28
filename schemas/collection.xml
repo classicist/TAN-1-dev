@@ -12,6 +12,8 @@
    <doc href="TAN-A-div.rng"/>
    <doc href="TAN-A-tok.rng"/>
    <doc href="TAN-key.rng"/>
+   <doc href="TAN-LM-core.rng"/>
+   <doc href="TAN-LM-lang.rng"/>
    <doc href="TAN-LM.rng"/>
    <doc href="TAN-mor.rng"/>
    <doc href="TAN-rdf.rng"/>
@@ -30,4 +32,5 @@
    <doc href="incl/TAN-class-2.rng"/>
    <doc href="incl/TAN-class-3.rng"/>
    <doc href="incl/TAN-core.rng"/>
+   <doc href="incl/TAN-LM-core.rng"/>
 </collection>

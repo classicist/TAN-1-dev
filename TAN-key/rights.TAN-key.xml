@@ -1,34 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="../schemas/TAN-key.rnc" type="application/relax-ng-compact-syntax"?>
 <?xml-model href="../schemas/TAN-key.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
-<TAN-key xmlns="tag:textalign.net,2015:ns"
-         TAN-version="1/dev"
-         id="tag:textalign.net,2015:tan-key:rights">
-    <head>
-        <name>TAN keywords for types of rights</name>
-        <desc>This file depends largely upon the vocabulary of Creative Commons</desc>
-        <master-location href="http://textalign.net/release/1/dev/TAN-key/rights.TAN-key.xml"/>
-        <rights-excluding-sources rights-holder="kalvesmaki">
-            <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
-            <name>Creative Commons Attribution 4.0 International License</name>
-            <desc>This license is granted independent of rights and licenses associated with the
-                source. </desc>
-        </rights-excluding-sources>
-        <declarations/>
-        <agent xml:id="kalvesmaki" roles="creator">
-            <IRI>http://viaf.org/viaf/299582703</IRI>
-            <IRI>tag:textalign.net,2015:agent:kalvesmaki:joel</IRI>
-            <name xml:lang="eng">Joel Kalvesmaki</name>
-        </agent>
-        <role xml:id="creator">
-            <IRI>http://schema.org/creator</IRI>
-            <name xml:lang="eng">creator</name>
-        </role>
-        <change when="2016-02-05" who="kalvesmaki">Started file</change>
+<TAN-key xmlns="tag:textalign.net,2015:ns" TAN-version="1 dev"
+   id="tag:textalign.net,2015:tan-key:rights">
+   <head>
+      <name>TAN keywords for types of rights</name>
+      <desc>This file depends largely upon the vocabulary of Creative Commons</desc>
+      <master-location href="http://textalign.net/release/1/dev/TAN-key/rights.TAN-key.xml"/>
+      <rights-excluding-sources rights-holder="kalvesmaki">
+         <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
+         <name>Creative Commons Attribution 4.0 International License</name>
+         <desc>This license is granted independent of rights and licenses associated with the
+            source. </desc>
+      </rights-excluding-sources>
+      <declarations/>
+      <agent xml:id="kalvesmaki" roles="creator">
+         <IRI>http://viaf.org/viaf/299582703</IRI>
+         <IRI>tag:textalign.net,2015:agent:kalvesmaki:joel</IRI>
+         <name xml:lang="eng">Joel Kalvesmaki</name>
+      </agent>
+      <role xml:id="creator">
+         <IRI>http://schema.org/creator</IRI>
+         <name xml:lang="eng">creator</name>
+      </role>
+      <change when="2016-02-05" who="kalvesmaki">Started file</change>
       <change when="2016-02-05T16:57:16.61-05:00" who="kalvesmaki">Refreshed data</change>
-    </head>
-    <body in-progress="false"
-         affects-element="rights-excluding-sources rights-source-only">
+   </head>
+   <body in-progress="false" affects-element="rights-excluding-sources rights-source-only">
       <item>
          <IRI>http://creativecommons.org/licenses/by-nc-nd/2.0/</IRI>
          <IRI>tag:textalign.net,2015:license:by-nc-nd/2.0/</IRI>

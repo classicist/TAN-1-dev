@@ -6,7 +6,7 @@
       <ref name="TAN-root"/>
     </element>
   </start>
-  <include href="TAN-class-3.rng">
+  <include href="incl/TAN-class-3.rng">
     <define name="decl-id-ref-opt">
       <a:documentation>all declarations must have ids</a:documentation>
       <ref name="internal-id"/>
@@ -27,12 +27,12 @@
       </optional>
     </define>
     <define name="body-group-opt">
-      <zeroOrMore>
-        <ref name="body-group"/>
-      </zeroOrMore>
+      <ref name="body-group"/>
     </define>
     <define name="group-attributes">
-      <ref name="metadata-human"/>
+      <optional>
+        <ref name="type"/>
+      </optional>
       <optional>
         <ref name="element-scope"/>
       </optional>
@@ -42,13 +42,18 @@
     </define>
   </include>
   <define name="TAN-key-decl">
-    <empty/>
+    <zeroOrMore>
+      <ref name="decl-group-type"/>
+    </zeroOrMore>
   </define>
   <define name="TAN-key-item">
     <element name="item">
       <a:documentation>names an item that is being described. The item is assumed to be a species of the type of thing discussed by the TAN element that is affected.</a:documentation>
       <optional>
         <ref name="element-scope"/>
+      </optional>
+      <optional>
+        <ref name="group-ref"/>
       </optional>
       <choice>
         <ref name="entity-digital-tan-other-ref"/>

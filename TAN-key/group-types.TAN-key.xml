@@ -13,7 +13,10 @@
             <desc>This license is granted independent of rights and licenses associated with the
                 source. </desc>
         </rights-excluding-sources>
-        <declarations/>
+        <declarations>
+            <group-type xml:id="n" which="attr-n"/>
+            <group-type xml:id="div" which="div types"></group-type>
+        </declarations>
         <agent xml:id="kalvesmaki" roles="creator">
             <IRI>http://viaf.org/viaf/299582703</IRI>
             <IRI>tag:textalign.net,2015:agent:kalvesmaki:joel</IRI>
@@ -27,67 +30,163 @@
     </head>
     <body in-progress="false" affects-element="group-type">
         <item>
-            <IRI>tag:textalign.net,2015:group-type:status</IRI>
-            <name>status</name>
-            <desc>@n is an arbitrary value indicating the stage of editing
-                for the datum. Possible values: "unchecked"; "to be reviewed";
-                "questionable". If a datum is completely edited, it is recommended
-                the &lt;group> be avoided altogether.
-            </desc>
+            <IRI>tag:textalign.net,2015:group-type:group-type:requires-attribute-n</IRI>
+            <name>attr-n</name>
+            <name>attribute n</name>
+            <name>tan lm</name>
+            <desc>The group contains items that define groups relevant only in the context of @n</desc>
         </item>
         <item>
-            <IRI>tag:textalign.net,2015:group-type:base</IRI>
-            <name>base</name>
-            <desc>@n is the result of applying tan:string-base($i), where $i is
-                the value of the token chosen.
-            </desc>
+            <IRI>tag:textalign.net,2015:group-type:group-type:div-types</IRI>
+            <name>div types</name>
+            <desc>The group contains items that define groups of division types</desc>
         </item>
-        <item>
-            <IRI>tag:textalign.net,2015:group-type:root</IRI>
-            <name>root</name>
-            <desc>@n is the root of the token chosen</desc>
-        </item>
-        <item>
-            <IRI>tag:textalign.net,2015:group-type:start1</IRI>
-            <name>^.</name>
-            <name>start1</name>
-            <name>a</name>
-            <desc>@n is the first letter of the token chosen</desc>
-        </item>
-        <item>
-            <IRI>tag:textalign.net,2015:group-type:start2</IRI>
-            <name>^..</name>
-            <name>start2</name>
-            <name>ab</name>
-            <desc>@n is the first two letters of the token chosen</desc>
-        </item>
-        <item>
-            <IRI>tag:textalign.net,2015:group-type:start3</IRI>
-            <name>^...</name>
-            <name>start3</name>
-            <name>abc</name>
-            <desc>@n is the first three letters of the token chosen</desc>
-        </item>
-        <item>
-            <IRI>tag:textalign.net,2015:group-type:end1</IRI>
-            <name>.$</name>
-            <name>end1</name>
-            <name>z</name>
-            <desc>@n is the last letter of the token chosen</desc>
-        </item>
-        <item>
-            <IRI>tag:textalign.net,2015:group-type:end2</IRI>
-            <name>..$</name>
-            <name>end2</name>
-            <name>yz</name>
-            <desc>@n is the last two letters of the token chosen</desc>
-        </item>
-        <item>
-            <IRI>tag:textalign.net,2015:group-type:end3</IRI>
-            <name>...$</name>
-            <name>end3</name>
-            <name>xyz</name>
-            <desc>@n is the last three letters of the token chosen</desc>
-        </item>
+        <group type="div">
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:div:no-new-line-start</IRI>
+                <name>does not start new line</name>
+                <name>no new line start</name>
+                <name>inline start</name>
+                <name>not nls</name>
+                <name>not(^\n)</name>
+                <desc>Text divisions that typically do not begin on a new line</desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:div:no-new-line-end</IRI>
+                <name>no new line end</name>
+                <name>does not end new line</name>
+                <name>inline end</name>
+                <name>not nle</name>
+                <name>not(\n$)</name>
+                <desc>Text divisions whose termination does not force the next text division to
+                    start a new line</desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:div:new-line-start</IRI>
+                <name>start new line</name>
+                <name>new line start</name>
+                <name>nls</name>
+                <name>^\n</name>
+                <desc>Text divisions that typically begin on a new line</desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:div:new-line-end</IRI>
+                <name>new line end</name>
+                <name>end new line</name>
+                <name>nle</name>
+                <name>\n$</name>
+                <desc>Text divisions whose termination forces the next text division to start a new
+                    line</desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:div:extra-leading-start</IRI>
+                <name>start extra leading</name>
+                <name>extra leading start</name>
+                <name>space above</name>
+                <desc>Text divisions that typically begin with extra leading (a horizontal line of
+                    white space)</desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:div:extra-leading-end</IRI>
+                <name>end extra leading</name>
+                <name>extra leading end</name>
+                <name>space below</name>
+                <desc>Text divisions that typically end with extra leading (a horizontal line of
+                    white space)</desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:div:new-column-start</IRI>
+                <name>start new column</name>
+                <name>new column start</name>
+                <name>ncs</name>
+                <desc>Text divisions that typically begin on a new column</desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:div:new-column-end</IRI>
+                <name>new column end</name>
+                <name>end new column</name>
+                <name>nce</name>
+                <desc>Text divisions whose termination forces the next text division to start a new
+                    column</desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:div:new-page-start</IRI>
+                <name>start new page</name>
+                <name>new page start</name>
+                <name>nps</name>
+                <desc>Text divisions that typically begin on a new page</desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:div:new-page-end</IRI>
+                <name>new page end</name>
+                <name>end new page</name>
+                <name>npe</name>
+                <desc>Text divisions whose termination forces the next text division to start a new
+                    page</desc>
+            </item>
+        </group>
+        <group type="n">
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:status</IRI>
+                <name>status</name>
+                <desc>@n is an arbitrary value indicating the stage of editing for the datum.
+                    Possible values: "unchecked"; "to be reviewed"; "questionable". If a datum is
+                    completely edited, it is recommended the &lt;group> be avoided altogether.
+                </desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:base</IRI>
+                <name>base</name>
+                <desc>@n is the result of applying tan:string-base($i), where $i is the value of the
+                    token chosen. </desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:root</IRI>
+                <name>root</name>
+                <desc>@n is the root of the token chosen</desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:start1</IRI>
+                <name>^.</name>
+                <name>start1</name>
+                <name>a</name>
+                <desc>@n is the first letter of the token chosen</desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:start2</IRI>
+                <name>^..</name>
+                <name>start2</name>
+                <name>ab</name>
+                <desc>@n is the first two letters of the token chosen</desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:start3</IRI>
+                <name>^...</name>
+                <name>start3</name>
+                <name>abc</name>
+                <desc>@n is the first three letters of the token chosen</desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:end1</IRI>
+                <name>.$</name>
+                <name>end1</name>
+                <name>z</name>
+                <desc>@n is the last letter of the token chosen</desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:end2</IRI>
+                <name>..$</name>
+                <name>end2</name>
+                <name>yz</name>
+                <desc>@n is the last two letters of the token chosen</desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:group-type:end3</IRI>
+                <name>...$</name>
+                <name>end3</name>
+                <name>xyz</name>
+                <desc>@n is the last three letters of the token chosen</desc>
+            </item>
+        </group>
     </body>
 </TAN-key>

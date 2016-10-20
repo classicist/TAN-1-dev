@@ -23,10 +23,11 @@
    <xsl:variable name="self-prepped" select="$self-and-sources-prepped[1]"/>
    <xsl:variable name="sources-prepped" select="$self-and-sources-prepped[position() gt 1]"/>
 
-   <xsl:variable name="morphologies-1st-da"
-      select="tan:prep-TAN-mor(tan:resolve-doc(tan:get-1st-doc($head/tan:declarations/tan:morphology), 'morphology', $head/tan:declarations/tan:morphology/@xml:id, false()))"/>
+   <xsl:variable name="morphologies-prepped"
+      select="tan:prep-TAN-mor(tan:resolve-doc(tan:get-1st-doc($head/tan:declarations/tan:morphology), false(), 'morphology', $head/tan:declarations/tan:morphology/@xml:id, (), ()))"
+   />
    <xsl:variable name="features-prepped" as="element()*">
-      <xsl:for-each select="$morphologies-1st-da/tan:TAN-mor/tan:head/tan:declarations/tan:feature">
+      <xsl:for-each select="$morphologies-prepped/tan:TAN-mor/tan:head/tan:declarations/tan:feature">
          <xsl:variable name="this-id" select="@xml:id"/>
          <xsl:variable name="this-code"
             select="root(current())/tan:TAN-mor/tan:body//tan:option[@feature = $this-id]/@code"/>
@@ -173,7 +174,7 @@
       <xsl:variable name="these-codes" select="tan:f"/>
       <xsl:variable name="these-toks" select="ancestor::tan:ana/tan:tok"/>
       <xsl:variable name="this-mory-id" select="(ancestor-or-self::*/@morphology)[last()]"/>
-      <xsl:variable name="this-mory" select="$morphologies-1st-da[*/@morphology = $this-mory-id]"/>
+      <xsl:variable name="this-mory" select="$morphologies-prepped[*/@morphology = $this-mory-id]"/>
       <xsl:variable name="this-mory-cats" select="$this-mory/tan:TAN-mor/tan:body/tan:category"/>
       <xsl:variable name="this-mory-cat-qty" select="count($this-mory-cats)"/>
       <!-- check for asserts and reports -->
@@ -258,7 +259,7 @@
          <xsl:for-each select="$m">
             <xsl:variable name="this-morphology-id" select="(ancestor-or-self::*/@morphology)[1]"/>
             <xsl:variable name="this-mory"
-               select="$morphologies-1st-da[tan:TAN-mor/@src = $this-morphology-id]"/>
+               select="$morphologies-prepped[tan:TAN-mor/@src = $this-morphology-id]"/>
             <xsl:variable name="this-mory-is-categorized"
                select="
                   if ($this-mory/tan:TAN-mor/tan:body/tan:category) then
@@ -508,7 +509,7 @@
    </xsl:function>
    <xsl:template match="tan:m" mode="convert-code-to-features">
       <xsl:variable name="this-mory-id" select="(ancestor-or-self::*/@morphology)[1]"/>
-      <xsl:variable name="this-mory" select="$morphologies-1st-da/tan:TAN-mor[@src = $this-mory-id]"/>
+      <xsl:variable name="this-mory" select="$morphologies-prepped/tan:TAN-mor[@src = $this-mory-id]"/>
       <xsl:variable name="this-mory-categories" select="$this-mory/tan:body/tan:category"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>

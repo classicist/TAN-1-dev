@@ -37,4 +37,22 @@
     <id element="modal">
         <idrefs attribute="adverb"/>
     </id>
+    <id element="group-type">
+        <idrefs attribute="group"/>
+    </id>
+    <id element="verb">
+        <idrefs attribute="verb"/>
+    </id>
+    <id element="place">
+        <idrefs attribute="where"/>
+    </id>
+    <id element="agent person">
+        <idrefs attribute="claimant"/>
+    </id>
+    <id element="person agent verb work version modal">
+        <idrefs attribute="subject"/>
+    </id>
+    <id element="modal">
+        <idrefs attribute="adverb"/>
+    </id>
 </id-idrefs>

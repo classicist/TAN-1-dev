@@ -41,7 +41,6 @@
         </collection>
     </xsl:variable>
     
-    
     <xsl:template match="/">
         <xsl:result-document href="{resolve-uri('collection.xml',static-base-uri())}">
             <xsl:copy-of select="$function-URIs"/>

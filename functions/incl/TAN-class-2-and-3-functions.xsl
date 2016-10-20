@@ -19,8 +19,13 @@
       <xsl:param name="TAN-mor-docs-resolved" as="document-node()*"/>
       <xsl:for-each select="$TAN-mor-docs-resolved">
          <xsl:variable name="is-self" select="$doc-id = /*/@id"/>
-         <xsl:variable name="these-inclusions" select="if ($is-self = true()) then $inclusions-1st-da else 
-            tan:resolve-doc(tan:get-1st-doc(/*/tan:head/tan:inclusion), 'incl', /*/tan:head/tan:inclusion/@xml:id, false())"/>
+         <xsl:variable name="these-inclusions"
+            select="
+               if ($is-self = true()) then
+                  $inclusions-1st-da
+               else
+                  tan:resolve-doc(tan:get-1st-doc(/*/tan:head/tan:inclusion), false(), 'incl', /*/tan:head/tan:inclusion/@xml:id, (), ())"
+         />
          <xsl:copy-of select="tan:prep-TAN-mor(.,$these-inclusions)"/>
       </xsl:for-each>
    </xsl:function>

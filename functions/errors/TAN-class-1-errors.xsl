@@ -4,7 +4,7 @@
    xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tei="http://www.tei-c.org/ns/1.0"
    xmlns:math="http://www.w3.org/2005/xpath-functions/math" xmlns:functx="http://www.functx.com"
    xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" xmlns:sch="http://purl.oclc.org/dsdl/schematron"
-   exclude-result-prefixes="xs math xd tan fn tei functx sch" version="2.0">
+   exclude-result-prefixes="#all" version="2.0">
    <xd:doc scope="stylesheet">
       <xd:desc>
          <xd:p><xd:b>Updated </xd:b>August 18, 2016</xd:p>

@@ -4,7 +4,7 @@
    xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tei="http://www.tei-c.org/ns/1.0"
    xmlns:math="http://www.w3.org/2005/xpath-functions/math" xmlns:functx="http://www.functx.com"
    xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" xmlns:sch="http://purl.oclc.org/dsdl/schematron"
-   exclude-result-prefixes="xs math xd tan fn tei functx sch" version="2.0">
+   exclude-result-prefixes="#all" version="2.0">
    <xd:doc scope="stylesheet">
       <xd:desc>
          <xd:p><xd:b>Updated </xd:b>August 18, 2016</xd:p>
@@ -449,7 +449,11 @@
             <xsl:variable name="help-requested" select="tan:help-requested(.)"/>
             <xsl:variable name="this-attribute-name" select="name(.)"/>
             <xsl:variable name="should-refer-to-which-element"
-               select="tokenize($id-idrefs//tan:id[tan:idrefs/@attribute = $this-attribute-name]/@element, ' ')"/>
+               select="
+                  for $i in $id-idrefs//tan:id[tan:idrefs/@attribute = $this-attribute-name]/@element
+                  return
+                     tokenize($i, ' ')"
+            />
             <xsl:variable name="valid-referents"
                select="$head//*[name(.) = $should-refer-to-which-element]"/>
             <xsl:variable name="these-valid-referents"

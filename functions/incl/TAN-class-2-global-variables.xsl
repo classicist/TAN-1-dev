@@ -80,7 +80,8 @@
                <xsl:value-of select="$this-src/*/@src"/>
             </xsl:for-each>
          </xsl:variable>
-         <xsl:copy-of select="tan:resolve-doc($these-see-also-docs, 'src', $these-src-ids, false())"/>
+         <xsl:copy-of
+            select="tan:resolve-doc($these-see-also-docs, false(), 'src', $these-src-ids, (), ())"/>
       </xsl:for-each>
    </xsl:variable>
    <xsl:variable name="srcs-context-resolved" select="$srcs-see-also-resolved[tan:TAN-rdf]"/>

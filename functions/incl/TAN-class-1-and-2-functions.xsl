@@ -14,6 +14,96 @@
             general use in other contexts.</xd:p>
       </xd:desc>
    </xd:doc>
+   
+   <!-- RESOLVING CLASS 1 DOCUMENTS -->
+   <xsl:template match="*[@n and not(@orig-n)]" mode="arabic-numerals">
+      <!-- The companion <xsl:template> to this, treating *[@ref], is in TAN-class-2-functions -->
+      <!--<xsl:param name="treat-ambiguous-a-or-i-type-as-roman-numeral" as="xs:boolean?" tunnel="yes"/>-->
+      <!--<xsl:param name="warn-on-ambiguous-numerals" as="xs:boolean?" tunnel="yes"/>-->
+      <xsl:param name="ambiguous-numeral-types" as="element()*" tunnel="yes"/>
+      <xsl:variable name="this-type" select="tan:normalize-text(@type)"/>
+      <xsl:variable name="this-amb-num-type" select="$ambiguous-numeral-types[@type = $this-type]"/>
+      <xsl:variable name="this-n-norm" select="tan:normalize-text(lower-case(@n))"/>
+      <xsl:variable name="raw-n" select="tan:analyze-attr-n-or-ref-numerals(., (), false(), true())"/>
+      <!--<xsl:variable name="raw-n" as="element()*">
+         <xsl:analyze-string select="$this-n-norm" regex="\?\?\?">
+            <xsl:matching-substring>
+               <ana>
+                  <help>
+                     <xsl:value-of select="."/>
+                  </help>
+               </ana>
+            </xsl:matching-substring>
+            <xsl:non-matching-substring>
+               <!-\-<xsl:value-of
+                  select="tan:arabic-numerals(., $treat-ambiguous-a-or-i-type-as-roman-numeral)"/>-\->
+               <xsl:copy-of select="tan:analyze-string-numerals(.)"/>
+            </xsl:non-matching-substring>
+         </xsl:analyze-string>
+      </xsl:variable>-->
+      <xsl:variable name="new-n" as="xs:string?">
+         <xsl:choose>
+            <xsl:when test="$raw-n/tan:n[tan:val/@type = $n-type[1] and tan:val/@type = $n-type[4]]">
+               <xsl:choose>
+                  <xsl:when test="$this-amb-num-type/@type-i-or-a-is-probably = 'a'">
+                     <!-- it's probably not a Roman numeral -->
+                     <xsl:value-of select="($raw-n/tan:n/tan:val[not(@type = $n-type[1])])[1]"/>
+                  </xsl:when>
+                  <xsl:when test="$this-amb-num-type/@type-i-or-a-is-probably = 'i'">
+                     <!-- it's probably not an alphabetic numeral -->
+                     <xsl:value-of select="($raw-n/tan:n/tan:val[not(@type = $n-type[4])])[1]"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:value-of select="$raw-n/tan:n/tan:val[1]"/>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+               <!-- no ambiguity; just use the first value -->
+               <xsl:value-of select="$raw-n/tan:n/tan:val[1]"/>
+            </xsl:otherwise>
+         </xsl:choose>
+         <!--<xsl:choose>
+            <xsl:when test="exists($raw-n/tan:n/@type = $n-type[1]) and exists($raw-n/tan:n/@type = $n-type[4])">
+               <!-\- ambiguous numeral -\->
+               <xsl:choose>
+                  <xsl:when test="not(exists($ambiguous-numeral-types/@type-i))">
+                     <xsl:value-of select="string-join($raw-n/*[not(@type = $n-type[1])][1],'')"/>
+                  </xsl:when>
+                  <xsl:when test="not(exists($ambiguous-numeral-types/@type-a))">
+                     <xsl:value-of select="string-join($raw-n/*[not(@type = $n-type[4])][1],'')"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:choose>
+                        <xsl:when test="number($ambiguous-numeral-types/@type-i) ge number($ambiguous-numeral-types/@type-a)">
+                           <xsl:value-of select="concat('*',string-join($raw-n/*[not(@type = $n-type[4])][1],''))"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                           <xsl:value-of select="concat('*',string-join($raw-n/*[not(@type = $n-type[1])][1],''))"/>
+                        </xsl:otherwise>
+                     </xsl:choose>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:value-of select="string-join($raw-n/*[1],'')"/>
+            </xsl:otherwise>
+         </xsl:choose>-->
+      </xsl:variable>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:if test="not(@n = $new-n)">
+            <xsl:attribute name="orig-n" select="@n"/>
+            <xsl:attribute name="n" select="$new-n"/>
+         </xsl:if>
+         <xsl:if test="matches($new-n, '\*')">
+            <xsl:copy-of select="tan:error('tan12')"/>
+         </xsl:if>
+         <!--<test><xsl:copy-of select="$this-amb-num-type"/></test>-->
+         <!--<test2><xsl:copy-of select="$raw-n"/></test2>-->
+         <xsl:apply-templates mode="arabic-numerals"/>
+      </xsl:copy>
+   </xsl:template>
 
    <!-- TEXT FUNCTIONS -->
 
@@ -86,15 +176,6 @@
 
    <!-- PREPARATION -->
 
-   <xsl:variable name="n-type-pattern" xml:id="v-n-type-pattern"
-      select="
-         (concat('^(', $roman-numeral-pattern, ')$'),
-         '^(\d+)$',
-         concat('^(\d+)(', $letter-numeral-pattern, ')$'),
-         concat('^(', $letter-numeral-pattern, ')$'),
-         concat('^(', $letter-numeral-pattern, ')(\d+)$'),
-         '(.)')"/>
-
    <xsl:function name="tan:prep-resolved-class-1-doc" as="document-node()*">
       <!-- Input: sequence of resolved class 1 TAN documents 
          Output: sequence of documents with these changes:
@@ -132,16 +213,31 @@
       <!-- Homogenize tei:TEI to tan:TAN-T -->
       <xsl:param name="key-to-this-src" as="element()*" tunnel="yes"/>
       <xsl:variable name="src-id" select="@src"/>
+      <!--<xsl:variable name="doc-n-types" select="tan:get-n-types(/)" as="element()"/>-->
+      <xsl:variable name="ambiguous-numeral-types"
+         select="tan:analyze-attr-n-or-ref-numerals((tan:body, tei:text/tei:body), 'type', true(), false())"
+         as="element()*"/>
       <TAN-T>
          <xsl:copy-of select="@*"/>
          <xsl:attribute name="work"
             select="($key-to-this-src/tan:group[tan:work/@src = $src-id]/@n, 1)[1]"/>
-         <test><xsl:value-of select="tan:q-ref(.)"/></test>
-         <xsl:apply-templates mode="#current"/>
-         <!--<xsl:apply-templates mode="#current">
-            <xsl:with-param name="key-to-this-src" select="$key-to-this-src"/>
-         </xsl:apply-templates>-->
+         <xsl:apply-templates mode="#current">
+            <xsl:with-param name="ambiguous-numeral-types" select="$ambiguous-numeral-types" tunnel="yes"/>
+         </xsl:apply-templates>
       </TAN-T>
+   </xsl:template>
+   <xsl:template match="tan:div-type" mode="prep-class-1">
+      <xsl:param name="ambiguous-numeral-types" as="element()*" tunnel="yes"/>
+      <xsl:variable name="this-id" select="@xml:id"/>
+      <xsl:variable name="this-type" select="tan:normalize-text(@type)"/>
+      <xsl:variable name="this-amb-num-type" select="$ambiguous-numeral-types[@type = $this-type]"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:if test="number($this-amb-num-type/@type-i) gt 0 and number($this-amb-num-type/@type-i) gt 0">
+            <xsl:copy-of select="tan:error('cl114')"/>
+         </xsl:if>
+         <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
    </xsl:template>
    <xsl:template match="tei:body" mode="prep-class-1">
       <!--<xsl:param name="key-to-this-src" as="element()*"/>-->
@@ -161,8 +257,9 @@
          <xsl:with-param name="key-to-this-src" select="$key-to-this-src"/>
       </xsl:apply-templates>-->
    </xsl:template>
-   <xsl:template match="tan:div | tei:div" mode="prep-class-1" xml:id="t-prep-class-1-data">
+   <xsl:template match="tan:div | tei:div" mode="prep-class-1">
       <xsl:param name="key-to-this-src" as="element()*" tunnel="yes"/>
+      <!--<xsl:param name="doc-n-types" as="element()" tunnel="yes"/>-->
       <xsl:variable name="div-types-to-suppress"
          select="$key-to-this-src[self::tan:suppress-div-types]/@div-type-ref"/>
       <xsl:variable name="div-ns-to-rename" select="$key-to-this-src[self::tan:rename-div-ns]"/>
@@ -173,49 +270,334 @@
             </xsl:apply-templates>
          </xsl:when>
          <xsl:otherwise>
-            <xsl:variable name="orig-ref"
-               select="string-join((ancestor-or-self::tei:div, ancestor-or-self::tan:div)/@n, ' ')"/>
-            <xsl:variable name="new-ns" as="xs:string*">
-               <xsl:for-each
-                  select="(ancestor-or-self::tei:div, ancestor-or-self::tan:div)[not(@type = $div-types-to-suppress)]">
-                  <xsl:variable name="this-type" select="@type"/>
-                  <xsl:variable name="this-n" select="@n"/>
-                  <xsl:variable name="these-renames"
-                     select="$div-ns-to-rename[@div-type-ref = $this-type]/tan:rename"/>
-                  <xsl:variable name="alias-specific" select="$these-renames[@old = $this-n]/@new"/>
-                  <xsl:variable name="alias-generic"
-                     select="
-                        if ($these-renames[@old = '#a'] and matches($this-n, $n-type-pattern[4]))
-                        then
-                           string(tan:aaa-to-int($this-n))
-                        else
-                           if ($these-renames[@old = '#i'] and matches($this-n, $n-type-pattern[1]))
-                           then
-                              string(tan:rom-to-int($this-n))
-                           else
-                              ()"/>
-                  <xsl:copy-of select="(($alias-specific, $alias-generic, $this-n))[1]"/>
-               </xsl:for-each>
-            </xsl:variable>
-            <xsl:variable name="new-ref" select="string-join($new-ns, ' ')"/>
+            <xsl:variable name="orig-ref" select="tan:flatref(.)"/>
+            <xsl:variable name="this-ref" select="tan:flatref(., $div-types-to-suppress, $div-ns-to-rename)"/>
             <!-- Homogenize tei:div to tan:div -->
             <div>
                <xsl:copy-of select="@*"/>
-               <xsl:attribute name="ref" select="$new-ref"/>
-               <xsl:if test="not($orig-ref = $new-ref)">
+               <xsl:attribute name="ref" select="$this-ref"/>
+               <xsl:if test="not($orig-ref = $this-ref)">
                   <xsl:attribute name="orig-ref" select="$orig-ref"/>
                </xsl:if>
+               <!--<xsl:if test="matches($new-ref,'^-| -')">
+                  <xsl:copy-of select="tan:error('tan12')"/>
+               </xsl:if>-->
                <xsl:if test="tan:help-requested(.) = true()">
-                  <xsl:copy-of select="tan:help($orig-ref,())"/>
+                  <xsl:copy-of select="tan:help($orig-ref, ())"/>
                </xsl:if>
-               <xsl:apply-templates mode="#current">
-                  <xsl:with-param name="key-to-this-src" select="$key-to-this-src"/>
-               </xsl:apply-templates>
+               <xsl:apply-templates mode="#current"/>
             </div>
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
+   
+   
+   <xsl:function name="tan:arabic-numerals" as="xs:string*">
+      <!-- Input: any strings that might be convertible to Arabic numerals, but of unknown format or type -->
+      <!-- Output: Best-guess Arabic numeral equivalents, as strings. Roman numerals take precedence over alphabet numerals (that is, 'i' is interpreted as 1, not 9) -->
+      <xsl:param name="strings" as="xs:string*"/>
+      <xsl:copy-of select="tan:strings-to-numeral-or-numeral-type($strings, true(), (), true())"/>
+   </xsl:function>
+   <xsl:function name="tan:arabic-numerals" as="xs:string*">
+      <!-- Input: any strings that might be convertible to Arabic numerals, plus the type they are known to conform to -->
+      <!-- Output: Best-guess Arabic numeral equivalents, as strings. -->
+      <xsl:param name="strings" as="xs:string*"/>
+      <xsl:param name="treat-ambiguous-a-or-i-type-as-roman-numeral" as="xs:boolean?"/>
+      <xsl:copy-of
+         select="tan:strings-to-numeral-or-numeral-type($strings, true(), $treat-ambiguous-a-or-i-type-as-roman-numeral, true())"/>
+   </xsl:function>
+   <xsl:function name="tan:number-type" as="xs:string*">
+      <!-- One-param version of the fuller one, below -->
+      <xsl:param name="strings" as="xs:string*"/>
+      <xsl:copy-of select="tan:strings-to-numeral-or-numeral-type($strings, false(), (), false())"/>
+   </xsl:function>
+   <!--<xsl:function name="tan:analyze-string-numerals" as="element()*">
+      <!-\- Input: a sequence of strings that may be numerals -\->
+      <!-\- Output: one <ana> per string with children <n type="[$type]">[$val]</n>, where $type is i, 1, 1a, a, a1, or $ and $val is the value of that numeral when converted. If no conversion is possible, the element is omitted. -\->
+      <xsl:param name="strings" as="xs:string*"/>
+      <xsl:for-each select="$strings">
+         <ana>
+           <xsl:choose>
+              <xsl:when test="matches(., $n-type-pattern[2], 'i')">
+                 <n type="{$n-type[2]}"><xsl:value-of select="."/></n>
+              </xsl:when>
+               <xsl:otherwise>
+                  <xsl:if test="matches(., $n-type-pattern[1], 'i')">
+                     <n type="{$n-type[1]}">
+                        <xsl:value-of select="tan:rom-to-int(.)"/>
+                     </n>
+                  </xsl:if>
+                  <xsl:if test="matches(., $n-type-pattern[3], 'i')">
+                     <n type="{$n-type[3]}">
+                        <xsl:value-of
+                           select="concat(replace(., '\D+', ''), '-', tan:aaa-to-int(replace(., '\d+', '')))"
+                        />
+                     </n>
+                  </xsl:if>
+                  <xsl:if test="matches(., $n-type-pattern[4], 'i')">
+                     <n type="{$n-type[4]}">
+                        <xsl:value-of select="tan:aaa-to-int(.)"/>
+                     </n>
+                  </xsl:if>
+                  <xsl:if test="matches(., $n-type-pattern[5], 'i')">
+                     <n type="{$n-type[5]}">
+                        <xsl:value-of
+                           select="concat(tan:aaa-to-int(replace(., '\d+', '')), '-', replace(., '\D+', ''))"
+                        />
+                     </n>
+                  </xsl:if>
+                  <n type="$">
+                     <xsl:value-of select="."/>
+                  </n>
+               </xsl:otherwise></xsl:choose>
+         </ana>
+      </xsl:for-each>
+   </xsl:function>-->
+   <xsl:function name="tan:strings-to-numeral-or-numeral-type" as="xs:string*">
+      <!-- Input: any sequence of strings that may be a numeral type, and an indication whether what should be returned is not the type but the Arabic numeral equivalent (as a string) -->
+      <!-- Output: the same number of strings, with the value of either the $n-type that is the first match or the Arabic numeral equivalent -->
+      <!-- In general, Roman numerals are checked first, strings last ('i' = 1 not 9); mixed numeral types result in hyphen-joined Arabic numerals (e.g., 1a - > 1-1) -->
+      <xsl:param name="strings" as="xs:string*"/>
+      <xsl:param name="convert-to-arabic" as="xs:boolean"/>
+      <xsl:param name="treat-ambiguous-a-or-i-type-as-roman-numeral" as="xs:boolean?"/>
+      <xsl:param name="preface-ambiguous-numeral-with-negative-sign" as="xs:boolean"/>
+      <xsl:variable name="flag"
+         select="
+            if ($preface-ambiguous-numeral-with-negative-sign = true()) then
+               -1
+            else
+               1"
+         as="xs:integer"/>
+      <xsl:variable name="these-types" as="xs:string*">
+         <xsl:for-each select="$strings">
+            <xsl:variable name="this-matches-rom" select="matches(., $n-type-pattern[1], 'i')" as="xs:boolean"/>
+            <xsl:variable name="this-matches-aaa" select="matches(., $n-type-pattern[4], 'i')" as="xs:boolean"/>
+            <xsl:choose>
+               <xsl:when test="matches(., $n-type-pattern[2], 'i')">
+                  <xsl:value-of select="$n-type[2]"/>
+               </xsl:when>
+               <xsl:when test="matches(., $n-type-pattern[3], 'i')">
+                  <xsl:value-of select="$n-type[3]"/>
+               </xsl:when>
+               <xsl:when
+                  test="$this-matches-rom = true() and $this-matches-aaa = false()">
+                  <xsl:value-of select="$n-type[1]"/>
+               </xsl:when>
+               <xsl:when
+                  test="$this-matches-rom = false() and $this-matches-aaa = true()">
+                  <xsl:value-of select="$n-type[4]"/>
+               </xsl:when>
+               <xsl:when
+                  test="$this-matches-rom = true() and $this-matches-aaa = true()">
+                  <xsl:value-of
+                     select="
+                        if ($convert-to-arabic = true() or not(exists($treat-ambiguous-a-or-i-type-as-roman-numeral))) then
+                           $n-type[7]
+                        else
+                           if ($treat-ambiguous-a-or-i-type-as-roman-numeral = true()) then
+                              $n-type[1]
+                           else
+                              $n-type[4]"
+                  />
+               </xsl:when>
+               <xsl:when test="matches(., $n-type-pattern[5], 'i') and $convert-to-arabic = false()">
+                  <xsl:value-of select="$n-type[5]"/>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:value-of select="$n-type[6]"/>
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:for-each>
+      </xsl:variable>
+      <!--<xsl:variable name="i-gt-a" as="xs:boolean"
+         select="count($these-types[. = $n-type[1]]) gt count($these-types[. = $n-type[4]])"/>-->
+      <!--<xsl:variable name="these-types-norm" as="xs:string*">
+         <xsl:for-each select="$these-types">
+            <xsl:choose>
+               <xsl:when test=". = $n-type[7]">
+                  <xsl:value-of
+                     select="
+                        if ($i-gt-a = true()) then
+                           'i'
+                        else
+                           'a'"
+                  />
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:value-of select="."/>
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:for-each>
+      </xsl:variable>-->
+      <xsl:choose>
+         <xsl:when test="$convert-to-arabic = true()">
+            <xsl:for-each select="1 to count($strings)">
+               <xsl:variable name="pos" select="."/>
+               <xsl:choose>
+                  <xsl:when test="$these-types[$pos] = $n-type[1]">
+                     <xsl:value-of select="tan:rom-to-int($strings[$pos])"/>
+                  </xsl:when>
+                  <xsl:when test="$these-types[$pos] = ($n-type[2], $n-type[6])">
+                     <xsl:value-of select="$strings[$pos]"/>
+                  </xsl:when>
+                  <xsl:when test="$these-types[$pos] = $n-type[3]">
+                     <xsl:value-of
+                        select="concat(replace($strings[$pos], '\D+', ''), '-', tan:aaa-to-int(replace($strings[$pos], '\d+', '')))"
+                     />
+                  </xsl:when>
+                  <xsl:when test="$these-types[$pos] = $n-type[4]">
+                     <xsl:value-of select="tan:aaa-to-int($strings[$pos])"/>
+                  </xsl:when>
+                  <xsl:when test="$these-types[$pos] = $n-type[5]">
+                     <xsl:value-of select="concat(tan:aaa-to-int(replace($strings[$pos], '\d+', '')), '-', replace($strings[$pos], '\D+', ''))"/>
+                  </xsl:when>
+                  <xsl:when test="$these-types[$pos] = $n-type[7]">
+                     <xsl:value-of
+                        select="
+                              if ($treat-ambiguous-a-or-i-type-as-roman-numeral = false()) then
+                                 tan:aaa-to-int($strings[$pos]) * $flag
+                              else
+                                 tan:rom-to-int($strings[$pos]) * $flag"
+                     />
+                  </xsl:when>
+               </xsl:choose>
+            </xsl:for-each>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:copy-of select="$these-types"/>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:function>
+   <xsl:function name="tan:get-n-types" as="element()*">
+      <!-- Input: any class 1 TAN document -->
+      <!-- Calculates types of @n values per div type per source and div type -->
+      <!-- October 2016: this function used to be used for validation, but a better routine is preferred. The function is left here, however, in case it proves useful in other contexts. -->
+      <xsl:param name="src-1st-da-resolved" as="document-node()*"/>
+      <xsl:for-each select="$src-1st-da-resolved">
+         <xsl:variable name="this-doc" select="."/>
+         <xsl:variable name="this-src-id" select="*/@src"/>
+         <n-types src="{$this-src-id}">
+            <xsl:for-each-group select="$this-doc//*:div" group-by="normalize-space(@type)">
+               <xsl:variable name="div-type-decl"
+                  select="/*/tan:head/tan:declarations/tan:div-type[@xml:id = current-grouping-key()]"/>
+               <xsl:variable name="this-ns-types"
+                  select="
+                     if (@ns-are-numerals = 'false') then
+                        for $i in current-group()
+                        return
+                           '$'
+                     else
+                        tan:number-type(current-group()/@n)"/>
+               <xsl:variable name="this-n-types-count"
+                  select="
+                     for $i in $n-type
+                     return
+                        count(index-of($this-ns-types, $i))"/>
+               <xsl:variable name="this-dominant-n-type"
+                  select="$n-type[index-of($this-n-types-count, max($this-n-types-count))[1]]"/>
+               <div-type>
+                  <xsl:copy-of select="$div-type-decl/@*"/>
+                  <xsl:attribute name="type" select="current-grouping-key()"/>
+                  <xsl:attribute name="n-type" select="$this-dominant-n-type"/>
+                  <xsl:attribute name="ns-type-i" select="$this-n-types-count[1]"/>
+                  <xsl:attribute name="ns-type-1" select="$this-n-types-count[2]"/>
+                  <xsl:attribute name="ns-type-1a" select="$this-n-types-count[3]"/>
+                  <xsl:attribute name="ns-type-a" select="$this-n-types-count[4]"/>
+                  <xsl:attribute name="ns-type-a1" select="$this-n-types-count[5]"/>
+                  <xsl:attribute name="ns-type-str" select="$this-n-types-count[6]"/>
+                  <xsl:attribute name="ns-type-i-or-a" select="$this-n-types-count[7]"/>
+                  <xsl:attribute name="unique-n-values" select="distinct-values(current-group()/@n)"
+                  />
+               </div-type>
+            </xsl:for-each-group>
+         </n-types>
+      </xsl:for-each>
+   </xsl:function>
 
+   <xsl:function name="tan:flatref" as="xs:string?">
+      <!-- Simple, one-param function of the fuller one, below -->
+      <xsl:param name="node" as="element()?"/>
+      <xsl:value-of select="tan:flatref($node, (), ())"/>
+   </xsl:function>
+   <xsl:function name="tan:flatref" as="xs:string?">
+      <!-- Input: div node in a TAN-T(EI) document; truth value whether references that fit a number pattern should be converted to integers -->
+      <!-- Output: string value concatenating the reference values from the topmost div ancestor to the node. -->
+      <!-- This function assumes that @n has already been normalized per tan:resolve-doc(), which converts @ns to Arabic numerals wherever possible -->
+      <xsl:param name="node" as="element()?"/>
+      <!--<xsl:param name="convert-to-arabic-numerals" as="xs:boolean"/>-->
+      <!--<xsl:param name="ambiguous-numeral-types" as="element()*"/>-->
+      <xsl:param name="div-types-to-suppress" as="xs:string*"/>
+      <xsl:param name="div-ns-to-rename" as="element()*"/>
+      <xsl:value-of
+         select="
+            string-join($node/ancestor-or-self::*:div[not(@type = $div-types-to-suppress)]/@n, $separator-hierarchy)"
+      />
+      <!--<xsl:choose>
+         <xsl:when test="$convert-to-arabic-numerals = false()">
+            <xsl:value-of
+               select="
+                  string-join(for $i in $node/ancestor-or-self::*:div
+                  return
+                     replace(normalize-space($i/@n), '\W+', $separator-hierarchy), $separator-hierarchy)"
+            />
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:variable name="this-doc-amb-num-types"
+               select="
+                  if (exists($ambiguous-numeral-types)) then
+                     $ambiguous-numeral-types
+                  else
+                     tan:analyze-attr-n-or-ref-numerals($node/ancestor::*:body/*:div, 'type', true(), false())"
+            />
+            <!-\-<xsl:variable name="flatref-analysis" as="element()*">
+               <xsl:for-each select="$node/ancestor-or-self::*:div[not(@type = $div-types-to-suppress)]">
+                  <xsl:apply-templates mode="arabic-numerals"></xsl:apply-templates>
+               </xsl:for-each>
+            </xsl:variable>-\->
+            <xsl:variable name="flatref-items" as="xs:string*">
+               <xsl:for-each
+                  select="$node/ancestor-or-self::*:div[not(@type = $div-types-to-suppress)]">
+                  <xsl:variable name="this-type" select="tan:normalize-text(@type)"/>
+                  <xsl:variable name="this-n" select="tan:normalize-text(@n)"/>
+                  <xsl:variable name="this-div-type"
+                     select="$this-doc-amb-num-types/tan:div-type[@type = $this-type]"/>
+                  <xsl:variable name="this-qty-rom" select="number($this-div-type/@ns-type-i)"/>
+                  <xsl:variable name="this-qty-aaa" select="number($this-div-type/@ns-type-a)"/>
+                  <xsl:variable name="roman-numerals-preferred-to-alphabetic" as="xs:boolean?"
+                     select="
+                        if ($this-qty-rom gt 0 and $this-qty-aaa lt 1) then
+                           true()
+                        else
+                           if ($this-qty-rom lt 1 and $this-qty-aaa gt 0) then
+                              false()
+                           else
+                              ()"/>
+                  <xsl:variable name="this-n-norm"
+                     select="tan:arabic-numerals($this-n, $roman-numerals-preferred-to-alphabetic)"/>
+                  <xsl:variable name="these-renames"
+                     select="$div-ns-to-rename[@div-type-ref = $this-type]/tan:rename"/>
+                  <xsl:variable name="alias-specific"
+                     select="$these-renames[@old = $this-n-norm]/@new"/>
+                  <!-\- Oct 2016: slated for deletion, after the #a/#i is eliminated also in class 2 files -\->
+                  <!-\-<xsl:variable name="alias-generic"
+                     select="
+                        if ($these-renames[@old = '#a'] and matches($this-n-norm, $n-type-pattern[4]))
+                        then
+                           string(tan:aaa-to-int($this-n-norm))
+                        else
+                           if ($these-renames[@old = '#i'] and matches($this-n-norm, $n-type-pattern[1]))
+                           then
+                              string(tan:rom-to-int($this-n-norm))
+                           else
+                              ()"/>-\->
+                  <xsl:value-of select="lower-case(($alias-specific, $this-n-norm)[1])"/>
+               </xsl:for-each>
+            </xsl:variable>
+            <xsl:value-of select="string-join($flatref-items, $separator-hierarchy)"/>
+         </xsl:otherwise>
+      </xsl:choose>-->
+   </xsl:function>
+   
    <!-- INFUSION -->
    <xsl:function name="tan:div-to-div-transfer" as="element()*">
       <!-- Input: (1) any set of divs with content to be transferred into the structure of (2) another 

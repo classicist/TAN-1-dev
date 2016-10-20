@@ -34,6 +34,9 @@
     <group affects-attribute="regex matches-m matches-tok val">
         <error xml:id="tan07"><rule>Attributes that take a regular expression must use escape sequences recognized by XML schema or TAN escape extensions (\k{}). See http://www.w3.org/TR/xmlschema-2/#regexs for details.</rule></error>
     </group>
+    <group affects-attribute="n ref">
+        <error xml:id="tan12"><rule>No single set of references may mix Roman numerals, alphabetic numerals, and numerals that are ambiguously either.</rule></error>
+    </group>
     <group affects-element="see-also relationship">
         <error xml:id="see01"><rule>Any &lt;see-also> whose &lt;relationship> is defined as requiring a target TAN file must point to a file whose root element is a TAN file.</rule></error>
         <error xml:id="see02"><rule>Any &lt;see-also> whose &lt;relationship> is defined as requiring a target TAN-rdf file must point to a TAN file whose root element is &lt;TAN-rdf>.</rule></error>
@@ -123,6 +126,9 @@
         <error xml:id="cl112"><rule>No div may have a spacing character followed by a modifying character.</rule></error>
         <error xml:id="cl113"><rule>No div may have Unicode characters that are disallowed, e.g., U+A0, NO BREAK SPACE.</rule></error>
         <error xml:id="tei01"><rule>No mixed content is allowed in a &lt;div>; it must parent either only &lt;div>s or none at all. </rule></error>
+    </group>
+    <group affects-element="div-type" affects-attribute="n">
+        <error xml:id="cl114"><rule>To avoid ambiguous numerals, no div type should mix Roman and alphabet numerals.</rule></error>
     </group>
     <group affects-element="source">
         <fatal xml:id="cl201"><rule>Sources are integral parts of a class 2 TAN file. Access to at least one copy is absolutely mandatory.</rule></fatal>

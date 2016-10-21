@@ -142,9 +142,9 @@
     <group affects-element="rename" affects-attribute="old new">
         <error xml:id="cl203"><rule>@old and @new may not share the same value</rule></error>
         <error xml:id="cl204"><rule>No value of @new or @old may appear more than once for a given div type in a given source.</rule></error>
-        <error xml:id="cl205"><rule>If @new or @old refers to an n type (#1, #a, #i) then the other must as well.</rule></error>
-        <error xml:id="cl206"><rule>Every value of @old must appear for a given div type in a given source.</rule></error>
-        <error xml:id="cl207"><rule>An instruction to convert from letter or Roman numerals requires that the values of @n to be predominantly of that type.</rule></error>
+    </group>
+    <group affects-element="rename" affects-attribute="old">
+        <error xml:id="cl212"><rule>@old must be found in every div type of every source</rule></error>
     </group>
     <group affects-attribute="cont">
         <error xml:id="cl208"><rule>Any element taking @cont must be followed by at least one sibling of the same type.</rule></error>

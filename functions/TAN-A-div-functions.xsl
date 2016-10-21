@@ -22,7 +22,7 @@
    
    <!-- PART II. PROCESSING SELF -->
 
-   <xsl:function name="tan:get-info" as="document-node()*">
+   <xsl:function name="tan:prep-verbosely" as="document-node()*">
       <!-- Input: a TAN-A-div file prepped and its sources, also prepped
          Output: the same files, with information marked of relevance to the validation process.
       -->
@@ -30,20 +30,21 @@
       <xsl:param name="TAN-A-div-sources-prepped" as="document-node()*"/>
       <xsl:variable name="this-skeleton" select="tan:get-src-skeleton($TAN-A-div-sources-prepped)"/>
       <xsl:document>
-         <xsl:apply-templates select="$TAN-A-div-prepped" mode="get-info">
+         <xsl:apply-templates select="$TAN-A-div-prepped" mode="prep-verbosely">
             <xsl:with-param name="source-skeleton" select="$this-skeleton" tunnel="yes"/>
+            <xsl:with-param name="sources-prepped" select="$TAN-A-div-sources-prepped" tunnel="yes"/>
          </xsl:apply-templates>
       </xsl:document>
       <xsl:sequence select="$TAN-A-div-sources-prepped"/>
    </xsl:function>
    
-   <xsl:template match="node()" mode="get-info">
+   <xsl:template match="node()" mode="prep-verbosely">
       <xsl:copy>
          <xsl:copy-of select="@*"/>
-         <xsl:apply-templates mode="get-info"/>
+         <xsl:apply-templates mode="prep-verbosely"/>
       </xsl:copy>
    </xsl:template>
-   <xsl:template match="/*" mode="get-info">
+   <xsl:template match="/*" mode="prep-verbosely">
       <xsl:param name="source-skeleton" tunnel="yes" as="document-node()?"/>
       <xsl:variable name="these-realigns" select="tan:body/tan:realign"/>
       <xsl:variable name="defective-divs"
@@ -78,7 +79,23 @@
          <xsl:apply-templates mode="#current"/>
       </xsl:copy>
    </xsl:template>
-   <xsl:template match="tan:info" mode="get-info">
+   <xsl:template match="tan:source" mode="prep-verbosely">
+      <xsl:param name="sources-prepped" tunnel="yes"/>
+      <xsl:variable name="this-src-id" select="@xml:id"/>
+      <xsl:variable name="this-src-doc" select="($sources-prepped[*/@src = $this-src-id])[1]"/>
+      <xsl:variable name="leaf-div-refs" select="$this-src-doc//tan:div[not(tan:div)]"/>
+      <xsl:variable name="duplicate-leaf-div-refs" select="tan:duplicate-values($leaf-div-refs/@ref)"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:if test="exists($duplicate-leaf-div-refs)">
+            <xsl:copy-of
+               select="tan:error('cl109', concat('src ', $this-src-id, ' has duplicate leaf divs: ', string-join($duplicate-leaf-div-refs, ', ')))"
+            />
+         </xsl:if>
+         <xsl:copy-of select="node()"/>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:info" mode="prep-verbosely">
       <help>
          <xsl:copy-of select="@*"/>
          <xsl:copy-of select="node()"/>

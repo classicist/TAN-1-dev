@@ -335,7 +335,7 @@
                   </xsl:when>
                   <xsl:otherwise>
                      <xsl:copy-of
-                        select="tan:resolve-doc($this-inclusion-doc, true(), 'inclusion', $this-inclusion-idref, $names-of-elements-to-fetch, $new-doc-ids-checked-so-far)"
+                        select="tan:resolve-doc($this-inclusion-doc, false(), 'inclusion', $this-inclusion-idref, $names-of-elements-to-fetch, $new-doc-ids-checked-so-far)"
                      />
                   </xsl:otherwise>
                </xsl:choose>
@@ -357,7 +357,7 @@
                select="$this-doc/(tan:*/tan:body, tei:TEI/tei:text/tei:body)/*"/>
             <xsl:variable name="ambiguous-numeral-types"
                select="
-                  tan:analyze-attr-n-or-ref-numerals($elements-to-convert, if (name($this-doc/*) = ('TAN-T', 'TEI')) then
+                  tan:analyze-elements-with-numeral-attributes($elements-to-convert, if (name($this-doc/*) = ('TAN-T', 'TEI')) then
                      'type'
                   else
                      (), true(), false())"
@@ -462,10 +462,10 @@
          <xsl:for-each select="$docs-stamped">
             <xsl:variable name="this-doc" select="."/>
             <xsl:variable name="elements-to-convert"
-               select="$this-doc/(tan:*/tan:body, tei:TEI/tei:text/tei:body)/*"/>
+               select="$this-doc/(tan:*/tan:body, tei:TEI/tei:text/tei:body, tan:*/tan:head/tan:declarations/tan:rename-div-ns)/*"/>
             <xsl:variable name="ambiguous-numeral-types"
                select="
-                  tan:analyze-attr-n-or-ref-numerals($elements-to-convert, if (name($this-doc/*) = ('TAN-T', 'TEI')) then
+                  tan:analyze-elements-with-numeral-attributes($elements-to-convert, if (name($this-doc/*) = ('TAN-T', 'TEI')) then
                      'type'
                   else
                      (), true(), false())"
@@ -1399,8 +1399,8 @@
       </xsl:choose>
    </xsl:template>
 
-   <xsl:function name="tan:analyze-attr-n-or-ref-numerals" as="element()*">
-      <!-- Input: any sequence of elements that contain (either in themselves or their descendants) @n or @ref; an optional string indicating an element whose tokenized value should be used as a basis for grouping the results; two booleans indicating whether only ambiguous types should be checked and whether the analysis should be performed only shallowly (i.e., not on any descendants of the input elements) -->
+   <xsl:function name="tan:analyze-elements-with-numeral-attributes" as="element()*">
+      <!-- Input: any sequence of elements that contain (either in themselves or their descendants) @n, @old, or @ref; an optional string indicating an element whose tokenized value should be used as a basis for grouping the results; two booleans indicating whether only ambiguous types should be checked and whether the analysis should be performed only shallowly (i.e., not on any descendants of the input elements) -->
       <!-- Output: zero or more <ns>s (one per group, and with @type-i, @type-a, and type-i-or-a if only ambiguous types are intended), each with one or more <n>s (one per atomic value in @n or @ref of the group picked), each with one or more <val type="[i, 1, 1a, a, a1, or $, depending on the type]">[VALUE]</val>, where VALUE is what the item is when converted  -->
       <!-- This function is used to help other functions determine whether there is an error, or how ambiguous numerals should be interpreted -->
       <xsl:param name="elements" as="node()*"/>
@@ -1412,7 +1412,7 @@
             (if ($shallow-analysis = true()) then
                $elements
             else
-               $elements//*)[@ref or @n]"/>
+               $elements//*)[@ref or @n or @old]"/>
       <xsl:for-each-group select="$elements-to-analyze"
          group-by="
             if (string-length($group-by-what-attr-value) gt 0) then
@@ -1422,7 +1422,7 @@
          <xsl:variable name="analysis" as="element()*">
             <xsl:for-each
                select="
-                  for $i in tan:normalize-text(current-group()/(@ref, @n))
+                  for $i in tan:normalize-text(current-group()/(@ref, @n, @old))
                   return
                      tokenize($i, ' ')">
                <n>
@@ -1591,6 +1591,7 @@
       <xsl:variable name="element-name" select="name(.)"/>
       <xsl:variable name="this-which" select="tan:normalize-text(@which)"/>
       <xsl:variable name="help-requested" select="matches(@which, $help-trigger-regex)"/>
+      <xsl:variable name="attr-in-key-element-to-suppress" select="('group')" as="xs:string*"/>
       <xsl:variable name="valid-definitions"
          select="tan:get-attr-which-definition(., $extra-keys, ())"/>
       <xsl:variable name="definition-matches" as="element()*"
@@ -1609,9 +1610,13 @@
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:copy-of select="$definition-matches/tan:token-definition/@regex"/>
+         <xsl:copy-of select="$definition-matches/@*[not(name() = $attr-in-key-element-to-suppress)]"/>
+         <xsl:for-each select="$definition-matches/@*[name() = $attr-in-key-element-to-suppress]">
+            <xsl:attribute name="orig-{name()}" select="."/>
+         </xsl:for-each>
          <xsl:if test="exists($definition-groups)">
             <!-- although strictly not necessary for validation, the <group> of a keyword is enormously helpful in later processing, so the name of each group is included here -->
-            <xsl:attribute name="group" select="$definition-groups"/>
+            <xsl:attribute name="orig-group" select="$definition-groups"/>
          </xsl:if>
          <xsl:if test="not(exists($definition-matches))">
             <xsl:variable name="this-message" as="xs:string*">

@@ -308,11 +308,11 @@
             if (exists($ambiguous-numeral-types)) then
                $ambiguous-numeral-types
             else
-               tan:analyze-attr-n-or-ref-numerals($elements-with-attr-ref, (), true(), true())"
+               tan:analyze-elements-with-numeral-attributes($elements-with-attr-ref, (), true(), true())"
       />
       <xsl:for-each select="$elements-with-attr-ref">
          <xsl:variable name="raw-analysis"
-            select="tan:analyze-attr-n-or-ref-numerals(., (), false(), true())"/>
+            select="tan:analyze-elements-with-numeral-attributes(., (), false(), true())"/>
          <xsl:variable name="new-ref" as="xs:string*">
             <xsl:for-each select="$raw-analysis/tan:n"><xsl:choose>
                <xsl:when test="tan:val/@type = $n-type[1] and tan:val/@type = $n-type[4]">
@@ -359,13 +359,51 @@
       </xsl:variable>-->
       <!--<xsl:value-of select="string-join($ranges, '')"/>-->
    </xsl:function>
+   <xsl:template match="tan:rename" mode="arabic-numerals">
+      <xsl:param name="ambiguous-numeral-types" as="element()*" tunnel="yes"/>
+      <xsl:variable name="this-old-norm" select="tan:normalize-text(lower-case(@old))"/>
+      <xsl:variable name="raw-old"
+         select="tan:analyze-elements-with-numeral-attributes(., (), false(), true())"/>
+      <xsl:variable name="new-old" as="xs:string?">
+         <xsl:choose>
+            <xsl:when
+               test="$raw-old/tan:n[tan:val/@type = $n-type[1] and tan:val/@type = $n-type[4]]">
+               <xsl:choose>
+                  <xsl:when test="$ambiguous-numeral-types/@type-i-or-a-is-probably = 'a'">
+                     <!-- it's probably not a Roman numeral -->
+                     <xsl:value-of select="($raw-old/tan:n/tan:val[not(@type = $n-type[1])])[1]"/>
+                  </xsl:when>
+                  <xsl:when test="$ambiguous-numeral-types/@type-i-or-a-is-probably = 'i'">
+                     <!-- it's probably not an alphabetic numeral -->
+                     <xsl:value-of select="($raw-old/tan:n/tan:val[not(@type = $n-type[4])])[1]"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:value-of select="$raw-old/tan:n/tan:val[1]"/>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+               <!-- no ambiguity; just use the first value -->
+               <xsl:value-of select="$raw-old/tan:n/tan:val[1]"/>
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:variable>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:if test="not(@old = $new-old)">
+            <xsl:attribute name="orig-old" select="@old"/>
+            <xsl:attribute name="old" select="$new-old"/>
+         </xsl:if>
+         <!-- renames are empty, so no need to process further -->
+      </xsl:copy>
+   </xsl:template>
    <xsl:template match="*[@ref and not(@orig-ref)]" mode="arabic-numerals">
       <!-- For the companion template, treating *[@n], see TAN-class-1-and-2-functions -->
       <xsl:param name="ambiguous-numeral-types" as="element()*" tunnel="yes"/>
       <!--<xsl:param name="treat-ambiguous-a-or-i-type-as-roman-numeral" as="xs:boolean?" tunnel="yes"/>
       <xsl:param name="warn-on-ambiguous-numerals" as="xs:boolean?" tunnel="yes"/>-->
       <xsl:variable name="this-ref-norm" select="tan:normalize-text(lower-case(@ref))"/>
-      <xsl:variable name="raw-ref" select="tan:analyze-attr-n-or-ref-numerals(., (), false(), true())"/>
+      <xsl:variable name="raw-ref" select="tan:analyze-elements-with-numeral-attributes(., (), false(), true())"/>
       <!--<xsl:variable name="new-ref"
          select="tan:normalize-refs(@ref, $treat-ambiguous-a-or-i-type-as-roman-numeral)"/>-->
       <xsl:variable name="new-ref-ns" as="xs:string*">
@@ -528,7 +566,7 @@
             </xsl:choose>
          </xsl:for-each>
       </xsl:variable>
-      <xsl:variable name="src-n-types" select="tan:get-n-types($src-1st-da-resolved)"/>
+      <!--<xsl:variable name="src-n-types" select="tan:get-n-types($src-1st-da-resolved)"/>-->
       <xsl:variable name="body-expansions" as="element()*">
          <xsl:if test="exists($class-2-doc-prepped-pass-1/tan:TAN-A-div)">
             <xsl:copy-of
@@ -550,7 +588,7 @@
             <xsl:with-param name="body-expansions" select="$body-expansions" tunnel="yes"/>
             <xsl:with-param name="div-type-elements" select="$div-type-elements" tunnel="yes"/>
             <xsl:with-param name="src-docs" select="$src-1st-da-resolved" tunnel="yes"/>
-            <xsl:with-param name="src-n-types" select="$src-n-types" tunnel="yes"/>
+            <!--<xsl:with-param name="src-n-types" select="$src-n-types" tunnel="yes"/>-->
          </xsl:apply-templates>
       </xsl:document>
    </xsl:function>
@@ -562,10 +600,18 @@
    </xsl:template>
    <xsl:template match="tan:declarations" mode="prep-class-2-doc-pass-2">
       <xsl:param name="token-definitions" as="element()*" tunnel="yes"/>
+      <xsl:param name="src-docs" as="document-node()*" tunnel="yes"/>
+      <xsl:variable name="src-n-types" as="element()*">
+         <xsl:if test="descendant::tan:rename">
+            <xsl:copy-of select="tan:get-n-types($src-docs)"/>
+         </xsl:if>
+      </xsl:variable>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:copy-of select="$token-definitions"/>
-         <xsl:apply-templates mode="#current" select="*[not(self::tan:token-definition)]"/>
+         <xsl:apply-templates mode="#current" select="*[not(self::tan:token-definition)]">
+            <xsl:with-param name="src-n-types" select="$src-n-types" tunnel="yes"/>
+         </xsl:apply-templates>
       </xsl:copy>
    </xsl:template>
    <xsl:template match="tan:suppress-div-types | tan:rename-div-ns" mode="prep-class-2-doc-pass-2">
@@ -595,14 +641,16 @@
       <xsl:variable name="this-rename-parent" select=".."/>
       <xsl:variable name="relevant-n-types"
          select="$src-n-types[@src = $this-rename-parent/@src]/tan:div-type[@xml:id = $this-rename-parent/@div-type-ref]"/>
+      <xsl:variable name="ns-in-use" select="tokenize($relevant-n-types/@unique-n-values, ' ')"/>
       <!--<xsl:variable name="this-src-root" select="$src-docs[*/@src = $this-rename-parent/@src]"/>-->
       <!--<xsl:variable name="this-src-relevant-divs"
          select="$this-src-root//*:div[@type = $this-rename-parent/@div-type-ref]"/>-->
-      <xsl:variable name="this-src-relevant-ns" as="xs:string*"
-         select="tokenize($relevant-n-types/@unique-n-values, ' ')"/>
+      <!--<xsl:variable name="this-src-relevant-ns" as="xs:string*"
+         select="tokenize($relevant-n-types/@unique-n-values, ' ')"/>-->
       <xsl:variable name="all-parallel-renames"
          select="ancestor::tan:declarations/tan:rename-div-ns[@src = $this-rename-parent/@src and @div-type-ref = $this-rename-parent/@div-type-ref]/tan:rename"/>
       <xsl:variable name="help-requested-attr-old" select="tan:help-requested(@old)"/>
+      <xsl:variable name="old-close-matches" select="$ns-in-use[matches(., $this-old)]"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:if test="$this-old = $this-new">
@@ -614,28 +662,17 @@
                or count($all-parallel-renames[@new = $this-new]) gt 1">
             <xsl:copy-of select="tan:error('cl204')"/>
          </xsl:if>
-         <xsl:if test="not(matches(@old, '#') = matches(@new, '#'))">
-            <xsl:copy-of select="tan:error('cl205')"/>
-         </xsl:if>
-         <xsl:if test="not(matches(@old, '#')) and not($this-src-relevant-ns = $this-old)">
-            <xsl:copy-of select="tan:error('cl206')"/>
-         </xsl:if>
-         <xsl:if
-            test="
-               ($this-old = '#a' and not($relevant-n-types/@n-type = 'a'))
-               or ($this-old = '#i' and not($relevant-n-types/@n-type = 'i'))">
+         <xsl:if test="not($this-old = $ns-in-use)">
             <xsl:variable name="this-message"
-               select="concat('type is predominantly ', $relevant-n-types/@n-type, ', e.g., ', string-join($this-src-relevant-ns[position() lt 4], ', '))"/>
-            <xsl:copy-of select="tan:error('cl207', $this-message)"/>
+               select="concat('source ', @src, ' does not have ', $this-old, ' in div type ', @div-type-ref, '; close matches: ', string-join($old-close-matches, ', '), '; all possible values: ', string-join($ns-in-use, ', '))"
+            />
+            <xsl:copy-of select="tan:error('cl212', $this-message)"/>
          </xsl:if>
          <xsl:if test="$help-requested-attr-old = true()">
             <xsl:variable name="this-message"
-               select="
-                  concat('near matches: ', string-join($this-src-relevant-ns[matches(., $this-old)], ', '), '; all matches: ',
-                  string-join($this-src-relevant-ns, ', '))"/>
-            <xsl:copy-of
-               select="tan:help($this-message, $this-src-relevant-ns[matches(., $this-old)])"/>
-            <!--<test><xsl:copy-of select="$relevant-n-types"/></test>-->
+               select="concat('close matches: ', string-join($old-close-matches, ', '), '; all possible values: ', string-join($ns-in-use, ', '))"
+            />
+            <xsl:copy-of select="tan:help($this-message, $old-close-matches)"/>
          </xsl:if>
       </xsl:copy>
    </xsl:template>

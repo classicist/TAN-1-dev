@@ -4,7 +4,7 @@
 <!--<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-T.rnc" type="application/relax-ng-compact-syntax"?>
 <?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-T.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>-->
 <TAN-T xmlns="tag:textalign.net,2015:ns"
-   id="tag:kalvesmaki.com,2014:tan-t:ar.cat.fra.1844.saint-hilaire:semantic-refs" TAN-version="1">
+   id="tag:kalvesmaki.com,2014:tan-t:ar.cat.fra.1844.saint-hilaire:semantic-refs" TAN-version="1 dev">
    <head>
       <name>Categories, Aristotle, French translation by J. Barthélemy Saint-Hilaire</name>
       <rights-excluding-sources rights-holder="kalvesmaki">

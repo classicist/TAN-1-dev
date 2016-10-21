@@ -3,7 +3,7 @@
 <?xml-model href="../../schemas/TAN-A-tok.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
 <!--<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-tok.rnc" type="application/relax-ng-compact-syntax"?>
 <?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-tok.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>-->
-<TAN-A-tok xmlns="tag:textalign.net,2015:ns" TAN-version="1" id="tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring03">
+<TAN-A-tok xmlns="tag:textalign.net,2015:ns" TAN-version="1 dev" id="tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring03">
     <head>
         <name>token-based alignment of two versions of Ring o Roses</name>
         <master-location href="http://textalign.net/release/1/dev/examples/TAN-A-tok/ringoroses.01+03.token.1.xml"/>
@@ -33,9 +33,6 @@
                 <IRI>tag:kalvesmaki@gmail.com,2014:reuse-type:correlation-general</IRI>
                 <name>Texts are generally correlated, but without specifying the relation</name>
             </reuse-type>
-            <rename-div-ns src="ger" div-type-ref="Zeile">
-                <rename old="#a" new="#1"/>
-            </rename-div-ns>
             <comment when="2016-02-22-05:00" who="park">The following is equivalent to @which = 'letters'</comment>
             <token-definition src="eng ger" regex="\w+"/>
         </declarations>

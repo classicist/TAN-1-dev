@@ -45,11 +45,15 @@
             <location href="../../../LM/TAN-mor/grc.kalvesmaki.com,2014.1.xml"
                       when-accessed="2016-04-05"/>
          </morphology>
-         <class-type which="status"></class-type>
+         <group-type which="status"/>
       </declarations>
       <agent xml:id="stylesheet" roles="editor">
          <IRI>tag:textalign.net,2015:stylesheet:create:tan-lm-from-tan-t</IRI>
          <name>TAN stylesheet to create a TAN-LM file from a TAN-T(EI)</name>
+      </agent>
+      <agent xml:id="park" roles="creator">
+         <IRI>tag:parkj@textalign.net,2015:self</IRI>
+         <name>Jenny Park</name>
       </agent>
       <role xml:id="editor">
          <IRI>http://schema.org/editor</IRI>
@@ -64,6 +68,9 @@
            Sorted by: l (ascending)
            Groups after reformatting: 1 - 50 
          </change>
+      <comment when="2016-10-21" who="park">This file is a work-in-progress, reflecting the raw
+         output of a routine that analyzes a text against a lexico-morphological database for a
+         given language. Hence the ??? that appear in various m elements.</comment>
    </head>
    <body lexicon="LSJ Lampe new" morphology="Perseus">
       <group type="test">

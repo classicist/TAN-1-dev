@@ -3,7 +3,7 @@
 <?xml-model href="../../schemas/TAN-A-tok.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
 <!--<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-tok.rnc" type="application/relax-ng-compact-syntax"?>
 <?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-tok.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>-->
-<TAN-A-tok xmlns="tag:textalign.net,2015:ns" TAN-version="1" id="tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring03:alt">
+<TAN-A-tok xmlns="tag:textalign.net,2015:ns" TAN-version="1 dev" id="tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring03:alt">
     <head>
         <name>token-based alignment of two versions of Ring o Roses</name>
         <desc>This takes the previous version (see see-also element below) and shows a simpler way
@@ -37,8 +37,7 @@
             </reuse-type>
             <token-definition src="eng ger" which="letters and punctuation"/>
             <rename-div-ns src="ger" div-type-ref="Zeile">
-                <rename old="#a" new="#1"/>
-                <rename old="e" new="4"/>
+                <rename old="5" new="4"/>
             </rename-div-ns>
         </declarations>
         <agent xml:id="park" roles="creator">

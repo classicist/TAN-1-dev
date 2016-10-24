@@ -7,7 +7,7 @@
    exclude-result-prefixes="xs math xd tan fn tei functx sch" version="2.0">
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Updated </xd:b>Aug 16, 2016</xd:p>
+         <xd:p><xd:b>Updated </xd:b>Oct 16, 2016</xd:p>
          <xd:p>Variables, functions, and templates for all TAN files. Written primarily for
             Schematron validation, but suitable for general use in other contexts.</xd:p>
       </xd:desc>
@@ -291,7 +291,14 @@
       <xsl:copy-of select="tan:resolve-doc($TAN-documents, true(), (), (), (), ())"/>
    </xsl:function>
    <xsl:function name="tan:resolve-doc" as="document-node()*">
-      <!-- test to see if we can get around function loop error -->
+      <!-- Input: any number of TAN documents; boolean indicating whether documents should be breadcrumbed or not; optional name of an attribute and a sequence of strings to stamp in each document's root element as a way of providing another identifier for the document; a list of element names to which any inclusion should be restricted; a list of ids for documents that should not be used to generate inclusions.
+      Output: those same documents, resolved, along the following steps:
+           1. Stamp each document with @base-uri and the optional root attribute; resolve @href, putting the original (if different) in @orig-href
+           2. Normalize @ref and @n, converting them whenever possible to Arabic numerals, and keeping the old versions as @orig-ref and @orig-n
+           3. Resolve every element that has @include.
+           4. Resolve every element that has @which.
+           5. If anything happened at #3, remove any duplicate elements. -->
+      <!-- This function and the functions connected with it are among the most important in the TAN library, since they provide critical stamping (for validation and diagnosing problems) and expand abbreviated parts (to explicitly state what is implied by @include and @which) of a TAN file. Perhaps more importantly, it is a recursive function that is used to resolve not only the beginning of the inclusion process but its middle and endpoints as well. -->
       <xsl:param name="TAN-documents" as="document-node()*"/>
       <xsl:param name="leave-breadcrumbs" as="xs:boolean"/>
       <xsl:param name="add-attr-to-root-element-named-what" as="xs:string?"/>
@@ -390,6 +397,12 @@
                </xsl:otherwise>
             </xsl:choose>
          </xsl:variable>
+         <xsl:variable name="names-of-elements-with-attr-include" as="xs:string*"
+            select="
+               distinct-values(for $i in $elements-that-must-be-expanded
+               return
+                  name($i))"
+         />
          <xsl:variable name="extra-keys-1st-da" select="tan:get-1st-doc($doc-attr-include-expanded/*/tan:head/tan:key[not(@include)])"/>
          <xsl:variable name="extra-keys-resolved"
             select="tan:resolve-doc($extra-keys-1st-da, false(), (), (), ('group', 'item'), ())"
@@ -424,20 +437,15 @@
                <!--<xsl:copy-of select="$extra-keys-1st-da"/>-->
                <!--<xsl:copy-of select="$extra-keys-resolved"/>-->
                <!--<xsl:copy-of select="$duplicate-keys-removed"/>-->
-               <xsl:copy-of select="$doc-attr-which-expanded"/>
+               <xsl:copy-of
+                  select="tan:strip-duplicates($doc-attr-which-expanded, $names-of-elements-with-attr-include)"/>
+               <!--<xsl:copy-of select="$doc-attr-which-expanded"/>-->
             </xsl:otherwise>
          </xsl:choose>
       </xsl:for-each>
    </xsl:function>
    <xsl:function name="tan:resolve-doc-old" as="document-node()*">
-      <!-- Input: any number of TAN documents; boolean indicating whether documents should be breadcrumbed or not; optional name of an attribute and a sequence of strings to stamp in each document's root element as a way of providing another identifier for the document; a list of element names to which any inclusion should be restricted; a list of ids for documents that should not be used to generate inclusions.
-      Output: those same documents, resolved, along the following steps:
-           1. Stamp each document with @base-uri and the optional root attribute; resolve @href, putting the original (if different) in @orig-href
-           2. Normalize @ref and @n, converting them whenever possible to Arabic numerals, and keeping the old versions as @orig-ref and @orig-n
-           3. Resolve every element that has @include.
-           4. Resolve every element that has @which.
-           5. If anything happened at #3, remove any duplicate elements. -->
-      <!-- This function and the functions connected with it are among the most important in the TAN library, since they provide critical stamping (for validation and diagnosing problems) and expand abbreviated parts (to explicitly state what is implied by @include and @which) of a TAN file. Perhaps more importantly, it is a recursive function that is used to resolve not only the beginning of the inclusion process but its middle and endpoints as well. -->
+      <!-- Retired Oct. 2016, but not yet deleted -->
       <xsl:param name="TAN-documents" as="document-node()*"/>
       <xsl:param name="leave-breadcrumbs" as="xs:boolean"/>
       <xsl:param name="add-attr-to-root-element-named-what" as="xs:string?"/>
@@ -1310,6 +1318,12 @@
       <xsl:variable name="relevant-doc-ids" select="$relevant-docs/*/@id"/>
       <xsl:variable name="relevant-elements-to-include"
          select="$relevant-docs//*[name() = $this-element-name][not(ancestor::*[name() = $this-element-name])]"/>
+      <xsl:variable name="relevant-elements-to-include-prepended"
+         select="
+            for $i in $relevant-elements-to-include
+            return
+               tan:prepend-id-or-idrefs($i, root($i)/*/@inclusion)"
+      />
       <xsl:variable name="attr-in-this-element-to-suppress" select="'include'"/>
       <xsl:variable name="attr-in-included-element-to-suppress" select="('ed-when', 'ed-who', 'which')"/>
       <!--<xsl:variable name="fetched-elements" select="tan:get-elements($this-element, (), ())" as="element()*"/>-->
@@ -1398,10 +1412,45 @@
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
+   <xsl:function name="tan:prepend-id-or-idrefs" as="element()*">
+      <!-- Input: any elements with @xml:id or an attribute that points to an element with an @xml:id value; some string that should be prepended to every value of every attribute found-->
+      <!-- Output: the same elements, but with each value prepended with the string and a double hyphen -->
+      <!-- This function is critical for disambiguating during the inclusion process. -->
+      <xsl:param name="elements-with-id-or-id-refs" as="element()"/>
+      <xsl:param name="string-to-prepend" as="xs:string?"/>
+      <xsl:apply-templates select="$elements-with-id-or-id-refs" mode="prepend-id-or-idrefs">
+         <xsl:with-param name="string-to-prepend" select="$string-to-prepend" tunnel="yes"/>
+      </xsl:apply-templates>
+   </xsl:function>
+   <xsl:template match="*" mode="prepend-id-or-idrefs">
+      <xsl:param name="string-to-prepend" as="xs:string" tunnel="yes"/>
+      <xsl:copy>
+         <xsl:for-each select="@*">
+            <xsl:variable name="this-name" select="name(.)"/>
+            <xsl:choose>
+               <xsl:when test="$this-name = ($id-idrefs//@attribute, 'xml:id')">
+                  <xsl:variable name="vals" as="xs:string*">
+                     <xsl:analyze-string select="." regex="\s+">
+                        <xsl:non-matching-substring>
+                           <xsl:value-of select="concat($string-to-prepend, '--', .)"/></xsl:non-matching-substring>
+                     </xsl:analyze-string>
+                  </xsl:variable>
+                  <xsl:attribute name="{$this-name}" select="string-join($vals, ' ')"/>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:copy-of select="."/>
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:for-each>
+         <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+   </xsl:template>
+   <!--<xsl:template match="@*" mode="prepend-id-or-idrefs">
+   </xsl:template>-->
 
    <xsl:function name="tan:analyze-elements-with-numeral-attributes" as="element()*">
-      <!-- Input: any sequence of elements that contain (either in themselves or their descendants) @n, @old, or @ref; an optional string indicating an element whose tokenized value should be used as a basis for grouping the results; two booleans indicating whether only ambiguous types should be checked and whether the analysis should be performed only shallowly (i.e., not on any descendants of the input elements) -->
-      <!-- Output: zero or more <ns>s (one per group, and with @type-i, @type-a, and type-i-or-a if only ambiguous types are intended), each with one or more <n>s (one per atomic value in @n or @ref of the group picked), each with one or more <val type="[i, 1, 1a, a, a1, or $, depending on the type]">[VALUE]</val>, where VALUE is what the item is when converted  -->
+      <!-- Input: any sequence of elements that contain (either in themselves or their descendants) @n, @old, or @ref; an optional string indicating an attribute whose tokenized value should be used as a basis for grouping the results; two booleans indicating whether only ambiguous types should be checked and whether the analysis should be performed only shallowly (i.e., not on any descendants of the input elements) -->
+      <!-- Output: zero or more <ns>s (one per group, and with @type-i, @type-a, and type-i-or-a if only ambiguous types are intended), each with one or more <n>s (one per atomic value in @n or @ref of the group picked), each with one or more <val type="[i, 1, 1a, a, a1, or $, depending on the type]">[VALUE]</val>, where VALUE is what the item is when converted. If the item is @ref then any non-word strings that are used to separate refs or @n values (hyphen, comma, etc.) are retained in <sep>s. -->
       <!-- This function is used to help other functions determine whether there is an error, or how ambiguous numerals should be interpreted -->
       <xsl:param name="elements" as="node()*"/>
       <xsl:param name="group-by-what-attr-value" as="xs:string?"/>
@@ -1420,11 +1469,79 @@
             else
                true()">
          <xsl:variable name="analysis" as="element()*">
-            <xsl:for-each
+            <xsl:for-each select="tan:normalize-text(current-group()/(@ref, @n, @old))">
+               <xsl:analyze-string select="." regex="\W+">
+                  <xsl:matching-substring>
+                     <sep>
+                        <xsl:value-of select="."/>
+                     </sep>
+                  </xsl:matching-substring>
+                  <xsl:non-matching-substring>
+                     <n>
+                        <xsl:choose>
+                           <xsl:when test="$analyze-only-ambiguous-types = false()">
+                              <xsl:choose>
+                                 <xsl:when test="matches(., $n-type-pattern[2], 'i')">
+                                    <val type="{$n-type[2]}">
+                                       <xsl:value-of select="."/>
+                                    </val>
+                                 </xsl:when>
+                                 <xsl:otherwise>
+                                    <xsl:if test="matches(., $n-type-pattern[1], 'i')">
+                                       <val type="{$n-type[1]}">
+                                          <xsl:value-of select="tan:rom-to-int(.)"/>
+                                       </val>
+                                    </xsl:if>
+                                    <xsl:if test="matches(., $n-type-pattern[3], 'i')">
+                                       <val type="{$n-type[3]}">
+                                          <xsl:value-of
+                                             select="concat(replace(., '\D+', ''), '-', tan:aaa-to-int(replace(., '\d+', '')))"
+                                          />
+                                       </val>
+                                    </xsl:if>
+                                    <xsl:if test="matches(., $n-type-pattern[4], 'i')">
+                                       <val type="{$n-type[4]}">
+                                          <xsl:value-of select="tan:aaa-to-int(.)"/>
+                                       </val>
+                                    </xsl:if>
+                                    <xsl:if test="matches(., $n-type-pattern[5], 'i')">
+                                       <val type="{$n-type[5]}">
+                                          <xsl:value-of
+                                             select="concat(tan:aaa-to-int(replace(., '\d+', '')), '-', replace(., '\D+', ''))"
+                                          />
+                                       </val>
+                                    </xsl:if>
+                                    <val type="$">
+                                       <xsl:value-of select="lower-case(.)"/>
+                                    </val>
+                                 </xsl:otherwise>
+                              </xsl:choose>
+                           </xsl:when>
+                           <xsl:otherwise>
+                              <xsl:if test="matches(., $n-type-pattern[1], 'i')">
+                                 <val type="{$n-type[1]}">
+                                    <xsl:value-of select="tan:rom-to-int(.)"/>
+                                 </val>
+                              </xsl:if>
+                              <xsl:if test="matches(., $n-type-pattern[4], 'i')">
+                                 <val type="{$n-type[4]}">
+                                    <xsl:value-of select="tan:aaa-to-int(.)"/>
+                                 </val>
+                              </xsl:if>
+                              <val type="$">
+                                 <xsl:value-of select="."/>
+                              </val>
+                           </xsl:otherwise>
+                        </xsl:choose>
+                     </n>
+                  </xsl:non-matching-substring>
+               </xsl:analyze-string>
+            </xsl:for-each>
+            <!--<xsl:for-each
                select="
                   for $i in tan:normalize-text(current-group()/(@ref, @n, @old))
                   return
-                     tokenize($i, ' ')">
+                     tokenize($i, '\W+')">
                <n>
                   <xsl:choose>
                      <xsl:when test="$analyze-only-ambiguous-types = false()">
@@ -1482,7 +1599,7 @@
                      </xsl:otherwise>
                   </xsl:choose>
                </n>
-               <!--<xsl:for-each
+               <!-\-<xsl:for-each
                   select="tokenize(., ' ')[matches(., concat($n-type-pattern[4], '|', $n-type-pattern[1]), 'i')]">
                   <xsl:variable name="this-item" select="lower-case(.)"/>
                   <xsl:choose>
@@ -1496,8 +1613,8 @@
                         <xsl:value-of select="concat('i-or-a#',$this-item)"/>
                      </xsl:otherwise>
                   </xsl:choose>
-               </xsl:for-each>-->
-            </xsl:for-each>
+               </xsl:for-each>-\->
+            </xsl:for-each>-->
          </xsl:variable>
          <!--<xsl:variable name="ambiguous-vals" as="xs:string*"
             select="

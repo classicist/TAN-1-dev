@@ -289,7 +289,8 @@
                select="string-join(($orig-ref-so-far, (@orig-n, @n)[1]), $separator-hierarchy)"/>
             <!--<xsl:variable name="this-ref" select="tan:flatref(., $div-types-to-suppress, $div-ns-to-rename)"/>-->
             <xsl:variable name="new-ref"
-               select="string-join(($new-ref-so-far, ($alias-specific, @n)[1]), $separator-hierarchy)"/>
+               select="string-join(($new-ref-so-far, lower-case(($alias-specific, @n)[1])), $separator-hierarchy)"
+            />
             <!-- Homogenize tei:div to tan:div -->
             <div>
                <xsl:copy-of select="@*"/>

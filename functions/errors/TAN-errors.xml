@@ -157,12 +157,6 @@
         <error xml:id="spl02"><rule>No source may be split more than once in the same place.</rule></error>
         <error xml:id="spl03"><rule>Splits may not be made at the first token in a div.</rule></error>
     </group>
-    <group affects-attribute="src" affects-element="div-ref align">
-        <error xml:id="tad01"><rule>The &lt;div-ref>s in an &lt;align> that does not have @exclusive set to true may take only one value for @src.</rule></error>
-    </group>
-    <group affects-element="anchor-div-ref" affects-attribute="src">
-        <error xml:id="tad02"><rule>@src in &lt;anchor-div-ref> may take no more than one value.</rule></error>
-    </group>
     <group affects-element="align tok ana">
         <error xml:id="cl211"><rule>A &lt;tok> may not duplicate any sibling &lt;tok>.</rule></error>
     </group>

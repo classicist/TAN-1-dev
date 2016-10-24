@@ -21,6 +21,117 @@
    <xsl:variable name="sources-prepped" select="$self-and-sources-prepped[position() gt 1]"/>
    
    <!-- PART II. PROCESSING SELF -->
+   
+   <!-- Templates rooted in TAN-class-2-functions.xsl -->
+   
+   <xsl:template match="tan:tok" mode="prep-tan-a-div-pass-3-prelim">
+      <xsl:param name="sources-prepped-1" as="document-node()*" tunnel="yes"/>
+      <xsl:variable name="token-definitions"
+         select="root()/tan:TAN-A-div/tan:head/tan:declarations/tan:token-definition"/>
+      <xsl:variable name="this-tok" select="."/>
+      <xsl:variable name="this-src" select="@src"/>
+      <xsl:variable name="pass-1"
+         select="tan:convert-ref-to-div-fragment($sources-prepped-1[*/@src = $this-src], ., true())"
+         as="element()*"/>
+      <xsl:variable name="pass-2" as="element()*">
+         <xsl:apply-templates select="$pass-1" mode="tokenize-prepped-class-1">
+            <xsl:with-param name="token-definitions" select="$token-definitions[@src = $this-src]"
+               tunnel="yes"/>
+            <xsl:with-param name="add-n-attr" select="true()" tunnel="yes"/>
+         </xsl:apply-templates>
+      </xsl:variable>
+      <xsl:for-each select="$pass-2">
+         <!--<xsl:variable name="this-ref" select="@ref"/>-->
+         <xsl:variable name="these-toks" select="tan:get-toks(., $this-tok)" as="element()*"/>
+         <xsl:for-each select="$these-toks">
+            <xsl:copy>
+               <xsl:copy-of select="@*"/>
+               <xsl:copy-of select="$this-src"/>
+               <xsl:copy-of select="@ref"/>
+               <xsl:if test="@n = 1">
+                  <xsl:copy-of select="tan:error('spl03')"/>
+               </xsl:if>
+               <xsl:copy-of select="node()"/>
+            </xsl:copy>
+         </xsl:for-each>
+      </xsl:for-each>
+   </xsl:template>
+   <xsl:template match="tan:anchor-div-ref | tan:div-ref[not(@src)]" mode="prep-tan-a-div-pass-3-prelim">
+      <!-- This template distributes elements with @work across all the sources that are implied, using the resolved <equate-works> that has been placed in the body in the process of preparation pass 2 -->
+      <xsl:variable name="this-element" select="."/>
+      <xsl:variable name="this-element-name" select="name($this-element)"/>
+      <xsl:variable name="head-of-group"
+         select="(preceding-sibling::*[name() = $this-element-name and @work])[last()]"/>
+      <xsl:variable name="is-continuation" select="not(exists(@work))"/>
+      <xsl:variable name="this-work-attr" as="xs:string?"
+         select="
+            if ($is-continuation = true()) then
+               $head-of-group/@work
+            else
+               @work"
+      />
+      <xsl:variable name="these-sources" select="ancestor::tan:body/tan:equate-works[tan:work/@xml:id = $this-work-attr]/tan:work/@src"/>
+      <xsl:for-each select="$these-sources">
+         <xsl:variable name="this-src" select="."/>
+         <xsl:variable name="pos" select="position()"/>
+         <xsl:element name="{$this-element-name}">
+            <xsl:copy-of select="$this-element/@*"/>
+            <xsl:attribute name="src" select="$this-src"/>
+            <xsl:attribute name="group"
+               select="count($this-element/preceding-sibling::*[not(@cont)]) + 1"/>
+            <xsl:if test="$is-continuation = true()">
+               <xsl:copy-of select="$head-of-group/(@strength, @cert)"/>
+            </xsl:if>
+            <xsl:copy-of select="$this-element/node()"/>
+         </xsl:element>
+      </xsl:for-each>
+   </xsl:template>
+   
+   <xsl:template match="tan:div-ref | tan:anchor-div-ref" mode="insert-seg-into-leaf-divs-in-hierarchy-fragment">
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:if test="exists(tan:div[tan:div]) and exists(@seg)">
+            <xsl:copy-of select="tan:error('seg01')"/>
+         </xsl:if>
+         <xsl:apply-templates mode="insert-seg-into-leaf-divs-in-hierarchy-fragment"/>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:div[not(tan:div)]"
+      mode="insert-seg-into-leaf-divs-in-hierarchy-fragment">
+      <xsl:param name="splits" as="element()*" tunnel="yes"/>
+      <xsl:variable name="master-div-ref"
+         select="(ancestor::tan:div-ref, ancestor::tan:anchor-div-ref)"/>
+      <xsl:variable name="this-src" select="$master-div-ref/@src"/>
+      <xsl:variable name="this-ref" select="@ref"/>
+      <xsl:variable name="relevant-splits"
+         select="$splits/tan:tok[@src = $this-src and @ref = $this-ref]"/>
+      <xsl:variable name="number-of-segments" select="count($relevant-splits) + 1"/>
+      <xsl:variable name="segments-desired" select="($master-div-ref/@seg, '1 - last')[1]"/>
+      <xsl:variable name="segment-numbers"
+         select="tan:sequence-expand($segments-desired, $number-of-segments)"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:copy-of select="node()"/>
+         <xsl:for-each select="$segment-numbers">
+            <xsl:if test=". = 0">
+               <xsl:copy-of
+                  select="tan:error('seq01', concat($this-ref, ' has ', $number-of-segments, ' max segments'))"
+               />
+            </xsl:if>
+            <xsl:if test=". = -1">
+               <xsl:copy-of
+                  select="tan:error('seq02', concat($this-ref, ' has ', $number-of-segments, ' max segments'))"
+               />
+            </xsl:if>
+            <xsl:if test=". = -2">
+               <xsl:copy-of select="tan:error('seq03')"/>
+            </xsl:if>
+            <seg n="{.}"/>
+         </xsl:for-each>
+      </xsl:copy>
+   </xsl:template>
+
+   <!-- Processing self after common class 2 functions are finished. -->
 
    <xsl:function name="tan:prep-verbosely" as="document-node()*">
       <!-- Input: a TAN-A-div file prepped and its sources, also prepped

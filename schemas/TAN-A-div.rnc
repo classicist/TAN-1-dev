@@ -25,10 +25,14 @@ include "incl/TAN-class-2.rnc" {
     TAN-body-core = work-equiv*, div-type-equiv*, split*, realignment*, alignment*
     
     ## alignments may take either an id with no supplementary variables or else no id and optional variables indicating strength, exclusivity, distribution, and auto-alignment
-    alignment-attributes-non-class-2 = strength-claim?, exclusive-claim?, distribute-claim?
+    alignment-attributes-non-class-2 = strength-claim?, distribute-claim?
     
     ## alignments must contain either one or more div-refs or a list of IDREFS to other alignments
-    alignment-content-non-class-2 = align-div-list
+    alignment-content-non-class-2 =
+        (div-ref-item-for-source
+         | div-ref-group-for-source
+         | div-ref-item-for-work
+         | div-ref-group-for-work)*
     decl-non-class-2 = decl-topics*
     non-class-2-opt = topic-opt?
     
@@ -59,7 +63,7 @@ work-equiv =
     ## If work X of source A is stated to be equivalent to work Y of source B, then any work in any source identical to X will be identical to any work in any source identical to Y. So to equate two works, each with multiple members, you need declare the equivalence between only one member of each work, not all of them.
     
     ## This element does not imply that the two works are, in reality, one and the same. It merely states that, for the purposes of this alignment, they should be treated as equivalent.
-    element equate-works { ed-stamp?, (inclusion | source-ref) }
+    element equate-works { ed-stamp?, (inclusion | work-refs) }
 div-type-equiv =
     
     ## declares an ad hoc equivalence between div types that are not defined by their sources as being identical.
@@ -98,7 +102,7 @@ strength-claim =
     }
 realignment =
     
-    ## corrects wrongly aligned divisions and segments in versions of the same work. This element (1) exempts any divs or segments referred to in children <div-ref>s from their default alignments and (2) realigns them together as a group. Realignments have two types.
+    ## corrects misaligned or unaligned divisions and segments in versions of the same work. This element (1) exempts any divs or segments referred to in children <div-ref>s from their default alignments and (2) realigns them together as a group. Realignments have two types.
     
     ## An UNANCHORED realigment is useful for divisions that need to be removed from any automatic alignment. It consists solely of one or more <div-ref>s. The effect is (1) to sever each referenced <div> from any automatic alignment and (2) to realign each source's nth reference (div or segment) with the nth reference in every other other source, if any, invoked in the <realign>. If only one source is invoked in a <realign>, only the first effect takes place: the references are effectively severed from any automatic alignment with any other version for that source. Realignment is inherited, affecting not only the specified <div>s but their descendants too.
     
@@ -106,7 +110,7 @@ realignment =
     
     ## Unanchored <realign>s effectively sever every <div-ref> from any automatic alignment. But anchored ones do not sever automatic alignment; they merely shift it to the anchor. This method is helpful for synchronizing a few sources with the reference system followed by the majority.
     
-    ## Because of the distributive nature of the realignment, every value of @ref that involves a hyphen must have siblings on the left and right side of the hyphen (i.e., ref="bk.1 - bk.2:ch.1" would be invalid).
+    ## Because of the distributive nature of the realignment, every value of @ref that involves a hyphen must have siblings with balanced depth on the left and right side of the hyphen (i.e., ref="1 - 2.1" would be invalid).
     
     ## This element is source-specific and not subject to any transitive properties. The assertions apply only to the specific sources that are cited.
     
@@ -117,16 +121,17 @@ realignment =
         ed-stamp?,
         (inclusion
          | (distribute-claim?,
-            (comment* & (anchor?, realign-div-list))))
+            (comment*
+             & ((anchor-div-ref-item | anchor-div-ref-group)?,
+                (div-ref-item-for-source | div-ref-group-for-source)*))))
     }
-anchor = anchor-div-ref-item
-realign-div-list = div-ref-item+
-exclusive-claim =
-    
-    ## indicates whether an alignment should be treated as non-transitive or transitive. If there is no @exclusive, then if X is aligned with Y, then anything that aligns with X will align with anything that aligns with Y. If @exclusive is present then the alignment holds only between the specified references. The latter is useful, e.g., for specifying cases where one version of a work uniquely quotes from another. Value must be 1 or true, implied by the very presence of the attribute. If you wish to decare it to be false, delete the attribute altogether.
-    attribute exclusive {
-        xsd:boolean { pattern = "true|1" }
-    }
+# exclusive-claim =
+
+#    attribute exclusive {
+#       xsd:boolean { pattern = "true|1" }
+#  }
+
+## indicates whether an alignment should be treated as non-transitive or transitive. If there is no @exclusive, then if X is aligned with Y, then anything that aligns with X will align with anything that aligns with Y. If @exclusive is present then the alignment holds only between the specified references. The latter is useful, e.g., for specifying cases where one version of a work uniquely quotes from another. Value must be 1 or true, implied by the very presence of the attribute. If you wish to decare it to be false, delete the attribute altogether.
 distribute-claim =
     
     ## indicates whether values should be matched one-to-one, or grouped. 
@@ -141,10 +146,8 @@ distribute-claim =
     attribute distribute {
         xsd:boolean { pattern = "true|1" }
     }
-align-div-list = div-ref-item+
 # <div-ref> and <anchor-div-ref> 
-anchor-div-ref-item = anchor-div-ref-regular | anchor-div-ref-sequence
-anchor-div-ref-regular =
+anchor-div-ref-item =
     
     ## defines a <div> to which other <div>s in other versions of the same work should be realigned (via <div-ref>s that follow). The first child of a <realign>, it is constructed exactly like <div-ref>, except that the mandatory @src may point only to a single source. 
     
@@ -153,32 +156,50 @@ anchor-div-ref-regular =
     ## If <anchor-div-ref> points to only one reference (i.e., @src, @ref, and @seg [if present] each have only one value) then however many references are made in subsequent <div-ref>s, they will all be realigned to that one anchor reference. 
     
     ## But if <anchor-div-ref> has more than one reference, then distribution is in effect. Every nth reference will be the anchor for the nth reference in subsequent <div-ref>s (grouped by source).
-    element anchor-div-ref { div-ref-attr-regular }
-anchor-div-ref-sequence =
-    anchor-div-ref-with-src-and-cont,
-    anchor-div-ref-with-cont-but-no-src*,
-    anchor-div-ref-without-cont-or-src
-anchor-div-ref-with-src-and-cont = element anchor-div-ref { div-ref-attr-with-src-and-cont }
-anchor-div-ref-with-cont-but-no-src = element anchor-div-ref { div-ref-attr-with-cont-but-no-src }
-anchor-div-ref-without-cont-or-src = element anchor-div-ref { div-ref-attr-without-cont-or-src }
-div-ref-item = div-ref-regular | div-ref-sequence
-div-ref-regular =
+    element anchor-div-ref { div-ref-attr-core, work-ref }
+anchor-div-ref-group =
+    element anchor-div-ref { div-ref-attr-core, work-ref, continuation },
+    element anchor-div-ref { div-ref-attr-core, continuation }*,
+    element anchor-div-ref { div-ref-attr-core }
+div-ref-item-for-work = element div-ref { div-ref-attr-core, strength-claim?, work-ref }
+div-ref-group-for-work =
     
     ## collects one or more <div>s (or segments of <div>s) in one or more sources
     
     ## In most cases, the texts pointed to in <div-ref> will be treated as a collective set. If passage A is found three times in X, Y, and Z, then in an <align> four different <div-ref>s should be used. But if A is found once, spanning X, Y, and Z, then the last three should be gathered in a single <div-ref>, or, optionally, in a <div-ref> with a @cont.
-    element div-ref { div-ref-attr-regular }
-div-ref-sequence =
-    div-ref-with-src-and-cont, div-ref-with-cont-but-no-src*, div-ref-without-cont-or-src
-div-ref-with-src-and-cont = element div-ref { div-ref-attr-with-src-and-cont }
-div-ref-with-cont-but-no-src = element div-ref { div-ref-attr-with-cont-but-no-src }
-div-ref-without-cont-or-src = element div-ref { div-ref-attr-without-cont-or-src }
+    element div-ref { div-ref-attr-core, strength-claim?, work-ref, continuation },
+    div-ref-group-continuation
+div-ref-item-for-source = element div-ref { div-ref-attr-core, strength-claim?, source-ref }
+div-ref-group-for-source =
+    element div-ref { div-ref-attr-core, strength-claim?, source-ref, continuation },
+    div-ref-group-continuation
+div-ref-group-continuation =
+    element div-ref { div-ref-attr-core, continuation }*,
+    element div-ref { div-ref-attr-core }
 div-ref-attr-core = ed-stamp?, pointer-to-div-range, seg-ref?
-div-ref-attr-regular = div-ref-attr-core, source-ref, strength-claim?
-div-ref-attr-with-src-and-cont = div-ref-attr-core, source-ref, continuation, strength-claim?
-div-ref-attr-with-cont-but-no-src = div-ref-attr-core, continuation
-div-ref-attr-without-cont-or-src = div-ref-attr-core
 seg-ref =
     
     ## picks specific segments in a leaf div (and only to leaf divs). There must be an appropriate number of splits declared for those leaf divs in <split-leaf-div-at>.
     attribute seg { seq-picker }
+work-ref =
+    
+    ## refers to a work by means of a source ID as a proxy. 
+    attribute work {
+        xsd:string { pattern = "\S+" }
+    }
+work-refs =
+    
+    ## refers to works by means of source IDs as a proxy. 
+    attribute work { text }
+# detritus
+# div-ref-item = div-ref-regular | div-ref-sequence
+# div-ref-regular = element div-ref { div-ref-attr-regular }
+# div-ref-sequence =
+#    div-ref-with-src-and-cont, div-ref-with-cont-but-no-src*, div-ref-without-cont-or-src
+# div-ref-with-src-and-cont = element div-ref { div-ref-attr-with-src-and-cont }
+# div-ref-with-cont-but-no-src = element div-ref { div-ref-attr-with-cont-but-no-src }
+# div-ref-without-cont-or-src = element div-ref { div-ref-attr-without-cont-or-src }
+# div-ref-attr-regular = div-ref-attr-core, source-ref, strength-claim?
+# div-ref-attr-with-src-and-cont = div-ref-attr-core, source-ref, continuation, strength-claim?
+# div-ref-attr-with-cont-but-no-src = div-ref-attr-core, continuation
+# div-ref-attr-without-cont-or-src = div-ref-attr-core

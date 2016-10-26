@@ -200,6 +200,7 @@
       <xsl:variable name="head-of-group"
          select="(preceding-sibling::*[name() = $this-element-name and (@src or @work)])[last()]"/>
       <xsl:variable name="is-continuation" select="not(exists(@src) or exists(@work))"/>
+      <xsl:variable name="all-possible-sources" select="/*/tan:head/tan:source/@xml:id"/>
       <xsl:variable name="this-src-attr" as="xs:string?"
          select="
             if ($is-continuation = true()) then
@@ -207,13 +208,16 @@
             else
                @src"/>
       <xsl:variable name="srcs-pass-1" select="tokenize(tan:normalize-text($this-src-attr), ' ')"/>
-      <xsl:variable name="all-possible-sources" select="/*/tan:head/tan:source/@xml:id"/>
       <xsl:variable name="these-sources"
          select="
-            if ($srcs-pass-1 = '*') then
-               $all-possible-sources
+            if (/tan:TAN-LM) then
+               '1'
             else
-               $srcs-pass-1"/>
+               if ($srcs-pass-1 = '*') then
+                  $all-possible-sources
+               else
+                  $srcs-pass-1"
+      />
       <xsl:variable name="these-div-types"
          select="tokenize(tan:normalize-text(@div-type-ref), '\s+')"/>
       <xsl:choose>

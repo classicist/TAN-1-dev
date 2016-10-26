@@ -351,7 +351,7 @@
          <xsl:variable name="doc-stamped" as="document-node()?">
             <xsl:document>
                <xsl:apply-templates mode="first-stamp">
-                  <xsl:with-param name="leave-breadcrumbs" select="$leave-breadcrumbs"/>
+                  <xsl:with-param name="leave-breadcrumbs" select="$leave-breadcrumbs" tunnel="yes"/>
                   <xsl:with-param name="stamp-root-element-with-attr-name"
                      select="$add-attr-to-root-element-named-what"/>
                   <xsl:with-param name="stamp-root-element-with-attr-val"
@@ -457,7 +457,7 @@
             <xsl:variable name="pos" select="position()"/>
             <xsl:document>
                <xsl:apply-templates mode="first-stamp">
-                  <xsl:with-param name="leave-breadcrumbs" select="$leave-breadcrumbs"/>
+                  <xsl:with-param name="leave-breadcrumbs" select="$leave-breadcrumbs" tunnel="yes"/>
                   <xsl:with-param name="stamp-root-element-with-attr-name"
                      select="$add-attr-to-root-element-named-what"/>
                   <xsl:with-param name="stamp-root-element-with-attr-val"
@@ -1231,13 +1231,14 @@
       errors occurring downstream, in an inclusion or TAN-key file can be diagnosed, and (2) the option
       for @src to be imprinted on the root element, so that a class 1 TAN file can be tethered to a 
       class 2 file that uses it as a source.-->
-      <xsl:param name="leave-breadcrumbs" as="xs:boolean?"/>
+      <xsl:param name="leave-breadcrumbs" as="xs:boolean" tunnel="yes"/>
       <xsl:param name="stamp-root-element-with-attr-name" as="xs:string?"/>
       <xsl:param name="stamp-root-element-with-attr-val" as="xs:string?"/>
+      <xsl:variable name="this-base-uri" select="tan:base-uri(.)" as="xs:anyURI?"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:if test="not(exists(@base-uri))">
-            <xsl:attribute name="base-uri" select="base-uri(.)"/>
+            <xsl:attribute name="base-uri" select="$this-base-uri"/>
          </xsl:if>
          <xsl:if
             test="string-length($stamp-root-element-with-attr-name) gt 0 and string-length($stamp-root-element-with-attr-val) gt 0">
@@ -1247,25 +1248,37 @@
          <xsl:if test="$leave-breadcrumbs = true()">
             <xsl:attribute name="q" select="1"/>
          </xsl:if>
-         <xsl:choose>
+         <xsl:apply-templates mode="#current">
+            <xsl:with-param name="base-uri" select="$this-base-uri" tunnel="yes"/>
+            <xsl:with-param name="leave-breadcrumbs" select="$leave-breadcrumbs" tunnel="yes"/>
+         </xsl:apply-templates>
+         <!--<xsl:choose>
             <xsl:when test="$leave-breadcrumbs = true()">
                <xsl:apply-templates mode="#current"/>
             </xsl:when>
             <xsl:otherwise>
                <xsl:copy-of select="node()"/>
             </xsl:otherwise>
-         </xsl:choose>
+         </xsl:choose>-->
       </xsl:copy>
    </xsl:template>
    <xsl:template match="node()" mode="first-stamp">
+      <xsl:param name="base-uri" as="xs:anyURI?" tunnel="yes"/>
+      <xsl:param name="leave-breadcrumbs" as="xs:boolean" tunnel="yes"/>
       <xsl:variable name="this-element-name" select="name(.)"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
-         <xsl:attribute name="q"
-            select="count(preceding-sibling::*[name() = $this-element-name]) + 1"/>
-         <!--<xsl:if test="not(parent::*)">
-            <xsl:attribute name="uri" select="base-uri(.)"/>
-         </xsl:if>-->
+         <xsl:if test="$leave-breadcrumbs = true()">
+            <xsl:attribute name="q"
+               select="count(preceding-sibling::*[name() = $this-element-name]) + 1"/>
+         </xsl:if>
+         <xsl:if test="@href">
+            <xsl:variable name="new-href" select="resolve-uri(@href, $base-uri)"/>
+            <xsl:attribute name="href" select="$new-href"/>
+            <xsl:if test="not($new-href = @href)">
+               <xsl:attribute name="orig-href" select="@href"/>
+            </xsl:if>
+         </xsl:if>
          <xsl:apply-templates mode="#current"/>
       </xsl:copy>
    </xsl:template>
@@ -1776,7 +1789,7 @@
       </xsl:copy>
    </xsl:template>
 
-   <xsl:template match="*[@href]" mode="resolve-href first-stamp">
+   <xsl:template match="*[@href]" mode="resolve-href">
       <xsl:param name="special-base-uri" as="xs:string?" tunnel="yes"/>
       <xsl:variable name="this-base-uri"
          select="

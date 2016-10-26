@@ -56,7 +56,7 @@
         <change when="2014-08-22" who="park">Added German version.</change>
     </head>
     <body>
-        <equate-works src="eng-uk ger"/>
+        <equate-works work="eng-uk ger"/>
         <equate-div-types>
             <div-type-ref src="ger" div-type-ref="Zeile"/>
             <div-type-ref src="eng-uk" div-type-ref="line"/>
@@ -65,7 +65,7 @@
             <tok src="eng-us" ref="2" pos="last-3"/>
         </split-leaf-div-at>
         <realign>
-            <anchor-div-ref src="eng-us" ref="4"/>
+            <anchor-div-ref work="eng-us" ref="4"/>
             <div-ref src="ger" ref="e"/>
         </realign>
     </body>

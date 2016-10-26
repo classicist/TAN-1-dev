@@ -3,7 +3,8 @@
 <?xml-model href="../../schemas/TAN-A-div.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
 <!--<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-div.rnc" type="application/relax-ng-compact-syntax"?>
 <?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-div.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>-->
-<TAN-A-div xmlns="tag:textalign.net,2015:ns" TAN-version="1 dev" id="tag:parkj@textalign.net,2015:ar.cat.tan-a-div">
+<TAN-A-div xmlns="tag:textalign.net,2015:ns" TAN-version="1 dev"
+    id="tag:parkj@textalign.net,2015:ar.cat.tan-a-div">
     <head>
         <name>Alignment of Aristotle's Categories</name>
         <!--<master-location href="http://textalign.net/release/1/dev/examples/TAN-A-div/ar.cat-tan-a-div.xml"/>-->
@@ -18,17 +19,20 @@
         <source xml:id="grc">
             <IRI>tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:semantic-refs</IRI>
             <name>Categories, Aristotle, Greek text by Minio-Paluello</name>
-            <location href="../ar.cat.grc.1949.minio-paluello-sem.xml" when-accessed="2016-07-08T15:17:28.037-04:00"/>
+            <location href="../ar.cat.grc.1949.minio-paluello-sem.xml"
+                when-accessed="2016-07-08T15:17:28.037-04:00"/>
         </source>
         <source xml:id="eng">
             <IRI>tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:semantic-refs</IRI>
             <name>Categories, Aristotle, English translation by E. M. Edghill</name>
-            <location href="../ar.cat.eng.1926.edghill.sem.xml" when-accessed="2016-07-08T15:18:25.573-04:00"/>
+            <location href="../ar.cat.eng.1926.edghill.sem.xml"
+                when-accessed="2016-07-08T15:18:25.573-04:00"/>
         </source>
         <source xml:id="fra">
             <IRI>tag:kalvesmaki.com,2014:tan-t:ar.cat.fra.1844.saint-hilaire:semantic-refs</IRI>
             <name>Categories, Aristotle, French translation by J. Barthélemy Saint-Hilaire</name>
-            <location href="../ar.cat.fra.1844.saint-hilaire.sem-native.xml" when-accessed="2016-07-11T13:44:25.487-04:00"/>
+            <location href="../ar.cat.fra.1844.saint-hilaire.sem-native.xml"
+                when-accessed="2016-07-11T13:44:25.487-04:00"/>
         </source>
         <declarations>
             <suppress-div-types src="fra" div-type-ref="sec"/>
@@ -53,554 +57,554 @@
         </realign>
         <!-- real ones below -->
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="1 1 1 - 1 1 3"/>
+            <anchor-div-ref work="grc" ref="1 1 1 - 1 1 3"/>
             <div-ref src="fra" ref="1 1 - 1 3"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="3 1 1 - 3 1 3"/>
+            <anchor-div-ref work="grc" ref="3 1 1 - 3 1 3"/>
             <div-ref src="fra" ref="3 1 - 3 3"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="5 1 1 - 5 1 4"/>
+            <anchor-div-ref work="grc" ref="5 1 1 - 5 1 4"/>
             <div-ref src="fra" ref="5 1 - 5 4"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="5 1 5 - 5 1 7"/>
+            <anchor-div-ref work="grc" ref="5 1 5 - 5 1 7"/>
             <div-ref src="fra" ref="5 5"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="5 2 1 - 5 2 2"/>
+            <anchor-div-ref work="grc" ref="5 2 1 - 5 2 2"/>
             <div-ref src="fra" ref="5 6"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="5 2 3 - 5 2 5"/>
+            <anchor-div-ref work="grc" ref="5 2 3 - 5 2 5"/>
             <div-ref src="fra" ref="5 7 - 5 9"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="5 3 1 - 5 3 2"/>
+            <anchor-div-ref work="grc" ref="5 3 1 - 5 3 2"/>
             <div-ref src="fra" ref="5 10 - 5 11"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="5 4 1 - 5 4 5"/>
+            <anchor-div-ref work="grc" ref="5 4 1 - 5 4 5"/>
             <div-ref src="fra" ref="5 12"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="5 4 6 - 5 4 7"/>
+            <anchor-div-ref work="grc" ref="5 4 6 - 5 4 7"/>
             <div-ref src="fra" ref="5 13"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="5 4 8"/>
+            <anchor-div-ref work="grc" ref="5 4 8"/>
             <div-ref src="fra" ref="5 14"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="5 5"/>
+            <anchor-div-ref work="grc" ref="5 5"/>
             <div-ref src="fra" ref="5 15"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="5 6 1 - 5 6 3 2"/>
+            <anchor-div-ref work="grc" ref="5 6 1 - 5 6 3 2"/>
             <div-ref src="fra" ref="5 16"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="5 6 3 3 - 5 6 4"/>
+            <anchor-div-ref work="grc" ref="5 6 3 3 - 5 6 4"/>
             <div-ref src="fra" ref="5 17"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="5 7 1 - 5 7 3"/>
+            <anchor-div-ref work="grc" ref="5 7 1 - 5 7 3"/>
             <div-ref src="fra" ref="5 18"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="5 7 4"/>
+            <anchor-div-ref work="grc" ref="5 7 4"/>
             <div-ref src="fra" ref="5 19"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="5 8"/>
+            <anchor-div-ref work="grc" ref="5 8"/>
             <div-ref src="fra" ref="5 20"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="5 9 1 - 5 9 2"/>
+            <anchor-div-ref work="grc" ref="5 9 1 - 5 9 2"/>
             <div-ref src="fra" ref="5 21"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="5 9 3"/>
+            <anchor-div-ref work="grc" ref="5 9 3"/>
             <div-ref src="fra" ref="5 22"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="5 9 4 - 5 9 5"/>
+            <anchor-div-ref work="grc" ref="5 9 4 - 5 9 5"/>
             <div-ref src="fra" ref="5 23"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="5 9 6 - 5 9 8"/>
+            <anchor-div-ref work="grc" ref="5 9 6 - 5 9 8"/>
             <div-ref src="fra" ref="5 24 - 5 26"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 1 1"/>
+            <anchor-div-ref work="grc" ref="6 1 1"/>
             <div-ref src="fra" ref="6 1"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 1 2"/>
+            <anchor-div-ref work="grc" ref="6 1 2"/>
             <div-ref src="fra" ref="6 2"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 1 3"/>
+            <anchor-div-ref work="grc" ref="6 1 3"/>
             <div-ref src="fra" ref="6 3"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 1 4"/>
+            <anchor-div-ref work="grc" ref="6 1 4"/>
             <div-ref src="fra" ref="6 4"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 1 5 1 - 6 1 5 2"/>
+            <anchor-div-ref work="grc" ref="6 1 5 1 - 6 1 5 2"/>
             <div-ref src="fra" ref="6 5"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 1 5 3"/>
+            <anchor-div-ref work="grc" ref="6 1 5 3"/>
             <div-ref src="fra" ref="6 6"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 1 6"/>
+            <anchor-div-ref work="grc" ref="6 1 6"/>
             <div-ref src="fra" ref="6 7"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 1 7"/>
+            <anchor-div-ref work="grc" ref="6 1 7"/>
             <div-ref src="fra" ref="6 8"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 1 8"/>
+            <anchor-div-ref work="grc" ref="6 1 8"/>
             <div-ref src="fra" ref="6 9"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 2 1 1"/>
+            <anchor-div-ref work="grc" ref="6 2 1 1"/>
             <div-ref src="fra" ref="6 10"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 2 1 2"/>
+            <anchor-div-ref work="grc" ref="6 2 1 2"/>
             <div-ref src="fra" ref="6 11"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 2 1 3"/>
+            <anchor-div-ref work="grc" ref="6 2 1 3"/>
             <div-ref src="fra" ref="6 12"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 2 2"/>
+            <anchor-div-ref work="grc" ref="6 2 2"/>
             <div-ref src="fra" ref="6 13"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 2 3 - 6 2 5"/>
+            <anchor-div-ref work="grc" ref="6 2 3 - 6 2 5"/>
             <div-ref src="fra" ref="6 14"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 2 6"/>
+            <anchor-div-ref work="grc" ref="6 2 6"/>
             <div-ref src="fra" ref="6 15"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 2 7"/>
+            <anchor-div-ref work="grc" ref="6 2 7"/>
             <div-ref src="fra" ref="6 16"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 3"/>
+            <anchor-div-ref work="grc" ref="6 3"/>
             <div-ref src="fra" ref="6 17"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 4 1"/>
+            <anchor-div-ref work="grc" ref="6 4 1"/>
             <div-ref src="fra" ref="6 18 - 6 19"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 4 2 - 6 4 3"/>
+            <anchor-div-ref work="grc" ref="6 4 2 - 6 4 3"/>
             <div-ref src="fra" ref="6 20"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 4 4"/>
+            <anchor-div-ref work="grc" ref="6 4 4"/>
             <div-ref src="fra" ref="6 21"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 4 5"/>
+            <anchor-div-ref work="grc" ref="6 4 5"/>
             <div-ref src="fra" ref="6 22"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 4 6 - 6 4 9"/>
+            <anchor-div-ref work="grc" ref="6 4 6 - 6 4 9"/>
             <div-ref src="fra" ref="6 23"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 4 10 - 6 4 11"/>
+            <anchor-div-ref work="grc" ref="6 4 10 - 6 4 11"/>
             <div-ref src="fra" ref="6 24"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 5"/>
+            <anchor-div-ref work="grc" ref="6 5"/>
             <div-ref src="fra" ref="6 25"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="6 6"/>
+            <anchor-div-ref work="grc" ref="6 6"/>
             <div-ref src="fra" ref="6 26"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="7 1 1 1"/>
+            <anchor-div-ref work="grc" ref="7 1 1 1"/>
             <div-ref src="fra" ref="7 1"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="7 1 1 2 - 7 1 3 1"/>
+            <anchor-div-ref work="grc" ref="7 1 1 2 - 7 1 3 1"/>
             <div-ref src="fra" ref="7 2"/>
         </realign>
         <!-- 7 1 3 1 is divided in half by the fra 72 and 7 3-->
         <realign>
-            <anchor-div-ref src="grc" ref="7 1 3 2"/>
+            <anchor-div-ref work="grc" ref="7 1 3 2"/>
             <div-ref src="fra" ref="7 3"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="7 1 4"/>
+            <anchor-div-ref work="grc" ref="7 1 4"/>
             <div-ref src="fra" ref="7 4"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="7 2 1 - 7 2 4"/>
+            <anchor-div-ref work="grc" ref="7 2 1 - 7 2 4"/>
             <div-ref src="fra" ref="7 5 - 7 8"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="7 3 1 - 7 3 2"/>
+            <anchor-div-ref work="grc" ref="7 3 1 - 7 3 2"/>
             <div-ref src="fra" ref="7 9 - 7 10"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="7 3 3 - 7 3 5"/>
+            <anchor-div-ref work="grc" ref="7 3 3 - 7 3 5"/>
             <div-ref src="fra" ref="7 11"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="7 3 6"/>
+            <anchor-div-ref work="grc" ref="7 3 6"/>
             <div-ref src="fra" ref="7 12"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="7 3 7 - 7 3 8"/>
+            <anchor-div-ref work="grc" ref="7 3 7 - 7 3 8"/>
             <div-ref src="fra" ref="7 13"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="7 3 9 - 7 3 10"/>
+            <anchor-div-ref work="grc" ref="7 3 9 - 7 3 10"/>
             <div-ref src="fra" ref="7 14 - 7 15"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="7 3 11 - 7 3 12"/>
+            <anchor-div-ref work="grc" ref="7 3 11 - 7 3 12"/>
             <div-ref src="fra" ref="7 16"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="7 4 1 - 7 4 3"/>
+            <anchor-div-ref work="grc" ref="7 4 1 - 7 4 3"/>
             <div-ref src="fra" ref="7 17"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="7 4 4"/>
+            <anchor-div-ref work="grc" ref="7 4 4"/>
             <div-ref src="fra" ref="7 18"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="7 4 5 - 7 4 6"/>
+            <anchor-div-ref work="grc" ref="7 4 5 - 7 4 6"/>
             <div-ref src="fra" ref="7 19"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="7 4 7 - 7 4 9"/>
+            <anchor-div-ref work="grc" ref="7 4 7 - 7 4 9"/>
             <div-ref src="fra" ref="7 20"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="7 4 10"/>
+            <anchor-div-ref work="grc" ref="7 4 10"/>
             <div-ref src="fra" ref="7 21"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="7 5 1 - 7 5 4"/>
+            <anchor-div-ref work="grc" ref="7 5 1 - 7 5 4"/>
             <div-ref src="fra" ref="7 22"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="7 5 5 1"/>
+            <anchor-div-ref work="grc" ref="7 5 5 1"/>
             <div-ref src="fra" ref="7 23"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="7 5 5 2, 7 5 6"/>
+            <anchor-div-ref work="grc" ref="7 5 5 2, 7 5 6"/>
             <div-ref src="fra" ref="7 24, 7 25"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="7 5 7 - 7 5 8"/>
+            <anchor-div-ref work="grc" ref="7 5 7 - 7 5 8"/>
             <div-ref src="fra" ref="7 26"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="7 5 9 - 7 5 11"/>
+            <anchor-div-ref work="grc" ref="7 5 9 - 7 5 11"/>
             <div-ref src="fra" ref="7 27 - 7 29"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="8 1 1 1 - 8 1 1 2"/>
+            <anchor-div-ref work="grc" ref="8 1 1 1 - 8 1 1 2"/>
             <div-ref src="fra" ref="8 1 - 8 2"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 1 2"/>
+            <anchor-div-ref work="grc" ref="8 1 2"/>
             <div-ref src="fra" ref="8 3"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 1 3 - 8 1 4"/>
+            <anchor-div-ref work="grc" ref="8 1 3 - 8 1 4"/>
             <div-ref src="fra" ref="8 4"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 1 5 - 8 1 6"/>
+            <anchor-div-ref work="grc" ref="8 1 5 - 8 1 6"/>
             <div-ref src="fra" ref="8 5"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 1 7"/>
+            <anchor-div-ref work="grc" ref="8 1 7"/>
             <div-ref src="fra" ref="8 6"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 2"/>
+            <anchor-div-ref work="grc" ref="8 2"/>
             <div-ref src="fra" ref="8 7"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="8 3 1 - 8 3 2"/>
+            <anchor-div-ref work="grc" ref="8 3 1 - 8 3 2"/>
             <div-ref src="fra" ref="8 8 - 8 9"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 3 3"/>
+            <anchor-div-ref work="grc" ref="8 3 3"/>
             <div-ref src="fra" ref="8 10"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 3 4 - 8 3 5"/>
+            <anchor-div-ref work="grc" ref="8 3 4 - 8 3 5"/>
             <div-ref src="fra" ref="8 11"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 3 6 - 8 3 7"/>
+            <anchor-div-ref work="grc" ref="8 3 6 - 8 3 7"/>
             <div-ref src="fra" ref="8 12"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 3 8 - 8 3 11"/>
+            <anchor-div-ref work="grc" ref="8 3 8 - 8 3 11"/>
             <div-ref src="fra" ref="8 13"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 4 1 - 8 4 2"/>
+            <anchor-div-ref work="grc" ref="8 4 1 - 8 4 2"/>
             <div-ref src="fra" ref="8 14"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="8 4 3 - 8 4 4"/>
+            <anchor-div-ref work="grc" ref="8 4 3 - 8 4 4"/>
             <div-ref src="fra" ref="8 15 - 8 16"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 5 1"/>
+            <anchor-div-ref work="grc" ref="8 5 1"/>
             <div-ref src="fra" ref="8 17 - 8 18"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 5 2"/>
+            <anchor-div-ref work="grc" ref="8 5 2"/>
             <div-ref src="fra" ref="8 19"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="8 5 3 - 8 5 5, 8 6 1"/>
+            <anchor-div-ref work="grc" ref="8 5 3 - 8 5 5, 8 6 1"/>
             <div-ref src="fra" ref="8 20 - 8 22, 8 23"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 6 2"/>
+            <anchor-div-ref work="grc" ref="8 6 2"/>
             <div-ref src="fra" ref="8 24"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 6 3 - 8 6 4"/>
+            <anchor-div-ref work="grc" ref="8 6 3 - 8 6 4"/>
             <div-ref src="fra" ref="8 25"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="9 1 1 - 9 1 2 1"/>
+            <anchor-div-ref work="grc" ref="9 1 1 - 9 1 2 1"/>
             <div-ref src="fra" ref="8 26"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="9 1 2 2 - 9 1 4"/>
+            <anchor-div-ref work="grc" ref="9 1 2 2 - 9 1 4"/>
             <div-ref src="fra" ref="8 27"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="9 1 5 - 9 1 7"/>
+            <anchor-div-ref work="grc" ref="9 1 5 - 9 1 7"/>
             <div-ref src="fra" ref="8 28"/>
         </realign>
         <realign>
             <!-- don't distribute, since there's not good correlation here -->
-            <anchor-div-ref src="grc" ref="9 2 1 - 9 2 2"/>
+            <anchor-div-ref work="grc" ref="9 2 1 - 9 2 2"/>
             <div-ref src="fra" ref="8 29 - 8 30"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="9 3 1"/>
+            <anchor-div-ref work="grc" ref="9 3 1"/>
             <div-ref src="fra" ref="8 31"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="9 3 2 - 9 3 4"/>
+            <anchor-div-ref work="grc" ref="9 3 2 - 9 3 4"/>
             <div-ref src="fra" ref="8 32"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="9 3 5"/>
+            <anchor-div-ref work="grc" ref="9 3 5"/>
             <div-ref src="fra" ref="8 33"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="9 5 1 1"/>
+            <anchor-div-ref work="grc" ref="9 5 1 1"/>
             <div-ref src="fra" ref="9 1"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="9 5 1 2 - 9 5 1 3"/>
+            <anchor-div-ref work="grc" ref="9 5 1 2 - 9 5 1 3"/>
             <div-ref src="fra" ref="9 2"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="9 5 2"/>
+            <anchor-div-ref work="grc" ref="9 5 2"/>
             <div-ref src="fra" ref="9 3"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="9 7 1 1"/>
+            <anchor-div-ref work="grc" ref="9 7 1 1"/>
             <div-ref src="fra" ref="9 4"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="9 7 1 2"/>
+            <anchor-div-ref work="grc" ref="9 7 1 2"/>
             <div-ref src="fra" ref="9 5"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="9 7 2"/>
+            <anchor-div-ref work="grc" ref="9 7 2"/>
             <div-ref src="fra" ref="9 6"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="9 7 3 1"/>
+            <anchor-div-ref work="grc" ref="9 7 3 1"/>
             <div-ref src="fra" ref="9 7"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="9 7 3 2"/>
+            <anchor-div-ref work="grc" ref="9 7 3 2"/>
             <div-ref src="fra" ref="10 1"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="10 1 1 - 10 1 2"/>
+            <anchor-div-ref work="grc" ref="10 1 1 - 10 1 2"/>
             <div-ref src="fra" ref="10 2 - 10 3"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="10 2 1"/>
+            <anchor-div-ref work="grc" ref="10 2 1"/>
             <div-ref src="fra" ref="10 4"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="10 3 1 - 10 3 2"/>
+            <anchor-div-ref work="grc" ref="10 3 1 - 10 3 2"/>
             <div-ref src="fra" ref="10 5"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="10 3 3 1 - 10 3 3 2"/>
+            <anchor-div-ref work="grc" ref="10 3 3 1 - 10 3 3 2"/>
             <div-ref src="fra" ref="10 6 - 10 7"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="10 3 4"/>
+            <anchor-div-ref work="grc" ref="10 3 4"/>
             <div-ref src="fra" ref="10 8"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="10 3 5 - 10 3 6"/>
+            <anchor-div-ref work="grc" ref="10 3 5 - 10 3 6"/>
             <div-ref src="fra" ref="10 9"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="10 3 7 - 10 4 2"/>
+            <anchor-div-ref work="grc" ref="10 3 7 - 10 4 2"/>
             <div-ref src="fra" ref="10 10 - 10 12"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="10 4 3 - 10 4 4"/>
+            <anchor-div-ref work="grc" ref="10 4 3 - 10 4 4"/>
             <div-ref src="fra" ref="10 13"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="10 4 5 - 10 4 9"/>
+            <anchor-div-ref work="grc" ref="10 4 5 - 10 4 9"/>
             <div-ref src="fra" ref="10 14 - 10 18"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="10 5 1 - 10 5 4"/>
+            <anchor-div-ref work="grc" ref="10 5 1 - 10 5 4"/>
             <div-ref src="fra" ref="10 19"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="10 5 5"/>
+            <anchor-div-ref work="grc" ref="10 5 5"/>
             <div-ref src="fra" ref="10 20"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="10 6 1 - 10 6 4"/>
+            <anchor-div-ref work="grc" ref="10 6 1 - 10 6 4"/>
             <div-ref src="fra" ref="10 21 - 10 24"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="10 6 5 1 - 10 6 5 3"/>
+            <anchor-div-ref work="grc" ref="10 6 5 1 - 10 6 5 3"/>
             <div-ref src="fra" ref="10 25"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="10 6 5 4"/>
+            <anchor-div-ref work="grc" ref="10 6 5 4"/>
             <div-ref src="fra" ref="10 26"/>
         </realign>
         <realign>
             <!-- don't distribute -->
-            <anchor-div-ref src="grc" ref="11 1 1 - 11 1 2"/>
+            <anchor-div-ref work="grc" ref="11 1 1 - 11 1 2"/>
             <div-ref src="fra" ref="11 1 - 11 2"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="11 1 3 - 11 2 2"/>
+            <anchor-div-ref work="grc" ref="11 1 3 - 11 2 2"/>
             <div-ref src="fra" ref="11 3 - 11 6"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="12 1 1 1"/>
+            <anchor-div-ref work="grc" ref="12 1 1 1"/>
             <div-ref src="fra" ref="12 1"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="12 1 1 2"/>
+            <anchor-div-ref work="grc" ref="12 1 1 2"/>
             <div-ref src="fra" ref="12 2"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="12 1 1 3 - 12 1 1 4"/>
+            <anchor-div-ref work="grc" ref="12 1 1 3 - 12 1 1 4"/>
             <div-ref src="fra" ref="12 3"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="12 1 2"/>
+            <anchor-div-ref work="grc" ref="12 1 2"/>
             <div-ref src="fra" ref="12 4"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="12 1 3"/>
+            <anchor-div-ref work="grc" ref="12 1 3"/>
             <div-ref src="fra" ref="12 5"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="12 2 1"/>
+            <anchor-div-ref work="grc" ref="12 2 1"/>
             <div-ref src="fra" ref="12 6"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="12 2 2 - 12 2 3"/>
+            <anchor-div-ref work="grc" ref="12 2 2 - 12 2 3"/>
             <div-ref src="fra" ref="12 7"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="12 2 4"/>
+            <anchor-div-ref work="grc" ref="12 2 4"/>
             <div-ref src="fra" ref="12 8"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="13 1 1 - 13 1 2"/>
+            <anchor-div-ref work="grc" ref="13 1 1 - 13 1 2"/>
             <div-ref src="fra" ref="13 1 - 13 2"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="13 1 3 - 13 1 5 1"/>
+            <anchor-div-ref work="grc" ref="13 1 3 - 13 1 5 1"/>
             <div-ref src="fra" ref="13 3"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="13 1 5 2 - 13 1 5 4"/>
+            <anchor-div-ref work="grc" ref="13 1 5 2 - 13 1 5 4"/>
             <div-ref src="fra" ref="13 4"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="13 1 6"/>
+            <anchor-div-ref work="grc" ref="13 1 6"/>
             <div-ref src="fra" ref="13 5"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="14 1 1"/>
+            <anchor-div-ref work="grc" ref="14 1 1"/>
             <div-ref src="fra" ref="14 1"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="14 1 2 1 - 14 1 2 2"/>
+            <anchor-div-ref work="grc" ref="14 1 2 1 - 14 1 2 2"/>
             <div-ref src="fra" ref="14 2"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="14 1 2 3"/>
+            <anchor-div-ref work="grc" ref="14 1 2 3"/>
             <div-ref src="fra" ref="14 3"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="14 1 3 1 - 14 1 3 5"/>
+            <anchor-div-ref work="grc" ref="14 1 3 1 - 14 1 3 5"/>
             <div-ref src="fra" ref="14 4"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="14 1 4 - 14 1 5"/>
+            <anchor-div-ref work="grc" ref="14 1 4 - 14 1 5"/>
             <div-ref src="fra" ref="14 5"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="14 2"/>
+            <anchor-div-ref work="grc" ref="14 2"/>
             <div-ref src="fra" ref="14 6 - 14 7"/>
         </realign>
         <realign distribute="1">
-            <anchor-div-ref src="grc" ref="15 1 1 1 - 15 1 1 6"/>
+            <anchor-div-ref work="grc" ref="15 1 1 1 - 15 1 1 6"/>
             <div-ref src="fra" ref="15 1 - 15 6"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="15 1 1 7 - 15 1 1 8"/>
+            <anchor-div-ref work="grc" ref="15 1 1 7 - 15 1 1 8"/>
             <div-ref src="fra" ref="15 7"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="15 1 1 9 - 15 1 1 10"/>
+            <anchor-div-ref work="grc" ref="15 1 1 9 - 15 1 1 10"/>
             <div-ref src="fra" ref="15 8"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="15 1 2 - 15 1 3"/>
+            <anchor-div-ref work="grc" ref="15 1 2 - 15 1 3"/>
             <div-ref src="fra" ref="15 9 - 15 10"/>
         </realign>
     </body>

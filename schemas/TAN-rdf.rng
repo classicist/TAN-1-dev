@@ -16,7 +16,7 @@
         <ref name="source-item"/>
       </zeroOrMore>
     </define>
-    <define name="decl-non-core">
+    <define name="declaration-items">
       <ref name="TAN-rdf-decl"/>
     </define>
     <define name="item">
@@ -61,7 +61,7 @@
   <define name="decl-verb">
     <element name="verb">
       <a:documentation>contains an IRI + name pattern identifying a property, relationship, action, or something else that is used to say something about something. </a:documentation>
-      <a:documentation>The preferred term "verb" is equivalent to RDF "predicate." The latter term is avoided as being misleading -- most who use TAN will understand "predicate," grammatically speaking, to refer to everything in a sentence that is not the subject,</a:documentation>
+      <a:documentation>The preferred term "verb" is equivalent to RDF "predicate." The latter term is avoided as misleading, since in ordinary usage the term "predicate" implies everything in a sentence that is not the subject.</a:documentation>
       <optional>
         <ref name="object-datatype"/>
       </optional>
@@ -73,7 +73,7 @@
   </define>
   <define name="object-datatype">
     <attribute name="object-datatype">
-      <a:documentation>specifies the type of data that the object must take. Use this attribute if and only if the object is not an entity defined by the</a:documentation>
+      <a:documentation>specifies the type of data that the object must take. This attribute is intended to specify that a particular verb governs raw units, not entities definable by the IRI + name pattern. Use this attribute if and only if the verb may not govern objects defined in &lt;declarations&gt;.</a:documentation>
       <data type="string">
         <param name="pattern">string|boolean|decimal|float|double|duration|dateTime|time|date|gYearMonth|gYear|gMonthDay|gDay|gMonth|hexBinary|base64Binary|anyURI|QName|NOTATION|normalizedString|token|language|NMTOKEN|NMTOKENS|Name|NCName|ID|IDREF|IDREFS|ENTITY|ENTITIES|integer|nonPositiveInteger|negativeInteger|long|int|short|byte|nonNegativeInteger|unsignedLong|unsignedInt|unsignedShort|unsignedByte|positiveInteger</param>
       </data>
@@ -93,13 +93,14 @@
   <define name="decl-pers">
     <element name="person">
       <a:documentation>contains an IRI + name pattern identifying a person. This element is very similar to &lt;agent&gt;, but does not imply that the person had anything to do with the data in the TAN file.</a:documentation>
-      <a:documentation>Although person implies a single individual, this element may be applied to corporate entities, or natural groups of more than one person.</a:documentation>
+      <a:documentation>Although person implies a single individual, this element may be applied to corporate entities, or groups of more than one person.</a:documentation>
       <ref name="decl-pattern-default"/>
     </element>
   </define>
   <define name="decl-mode">
     <element name="modal">
       <a:documentation>contains an IRI + name pattern identifying a modal that qualifies an assertion.</a:documentation>
+      <a:documentation>See main.xml# keywords-modal for standard vocabulary.</a:documentation>
       <ref name="decl-pattern-default"/>
     </element>
   </define>
@@ -110,6 +111,7 @@
   </define>
   <define name="claim">
     <element name="claim">
+      <a:documentation>contains one or more claims.</a:documentation>
       <choice>
         <ref name="inclusion"/>
         <group>
@@ -123,7 +125,9 @@
             <ref name="subject"/>
           </optional>
           <ref name="verb"/>
-          <ref name="object"/>
+          <optional>
+            <ref name="object"/>
+          </optional>
           <zeroOrMore>
             <ref name="period-filter"/>
           </zeroOrMore>
@@ -144,20 +148,20 @@
     <attribute name="claimant">
       <a:documentation>points to an &lt;agent&gt; or &lt;person&gt; who makes a claim. @claimant within &lt;body&gt; indicates the default persons to be credited or blamed for an assertion.</a:documentation>
       <a:documentation>Claimants are not to be confused with the editor of a TAN file. If an editor X writes a TAN-rdf file that says that person Y makes such-and-such a claim, then the implication is that X claims that Y claims that....  </a:documentation>
-      <data type="IDREFS" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
+      <a:documentation> This attribute is taken into account before all other attributes. That is, @claimant is to be interpreted to mean: "@claimant states the following:...."</a:documentation>
+      <a:documentation>The concept of @claimant is not recursive. TAN-rdf is not suited to make claims that claimant X claimed that claimant Y claimed that claimant Z....</a:documentation>
+      <a:documentation>This attribute is inheritable. See main.xml#inheritable_attributes</a:documentation>
     </attribute>
   </define>
   <define name="subject">
     <attribute name="subject">
       <a:documentation>points to one or more ID refs of entities defined in &lt;head&gt; that serve as the grammatical subject of a claim. @subject within &lt;body&gt; indicates the default subject(s) for &lt;claim&gt;s. </a:documentation>
-      <data type="IDREFS" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
     </attribute>
   </define>
   <define name="verb">
     <a:documentation>points to one or more &lt;verb&gt;s that serve to assert something of the @subject.</a:documentation>
     <attribute name="verb">
       <a:documentation>The preferred term "verb" is equivalent to RDF "predicate." The latter term is avoided as being misleading -- most who use TAN will understand "predicate," grammatically speaking, to refer to everything in a sentence that is not the subject,</a:documentation>
-      <data type="IDREFS" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
     </attribute>
   </define>
   <define name="object">
@@ -168,11 +172,13 @@
   </define>
   <define name="simple-object">
     <attribute name="object">
-      <a:documentation>points to one or more ID refs of entities defined in &lt;head&gt; that serve as the grammatical object of a claim. For example, if you wish to say that work A is a commentary on work B, then the object would have the ID ref for work B. If you wish to make more complex assertions, use &lt;object&gt;</a:documentation>
+      <a:documentation>points to one or more ID refs of entities defined in &lt;head&gt; that serve as the grammatical object of a claim. For example, if you wish to say that work A is a commentary on work B, then the object would have the ID ref for work B. If you wish to make more complex assertions, use &lt;object&gt;.</a:documentation>
+      <a:documentation>In RDF, the concept of object (the third element of a triple) is required. In TAN-rdf, it is not required, since some &lt;verb&gt;s may be intransitive (e.g., "Charlie slept.").</a:documentation>
     </attribute>
   </define>
   <define name="complex-object">
     <element name="object">
+      <a:documentation>is similar to @object, but for complex content, mainly concepts that do not lend themselves to the IRI + name pattern, particularly languages and units.</a:documentation>
       <optional>
         <choice>
           <ref name="lang-of-content"/>
@@ -185,19 +191,16 @@
   <define name="units">
     <attribute name="units">
       <a:documentation>points to the ID ref of a &lt;unit&gt;, defining the type of units.</a:documentation>
-      <data type="IDREF" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
     </attribute>
   </define>
   <define name="place-filter">
     <attribute name="where">
       <a:documentation>restricts the &lt;claim&gt; to a specific &lt;place&gt; </a:documentation>
-      <data type="IDREFS" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
     </attribute>
   </define>
   <define name="modal-claim">
     <attribute name="adverb">
       <a:documentation>names a &lt;modal&gt; that qualifies the claim.</a:documentation>
-      <data type="IDREF" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
     </attribute>
   </define>
 </grammar>

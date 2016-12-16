@@ -20,7 +20,7 @@
       <param name="self-version" value="$self-prepped"/>
    </pattern>
    <pattern id="self-analyzed" is-a="tan-file-resolved">
-      <param name="self-version" value="tan:get-info($self-prepped[1], $self-prepped[position() gt 1])"/>
+      <param name="self-version" value="tan:prep-verbosely($self-prepped, $sources-prepped)"/>
    </pattern>
    
    

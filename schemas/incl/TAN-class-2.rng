@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  TO DO:
-  [priority low] allow @src to take * and * - [names] to allow blanket statements
--->
 <grammar xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:ns1="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <include href="TAN-core.rng" ns="tag:textalign.net,2015:ns">
-    <define name="decl-non-core">
-      <interleave>
-        <ref name="decl-class-2"/>
-        <ref name="decl-non-class-2"/>
-      </interleave>
-    </define>
     <define name="group-attributes">
       <ref name="type"/>
       <optional>
@@ -21,7 +11,7 @@
       <a:documentation>All sources are TAN files, so no source rights should be declared--they're already stated</a:documentation>
       <empty/>
     </define>
-    <define name="source-ref">
+    <define name="source-refs">
       <attribute name="src">
         <a:documentation>refers to the ID of one or more &lt;source&gt;s </a:documentation>
       </attribute>
@@ -32,30 +22,11 @@
       </zeroOrMore>
     </define>
   </include>
-  <define name="decl-class-2">
-    <a:documentation>Reserved for declarations common to all class 2 files</a:documentation>
-    <interleave>
-      <ref name="decl-token-opt"/>
-      <ref name="decl-supp-div-opt"/>
-      <ref name="decl-rename-n-opt"/>
-    </interleave>
-  </define>
-  <define name="decl-non-class-2">
-    <a:documentation>Reserved for declarations specific to individual types of class 2 files </a:documentation>
-    <empty/>
-  </define>
-  <define name="decl-token-opt">
-    <a:documentation>Reserved for modification in different types of Class 2 files, to specify how many tokenization declarations are allowed.
-Class 2 files that do not require tokenization (i.e., TAN-A-div) may include &lt;token-definition&gt; only if the file uses elements (e.g., &lt;split-leaf-div-at&gt;) that assume tokenization. </a:documentation>
-    <zeroOrMore>
-      <ref name="decl-tok-def"/>
-    </zeroOrMore>
-  </define>
-  <define name="decl-supp-div-opt">
-    <a:documentation>Reserved for modification in different types of Class 2 files, to specify how many suppress-div-type declarations are allowed.</a:documentation>
-    <zeroOrMore>
-      <ref name="decl-supp-div-type"/>
-    </zeroOrMore>
+  <define name="source-ref">
+    <attribute name="src">
+      <a:documentation>refers to the ID of only one &lt;source&gt;</a:documentation>
+      <data type="NCName"/>
+    </attribute>
   </define>
   <define name="decl-supp-div-type">
     <element name="suppress-div-types">
@@ -68,16 +39,11 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) may include &lt
       <choice>
         <ref name="inclusion"/>
         <group>
-          <ref name="source-ref"/>
+          <ref name="source-refs"/>
           <ref name="div-type-ref"/>
         </group>
       </choice>
     </element>
-  </define>
-  <define name="decl-rename-n-opt">
-    <zeroOrMore>
-      <ref name="decl-rename-div-n"/>
-    </zeroOrMore>
   </define>
   <define name="decl-rename-div-n">
     <element name="rename-div-ns">
@@ -93,7 +59,7 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) may include &lt
       <choice>
         <ref name="inclusion"/>
         <group>
-          <ref name="source-ref"/>
+          <ref name="source-refs"/>
           <ref name="div-type-ref"/>
           <oneOrMore>
             <ref name="name-change"/>
@@ -104,27 +70,15 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) may include &lt
   </define>
   <define name="name-change">
     <element name="rename">
-      <a:documentation>indicates the name of a &lt;div&gt; @n or @type that should be changed, and the name to which it should be changed.</a:documentation>
-      <a:documentation>To change Roman numerals or letter numeration to Arabic numerals use this syntax: </a:documentation>
-      <a:documentation>&lt;rename old="#i" new="#1"/&gt; </a:documentation>
-      <a:documentation>&lt;rename old="#a" new="#1"/&gt; </a:documentation>
+      <a:documentation>indicates the name of a &lt;div&gt; @n that should be changed in a given @type, and the name to which it should be changed.</a:documentation>
+      <a:documentation>There is no need to use this feature to convert Roman, alphabetic, or other numerals, which are detected and converted automatically </a:documentation>
       <attribute name="old">
-        <a:documentation>provides the name of an @n or @type in a source to be renamed</a:documentation>
-        <choice>
-          <ref name="n-val"/>
-          <data type="string">
-            <param name="pattern">#[ai]</param>
-          </data>
-        </choice>
+        <a:documentation>provides the name of an @n to be renamed</a:documentation>
+        <ref name="n-val"/>
       </attribute>
       <attribute name="new">
-        <a:documentation>provides the new name for an @n or @type that is to be renamed</a:documentation>
-        <choice>
-          <ref name="n-val"/>
-          <data type="string">
-            <param name="pattern">#1</param>
-          </data>
-        </choice>
+        <a:documentation>provides the new name for an @n that is to be renamed</a:documentation>
+        <ref name="n-val"/>
       </attribute>
     </element>
   </define>
@@ -136,7 +90,10 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) may include &lt
     <element name="align">
       <a:documentation>declares one or more groups of words or divs that should be aligned with each other. If in a TAN-A-tok file, &lt;align&gt; governs &lt;tok&gt;s (words); in TAN-A-div files, &lt;div-ref&gt; (divs and segments)</a:documentation>
       <a:documentation>In TAN-A-tok files, &lt;align&gt; specifies that all the tokens invoked for one source collectively align with the tokens in the other. This version of &lt;align&gt; allows @cert, @bitext-relation, and @reuse-type, in addition to the editorial stamp. </a:documentation>
-      <a:documentation>In TAN-A-div files, &lt;align&gt; specifies that every group of divs or segments (defined by a child &lt;div-ref&gt;) should be aligned with every other group in the alingment. This alignment is to be taken as adding to any default, automatic alignment. This version of &lt;align&gt; allows @strength, @exclusive, and @distribute, which affect the default behavior of &lt;align&gt;. For more see main.xml#tan-a-div_align</a:documentation>
+      <a:documentation>In TAN-A-div files, &lt;align&gt; specifies that every group of divs or segments (defined by a child &lt;div-ref&gt;) should be aligned with every other group in the alingment. This alignment is to be taken as adding to any default, automatic alignment. If @distribute is true, then every nth reference in every &lt;div-ref&gt; will be aligned to the nth reference in every other &lt;div-ref&gt;.  </a:documentation>
+      <a:documentation>Anomalous alignments will not be reconciled. For example, if passages A, B, and C are realigned to passages X and Y, there is no stipulation on how or if this realignment should be refined. </a:documentation>
+      <a:documentation>Furthermore, one-to-one matches will entail an attempt to align the descendants. That is, if X is aligned to Y, then a TAN processor will also attempt to align every child in X with every child in Y, based on values of @n.</a:documentation>
+      <a:documentation>For more see main.xml#tan-a-div_align</a:documentation>
       <choice>
         <ref name="alignment-inclusion-opt"/>
         <group>
@@ -170,21 +127,35 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) may include &lt
       <a:documentation>is used by class-2 files to point to one or more &lt;div-type&gt;s in class-1 files. Permits multiple values separated by spaces.</a:documentation>
     </attribute>
   </define>
-  <define name="token-list">
-    <oneOrMore>
-      <ref name="tok-item"/>
-    </oneOrMore>
-  </define>
-  <define name="tok-item">
-    <choice>
-      <ref name="tok-regular"/>
-      <ref name="tok-sequence"/>
-    </choice>
+  <define name="tok-attr-core">
+    <optional>
+      <ref name="ed-stamp"/>
+    </optional>
+    <optional>
+      <ref name="char-ref"/>
+    </optional>
   </define>
   <define name="tok-regular">
     <element name="tok">
       <a:documentation>identifies one or more words or word fragments. Used by class 2 files to make assertions about specific words. </a:documentation>
-      <ref name="tok-attr-regular"/>
+      <a:documentation>In TAN-A-div and TAN-A-tok files, &lt;tok&gt; has no linguistic connotations; in TAN-LM, it normally does.</a:documentation>
+      <a:documentation>&lt;tok&gt;s are two types: simple and complex.</a:documentation>
+      <a:documentation>SIMPLE: &lt;tok&gt;s that are restricted to a single token, or a portion of a single token. This is the normal behavior of &lt;tok&gt;. Multiple values in @src, @ref, and @pos will result in expansion across all values. But multiple values of @chars are taken to refer to the constituent parts of a single &lt;tok&gt; and so no expansion occurs on @chars.</a:documentation>
+      <a:documentation>For example, a &lt;tok&gt; with 2 values for @src, 3 for @ref, 4 for @pos, and 5 for @chars will result in a &lt;tok&gt; that points to 24 tokens, each of which is filtered to the same five characters (by position, not content). This syntax, then, allows multiple &lt;tok&gt;s to be collapsed into a single one, to save space and perhaps enhance legibility. Put another way, &lt;tok src="X" ref="a" pos="1"/&gt; and &lt;tok src="X" ref="a" pos="2"/&gt; is always identical to &lt;tok src="X" ref="a" pos="1-2"/&gt;</a:documentation>
+      <a:documentation>COMPLEX: There are cases where one wishes to treat more than one token, in whole or part, as a single entity. In this case, @cont should be used, and it must join &lt;tok&gt;s that have only single values for @src, @ref, and @pos. @chars may take multiple values.</a:documentation>
+      <a:documentation>The behavior of &lt;tok&gt; differs from &lt;div-ref&gt;. The former is never treated as a group, whereas the latter is. For more, see &lt;div-ref&gt;.</a:documentation>
+      <ref name="tok-attr-core"/>
+      <ref name="source-refs"/>
+      <ref name="pointer-to-div-range"/>
+      <choice>
+        <ref name="token-value-ref"/>
+        <ref name="seq-pos-ref"/>
+        <group>
+          <ref name="token-value-ref"/>
+          <ref name="seq-pos-ref"/>
+        </group>
+      </choice>
+      <ref name="cert-opt"/>
     </element>
   </define>
   <define name="tok-sequence">
@@ -194,26 +165,9 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) may include &lt
     </zeroOrMore>
     <ref name="tok-without-cont-or-src"/>
   </define>
-  <define name="tok-with-src-and-cont">
-    <element name="tok">
-      <ref name="tok-attr-with-src-and-cont"/>
-    </element>
-  </define>
-  <define name="tok-with-cont-but-no-src">
-    <element name="tok">
-      <ref name="tok-attr-with-cont-but-no-src"/>
-    </element>
-  </define>
-  <define name="tok-without-cont-or-src">
-    <element name="tok">
-      <ref name="tok-attr-without-cont-or-src"/>
-    </element>
-  </define>
-  <define name="tok-attr-core">
-    <optional>
-      <ref name="ed-stamp"/>
-    </optional>
-    <ref name="reference-opt"/>
+  <define name="tok-sequence-attr-core">
+    <ref name="tok-attr-core"/>
+    <ref name="pointer-to-div-item"/>
     <choice>
       <ref name="token-value-ref"/>
       <ref name="item-pos-ref"/>
@@ -222,74 +176,68 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) may include &lt
         <ref name="item-pos-ref"/>
       </group>
     </choice>
-    <optional>
-      <ref name="char-ref"/>
-    </optional>
   </define>
-  <define name="tok-attr-regular">
-    <ref name="tok-attr-core"/>
-    <ref name="source-ref"/>
-    <ref name="class-opt"/>
-    <ref name="cert-opt"/>
+  <define name="tok-with-src-and-cont">
+    <element name="tok">
+      <ref name="tok-sequence-attr-core"/>
+      <ref name="source-ref"/>
+      <ref name="continuation-opt"/>
+      <optional>
+        <ref name="cert-claim"/>
+      </optional>
+    </element>
   </define>
-  <define name="tok-attr-with-src-and-cont">
-    <ref name="tok-attr-core"/>
-    <ref name="source-ref"/>
-    <ref name="continuation-opt"/>
-    <optional>
-      <ref name="cert-claim"/>
-    </optional>
+  <define name="tok-with-cont-but-no-src">
+    <element name="tok">
+      <ref name="tok-sequence-attr-core"/>
+      <ref name="continuation-opt"/>
+    </element>
   </define>
-  <define name="tok-attr-with-cont-but-no-src">
-    <ref name="tok-attr-core"/>
-    <ref name="continuation-opt"/>
-  </define>
-  <define name="tok-attr-without-cont-or-src">
-    <ref name="tok-attr-core"/>
+  <define name="tok-without-cont-or-src">
+    <element name="tok">
+      <ref name="tok-sequence-attr-core"/>
+    </element>
   </define>
   <define name="cert-opt">
     <optional>
       <ref name="cert-claim"/>
     </optional>
   </define>
-  <define name="class-opt">
-    <empty/>
-  </define>
-  <define name="class">
-    <attribute name="class">
-      <a:documentation>supplies a value intended to optimize searching for &lt;tok&gt;s, especially in applications that use XSLT and XPath key functions. </a:documentation>
-    </attribute>
-  </define>
-  <define name="reference-opt">
-    <a:documentation>Reference option allows TAN-LM files to point to languages as a whole in lieu of specific sources</a:documentation>
-    <ref name="pointer-to-div-range"/>
-  </define>
   <define name="pointer-to-div-range">
     <a:documentation>   Pointer (link) to a div in a TAN-T(EI) file</a:documentation>
     <attribute name="ref">
-      <a:documentation>lists references to one or more &lt;div&gt;s. It consists of one or more atomic references joined with commas or hyphens. An atomic reference is a string value that points to a single &lt;div&gt;. In most cases (i.e., when @distribute is not in force), multiple atomic references are treated collectively, as a single reference to a complex passage, not as multiple references to individual passages. </a:documentation>
-      <a:documentation>Examples: 'bk.2:ch.4', '2.4 - 2.7, 2.9', 'poem 5, poem 6:line 6 - poem 7:line 2'</a:documentation>
-      <a:documentation>Any hyphen used as a range should be preceded and followed by at least one space character.</a:documentation>
+      <a:documentation>lists references to one or more &lt;div&gt;s. It consists of one or more atomic references joined by commas or hyphens. An atomic reference is a string value that points to a single &lt;div&gt;. In most cases (i.e., when @distribute is not in force), multiple atomic references are treated collectively, as a single reference to a complex passage, not as multiple references to individual passages. </a:documentation>
+      <a:documentation> It is assumed that in any range where the second element has fewer @n values than the first, then the abbreviated form will be checked before the form actually stated. For example, 1 1 - 2 will be tested first for 1 1 - 1 2, which, if not pointing to an existing &lt;div&gt;, will be interpeted as 1 1 - 2</a:documentation>
+      <a:documentation>Examples: '2.4 - 7, 2.9', 'iv 7 - 9'</a:documentation>
       <a:documentation>For more, see main.xml#class_2_body </a:documentation>
       <ref name="div-range-ref"/>
     </attribute>
   </define>
+  <define name="pointer-to-div-item">
+    <attribute name="ref">
+      <ref name="div-range-item"/>
+    </attribute>
+  </define>
   <define name="token-value-ref">
     <attribute name="val">
-      <a:documentation>specifies a particular word token by means of its string value. Permits regular expressions. Therefore a request for help should consist of a space before or after a question mark.</a:documentation>
+      <a:documentation>specifies a particular word token by means of its string value. Permits regular expressions.</a:documentation>
       <a:documentation>For more see main.xml#attr_pos_and_val</a:documentation>
       <data type="string">
         <param name="pattern">.+</param>
       </data>
     </attribute>
   </define>
-  <define name="item-pos-ref">
+  <define name="seq-pos-ref">
     <attribute name="pos">
       <a:documentation>lists one or more items, specified through Arabic numerals and the keyword 'last' or 'last-X' (where X is a valid number), joined with commas or hyphens.</a:documentation>
       <a:documentation>Examples: '1', 'last', 'last-3 - last-1', '1, 3, 5, 7 - 11, last-8, last'</a:documentation>
-      <a:documentation>Any hyphen used as a range should be preceded and followed by at least one space character.</a:documentation>
       <a:documentation>For more see main.xml#attr_pos_and_val</a:documentation>
       <ref name="seq-picker"/>
+    </attribute>
+  </define>
+  <define name="item-pos-ref">
+    <attribute name="pos">
+      <ref name="item-picker"/>
     </attribute>
   </define>
   <define name="char-ref">
@@ -311,23 +259,5 @@ Class 2 files that do not require tokenization (i.e., TAN-A-div) may include &lt
         <param name="pattern">true|1</param>
       </data>
     </attribute>
-  </define>
-  <define name="decl-class">
-    <zeroOrMore>
-      <!-- element class-type { ed-stamp?, element-scope?, (inclusion | entity-nondigital-ref) } -->
-      <element name="group-type">
-        <a:documentation>defines types of classes, used primarily to explain the nature of &lt;group&gt;s.</a:documentation>
-        <optional>
-          <ref name="ed-stamp"/>
-        </optional>
-        <choice>
-          <ref name="inclusion"/>
-          <group>
-            <ref name="internal-id"/>
-            <ref name="entity-nondigital-ref"/>
-          </group>
-        </choice>
-      </element>
-    </zeroOrMore>
   </define>
 </grammar>

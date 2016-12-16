@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:local="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0">
   <include href="TAN-core.rng">
-    <define name="decl-non-core">
-      <interleave>
-        <ref name="decl-class-3"/>
-        <ref name="decl-non-class-3"/>
-      </interleave>
-    </define>
     <define name="source-list">
       <a:documentation>Class 3 files allow zero or many sources</a:documentation>
       <zeroOrMore>
@@ -19,12 +13,4 @@
       </optional>
     </define>
   </include>
-  <define name="decl-class-3">
-    <a:documentation>Reserved for declarations common to all class 3 files</a:documentation>
-    <empty/>
-  </define>
-  <define name="decl-non-class-3">
-    <a:documentation>Reserved for declarations specific to individual types of class 3 files </a:documentation>
-    <empty/>
-  </define>
 </grammar>

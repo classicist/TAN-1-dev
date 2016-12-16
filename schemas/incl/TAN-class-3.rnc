@@ -3,12 +3,7 @@ default namespace local = "tag:textalign.net,2015:ns"
 datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
 include "TAN-core.rnc" {
-    decl-non-core = decl-class-3 & decl-non-class-3
     ## Class 3 files allow zero or many sources
     source-list = source-item*
     source-id-opt = internal-id?
 }
-## Reserved for declarations common to all class 3 files
-decl-class-3 = empty
-## Reserved for declarations specific to individual types of class 3 files 
-decl-non-class-3 = empty

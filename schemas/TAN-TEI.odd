@@ -73,7 +73,7 @@
         <moduleRef key="verse"/>
         <moduleRef key="tagdocs"/>
         <!-- This is set up to import the TAN-T header -->
-        <moduleRef url="TAN-class-1.rng"/>
+        <moduleRef url="incl/TAN-class-1.rng"/>
         <elementSpec mode="change" ident="TEI" module="textstructure">
           <content>
             <rng:group>
@@ -109,8 +109,7 @@
               <desc>A TAN version number is required</desc>
               <datatype>
                 <rng:data type="string">
-                  <rng:param name="pattern"
-                    >1(\s+\d+)?</rng:param>
+                  <rng:param name="pattern">1 dev</rng:param>
                 </rng:data>
               </datatype>
             </attDef>

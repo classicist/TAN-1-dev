@@ -18,23 +18,20 @@ include "incl/TAN-class-2.rnc" {
     ## TAN-A-div files may not point to individual characters/glyphs
     char-ref = empty
     
-    ## TAN-A-div files do not require a tokenization choice within a filter (choice enforced by Schematron)
-    decl-token-opt = decl-tok-def*
-    
     ## This statement also does away with groups in TAN-A-div files
     TAN-body-core = work-equiv*, div-type-equiv*, split*, realignment*, alignment*
     
     ## alignments may take either an id with no supplementary variables or else no id and optional variables indicating strength, exclusivity, distribution, and auto-alignment
-    alignment-attributes-non-class-2 = strength-claim?, distribute-claim?
+    alignment-attributes-non-class-2 = strength-claim?, (distribute-claim | topic-opt)?
     
-    ## alignments must contain either one or more div-refs or a list of IDREFS to other alignments
+    ## alignments must contain either one or more div-refs or a list of references to other alignments
     alignment-content-non-class-2 =
         (div-ref-item-for-source
          | div-ref-group-for-source
          | div-ref-item-for-work
          | div-ref-group-for-work)*
-    decl-non-class-2 = decl-topics*
-    non-class-2-opt = topic-opt?
+    declaration-items = decl-tok-def* & decl-supp-div-type* & decl-rename-div-n* & decl-topics*
+    non-class-2-opt = empty
     
     ## alignments suppres @cert in <tok> (used only to split leaf divs)
     cert-opt = empty
@@ -55,20 +52,15 @@ topic-opt =
     attribute topic { text }
 work-equiv =
     
-    ## declares an ad hoc equivalence between works that are not defined by their sources as being identical.
+    ## declares an ad hoc equivalence between works that are not defined by the <IRI>s in their sources as being identical.
     
-    ## Any two <work>s that share at least one <IRI> value will be treated as equivalent; those that do not will be treated as different div types. <equate-works> permits you to make an ad hoc equivalence between one or more <work>s.
+    ## This element extends the automatic equating of works, which is transitive and greedy. If work A is defined with <IRI> X, work B with <IRI>s X and Y, and work C with only <IRI> Y, then works A and C will be automatically equated.
     
-    ## <equate-div-types> are assumed to be greedy and transitive. If this element is used to equate work X with type Y, then any any source with a work identical to X's or Y's IRI values will treated as identical.
-    ## If work X of source A is stated to be equivalent to work Y of source B, then any work in any source identical to X will be identical to any work in any source identical to Y. So to equate two works, each with multiple members, you need declare the equivalence between only one member of each work, not all of them.
-    
-    ## This element does not imply that the two works are, in reality, one and the same. It merely states that, for the purposes of this alignment, they should be treated as equivalent.
+    ## <equate-works> does not imply that the two works are, in reality, one and the same. It merely states that, for the purposes of this alignment, they should be treated as equivalent.
     element equate-works { ed-stamp?, (inclusion | work-refs) }
 div-type-equiv =
     
-    ## declares an ad hoc equivalence between div types that are not defined by their sources as being identical.
-    
-    ## Any two <div-type>s that share at least one <IRI> value will be treated as equivalent; those that do not will be treated as different div types. <equate-div-types> permits you to make an ad hoc equivalence between one or more <div-type-ref>s.
+    ## declares an ad hoc equivalence between div types that are not defined by the <IRI> values in their sources as being identical.
     
     ## <equate-div-types> are assumed to be greedy and transitive. If this element is used to equate div type X with type Y, then any div type in any source identical to X's or Y's IRI values will treated as identical. 
     
@@ -80,19 +72,19 @@ div-type-equiv =
 div-type-ref-cluster =
     
     ## points to a <div-type> in one or more sources, using the @xml:id assigned by the source to that div type. 
-    element div-type-ref { ed-stamp?, source-ref, div-type-ref }
+    element div-type-ref { ed-stamp?, source-refs, div-type-ref }
 split =
     
     ## creates ad hoc splits in leaf <div>s, to facilitate alignments and realignments of textual units smaller than leaf <div>s. Any leaf div may be split as many times as there are token, as defined by <tokenization>s.
     
-    ## Each split creates a segment, a textual subdivision of leaf <div>s introduced by the TAN-A-div file.
+    ## Each split creates a provisional segment, a textual subdivision of a leaf <div>.
     element split-leaf-div-at {
         ed-stamp?,
         (inclusion | (comment* & tok-regular+))
     }
 strength-claim =
     
-    ## tempers the strength of an alignment. Suitable for alignments you would wish to differentiate, such as verbatim parallels from indirect references. This attribute does not imply doubt, uncertainty, or the reason for strengthening or weakening the alignment. If you need to specify exactly what concept of text reuse attaches to an alignment, you should use TAN-A-tok and <tok> with @reuse-type and @cert.
+    ## tempers the strength of an alignment. Suitable for alignments you would wish to differentiate, such as verbatim parallels from indirect references, this attribute does not imply doubt, uncertainty, or the reason for strengthening or weakening the alignment. If you need to specify exactly what concept of text reuse attaches to an alignment, you should use TAN-A-tok and <tok> with @reuse-type and @cert.
     
     ## This attribute takes an arbitrary rational decimal number from 0 to 1 indicating how strong the alignment should be. No specific meaning is to be assigned to this attribute. Interpretation of these values is processor-dependent.  
     
@@ -104,11 +96,17 @@ realignment =
     
     ## corrects misaligned or unaligned divisions and segments in versions of the same work. This element (1) exempts any divs or segments referred to in children <div-ref>s from their default alignments and (2) realigns them together as a group. Realignments have two types.
     
-    ## An UNANCHORED realigment is useful for divisions that need to be removed from any automatic alignment. It consists solely of one or more <div-ref>s. The effect is (1) to sever each referenced <div> from any automatic alignment and (2) to realign each source's nth reference (div or segment) with the nth reference in every other other source, if any, invoked in the <realign>. If only one source is invoked in a <realign>, only the first effect takes place: the references are effectively severed from any automatic alignment with any other version for that source. Realignment is inherited, affecting not only the specified <div>s but their descendants too.
+    ## An UNANCHORED realigment is useful for divisions that need to be removed from any automatic alignment. It consists solely of one or more <div-ref>s. The effect is (1) to sever each referenced <div> from any automatic alignment and (2) to realign all the <div-ref>s with each other. If only one source is invoked in a <realign>, only the first effect takes place: the references are effectively severed from any automatic alignment with any other version for that source. If @distribute is true, then every nth reference in every <div-ref> will be realigned to the nth reference in every other <div-ref>.  
     
-    ## An ANCHORED realignment is useful for making sure a minority of misplaced <div>s align with the majority. It begins with a single <anchor-div-ref> as the first child of <realign>, then one or more <div-ref>s. The effect is (1) to sever each referenced <div> from any automatic alignment and (2) to realign each source's nth reference (div or segment) with the nth reference in the anchor. If <anchor-div-ref> points to only one reference then all subsequent <div-ref>s will be tethered collectively to that one anchor reference.
+    ## An ANCHORED realignment is useful for making sure a minority of misplaced <div>s align with the majority. It begins with a single <anchor-div-ref> as the first child of <realign>, then one or more <div-ref>s. The effect is (1) to sever each referenced <div> from any automatic alignment and (2) to realign all the <div-ref>s with the anchor.  If @distribute is true, then every nth reference in every <div-ref> will be realigned to the nth reference in the anchor.
     
-    ## Unanchored <realign>s effectively sever every <div-ref> from any automatic alignment. But anchored ones do not sever automatic alignment; they merely shift it to the anchor. This method is helpful for synchronizing a few sources with the reference system followed by the majority.
+    ## Unanchored <realign>s effectively sever every <div-ref> from any automatic alignment. Anchored ones do not sever automatic alignment; they merely shift that alignment process to the anchor. This method is helpful for synchronizing a few sources to the reference system followed by the majority of sources.
+    
+    ## Realignment is inherited, affecting not only the specified <div>s but their descendants too.
+    
+    ## Anomalous realignments will not be reconciled. For example, if passages A, B, and C are realigned to passages X and Y, there is no stipulation on how or if this realignment should be refined. 
+    
+    ## Furthermore, one-to-one matches will entail an attempt to align the descendants. That is, if X is realigned to Y, then a TAN processor will attempt to realign every child in X with every child in Y, based on values of @n.
     
     ## Because of the distributive nature of the realignment, every value of @ref that involves a hyphen must have siblings with balanced depth on the left and right side of the hyphen (i.e., ref="1 - 2.1" would be invalid).
     
@@ -122,56 +120,54 @@ realignment =
         (inclusion
          | (distribute-claim?,
             (comment*
-             & ((anchor-div-ref-item | anchor-div-ref-group)?,
-                (div-ref-item-for-source | div-ref-group-for-source)*))))
+             & (anchor-div-ref-item?, (div-ref-item-for-source | div-ref-group-for-source)*))))
     }
-# exclusive-claim =
-
-#    attribute exclusive {
-#       xsd:boolean { pattern = "true|1" }
-#  }
-
-## indicates whether an alignment should be treated as non-transitive or transitive. If there is no @exclusive, then if X is aligned with Y, then anything that aligns with X will align with anything that aligns with Y. If @exclusive is present then the alignment holds only between the specified references. The latter is useful, e.g., for specifying cases where one version of a work uniquely quotes from another. Value must be 1 or true, implied by the very presence of the attribute. If you wish to decare it to be false, delete the attribute altogether.
 distribute-claim =
     
-    ## indicates whether values should be matched one-to-one, or grouped. 
+    ## indicates whether div refs should be treated as groups, or if they should be matched one-to-one. 
     
-    ## If this attribute is not present (= default / false()), then each set of references in a single <div-ref> will be treated as a set and aligned against every other <div-ref> set. 
+    ## If @distribute is true, then every nth <div> referred to in every set (defined by a <div-ref> or a group of <div-ref>s joined by @cont) will be treated as a separate pairing/grouping. Therefore the number of references derived from @refs must be identical. (Sets must be isomorphic.)
     
-    ## If @distribute is present (= true()), then every nth ref in every set (defined by a single <div-ref>, taking into account any continuations defined by @cont) will be aligned with the nth ref in every other set. Therefore the number of references derived from @refs must be identical.
+    ## If this attribute is false, then each set of references in a single <div-ref> (or a group of <div-ref>s joined by @cont) will be aligned or realigned as a whole against every other group, without stipulating how alignments might be refined further.
     
-    ## If @distribute is true() then any ranges in @ref will be resolved shallowly, e.g., ref="2 b - 4" would be resolved something like ("2 b", "2  c", "3", "4"), even if there are further subdivisions of "3" and "4".
+    ## If @distribute is not present, then if sets are isomorphic, @distribute is assumed to be true, otherwise false.
     
-    ## Value must be 1 or true, implied by the very presence of the attribute. If you wish to decare it to be false, delete the attribute altogether.
-    attribute distribute {
-        xsd:boolean { pattern = "true|1" }
-    }
+    ## Take for example a case where the refs "1 - 3", "a - c", and "i - iii" are aligned. If @distribute is false, only one alignment set is created (presumably the triplets do not match well). But if @distribute is true, or if it is missing, then three sets are created: "1, a, i", "2, b, ii", and "3, c, iii".
+    
+    ## Ranges in @ref are resolved shallowly, e.g., ref="2 - 4 b" would be resolved something like ("2", "3", "4 a", "4 b"). Each of the four <div>s are termed (re)align heads. 
+    
+    ## In this context, the term "distribute" is similar to "correspond." In mathematical terms, a true value for @distribute assumes that every set of (re)align heads has a bijective relationship to any other set. 
+    attribute distribute { xsd:boolean }
 # <div-ref> and <anchor-div-ref> 
 anchor-div-ref-item =
     
-    ## defines a <div> to which other <div>s in other versions of the same work should be realigned (via <div-ref>s that follow). The first child of a <realign>, it is constructed exactly like <div-ref>, except that the mandatory @src may point only to a single source. 
+    ## refers to a group of one or more <div>s (or segments of <div>s) to which <div>s from other versions of the same work should be realigned (defined by the <div-ref>s that follow). The first child of a <realign>, it is constructed exactly like <div-ref>, except that only @src, not @work, is used. 
     
-    ## <anchor-div-ref> is always followed by one or more <div-ref>s. 
+    ## <anchor-div-ref> does not permit the comma in @ref in an undistributed realignment, since realignment must always be made to a contiguous range of text. 
     
-    ## If <anchor-div-ref> points to only one reference (i.e., @src, @ref, and @seg [if present] each have only one value) then however many references are made in subsequent <div-ref>s, they will all be realigned to that one anchor reference. 
+    ## If the parent <realign>'s @distribute is false, or missing, then each <div-ref> group will be realigned as a whole to the anchor, treated as a whole.
     
-    ## But if <anchor-div-ref> has more than one reference, then distribution is in effect. Every nth reference will be the anchor for the nth reference in subsequent <div-ref>s (grouped by source).
-    element anchor-div-ref { div-ref-attr-core, work-ref }
-anchor-div-ref-group =
-    element anchor-div-ref { div-ref-attr-core, work-ref, continuation },
-    element anchor-div-ref { div-ref-attr-core, continuation }*,
-    element anchor-div-ref { div-ref-attr-core }
+    ## If @distribute is true, then every nth realign head will serve as the anchor for the nth realign head in each subsequent <div-ref>s (grouped by source).
+    
+    ## For more, see <div-ref>.
+    element anchor-div-ref { div-ref-attr-core, source-ref }
 div-ref-item-for-work = element div-ref { div-ref-attr-core, strength-claim?, work-ref }
 div-ref-group-for-work =
     
-    ## collects one or more <div>s (or segments of <div>s) in one or more sources
+    ## refers to a group of one or more <div>s (or segments of <div>s). Its behavior is imitated by <anchor-div-ref>
     
-    ## In most cases, the texts pointed to in <div-ref> will be treated as a collective set. If passage A is found three times in X, Y, and Z, then in an <align> four different <div-ref>s should be used. But if A is found once, spanning X, Y, and Z, then the last three should be gathered in a single <div-ref>, or, optionally, in a <div-ref> with a @cont.
+    ## <div-ref>s are expanded against @src/@work, @ref, and @seg. That is, a <div-ref> points to every segment of every div of every source cited.
+    
+    ## A <div-ref>, or a group of <div-ref>s joined by @cont, are treated as many groups as sources referred to. That is, <div-ref src="X Y" ... /> will be treated as shorthand for <div-ref src="X" ... /> and <div-ref src="Y" ... />. This applies to @work as well: <div-ref work="w" ... /> is equivalent to <div-ref src="w1" ... />, <div-ref src="w2" ... />, etc. 
+    
+    ## After this distinction between sources is made, the entire set of <div>s pointed to will be treated as a group, and processed as a whole (see @distribute). 
+    
+    ## <div-ref> is a grouping device, and is therefore unlike <tok>, which always refers to single items, never sets. As a result, the siblings <div-ref src="X" ref="a"/> and <div-ref src="X" ref="b"/> are NOT identical to <div-ref src="X" ref="a, b"/>   
     element div-ref { div-ref-attr-core, strength-claim?, work-ref, continuation },
     div-ref-group-continuation
-div-ref-item-for-source = element div-ref { div-ref-attr-core, strength-claim?, source-ref }
+div-ref-item-for-source = element div-ref { div-ref-attr-core, strength-claim?, source-refs }
 div-ref-group-for-source =
-    element div-ref { div-ref-attr-core, strength-claim?, source-ref, continuation },
+    element div-ref { div-ref-attr-core, strength-claim?, source-refs, continuation },
     div-ref-group-continuation
 div-ref-group-continuation =
     element div-ref { div-ref-attr-core, continuation }*,
@@ -179,11 +175,13 @@ div-ref-group-continuation =
 div-ref-attr-core = ed-stamp?, pointer-to-div-range, seg-ref?
 seg-ref =
     
-    ## picks specific segments in a leaf div (and only to leaf divs). There must be an appropriate number of splits declared for those leaf divs in <split-leaf-div-at>.
+    ## picks specific segments in a leaf div. There must be an appropriate number of splits declared for those leaf divs in <split-leaf-div-at>.
     attribute seg { seq-picker }
 work-ref =
     
-    ## refers to a work by means of a source ID as a proxy. 
+    ## refers to a work by means of a source ID as a proxy. The attribute will be treated as indicating all sources that share the same work as the one mentioned.
+    
+    ## If you wish to avoid aligning with all other versions of a work, use @src instead.
     attribute work {
         xsd:string { pattern = "\S+" }
     }
@@ -191,15 +189,3 @@ work-refs =
     
     ## refers to works by means of source IDs as a proxy. 
     attribute work { text }
-# detritus
-# div-ref-item = div-ref-regular | div-ref-sequence
-# div-ref-regular = element div-ref { div-ref-attr-regular }
-# div-ref-sequence =
-#    div-ref-with-src-and-cont, div-ref-with-cont-but-no-src*, div-ref-without-cont-or-src
-# div-ref-with-src-and-cont = element div-ref { div-ref-attr-with-src-and-cont }
-# div-ref-with-cont-but-no-src = element div-ref { div-ref-attr-with-cont-but-no-src }
-# div-ref-without-cont-or-src = element div-ref { div-ref-attr-without-cont-or-src }
-# div-ref-attr-regular = div-ref-attr-core, source-ref, strength-claim?
-# div-ref-attr-with-src-and-cont = div-ref-attr-core, source-ref, continuation, strength-claim?
-# div-ref-attr-with-cont-but-no-src = div-ref-attr-core, continuation
-# div-ref-attr-without-cont-or-src = div-ref-attr-core

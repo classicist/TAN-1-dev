@@ -11,7 +11,7 @@ namespace xlink = "http://www.w3.org/1999/xlink"
 
 datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
-# Schema generated from ODD source 2016-09-17T18:17:39Z. .
+# Schema generated from ODD source 2016-10-31T11:52:16Z. .
 # TEI Edition: Version 3.0.0. Last updated on
 #	29th March 2016, revision 89ba24e
 # TEI Edition Location: http://www.tei-c.org/Vault/P5/Version 3.0.0/
@@ -24,6 +24,8 @@ div {
       
       ## names an <agent>
       attribute who { text }
+    
+    ## Option to allow an @xml:id in children of <declarations>
     decl-id-ref-opt = empty
     ed-agent =
       
@@ -47,11 +49,7 @@ div {
       attribute help { empty }
     href-opt =
       
-      ## points to the location of a file, either as part of <location> or in elements that refer to TAN files, to be used to invoke a schematron quick fix to populate the <IRI> and <location> child elements.
-      
-      ## The first use is a convenience for XML editors that autocomplete filenames or allow users to open the referred file (oftentimes with control+click)
-      
-      ## The second use of this attribute is pragmatic, used only as a convenience to TAN users who wish to include the metadata of another TAN file without leaving the current file. It is associated with a warning message that is linked to a Schematron Quick Fix that will supply the correct metadata and remove the attribute.
+      ## points to the location of a file. In some contexts, this attribute is allowed only as a temporary measure, to invoke editing assistance by means of Schematron Quick Fixes.
       attribute href { text }
     inclusion-att =
       
@@ -66,6 +64,17 @@ div {
     
     ## Any generic IRI identifier.
     IRI-gen = xsd:anyURI { pattern = "[a-zA-Z][\-.+a-zA-Z0-9]+:\S+" }
+    n =
+      
+      ## names a <div> or <group>. Consists of a string of word characters.
+      
+      ## @n serves, concatenated with ancestral @ns, as an identifier for <div>s.
+      
+      ## Examples: '4', 'pr', 'Psalms'
+      attribute n { n-val }
+    
+    ## Acceptable values of @n, used by class 1 and class 2 files
+    n-val = xsd:string { pattern = "\w+|\w*\?\?\?\w*" }
     keyword-ref =
       
       ## used to point to a reserved keyword, either a reserved tokenization pattern or a relationship.
@@ -115,7 +124,11 @@ div {
       
       ## refers to the ID of one or more <role>s
       attribute roles { text }
-    source-ref = empty
+    source-refs = empty
+    type =
+      
+      ## indicates what type of textual unit <div> marks. Points to a <div-type> declared in <declarations>.
+      attribute type { text }
     when-claim =
       
       ## indicates a date or date and time
@@ -124,9 +137,9 @@ div {
       
       ## specifies some checksum that can be used to confirm the identity of a digital file being referred to. This element contains other elements that define the type and value of the checksum. Must begin with an IRI + name pattern that defines the type of checksum being used (e.g., SHA-1).
       
-      ## This element is useful when it is imperative to ensure that one is using the identical version of a source file. 
+      ## This element allows later users ensure that a copies of a file are identical. 
       
-      ## The checksum will not be generated, checked, or validated by TAN schemas. Validation must be provided by an external tool.
+      ## The checksum will not be generated, checked, or validated by TAN schemas. Checksum validation must be provided by other means.
       element checksum {
         entity-nondigital-ref,
         
@@ -156,7 +169,7 @@ div {
       element token-definition {
         ed-stamp?,
         (inclusion
-         | (source-ref,
+         | (source-refs,
             (keyword-ref | (func-param-pattern, func-param-flags?))))
       }
     
@@ -266,7 +279,7 @@ div {
     TAN-body-core = other-body-attributes, (body-group-opt | item)+
     other-body-attributes = empty
     body-group-opt = empty
-    group-attributes = empty
+    group-attributes = type, n?
     TAN-tail =
       
       ## permits any arbitrary content. Suitable as a placeholder for temporary data, especially to facilitate time-consuming validation routines. 
@@ -370,14 +383,14 @@ div {
     decl-opt =
       
       ## contains assumptions or decisions made that materially affect the interpretation of the data in <body>
-      element declarations { ed-stamp?, (comment* & decl-list) }
+      element declarations { ed-stamp?, (comment* & declaration-items) }
     agent-list =
       
       ## specifies a person or organization that played a direct or indirect role in preparing, creating, or editing the data.
       
       ## At least one <agent> must have an <IRI> that is a tag URN whose namespace matches that of the IRI name. By default, the first such <agent> is taken to be the person or organization ultimately responsible for the current file. 
       
-      ## May also be applied to a computer or algorithm that performed a task. This feature is useful for crediting software, e.g., an OCR program used to convert an image, or an algorithm that estimates word-to-word alignments.
+      ## This element may also name a computer or algorithm that performed a task. This feature is useful for crediting software, e.g., an OCR program used to convert an image, or an algorithm that estimates word-to-word alignments.
       element agent {
         ed-stamp?,
         (inclusion
@@ -399,7 +412,8 @@ div {
       
       ## specifies a time period when one or more <agent>s held one or more <role>s.
       element agentrole {
-        inclusion | (ed-stamp?, agent-ref, role-ref, period-filter+)
+        ed-stamp?,
+        (inclusion | (agent-ref, role-ref, period-filter+))
       }
     change-list =
       
@@ -411,12 +425,6 @@ div {
       
       ## <change> elements may appear in any order, but it is good practice to put the most recent at the top.
       element change { ed-stamp?, when-claim, agent-ref, text }
-    
-    ## Empty declaration element. See other TAN schemas for redefinitions appropriate to a particular type of TAN file. 
-    decl-list = decl-core & decl-non-core
-    
-    ## Reserved for any declarations that are shared across classes
-    decl-core = empty
     decl-work =
       
       ## indicates a creative work. Must be a conceptual entity, not a physical one.
@@ -436,7 +444,7 @@ div {
       ## This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works
       element version { decl-pattern-default }
   }
-  decl-non-core = decl-class-1 & decl-non-class-1
+  declaration-items = decl-class-1 & decl-non-class-1
   body-group = empty
   
   ## Class 1 files must declare a single work, perhaps one version, one or more divisions, one or more recommended tokenizations, perhaps one filter, and perhaps one 
@@ -455,16 +463,8 @@ div {
     element div-type {
       ed-stamp?,
       (inclusion
-       | (ns-are-numerals?,
-          internal-id,
-          (comment* & entity-nondigital-ref)))
+       | (internal-id, (comment* & entity-nondigital-ref)))
     }
-  ns-are-numerals =
-    
-    ## specifies whether @n values of a particular <div-type> are numerals. If this attribute is not present, then if the set of @n values match patterns for Arabic, Roman, or letter-based (e.g., a, b, c, ... z, aa, bb, ....) numeral systems then the value will be treated as true, otherwise as false.
-    
-    ## For more information, see main.xml#reference_system
-    attribute ns-are-numerals { xsd:boolean }
   decl-filt =
     
     ## declares alterations that have been made to the source.
@@ -9784,7 +9784,7 @@ TEI =
     
     ## A TAN version number is required
     attribute TAN-version {
-      xsd:string { pattern = "1(\s+\d+)?" }
+      xsd:string { pattern = "1 dev" }
     },
     
     ## specifies the major version number of the TEI Guidelines against which this document is valid.

@@ -5,14 +5,14 @@
       <a:documentation>TAN-LM files point only to one source</a:documentation>
       <ref name="lang-outside"/>
     </define>
-    <define name="source-ref">
+    <define name="pointer-to-div-range">
       <empty/>
     </define>
-    <define name="tok-attr-core">
-      <optional>
-        <ref name="ed-stamp"/>
-      </optional>
-      <ref name="token-value-ref"/>
+    <define name="pointer-to-div-item">
+      <empty/>
+    </define>
+    <define name="seq-pos-ref">
+      <empty/>
     </define>
   </include>
 </grammar>

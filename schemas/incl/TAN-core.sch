@@ -120,7 +120,7 @@
                select="current-date()"/>
             <sqf:replace match="@ed-when" target="ed-when" node-type="attribute" use-when="@ed-when"
                select="current-date()"/>
-            <sqf:replace match="." target="when-accessed" node-type="attribute"
+            <sqf:replace match="@when-accessed" target="when-accessed" node-type="attribute"
                use-when="@when-accessed" select="current-date()"/>
          </sqf:fix>
          <sqf:fix id="current-date-time">

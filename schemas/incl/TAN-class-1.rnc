@@ -1,7 +1,7 @@
 default namespace local = "tag:textalign.net,2015:ns"
 
 include "TAN-core.rnc" {
-    decl-non-core = decl-class-1 & decl-non-class-1
+    declaration-items = decl-class-1 & decl-non-class-1
     body-group = empty
 }
 
@@ -16,18 +16,12 @@ decl-div =
     
     ## For more information, see main.xml#reference_system
     
-    ## This element takes a reserved keyword or IRI + name pattern. For more, see iris.xml for suggested values. 
+    ## This element takes a reserved keyword or IRI + name pattern. See main.xml#keywords-div-type for suggested values. 
     element div-type {
         ed-stamp?,
         (inclusion
-         | (ns-are-numerals?, internal-id, (comment* & entity-nondigital-ref)))
+         | (internal-id, (comment* & entity-nondigital-ref)))
     }
-ns-are-numerals =
-    
-    ## specifies whether @n values of a particular <div-type> are numerals. If this attribute is not present, then if the set of @n values match patterns for Arabic, Roman, or letter-based (e.g., a, b, c, ... z, aa, bb, ....) numeral systems then the value will be treated as true, otherwise as false.
-    
-    ## For more information, see main.xml#reference_system
-    attribute ns-are-numerals { xsd:boolean }
 
 decl-filt =
     
@@ -36,15 +30,11 @@ decl-filt =
 decl-filter-content = decl-filt-norm* & decl-filt-repl* & decl-filt-tlit*
 decl-filt-norm =
     
-    ## specifies an alteration made to a source file to bring the text into conformity with standards or common expectations. Typically applies to minor corrections made in the transcription or interpetation of a source (e.g., suppression of discretionary hyphenation). You should declare every change you have made to the source.
-    
-    ## The scope of this element may be specified through optional <for-lang>s.
+    ## specifies an alteration made to a source file to bring the transcription into conformity with standards or common expectations. This element is used typically for minor corrections, e.g., suppression of discretionary hyphenation. You should declare every change you have made to the source.
     
     ## <normalization> is especially helpful in reference to nondigital sources, but it may be made also for digital sources, to declare global changes that would be cumbersome, difficult, or impossible to describe in <replace>. 
     
-    ## See iris.xml for suggested IRI + name values for normalizations. 
-    
-    ## For more on this element see main.xml#normalizing_transcriptions 
+    ## See main.xml#keywords-normalization for suggested IRI + name values for normalizations. For general discussion see main.xml#normalizing_transcriptions 
     element normalization {
         ed-stamp?,
         (inclusion

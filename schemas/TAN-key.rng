@@ -2,11 +2,11 @@
 <grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0">
   <start>
     <element name="TAN-key">
-      <a:documentation>specifies that the TAN file makes assertions subject a conceptual work. Root element.</a:documentation>
+      <a:documentation>specifies that the TAN file contains vocabulary suitable  for inclusion in other TAN files. Root element.</a:documentation>
       <ref name="TAN-root"/>
     </element>
   </start>
-  <include href="incl/TAN-class-3.rng">
+  <include href="TAN-class-3.rng">
     <define name="decl-id-ref-opt">
       <a:documentation>all declarations must have ids</a:documentation>
       <ref name="internal-id"/>
@@ -14,11 +14,7 @@
     <define name="source-list">
       <empty/>
     </define>
-    <define name="keyword-ref">
-      <a:documentation>No sense in having keywords refer by shorthand to other keywords</a:documentation>
-      <empty/>
-    </define>
-    <define name="decl-non-core">
+    <define name="declaration-items">
       <ref name="TAN-key-decl"/>
     </define>
     <define name="other-body-attributes">
@@ -50,16 +46,24 @@
     <element name="item">
       <a:documentation>names an item that is being described. The item is assumed to be a species of the type of thing discussed by the TAN element that is affected.</a:documentation>
       <optional>
-        <ref name="element-scope"/>
-      </optional>
-      <optional>
-        <ref name="group-ref"/>
+        <ref name="ed-stamp"/>
       </optional>
       <choice>
-        <ref name="entity-digital-tan-other-ref"/>
-        <ref name="entity-digital-generic-ref"/>
-        <ref name="entity-nondigital-ref"/>
-        <ref name="entity-tok-def"/>
+        <ref name="inclusion"/>
+        <group>
+          <optional>
+            <ref name="element-scope"/>
+          </optional>
+          <optional>
+            <ref name="group-ref"/>
+          </optional>
+          <choice>
+            <ref name="entity-digital-tan-other-ref"/>
+            <ref name="entity-digital-generic-ref"/>
+            <ref name="entity-nondigital-ref"/>
+            <ref name="entity-tok-def"/>
+          </choice>
+        </group>
       </choice>
     </element>
   </define>

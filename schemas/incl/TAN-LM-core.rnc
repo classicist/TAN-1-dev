@@ -1,33 +1,32 @@
 default namespace = "tag:textalign.net,2015:ns"
 
-datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
-
 start =
     
     ## specifies that the file is a TAN file containing lexico-morphology data about a text. Root element.
     element TAN-LM { TAN-root }
 include "TAN-class-2.rnc" {
     
-    ## TAN-LM files must each have at least one lexicon and one TAN-R-mor declaration
-    decl-non-class-2 = decl-lexi+ & decl-morph+ & decl-class*
+    ## TAN-LM files must each have at least one lexicon and one TAN-mor declaration
+    declaration-items =
+        decl-tok-def*
+        & decl-supp-div-type*
+        & decl-rename-div-n*
+        & decl-lexi+
+        & decl-morph+
+        & decl-group-type*
     
-    ## If a TAN-LM file points to a language, not a specific source, then @ref should be optional
-    reference-opt = pointer-to-div-range?
-    class-opt = class?
+    body-group-opt = body-group
     
     ## Because TAN-LM files depend on only one source, no id references to sources are needed
-    source-ref = empty
+    source-refs = empty
     id-option = empty
-    
-    ## TAN-LM files may have no more than one suppress-div-type field. Multiple div-types should be space delimited in @div-type-ref
-    decl-supp-div-opt = decl-supp-div-type?
     continuation-opt = continuation
     other-body-attributes = lexicon-attr, grammar-attr
     item = TAN-LM-item
 }
 decl-morph =
     
-    ## identifies a <TAN-R-mor> file that defines the parts of speech for a language, the codes for those parts, and the rules for combining them
+    ## identifies a <TAN-mor> file that defines the parts of speech for a language, the codes for those parts, and the rules for combining them
     element morphology {
         ed-stamp?,
         (inclusion
@@ -35,9 +34,7 @@ decl-morph =
     }
 decl-lexi =
     
-    ## names a lexicographical authority.
-    
-    ## If you wish to credit yourself or another editor as a lexical authority, the <agent> element is sufficient; no separate <lexicon> entry need be given.
+    ## names a lexicographical authority. This element is optional, because the lexical informat could be based upon the knowledge of the <agent>s who wrote the data.
     element lexicon {
         ed-stamp?,
         (inclusion
@@ -45,27 +42,33 @@ decl-lexi =
     }
 lexicon-attr =
     
-    ## points to one or more <lexicon> IDs
+    ## points to one or more <lexicon> or <agent> IDs
     
     ## This attribute is inheritable. See main.xml#inheritable_attributes
-    attribute lexicon { d:IDREFS }
+    attribute lexicon { text }
 grammar-attr =
     
     ## points to one or more <morphology> IDs
     
     ## This attribute is inheritable. See main.xml#inheritable_attributes
-    attribute morphology { d:IDREF }
+    attribute morphology { text }
 TAN-LM-item =
     
-    ## contains a one or more assertions about the lexical or morphological properties of one or more tokens
+    ## contains a one or more assertions about the lexical or morphological properties of one or more tokens.
+    
+    ## Claims within an <ana> are distributive. That is, every combination of <l> and <m> within an <lm> is asserted of every <tok>.
     element ana {
         (ed-stamp?, inclusion)
         | (certainty-stamp,
+           group-ref?,
            internal-id?,
            (comment*
-            & (token-list+,
+            & ((tok-regular | tok-sequence)+,
                
-               ## contains lexical or morphological data
+               ## contains lexical or morphological data.
+               
+                   ## Claims within an <lm> are distributive. That is, every <l> is asserted against every <m> within an <lm> is asserted of every <tok>.
+
                element lm {
                    certainty-stamp,
                    (comment*
@@ -74,22 +77,26 @@ TAN-LM-item =
     }
 lexeme =
     
-    ## names a lexeme. Points to the main word entry. Sholud not be used to point to roots, only lexical headwords. 
+    ## names a lexeme, by points to the main word entry in the lexicon defined by the element's inherited value of @lexicon. This element should not be used to point to roots, only to lexical headwords. 
     
-    ## In many languages, especially those that are lightly inflected, this word will be identical to the word token itself. In those cases, <l> may be left empty, indicating that the value of <tok>
+    ## In many languages, especially those that are lightly inflected, this word will be identical to the word token itself. In those cases, <l> may be left empty, indicating that the value of <tok> is to be supplied.
+    
+    ## Because there is no TAN format for lexicons, values in this element will not be validated.
     element l {
         lexicon-attr?,
         
-        ## identifies which definition is meant. Essential in cases where a lexicon has multiple entries for lexemes that are  orthographically indistinguishable.
+        ## identifies which definition is meant. This attribute is essential in cases where a lexicon has multiple entries for lexemes that are orthographically indistinguishable. 
+        
+        ## Because there is no TAN format for lexicons, the value in this attribute will not be validated.
         attribute def-ref { text }?,
         certainty-stamp,
         text
     }
 morph =
     
-    ## carries a morphological code that conforms to the rules or patterns defined in the TAN-R-mor file upon which it depends.
+    ## carries a morphological code that conforms to the rules or patterns defined in the TAN-mor file upon which the data depends.
     
-    ## Codes are space-delimited. If a value of <m> violates the rules established by the TAN-R-mor file, an error will be generated. For more about how codes are built, and how they function, see main.xml#tan-lm.
+    ## Codes are space-delimited. If a value of <m> violates the rules established by the TAN-mor file, an error will be generated. For more about how codes are built, and how they function, see main.xml#tan-lm.
     element m {
         certainty-stamp,
         grammar-attr?,

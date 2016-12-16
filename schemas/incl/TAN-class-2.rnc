@@ -1,33 +1,20 @@
-# TO DO:
-# [priority low] allow @src to take * and * - [names] to allow blanket statements
-
 namespace ns1 = "tag:textalign.net,2015:ns"
 
 include "TAN-core.rnc" inherit = ns1 {
-    decl-non-core = decl-class-2 & decl-non-class-2
     group-attributes = type, n?
     
     ## All sources are TAN files, so no source rights should be declared--they're already stated
     source-rights = empty
-    source-ref =
+    source-refs =
         
         ## refers to the ID of one or more <source>s 
         attribute src { text }
     body-group-opt = body-group*
 }
-
-## Reserved for declarations common to all class 2 files
-decl-class-2 = decl-token-opt & decl-supp-div-opt & decl-rename-n-opt
-
-## Reserved for declarations specific to individual types of class 2 files 
-decl-non-class-2 = empty
-
-## Reserved for modification in different types of Class 2 files, to specify how many tokenization declarations are allowed.
-## Class 2 files that do not require tokenization (i.e., TAN-A-div) may include <token-definition> only if the file uses elements (e.g., <split-leaf-div-at>) that assume tokenization. 
-decl-token-opt = decl-tok-def*
-
-## Reserved for modification in different types of Class 2 files, to specify how many suppress-div-type declarations are allowed.
-decl-supp-div-opt = decl-supp-div-type*
+source-ref =
+    
+    ## refers to the ID of only one <source>
+    attribute src { xsd:NCName }
 decl-supp-div-type =
     
     ## marks div types in a source that should be suppressed in references. Suppressions occur shallowly. That is, it does not suppress any descendants of that div type. But if the suppression applies to a leaf div, that div and its text is effectively suppressed. 
@@ -37,9 +24,8 @@ decl-supp-div-type =
     ## This element will be used seldomly, for cases where a source has a div type that is dispensable in text references. 
     element suppress-div-types {
         ed-stamp?,
-        (inclusion | (source-ref, div-type-ref))
+        (inclusion | (source-refs, div-type-ref))
     }
-decl-rename-n-opt = decl-rename-div-n*
 decl-rename-div-n =
     
     ## provisionally reassigns @n values for one or more sources and one or more div types. Renaming applies only to the current file. 
@@ -55,30 +41,20 @@ decl-rename-div-n =
     ## For more inforrmation see main.xml#class_2_metadata
     element rename-div-ns {
         ed-stamp?,
-        (inclusion | (source-ref, div-type-ref, name-change+))
+        (inclusion | (source-refs, div-type-ref, name-change+))
     }
 name-change =
     
-    ## indicates the name of a <div> @n or @type that should be changed, and the name to which it should be changed.
+    ## indicates the name of a <div> @n that should be changed in a given @type, and the name to which it should be changed.
     
-    ## To change Roman numerals or letter numeration to Arabic numerals use this syntax: 
-    
-    ## <rename old="#i" new="#1"/> 
-    
-    ## <rename old="#a" new="#1"/> 
+    ## There is no need to use this feature to convert Roman, alphabetic, or other numerals, which are detected and converted automatically 
     element rename {
         
-        ## provides the name of an @n or @type in a source to be renamed
-        attribute old {
-            n-val
-            | xsd:string { pattern = "#[ai]" }
-        },
+        ## provides the name of an @n to be renamed
+        attribute old { n-val },
         
-        ## provides the new name for an @n or @type that is to be renamed
-        attribute new {
-            n-val
-            | xsd:string { pattern = "#1" }
-        }
+        ## provides the new name for an @n that is to be renamed
+        attribute new { n-val }
     }
 
 ## Option to include an internal id. Not needed in TAN-LM files.
@@ -89,7 +65,13 @@ alignment =
     
     ## In TAN-A-tok files, <align> specifies that all the tokens invoked for one source collectively align with the tokens in the other. This version of <align> allows @cert, @bitext-relation, and @reuse-type, in addition to the editorial stamp. 
     
-    ## In TAN-A-div files, <align> specifies that every group of divs or segments (defined by a child <div-ref>) should be aligned with every other group in the alingment. This alignment is to be taken as adding to any default, automatic alignment. This version of <align> allows @strength, @exclusive, and @distribute, which affect the default behavior of <align>. For more see main.xml#tan-a-div_align
+    ## In TAN-A-div files, <align> specifies that every group of divs or segments (defined by a child <div-ref>) should be aligned with every other group in the alingment. This alignment is to be taken as adding to any default, automatic alignment. If @distribute is true, then every nth reference in every <div-ref> will be aligned to the nth reference in every other <div-ref>.  
+    
+    ## Anomalous alignments will not be reconciled. For example, if passages A, B, and C are realigned to passages X and Y, there is no stipulation on how or if this realignment should be refined. 
+    
+    ## Furthermore, one-to-one matches will entail an attempt to align the descendants. That is, if X is aligned to Y, then a TAN processor will also attempt to align every child in X with every child in Y, based on values of @n.
+    
+    ## For more see main.xml#tan-a-div_align
     element align {
         alignment-inclusion-opt
         | (alignment-attributes-non-class-2,
@@ -105,64 +87,69 @@ div-type-ref =
     
     ## is used by class-2 files to point to one or more <div-type>s in class-1 files. Permits multiple values separated by spaces.
     attribute div-type-ref { text }
-token-list = tok-item+
-tok-item = tok-regular | tok-sequence
+tok-attr-core = ed-stamp?, char-ref?
 tok-regular =
     
     ## identifies one or more words or word fragments. Used by class 2 files to make assertions about specific words. 
-    element tok { tok-attr-regular }
-tok-sequence = tok-with-src-and-cont, tok-with-cont-but-no-src*, tok-without-cont-or-src
-tok-with-src-and-cont = element tok { tok-attr-with-src-and-cont }
-tok-with-cont-but-no-src = element tok { tok-attr-with-cont-but-no-src }
-tok-without-cont-or-src = element tok { tok-attr-without-cont-or-src }
-tok-attr-core =
-    ed-stamp?,
-    reference-opt,
-    (token-value-ref | item-pos-ref | (token-value-ref, item-pos-ref)),
-    char-ref?
-tok-attr-regular = tok-attr-core, source-ref, class-opt, cert-opt
-tok-attr-with-src-and-cont = tok-attr-core, source-ref, continuation-opt, cert-claim?
-tok-attr-with-cont-but-no-src = tok-attr-core, continuation-opt
-tok-attr-without-cont-or-src = tok-attr-core
-cert-opt = cert-claim?
-class-opt = empty
-class =
     
-    ## supplies a value intended to optimize searching for <tok>s, especially in applications that use XSLT and XPath key functions. 
-    attribute class { text }
-
-## Reference option allows TAN-LM files to point to languages as a whole in lieu of specific sources
-reference-opt = pointer-to-div-range
+    ## In TAN-A-div and TAN-A-tok files, <tok> has no linguistic connotations; in TAN-LM, it normally does.
+    
+    ## <tok>s are two types: simple and complex.
+    
+    ## SIMPLE: <tok>s that are restricted to a single token, or a portion of a single token. This is the normal behavior of <tok>. Multiple values in @src, @ref, and @pos will result in expansion across all values. But multiple values of @chars are taken to refer to the constituent parts of a single <tok> and so no expansion occurs on @chars.
+    
+    ## For example, a <tok> with 2 values for @src, 3 for @ref, 4 for @pos, and 5 for @chars will result in a <tok> that points to 24 tokens, each of which is filtered to the same five characters (by position, not content). This syntax, then, allows multiple <tok>s to be collapsed into a single one, to save space and perhaps enhance legibility. Put another way, <tok src="X" ref="a" pos="1"/> and <tok src="X" ref="a" pos="2"/> is always identical to <tok src="X" ref="a" pos="1-2"/>
+    
+    ## COMPLEX: There are cases where one wishes to treat more than one token, in whole or part, as a single entity. In this case, @cont should be used, and it must join <tok>s that have only single values for @src, @ref, and @pos. @chars may take multiple values.
+    
+    ## The behavior of <tok> differs from <div-ref>. The former is never treated as a group, whereas the latter is. For more, see <div-ref>.
+    element tok {
+        tok-attr-core,
+        source-refs,
+        pointer-to-div-range,
+        (token-value-ref | seq-pos-ref | (token-value-ref, seq-pos-ref)),
+        cert-opt
+    }
+tok-sequence = tok-with-src-and-cont, tok-with-cont-but-no-src*, tok-without-cont-or-src
+tok-sequence-attr-core =
+    tok-attr-core,
+    pointer-to-div-item,
+    (token-value-ref | item-pos-ref | (token-value-ref, item-pos-ref))
+tok-with-src-and-cont =
+    element tok { tok-sequence-attr-core, source-ref, continuation-opt, cert-claim? }
+tok-with-cont-but-no-src = element tok { tok-sequence-attr-core, continuation-opt }
+tok-without-cont-or-src = element tok { tok-sequence-attr-core }
+cert-opt = cert-claim?
 
 ##    Pointer (link) to a div in a TAN-T(EI) file
 pointer-to-div-range =
     
-    ## lists references to one or more <div>s. It consists of one or more atomic references joined with commas or hyphens. An atomic reference is a string value that points to a single <div>. In most cases (i.e., when @distribute is not in force), multiple atomic references are treated collectively, as a single reference to a complex passage, not as multiple references to individual passages. 
+    ## lists references to one or more <div>s. It consists of one or more atomic references joined by commas or hyphens. An atomic reference is a string value that points to a single <div>. In most cases (i.e., when @distribute is not in force), multiple atomic references are treated collectively, as a single reference to a complex passage, not as multiple references to individual passages. 
     
-    ## Examples: 'bk.2:ch.4', '2.4 - 2.7, 2.9', 'poem 5, poem 6:line 6 - poem 7:line 2'
+    ##  It is assumed that in any range where the second element has fewer @n values than the first, then the abbreviated form will be checked before the form actually stated. For example, 1 1 - 2 will be tested first for 1 1 - 1 2, which, if not pointing to an existing <div>, will be interpeted as 1 1 - 2
     
-    ## Any hyphen used as a range should be preceded and followed by at least one space character.
+    ## Examples: '2.4 - 7, 2.9', 'iv 7 - 9'
     
     ## For more, see main.xml#class_2_body 
     attribute ref { div-range-ref }
+pointer-to-div-item = attribute ref { div-range-item }
 token-value-ref =
     
-    ## specifies a particular word token by means of its string value. Permits regular expressions. Therefore a request for help should consist of a space before or after a question mark.
+    ## specifies a particular word token by means of its string value. Permits regular expressions.
     
     ## For more see main.xml#attr_pos_and_val
     attribute val {
         xsd:string { pattern = ".+" }
     }
-item-pos-ref =
+seq-pos-ref =
     
     ## lists one or more items, specified through Arabic numerals and the keyword 'last' or 'last-X' (where X is a valid number), joined with commas or hyphens.
     
     ## Examples: '1', 'last', 'last-3 - last-1', '1, 3, 5, 7 - 11, last-8, last'
     
-    ## Any hyphen used as a range should be preceded and followed by at least one space character.
-    
     ## For more see main.xml#attr_pos_and_val
     attribute pos { seq-picker }
+item-pos-ref = attribute pos { item-picker }
 char-ref =
     
     ## list of one or more characters, specified through Arabic numerals, the keyword 'last' or 'last-X' (where X is a valid number), joined with commas or hyphens.
@@ -180,11 +167,3 @@ continuation =
     attribute cont {
         xsd:boolean { pattern = "true|1" }
     }
-decl-class =
-    # element class-type { ed-stamp?, element-scope?, (inclusion | entity-nondigital-ref) }
-    
-    ## defines types of classes, used primarily to explain the nature of <group>s.
-    element group-type {
-        ed-stamp?,
-        (inclusion | (internal-id, entity-nondigital-ref))
-    }*

@@ -2,14 +2,14 @@ default namespace = "tag:textalign.net,2015:ns"
 
 start =
     
-    ## specifies that the TAN file makes assertions subject a conceptual work. Root element.
+    ## specifies that the TAN file contains vocabulary suitable  for inclusion in other TAN files. Root element.
     element TAN-key { TAN-root }
 include "incl/TAN-class-3.rnc" {
     
     ## all declarations must have ids
     decl-id-ref-opt = internal-id
     source-list = empty
-    decl-non-core = TAN-key-decl
+    declaration-items = TAN-key-decl
     other-body-attributes = element-scope?
     body-group-opt = body-group
     group-attributes = type?, element-scope?

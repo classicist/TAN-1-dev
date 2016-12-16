@@ -8,9 +8,6 @@ include "incl/TAN-class-3.rnc" {
     
     ## no declarations may have ids
     decl-id-ref-opt = empty
-    
-    ## every TAN-R-mor file has one or more src-lang and feature elements
-    decl-non-class-3 = empty
     TAN-body-core = TAN-R-mor-body
 }
 
@@ -24,7 +21,9 @@ category-list = category*
 ## TAN-R-mor files declare the morphological features that are allowed for a given language
 feature =
     
-    ## names, through its IRI + name pattern, a grammatical feature or concept (e.g., plural, subjunctive, 1st person) that characterizes a language. In the context of <feature> a @code is always included. The first <feature> of a <category> never has @code, and refers to the grammatical feature that characterizes the category.
+    ## names, through its IRI + name pattern, a grammatical feature or concept (e.g., plural, subjunctive, 1st person) that is part of a language. In the context of <feature> a @code is always included. The first <feature> of a <category> never has @code, and refers to the grammatical feature that characterizes the category.
+    
+    ## See main.xml# keywords-feature for a list of standard features, derived  from OLiA.
     element feature { feature-pattern }
 feature-pattern =
     ed-stamp?,
@@ -37,7 +36,7 @@ feature-pattern-no-code =
 category-feature = element feature { feature-pattern-no-code }
 category =
     
-    ## creates a set of features that share a common grammatical trait such as gender, number, etc.
+    ## groups a set of features that share a common grammatical trait such as gender, number, etc.
     element category {
         ed-stamp?,
         (inclusion
@@ -45,7 +44,7 @@ category =
     }
 code =
     
-    ## contains a string that can be used as an alternative code for a <feature>.
+    ## contains a string that serves as an identifier for <feature>.
     attribute code {
         
         ## hyphen reserved for "not applicable"; spaces and (),| reserved for @feature-test expressions
@@ -54,11 +53,11 @@ code =
 # reports and asserts
 assert =
     
-    ## names a pattern that, if found to be false in any <m> in a dependent TAN-LM file, will return the enclosed message upon validation of the dependent file, along with an error or warning. Modeled loosely on Schematron <report>.
+    ## names a pattern that, if found to be false in any <m> in a dependent TAN-LM file, will return the enclosed message upon validation of the dependent file, along with an error or warning. Modeled on Schematron <report>.
     element assert { test-pattern }
 report =
     
-    ## names a pattern that, if found to be true in any <m> in a dependent TAN-LM file, will return the enclosed message upon validation of the dependent file, along with an error or warning. Modeled loosely on Schematron <report>.
+    ## names a pattern that, if found to be true in any <m> in a dependent TAN-LM file, will return the enclosed message upon validation of the dependent file, along with an error or warning. Modeled on Schematron <report>.
     element report { test-pattern }
 
 ## Test pattern attributes for determining whether to return the message provided by text.
@@ -68,7 +67,7 @@ test-pattern =
      | (filter?, (matches-m | matches-tok | feature-test | feature-qty-test), text))
 filter =
     
-    ## specifies under what conditions a particular <assert> or <report> will be tested. When an <m> in a dependent TAN-LM file is validated, if it contains the codes for the features in question, the other conditions of the <assert> or <report> will be checked.
+    ## specifies under what conditions a particular <assert> or <report> should be enforced. When an <m> in a dependent TAN-LM file is validated, if it contains the codes for the features in question, the other conditions of the <assert> or <report> will be checked; otherwise, the <assert> or <report> will be ignored.
     attribute context { text }
 matches-m =
     
@@ -78,21 +77,21 @@ matches-m =
     attribute matches-m { text }
 matches-tok =
     
-    ## takes a regular expression. When validating a given <m>, a test will be made against each companion <tok> (i.e., those <toks> that have the same ancestral <ana>). The condition will be treated as true only if there is a match with the resolved value of every such <tok>, and false if there is any nonmatch. 
+    ## takes a regular expression. When validating a given <m>, a test will be made against each companion <tok> (i.e., those <tok>s that have the same ancestral <ana>). The condition will be treated as true only if there is a match with the resolved value of every such <tok>, and false if there is any nonmatch. 
     
     ## One of four tests for determining the truth value that will trigger the message in a <report> or <assert> 
     attribute matches-tok { text }
 feature-test =
     
-    ## specifies one or more features separated by spaces or the padded + (a plus sign with surrounding spaces). A plain space is treated  as meaning "or" and the padded + as meaning "and." If there is at least one match between the list and the value of the codes in an <m> then condition will be treated as true. The padded plus sign specifies that all the items need to be found in the <m>. 
+    ## specifies one or more features separated by spaces or the padded + (a plus sign with surrounding spaces). A plain space is treated  as meaning "or" and the padded + as meaning "and." If there is at least one match between the list and the value of the codes in an <m> then the condition will be treated as true. The padded plus sign specifies that all the items need to be found in the <m>. 
     
-    ## For example, feature-test="A B + C D + E" means that the condition will be true for a given <m> only if it has A or B and C or D and E. This test is one of four tests for determining the truth value that will trigger the message in a <report> or <assert> 
+    ## For example, feature-test="A B + C D + E" means that the condition will be true for a given <m> only if that <m> has A or B and C or D and E present as values. This test is one of four tests for determining the truth value that will trigger the message in a <report> or <assert> 
     attribute feature-test {
         xsd:string { pattern = "[^\s\+]+(\s(\+\s)?[^\s\+]+)*" }
     }
 feature-qty-test =
     
-    ## specifies a sequence of integers (e.g., 2-4). If the quantity of features in an <m> matches a number from that sequence, the condition is true, and false otherwise. If the keyword 'last' or 'max' is used, the number of features will be adopted as the ceiling. 
+    ## specifies a range or sequence of integers (e.g., 2-4). If the quantity of features in an <m> matches a number from that sequence, the condition is true, and false otherwise. If the keyword 'last' or 'max' is used, the number of features will be substituted. 
     
-    ## This test is useful for non-category based languages to put a limit on the number of features that can be declared in an <m>. It is one of four tests for determining the truth value that will determin whether a <report> or <assert> will be acted upon. 
+    ## This test is useful for non-category based languages to put a limit on the number of features that can be declared in an <m>. It is one of four tests for determining the truth value that will determine whether a <report> or <assert> will be acted upon. 
     attribute feature-qty-test { seq-picker }

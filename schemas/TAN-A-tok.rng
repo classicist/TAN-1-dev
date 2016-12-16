@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:local="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0">
+<grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:local="tag:textalign.net,2015:ns" xmlns="http://relaxng.org/ns/structure/1.0">
   <start>
     <element name="TAN-A-tok">
       <a:documentation>specifies that the file is a token-based TAN alignment file. Root element.</a:documentation>
@@ -20,8 +20,20 @@
       <a:documentation>TAN-A-tok sources must be named</a:documentation>
       <ref name="internal-id"/>
     </define>
-    <define name="decl-non-class-2">
+    <define name="body-group-opt">
+      <ref name="body-group"/>
+    </define>
+    <define name="declaration-items">
       <interleave>
+        <zeroOrMore>
+          <ref name="decl-tok-def"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="decl-supp-div-type"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="decl-rename-div-n"/>
+        </zeroOrMore>
         <oneOrMore>
           <ref name="decl-brel"/>
         </oneOrMore>
@@ -29,7 +41,7 @@
           <ref name="decl-reus"/>
         </oneOrMore>
         <zeroOrMore>
-          <ref name="decl-class"/>
+          <ref name="decl-group-type"/>
         </zeroOrMore>
       </interleave>
     </define>
@@ -39,6 +51,11 @@
     </define>
     <define name="item">
       <ref name="alignment"/>
+    </define>
+    <define name="non-class-2-opt">
+      <optional>
+        <ref name="group-ref"/>
+      </optional>
     </define>
     <define name="alignment-attributes-non-class-2">
       <a:documentation>alignments may claim bitext relations and reuse type</a:documentation>
@@ -55,7 +72,10 @@
     <define name="alignment-content-non-class-2">
       <a:documentation>alignments must contain one or more toks</a:documentation>
       <oneOrMore>
-        <ref name="token-list"/>
+        <choice>
+          <ref name="tok-regular"/>
+          <ref name="tok-sequence"/>
+        </choice>
       </oneOrMore>
     </define>
     <define name="continuation-opt">
@@ -67,7 +87,7 @@
       <a:documentation>identifies how the text on one text-bearing object relates to that on another by specifying a relationship, e.g., B is a direct copy of A, B and A descent from a commont parent, etc. See main.xml#tan-a-tok for theoretical background.</a:documentation>
       <a:documentation>In most cases, there will be need for only one of these elements. But multiple values may be helpful for cases where a bitext has a complex history, for example, a textual object that was created over time, and in different phases.</a:documentation>
       <a:documentation>This element should not be used to describe any activities (e.g., translation, copying), reserved for &lt;reuse-type&gt;. </a:documentation>
-      <a:documentation>For examples see iris.xml </a:documentation>
+      <a:documentation>For examples see main.xml# keywords-bitext-relation</a:documentation>
       <ref name="decl-pattern-default"/>
     </element>
   </define>
@@ -75,7 +95,7 @@
     <oneOrMore>
       <element name="reuse-type">
         <a:documentation>identifies a category of text reuse (e.g., translation, mistranslation, paraphrase, ridicule). See main.xml#tan-a-tok for theoretical background.</a:documentation>
-        <a:documentation>For examples see iris.xml </a:documentation>
+        <a:documentation>For examples see main.xml# keywords-reuse-type</a:documentation>
         <ref name="decl-pattern-default"/>
       </element>
     </oneOrMore>
@@ -84,14 +104,12 @@
     <attribute name="bitext-relation">
       <a:documentation>points to one or more &lt;bitext-relation&gt; @xml:id values that qualify the type of relation that holds. Multiple values assume inclusive or (A or B or A and B)</a:documentation>
       <a:documentation>This attribute is inheritable. See main.xml#inheritable_attributes</a:documentation>
-      <data type="IDREFS"/>
     </attribute>
   </define>
   <define name="reuse-type-attr">
     <attribute name="reuse-type">
       <a:documentation>points to one or more &lt;reuse-type&gt; @xml:id values that qualify the type of textual reuse that holds. Multiple values assume inclusive or (A or B or A and B)</a:documentation>
       <a:documentation>This attribute is inheritable. See main.xml#inheritable_attributes</a:documentation>
-      <data type="IDREFS"/>
     </attribute>
   </define>
 </grammar>

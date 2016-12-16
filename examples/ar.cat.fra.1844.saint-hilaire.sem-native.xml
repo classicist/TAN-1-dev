@@ -28,7 +28,8 @@
       <declarations>
          <work>
             <IRI>http://dbpedia.org/resource/Categories_(Aristotle)</IRI>
-            <name>Aristotle, Categories</name>
+            <name xml:lang="fra">Aristote, Catégories</name>
+            <name xml:lang="eng">Aristotle, Categories</name>
          </work>
          <div-type xml:id="ch">
             <IRI>http://dbpedia.org/resource/Chapter_(books)</IRI>
@@ -71,7 +72,7 @@
    <body xml:lang="fra">
       <div type="ti" n="ti">CATÉGORIES</div>
       <div type="sec" n="1">
-         <div type="ti" n="ti">
+         <div type="ti" n="sec|ti|1">
             <div type="par" n="1">SECTION PREMIÈRE</div>
             <div type="par" n="2">PROTHÉORIE</div>
          </div>
@@ -97,7 +98,7 @@
          </div>
          </div>
       <div type="sec" n="2">
-         <div type="ti" n="ti">
+         <div type="ti" n="sec|ti|2">
             <div type="par" n="1">SECTION DEUXIÈME</div>
             <div type="par" n="2">THÉORIE</div>
          </div>
@@ -288,7 +289,7 @@
          </div>
          </div>
       <div type="sec" n="3">
-         <div type="ti" n="ti">
+         <div type="ti" n="sec|ti|3">
             <div type="par" n="1">SECTION TROISIÈME</div>
             <div type="par" n="2">HYPOTHÉORIE</div>
          </div>

@@ -27,7 +27,8 @@
       <declarations>
          <work>
             <IRI>http://dbpedia.org/resource/Categories_(Aristotle)</IRI>
-            <name>Aristotle, Categories</name>
+            <name xml:lang="grc">Ἀριστοτέλης, Κατηγορίαι</name>
+            <name xml:lang="eng">Aristotle, Categories</name>
          </work>
          <div-type xml:id="ch">
             <IRI>http://dbpedia.org/resource/Chapter_(books)</IRI>

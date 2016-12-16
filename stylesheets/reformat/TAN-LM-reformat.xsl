@@ -3,7 +3,6 @@
    xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:tan="tag:textalign.net,2015:ns"
    xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs tan tei" version="2.0">
    <xsl:import href="../../functions/TAN-LM-functions.xsl"/>
-   <xsl:import href="../../functions/TAN-class-2-global-variables.xsl"/>
    <xsl:output indent="yes"/>
    <!-- Stylesheet to transform a TAN-LM file. Offers the following features:
         1. Reset <group>s of <ana>s
@@ -184,7 +183,7 @@
       <xsl:variable name="this-ref-norm" select="tan:normalize-refs(@ref)"/>
       <xsl:variable name="this-val-norm" select="(@val, '.+')[1]"/>
       <xsl:variable name="that-div"
-         select="$srcs-tokenized/tan:TAN-T/tan:body//tan:div[@ref = $this-ref-norm]"/>
+         select="$sources-prepped/tan:TAN-T/tan:body//tan:div[@ref = $this-ref-norm]"/>
       <xsl:variable name="tok-ceiling" select="count($that-div/tan:tok)"/>
       <xsl:variable name="this-pos-norm"
          select="
@@ -221,7 +220,7 @@
    <xsl:variable name="unconsolidated-doc" as="document-node()">
       <xsl:choose>
          <xsl:when test="exists($combination-id)">
-            <xsl:copy-of select="tan:unconsolidate-tan-lm($revised-tok-doc, $srcs-tokenized)"/>
+            <xsl:copy-of select="tan:unconsolidate-tan-lm($revised-tok-doc, $sources-prepped)"/>
          </xsl:when>
          <xsl:otherwise>
             <xsl:copy-of select="$revised-tok-doc"/>
@@ -333,7 +332,7 @@
          </xsl:otherwise>
       </xsl:choose>
    </xsl:variable>
-   <xsl:variable name="srcs-ref-sequence" select="$srcs-tokenized/tan:TAN-T/tan:body//@ref"
+   <xsl:variable name="srcs-ref-sequence" select="$sources-prepped/tan:TAN-T/tan:body//@ref"
       as="xs:string*"/>
    <xsl:template match="tan:group | tan:body" mode="re-sort">
       <xsl:copy>

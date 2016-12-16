@@ -7,23 +7,278 @@
    version="2.0">
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Revised</xd:b>Aug 28, 2015</xd:p>
+         <xd:p><xd:b>Revised</xd:b>Nov 11, 2016</xd:p>
          <xd:p>Core functions for TAN-A-div files. Written principally for Schematron validation,
             but suitable for general use in other contexts</xd:p>
       </xd:desc>
    </xd:doc>
    <xsl:include href="incl/TAN-class-2-functions.xsl"/>
+   <xsl:include href="errors/TAN-A-div-errors.xsl"/>
 
-   <!-- PART I. GLOBAL VARIABLES AND PARAMETERS -->
+   <!-- PART I. 
+      GLOBAL VARIABLES AND PARAMETERS -->
 
-   <xsl:variable name="self-and-sources-prepped" select="tan:prep-resolved-class-2-doc($self-core-errors-marked)"/>
+   <xsl:variable name="self-and-sources-prepped-prelim"
+      select="tan:prep-resolved-class-2-doc($self-core-errors-marked)"/>
+   <xsl:variable name="self-and-sources-prepped"
+      select="tan:prep-resolved-tan-a-div-doc($self-and-sources-prepped-prelim)"/>
    <xsl:variable name="self-prepped" select="$self-and-sources-prepped[1]"/>
    <xsl:variable name="sources-prepped" select="$self-and-sources-prepped[position() gt 1]"/>
-   
-   <!-- PART II. PROCESSING SELF -->
-   
+
+   <!-- PART II. 
+      PROCESSING SELF -->
+
+   <xsl:function name="tan:prep-resolved-tan-a-div-doc" as="document-node()*">
+      <!-- Input: a TAN-A-div document and its sources, as prepared by tan:prep-resolved-class-2-doc() -->
+      <!-- Output: the same documents, prepared with TAN-A-div specific considerations -->
+      <!--
+      FOCUS           ALTERATIONS
+      =======   =============================================================================================
+      sources   Segment sources
+      self      Expand <div-ref> and <anchor-div-ref> on @seg, making a deep copy of the <div>s and <seg>s referred to
+      self      Distribute <align> and <realign>; signal errors of realignment
+      self      Mark errors
+      -->
+      <xsl:param name="self-and-sources-prepped-class-2" as="document-node()*"/>
+      <xsl:variable name="this-class-2"
+         select="
+            if (exists($self-and-sources-prepped-class-2)) then
+               $self-and-sources-prepped-class-2[1]
+            else
+               $self-and-sources-prepped-prelim[1]"/>
+      <xsl:variable name="these-sources"
+         select="
+            if (count($self-and-sources-prepped-class-2) gt 1) then
+               $self-and-sources-prepped-class-2[position() gt 1]
+            else
+               $self-and-sources-prepped-prelim[position() gt 1]"/>
+      <xsl:variable name="class-1-sources-prepped-pass-a"
+         select="tan:get-src-1st-da-segmented($this-class-2, $these-sources)" as="document-node()*"/>
+      <xsl:variable name="tan-a-div-prepped-pass-a" as="document-node()?">
+         <xsl:document>
+            <xsl:apply-templates select="$this-class-2" mode="prep-tan-a-div-pass-a">
+               <xsl:with-param name="sources-segmented" select="$class-1-sources-prepped-pass-a"
+                  tunnel="yes"/>
+            </xsl:apply-templates>
+         </xsl:document>
+      </xsl:variable>
+      <xsl:variable name="tan-a-div-prepped-pass-b" as="document-node()?">
+         <xsl:document>
+            <xsl:apply-templates select="$tan-a-div-prepped-pass-a" mode="prep-tan-a-div-pass-b"/>
+         </xsl:document>
+      </xsl:variable>
+      <xsl:variable name="tan-a-div-prepped-errors-flagged" as="document-node()?">
+         <xsl:document>
+            <xsl:apply-templates select="$tan-a-div-prepped-pass-b" mode="TAN-A-div-errors"/>
+         </xsl:document>
+      </xsl:variable>
+      <!-- diagnostics, output -->
+      <!--<xsl:copy-of select="$this-class-2"/>-->
+      <!--<xsl:copy-of select="$tan-a-div-prepped-pass-a"/>-->
+      <!--<xsl:copy-of select="$tan-a-div-prepped-pass-b"/>-->
+      <xsl:copy-of select="$tan-a-div-prepped-errors-flagged"/>
+      <xsl:copy-of select="$class-1-sources-prepped-pass-a"/>
+   </xsl:function>
+
    <!-- Templates rooted in TAN-class-2-functions.xsl -->
-   
+
+   <xsl:template match="node()"
+      mode="segment-tokd-prepped-class-1 prep-tan-a-div-pass-a prep-tan-a-div-pass-b">
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:equate-works" mode="prep-tan-a-div-pass-a">
+      <xsl:variable name="source-order" select="/tan:TAN-A-div/tan:head/tan:source/@xml:id"/>
+      <xsl:variable name="help-requested" select="tan:help-requested(.)"/>
+      <xsl:variable name="viable-groups" select="../tan:equate-works[tan:work]"/>
+      <xsl:variable name="this-message" as="xs:string*">
+         <xsl:value-of select="count($viable-groups/tan:work)"/>
+         <xsl:text> sources fall in </xsl:text>
+         <xsl:value-of select="count($viable-groups)"/>
+         <xsl:text> works: </xsl:text>
+         <xsl:for-each select="$viable-groups">
+            <xsl:variable name="work-title" select="distinct-values(tan:work/tan:name)"/>
+            <xsl:variable name="secondary-work-title-message"
+               select="
+                  if (count($work-title) gt 1) then
+                     concat(' (', string-join($work-title[position() gt 1], '; '), ')')
+                  else
+                     ()"/>
+            <xsl:value-of
+               select="
+                  concat('[', string-join(tan:work/@src, ' '), '] ', $work-title[1], if (count($work-title) gt 1) then
+                     $secondary-work-title-message
+                  else
+                     ())"
+            />
+         </xsl:for-each>
+      </xsl:variable>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:if test="$help-requested = true()">
+            <xsl:copy-of select="tan:help(string-join($this-message, ''), ())"/>
+         </xsl:if>
+         <xsl:copy-of select="* except tan:work"/>
+         <xsl:for-each select="tan:work">
+            <xsl:sort select="index-of($source-order, @src)"/>
+            <xsl:copy-of select="."/>
+         </xsl:for-each>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template
+      match="tan:equate-div-types[tan:help-requested(.)] | tan:equate-div-types/tan:div-type-ref[tan:help-requested(.)]"
+      mode="prep-tan-a-div-pass-a">
+      <xsl:variable name="viable-groups"
+         select="ancestor::tan:body/tan:equate-div-types[tan:div-type]"/>
+      <xsl:variable name="this-message" as="xs:string*">
+         <xsl:value-of select="count($viable-groups/tan:div-type)"/>
+         <xsl:text> div types fall in </xsl:text>
+         <xsl:value-of select="count($viable-groups)"/>
+         <xsl:text> groups: </xsl:text>
+         <xsl:for-each select="$viable-groups">
+            <xsl:variable name="div-type-title" select="distinct-values(tan:div-type/tan:name)"/>
+            <xsl:variable name="secondary-div-type-title-message"
+               select="
+                  if (count($div-type-title) gt 1) then
+                     concat(' (', string-join($div-type-title[position() gt 1], '; '), ')')
+                  else
+                     ()"/>
+            <xsl:value-of
+               select="
+                  concat('[', string-join(for $i in tan:div-type
+                  return
+                     concat($i/@src, ' ', $i/@xml:id), ' '), '] ', $div-type-title[1], if (count($div-type-title) gt 1) then
+                     $secondary-div-type-title-message
+                  else
+                     (), ' ')"
+            />
+         </xsl:for-each>
+      </xsl:variable>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:copy-of select="tan:help(string-join($this-message, ''), ())"/>
+         <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:realign" mode="prep-tan-a-div-pass-a">
+      <xsl:variable name="pos" select="string(count(preceding-sibling::tan:realign) + 1)"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:attribute name="id" select="concat('#realign', $pos)"/>
+         <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:align" mode="prep-tan-a-div-pass-a">
+      <xsl:variable name="pos" select="string(count(preceding-sibling::tan:align) + 1)"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:attribute name="id" select="concat('#align', $pos)"/>
+         <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="*[@seg]" mode="prep-tan-a-div-pass-a">
+      <xsl:param name="sources-segmented" as="document-node()*" tunnel="yes"/>
+      <xsl:variable name="this-element" select="."/>
+      <xsl:variable name="this-element-name" select="name(.)"/>
+      <xsl:variable name="this-src" select="@src"/>
+      <xsl:variable name="this-ref" select="*/@ref"/>
+      <xsl:variable name="this-seg" select="@seg"/>
+      <xsl:variable name="these-divs"
+         select="$sources-segmented/tan:TAN-T[@src = $this-src]/tan:body//tan:div[@ref = $this-ref]"/>
+
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:copy-of select="(tan:error, tan:help, tan:message, tan:info)"/>
+         <xsl:for-each select="$these-divs">
+            <xsl:variable name="these-segs" select="tan:div[@type = '#seg']"/>
+            <xsl:variable name="this-seg-count" select="count($these-segs)"/>
+            <xsl:variable name="seg-nos-picked"
+               select="tan:sequence-expand($this-seg, $this-seg-count)"/>
+            <xsl:variable name="this-message"
+               select="concat(@ref, ' has ', string($this-seg-count), ' segments')"/>
+            <xsl:copy-of select="tan:sequence-error($seg-nos-picked, $this-message)"/>
+            <xsl:if test="exists(tan:div)">
+               <xsl:copy-of select="tan:error('seg01')"/>
+            </xsl:if>
+            <xsl:copy-of select="$these-segs[position() = $seg-nos-picked]"/>
+         </xsl:for-each>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:div-ref[not(@seg)] | tan:anchor-div-ref[not(@seg)]"
+      mode="prep-tan-a-div-pass-a">
+      <xsl:param name="sources-segmented" as="document-node()*" tunnel="yes"/>
+      <xsl:variable name="this-src" select="@src"/>
+      <xsl:variable name="this-ref" select="*/@ref"/>
+      <xsl:variable name="this-div"
+         select="$sources-segmented/tan:TAN-T[@src = $this-src]/tan:body//tan:div[@ref = $this-ref]"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:copy-of select="(tan:error, tan:help, tan:fatal, tan:message)"/>
+         <xsl:copy-of select="$this-div"/>
+      </xsl:copy>
+   </xsl:template>
+
+   <xsl:template match="tan:align | tan:realign" mode="prep-tan-a-div-pass-b">
+      <xsl:variable name="this-align-or-realign" select="."/>
+      <xsl:variable name="anchor-div-ref-counts" select="count(tan:anchor-div-ref/tan:div)"/>
+      <xsl:variable name="these-group-ids" select="distinct-values(tan:div-ref/@group)"/>
+      <xsl:variable name="div-ref-counts"
+         select="
+            for $i in $these-group-ids
+            return
+               count(*[@group = $i]/tan:div)"/>
+      <xsl:variable name="min-div-ref-group" select="min(($div-ref-counts, $anchor-div-ref-counts))"/>
+      <xsl:variable name="max-div-ref-group" select="max(($div-ref-counts, $anchor-div-ref-counts))"/>
+      <xsl:variable name="uneven-distributions" as="xs:boolean?"
+         select="$min-div-ref-group lt $max-div-ref-group"/>
+      <xsl:choose>
+         <xsl:when test="(@distribute = true()) or (not(exists(@distribute)) and $uneven-distributions = false())">
+            <xsl:for-each select="1 to $max-div-ref-group">
+               <xsl:variable name="pos" select="."/>
+               <xsl:element name="{name($this-align-or-realign)}">
+                  <xsl:copy-of select="$this-align-or-realign/@*"/>
+                  <xsl:if test="$pos = 1">
+                     <!-- transmit inherited errors in the first re/align only -->
+                     <xsl:copy-of select="$this-align-or-realign/*[not(tan:div)]"/>
+                  </xsl:if>
+                  <xsl:if test="$uneven-distributions = true() and $pos gt $min-div-ref-group">
+                     <xsl:copy-of
+                        select="tan:error('dst01', concat('attempt to correlate groups of size ', tan:value-of($anchor-div-ref-counts), ' ', tan:value-of($div-ref-counts)))"
+                     />
+                  </xsl:if>
+                  <xsl:for-each select="$this-align-or-realign/tan:anchor-div-ref">
+                     <xsl:copy>
+                        <xsl:copy-of select="@*"/>
+                        <xsl:if test="$pos = 1">
+                           <xsl:copy-of select="* except tan:div"/>
+                        </xsl:if>
+                        <xsl:copy-of select="tan:div[$pos]"/>
+                     </xsl:copy>
+                  </xsl:for-each>
+                  <xsl:for-each-group select="$this-align-or-realign/tan:div-ref" group-by="@group">
+                     <xsl:variable name="this-div-or-seg" select="tan:div[$pos]"/>
+                     <div-ref>
+                        <xsl:copy-of select="$this-div-or-seg/../@*"/>
+                        <xsl:if test="$pos = 1">
+                           <xsl:copy-of select="* except tan:div"/>
+                        </xsl:if>
+                        <xsl:copy-of select="$this-div-or-seg"/>
+                     </div-ref>
+                  </xsl:for-each-group>
+               </xsl:element>
+            </xsl:for-each>
+         </xsl:when>
+         <xsl:otherwise>
+            <!-- If there are no divs or segs at all, then just copy the element since there's probably an error -->
+            <xsl:copy-of select="."/>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:template>
+
+
+
    <xsl:template match="tan:tok" mode="prep-tan-a-div-pass-3-prelim">
       <xsl:param name="sources-prepped-1" as="document-node()*" tunnel="yes"/>
       <xsl:variable name="token-definitions"
@@ -31,7 +286,7 @@
       <xsl:variable name="this-tok" select="."/>
       <xsl:variable name="this-src" select="@src"/>
       <xsl:variable name="pass-1"
-         select="tan:convert-ref-to-div-fragment($sources-prepped-1[*/@src = $this-src], ., true())"
+         select="tan:convert-ref-to-div-fragment($sources-prepped-1[*/@src = $this-src], ., true(), false())"
          as="element()*"/>
       <xsl:variable name="pass-2" as="element()*">
          <xsl:apply-templates select="$pass-1" mode="tokenize-prepped-class-1">
@@ -56,25 +311,27 @@
          </xsl:for-each>
       </xsl:for-each>
    </xsl:template>
-   <xsl:template match="tan:anchor-div-ref | tan:div-ref[not(@src)]" mode="prep-tan-a-div-pass-3-prelim">
-      <!-- This template distributes elements with @work across all the sources that are implied, using the resolved <equate-works> that has been placed in the body in the process of preparation pass 2 -->
+
+
+
+   <!-- Nov 2016: to be deleted -->
+   <!--<xsl:template match="tan:div-ref[not(@src)]" mode="prep-tan-a-div-pass-3-prelim">
+      <!-\- This template distributes elements with @work across all the sources that are implied, using the resolved <equate-works> that has been placed in the body in the process of preparation pass 2 -\->
       <xsl:variable name="this-element" select="."/>
-      <xsl:variable name="this-element-name" select="name($this-element)"/>
-      <xsl:variable name="head-of-group"
-         select="(preceding-sibling::*[name() = $this-element-name and @work])[last()]"/>
+      <xsl:variable name="head-of-group" select="(preceding-sibling::*:div-ref[@work])[last()]"/>
       <xsl:variable name="is-continuation" select="not(exists(@work))"/>
       <xsl:variable name="this-work-attr" as="xs:string?"
          select="
             if ($is-continuation = true()) then
                $head-of-group/@work
             else
-               @work"
-      />
-      <xsl:variable name="these-sources" select="ancestor::tan:body/tan:equate-works[tan:work/@xml:id = $this-work-attr]/tan:work/@src"/>
+               @work"/>
+      <xsl:variable name="these-sources"
+         select="ancestor::tan:body/tan:equate-works[tan:work/@src = $this-work-attr]/tan:work/@src"/>
       <xsl:for-each select="$these-sources">
          <xsl:variable name="this-src" select="."/>
          <xsl:variable name="pos" select="position()"/>
-         <xsl:element name="{$this-element-name}">
+         <div-ref>
             <xsl:copy-of select="$this-element/@*"/>
             <xsl:attribute name="src" select="$this-src"/>
             <xsl:attribute name="group"
@@ -83,11 +340,12 @@
                <xsl:copy-of select="$head-of-group/(@strength, @cert)"/>
             </xsl:if>
             <xsl:copy-of select="$this-element/node()"/>
-         </xsl:element>
+         </div-ref>
       </xsl:for-each>
-   </xsl:template>
-   
-   <xsl:template match="tan:div-ref | tan:anchor-div-ref" mode="insert-seg-into-leaf-divs-in-hierarchy-fragment">
+   </xsl:template>-->
+
+   <xsl:template match="tan:div-ref | tan:anchor-div-ref"
+      mode="insert-seg-into-leaf-divs-in-hierarchy-fragment">
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:if test="exists(tan:div[tan:div]) and exists(@seg)">
@@ -131,6 +389,28 @@
       </xsl:copy>
    </xsl:template>
 
+
+   <!-- Nov 2016: delendum -->
+   <!--<xsl:template match="tan:realign/tan:div-ref" mode="prep-class-2-doc-pass-4">
+      <xsl:param name="duplicate-refs" as="xs:string*" tunnel="yes"/>
+      <xsl:variable name="this-ref"
+         select="
+            for $i in tan:div
+            return
+               concat(@src, '#', $i/@ref)"
+         as="xs:string*"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:if test="$this-ref = $duplicate-refs">
+            <xsl:variable name="this-message"
+               select="concat(@src, ' ', @ref, ' realigned multiple times')"/>
+            <xsl:copy-of select="tan:error('rea01', $this-message)"/>
+         </xsl:if>
+         <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+   </xsl:template>-->
+
+
    <!-- Processing self after common class 2 functions are finished. -->
 
    <xsl:function name="tan:prep-verbosely" as="document-node()*">
@@ -143,13 +423,15 @@
       <xsl:document>
          <xsl:apply-templates select="$TAN-A-div-prepped" mode="prep-verbosely">
             <xsl:with-param name="source-skeleton" select="$this-skeleton" tunnel="yes"/>
-            <xsl:with-param name="sources-prepped" select="$TAN-A-div-sources-prepped" tunnel="yes"/>
+            <xsl:with-param name="sources-prepped" select="$TAN-A-div-sources-prepped" tunnel="yes"
+            />
          </xsl:apply-templates>
       </xsl:document>
+      <!-- Nov 2016: validation rules so far do not require changes to the sources -->
       <xsl:sequence select="$TAN-A-div-sources-prepped"/>
    </xsl:function>
-   
-   <xsl:template match="node()" mode="prep-verbosely">
+
+   <xsl:template match="node()" mode="prep-verbosely prep-srcs-verbosely">
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:apply-templates mode="prep-verbosely"/>
@@ -163,8 +445,7 @@
             $source-skeleton//tan:div[@src][not(
             some $i in $these-realigns/*
                satisfies
-               ($i/@src = tokenize(@src, '\s+') and $i//@ref = @ref))]"
-      />
+               ($i/@src = tokenize(@src, '\s+') and $i//@ref = @ref))]"/>
       <xsl:variable name="defective-div-count" select="count($defective-divs)"/>
       <xsl:variable name="defective-divs-message" as="xs:string*">
          <xsl:value-of select="$defective-div-count"/>
@@ -179,8 +460,7 @@
                   for $i in $defective-divs
                   return
                      concat(($i/@ref),
-                     ' [', $i/@src, ']')"
-            />
+                     ' [', $i/@src, ']')"/>
             <xsl:text>)</xsl:text>
          </xsl:if>
       </xsl:variable>
@@ -191,11 +471,12 @@
       </xsl:copy>
    </xsl:template>
    <xsl:template match="tan:source" mode="prep-verbosely">
-      <xsl:param name="sources-prepped" tunnel="yes"/>
+      <xsl:param name="sources-prepped" tunnel="yes" as="document-node()*"/>
       <xsl:variable name="this-src-id" select="@xml:id"/>
       <xsl:variable name="this-src-doc" select="($sources-prepped[*/@src = $this-src-id])[1]"/>
       <xsl:variable name="leaf-div-refs" select="$this-src-doc//tan:div[not(tan:div)]"/>
-      <xsl:variable name="duplicate-leaf-div-refs" select="tan:duplicate-values($leaf-div-refs/@ref)"/>
+      <xsl:variable name="duplicate-leaf-div-refs"
+         select="tan:duplicate-values($leaf-div-refs/@ref)"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:if test="exists($duplicate-leaf-div-refs)">
@@ -212,7 +493,7 @@
          <xsl:copy-of select="node()"/>
       </help>
    </xsl:template>
-   
+
 
    <!-- PART III. PROCESSING SOURCE DOCUMENTS -->
    <!-- 
@@ -232,544 +513,533 @@
       <xsl:copy-of select="tan:get-src-1st-da-segmented($self-expanded-3, $src-1st-da-tokenized)"/>
    </xsl:function>-->
    <xsl:function name="tan:get-src-1st-da-segmented" as="document-node()*">
+      <!-- Input: Any sources for a TAN-A-div, preliminarily prepped (via class 2 operation) -->
+      <!-- Output: the same sources, selectively segmented -->
+      <!-- Segmentation here means inserting into only those leaf <div>s that have been split a new <div type="#seg" ref="[ANCESTRAL @REF + ' #' + SEGMENT NUMBER]"> -->
       <xsl:param name="self-expanded-3" as="document-node()?"/>
       <xsl:param name="src-1st-da-tokenized" as="document-node()*"/>
       <xsl:variable name="all-leaf-div-splits"
-         select="$self-expanded-3/tan:TAN-A-div/tan:body/tan:split"/>
+         select="$self-expanded-3/tan:TAN-A-div/tan:body/tan:split-leaf-div-at/tan:tok"/>
       <xsl:for-each select="$src-1st-da-tokenized">
          <xsl:variable name="this-src" select="/*/@src"/>
-         <xsl:copy>
+         <xsl:document>
+            <!--<test><xsl:copy-of select="$all-leaf-div-splits[@src = $this-src]"/></test>-->
+            <!--<test><xsl:value-of select="$this-src"/></test>-->
             <xsl:apply-templates mode="segment-tokd-prepped-class-1">
                <xsl:with-param name="all-leaf-div-splits" tunnel="yes"
                   select="$all-leaf-div-splits[@src = $this-src]"/>
             </xsl:apply-templates>
-         </xsl:copy>
+         </xsl:document>
       </xsl:for-each>
    </xsl:function>
-   <xsl:template match="node()" mode="segment-tokd-prepped-class-1">
-      <xsl:copy>
-         <xsl:copy-of select="@*"/>
-         <xsl:apply-templates mode="#current"/>
-      </xsl:copy>
-   </xsl:template>
-   <xsl:template match="tan:div[not((tan:tok, tan:div))]" mode="segment-tokd-prepped-class-1">
-      <xsl:copy>
-         <xsl:copy-of select="@*"/>
-            <seg n="1">
-            <xsl:copy-of select="text()"/>
-            </seg>
-         <xsl:sequence select="tei:*"/>
-      </xsl:copy>
-   </xsl:template>
    <xsl:template match="tan:div[tan:tok]" mode="segment-tokd-prepped-class-1">
       <xsl:param name="all-leaf-div-splits" as="element()*" tunnel="yes"/>
       <xsl:variable name="this-div" select="."/>
       <xsl:variable name="this-ref" select="@ref"/>
-      <xsl:variable name="this-max-toks" select="xs:integer(@max-toks)"/>
       <xsl:variable name="splits-at" select="$all-leaf-div-splits[@ref = $this-ref]"/>
       <xsl:variable name="this-div-seg-starts"
          select="
             (1,
-            for $i in $splits-at/tan:tok/@n
+            for $i in $splits-at/@n
             return
                xs:integer($i))"
          as="xs:integer+"/>
-      <xsl:variable name="this-div-seg-ends"
-         select="
-            ((for $i in $splits-at/tan:tok/@n
-            return
-               xs:integer($i) - 1),
-            $this-max-toks)"
-         as="xs:integer+"/>
+      <xsl:variable name="duplicate-splits" select="tan:duplicate-values($this-div-seg-starts)"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
-         <xsl:attribute name="splits-at" select="$splits-at/tan:tok/@n"/>
-         <xsl:for-each select="(1 to (count($splits-at/tan:tok) + 1))">
-            <xsl:variable name="pos" select="."/>
-            <xsl:variable name="start" select="$this-div-seg-starts[$pos]"/>
-            <xsl:variable name="end" select="$this-div-seg-ends[$pos]"/>
-            <seg n="{$pos}">
-               <xsl:copy-of
-                  select="
-                     $this-div/tan:tok[position() = ($start to $end)]/(self::*, following-sibling::*[1][self::tan:non-tok])"
-               />
-            </seg>
-         </xsl:for-each>
+         <xsl:attribute name="splits-at" select="$splits-at/@n"/>
+         <xsl:for-each-group select="*"
+            group-by="max($this-div-seg-starts[. lt (count(current()/(self::tan:tok, preceding-sibling::tan:tok)) + 1)])">
+            <xsl:variable name="pos" select="position()"/>
+            <div type="#seg" n="{concat($this-ref, ' #',string($pos))}">
+               <xsl:copy-of select="$this-ref"/>
+               <xsl:if test="$splits-at/@n = '1' and $pos = 1">
+                  <xsl:copy-of select="tan:error('spl03')"/>
+               </xsl:if>
+               <xsl:if test="current-grouping-key() = $duplicate-splits">
+                  <xsl:copy-of
+                     select="tan:error('spl02', concat('duplicate splits at token ', current-grouping-key()))"
+                  />
+               </xsl:if>
+               <xsl:copy-of select="current-group()"/>
+            </div>
+         </xsl:for-each-group>
          <xsl:sequence select="tei:*"/>
       </xsl:copy>
    </xsl:template>
 
-   <!-- STEP SELF-EXPANDED-5: distribute, group @seg, expand <align>, <realign> -->
-   <!-- The following function and template commented out 2016-07-17, since it seems to have been taken care of in the self3 revision. -->
-   <!--<xsl:function name="tan:get-self-expanded-5" as="document-node()?">
-      <!-\- zero-parameter version of the next function -\->
-      <xsl:variable name="self-expanded-4" select="tan:get-self-expanded-4()" as="document-node()?"/>
-      <xsl:copy-of select="tan:get-self-expanded-5($self-expanded-4)"/>
-   </xsl:function>-->
-   <!--<xsl:function name="tan:get-self-expanded-5" as="document-node()?">
-      <xsl:param name="self-expanded-4" as="document-node()?"/>
-      <xsl:document>
-         <xsl:apply-templates mode="self-expanded-5" select="$self-expanded-4"/>
-      </xsl:document>
-   </xsl:function>-->
-   <!--<xsl:template match="node()" mode="self-expanded-5">
-      <xsl:copy>
-         <xsl:copy-of select="@*"/>
-         <xsl:apply-templates mode="#current"/>
-      </xsl:copy>
-   </xsl:template>-->
-   <!--<xsl:template match="tan:realign | tan:align" mode="self-expanded-5">
-      <xsl:variable name="this-realign-or-align" select="."/>
-      <xsl:variable name="to-be-distributed" select="@distribute = true()"/>
-      <xsl:variable name="splits-declared"
-         select="preceding-sibling::tan:split-leaf-divs-at/tan:tok"/>
-      <xsl:variable name="div-refs-expanded" as="element()">
-         <group>
-            <xsl:for-each select="*">
-               <xsl:variable name="this-div-ref" select="."/>
-               <xsl:variable name="this-src" select="@src"/>
-               <xsl:variable name="this-ref" select="@ref"/>
-               <xsl:variable name="this-seg" select="@seg"/>
-               <xsl:variable name="seg-count"
-                  select="
-                     count($splits-declared[@src = $this-src and
-                     @ref = $this-ref]) + 1"/>
-               <xsl:variable name="seg-iterations"
-                  select="
-                     if (exists($this-seg)) then
-                        tan:sequence-expand($this-seg, $seg-count)
-                     else
-                        1"/>
-               <xsl:for-each select="$seg-iterations">
-                  <xsl:element name="{name($this-div-ref)}">
-                     <xsl:copy-of select="$this-div-ref/@*"/>
-                     <xsl:if test="$seg-count gt 0 or $this-div-ref/@seg">
-                        <xsl:attribute name="seg"
-                           select="
-                              if (. gt $seg-count) then
-                                 concat('max', string($seg-count), '+', string(. - $seg-count))
-                              else
-                                 ."
-                        />
-                     </xsl:if>
-                     <xsl:if test="position() lt count($seg-iterations)">
-                        <!-\- This ensures that itemized segments are treated as a single group -\->
-                        <xsl:attribute name="cont" select="true()"/>
-                     </xsl:if>
-                  </xsl:element>
-               </xsl:for-each>
-            </xsl:for-each>
-            <!-\-<xsl:copy-of select="tan:expand-seg(*, $src-1st-da-segmented)"/>-\->
-         </group>
-      </xsl:variable>
-      <xsl:variable name="div-refs-grouped" as="element()*">
-         <!-\-<xsl:for-each-group select="$div-refs-expanded/*"
-            group-by="count(preceding-sibling::*[not(@cont)])">
-            <group>
-               <xsl:copy-of select="current-group()"/>
-            </group>
-         </xsl:for-each-group>-\->
-         <xsl:for-each-group select="$div-refs-expanded/*" group-by="@group">
-            <group>
-               <xsl:copy-of select="current-group()"/>
-            </group>
-         </xsl:for-each-group>
-      </xsl:variable>
-      <xsl:choose>
-         <xsl:when test="$to-be-distributed = true() and self::tan:realign">
-            <xsl:variable name="div-refs-redistributed"
-               select="tan:distribute-elements-of-elements($div-refs-grouped)"/>
-            <xsl:for-each select="$div-refs-redistributed">
-               <realign>
-                  <xsl:copy-of select="$this-realign-or-align/@*"/>
-                  <xsl:copy-of select="@error"/>
-                  <!-\-<xsl:for-each-group select="tan:div-ref, tan:anchor-div-ref" group-by="@group">
-                     <group>
-                        <xsl:copy-of select="current-group()"/>
-                     </group>
-                  </xsl:for-each-group>-\->
-                  <xsl:copy-of select="."/>
-               </realign>
-            </xsl:for-each>
-         </xsl:when>
-         <xsl:when test="$to-be-distributed = true() and self::tan:align">
-            <!-\- aligns need predistribution since, unlike realign, multiple sources that share a single
-            work should be treated as multiple sets, not a single large one. -\->
-            <xsl:variable name="pre-distribution" as="element()*">
-               <xsl:for-each select="$div-refs-grouped">
-                  <xsl:for-each-group select="*" group-by="@src">
-                     <group>
-                        <xsl:copy-of select="current-group()"/>
-                     </group>
-                  </xsl:for-each-group>
-               </xsl:for-each>
-            </xsl:variable>
-            <xsl:variable name="div-refs-redistributed"
-               select="tan:distribute-elements-of-elements($pre-distribution)"/>
-            <xsl:for-each select="$div-refs-redistributed">
-               <align>
-                  <xsl:copy-of select="$this-realign-or-align/@*"/>
-                  <xsl:copy-of select="@error"/>
-                  <!-\-<xsl:for-each-group select="tan:div-ref" group-by="@group">
-                     <group>
-                        <xsl:copy-of select="current-group()"/>
-                     </group>
-                  </xsl:for-each-group>-\->
-                  <xsl:copy-of select="."/>
-               </align>
-            </xsl:for-each>
-         </xsl:when>
-         <xsl:otherwise>
-            <xsl:copy>
-               <xsl:copy-of select="@*"/>
-               <xsl:copy-of select="$div-refs-grouped"/>
-            </xsl:copy>
-         </xsl:otherwise>
-      </xsl:choose>
-   </xsl:template>-->
-
-   <!-- functions used in step -->
-   <!-- commented out 2016-07-17 since I'm not sure how it's being used -->
-   <!--<xsl:function name="tan:expand-seg" as="element()*">
-      <xsl:param name="elements-with-seg" as="element()*"/>
-      <xsl:param name="src-1st-da-segmented" as="document-node()*"/>
-      <xsl:for-each select="$elements-with-seg">
-         <xsl:variable name="this-div-ref" select="."/>
-         <xsl:variable name="div-picked"
-            select="$src-1st-da-segmented[*/@src = $this-div-ref/@src]/tan:TAN-T/tan:body//tan:div[@ref = $this-div-ref/@ref]"/>
-         <xsl:variable name="seg-count" select="count($div-picked/tan:seg)"/>
-         <xsl:variable name="seg-itemized" select="tan:sequence-expand(@seg, $seg-count)"/>
-         <xsl:for-each
-            select="
-               if (exists($seg-itemized)) then
-                  $seg-itemized
-               else
-                  1">
-            <xsl:element name="{name($this-div-ref)}">
-               <xsl:copy-of select="$this-div-ref/@*"/>
-               <xsl:if test="$seg-count gt 0 or $this-div-ref/@seg">
-                  <xsl:attribute name="seg"
-                     select="
-                        if (. gt $seg-count) then
-                           concat('max', string($seg-count), '+', string(. - $seg-count))
-                        else
-                           ."
-                  />
-               </xsl:if>
-               <xsl:if test="position() lt count($seg-itemized)">
-                  <!-\- This ensures that itemized segments are treated as a single group -\->
-                  <xsl:attribute name="cont" select="true()"/>
-               </xsl:if>
-            </xsl:element>
-         </xsl:for-each>
-      </xsl:for-each>
-   </xsl:function>-->
-
-   <!-- Commented out 2016-07-17, since it seems to be rendered obsolete by the $self3 revisions -->
-   <!--<xsl:function name="tan:distribute-elements-of-elements" as="element()*">
-      <!-\- Input: a sequence of elements with child elements to be distributed and regrouped. 
-         Output: a sequence of elements where the nth item of each top-level input element is grouped 
-         together. Items that cannot be distributed will be lumped together in a final group with the 
-         attribute @error='true'.
-         E.g., <group><a>one</a><a>two</a></group>, <group><b>three</b></group>
-                        - > 
-         <group><a>one</a><b>three</b></group>, <group error="true"><a>two</a></group>
-         Useful for <realign> and <align>, both of which take @distribute.
-      -\->
-      <xsl:param name="input-elements" as="element()*"/>
-      <xsl:variable name="count-per-element"
-         select="
-            for $i in $input-elements
-            return
-               count($i/*)"/>
-      <xsl:variable name="element-name" select="name($input-elements[1])"/>
-      <xsl:for-each select="1 to min($count-per-element)">
-         <xsl:element name="{$element-name}">
-            <xsl:copy-of select="$input-elements/*[current()]"/>
-         </xsl:element>
-      </xsl:for-each>
-      <xsl:if test="min($count-per-element) lt max($count-per-element)">
-         <xsl:element name="{$element-name}">
-            <xsl:attribute name="error" select="true()"/>
-            <xsl:copy-of select="$input-elements/*[position() gt min($count-per-element)]"/>
-         </xsl:element>
-      </xsl:if>
-   </xsl:function>-->
 
    <!-- STEP SRC-1ST-DA-REALIGNED: realign segmented source documents -->
-   <!--<xsl:function name="tan:get-src-1st-da-realigned" as="document-node()*">
-      <!-\- zero-parameter version of the next function -\->
-      <xsl:variable name="self-expanded-3" select="tan:get-self-expanded-3()" as="document-node()?"/>
-      <xsl:variable name="src-1st-da-segmented" select="tan:get-src-1st-da-segmented()"
+
+   <xsl:function name="tan:merge-tan-a-div-prepped" as="document-node()*">
+      <!-- shortened version of the fuller function, below -->
+      <xsl:param name="tan-a-div-prepped" as="document-node()?"/>
+      <xsl:param name="tan-a-div-sources-prepped" as="document-node()*"/>
+      <xsl:param name="prioritize-source-order-over-conciseness" as="xs:boolean?"/>
+      <xsl:param name="proportionally-allocate-complex-realigns" as="xs:boolean?"/>
+      <xsl:param name="allocate-deeply" as="xs:boolean?"/>
+      <xsl:copy-of
+         select="tan:merge-tan-a-div-prepped($tan-a-div-prepped, $tan-a-div-sources-prepped, $prioritize-source-order-over-conciseness, $proportionally-allocate-complex-realigns, $allocate-deeply, ())"
+      />
+   </xsl:function>
+   <xsl:function name="tan:merge-tan-a-div-prepped" as="document-node()*">
+      <!-- Input: TAN-A-div prepped; its sources, prepped; booleans indicating whether (1) source order should be prioritized; (2) complex (re)alignments allocated proportionally; (3) whether that proportional allocation should be shallowly (on the basis of realign heads) or deeply (the anchor/model is infused with the content of the fragment to be aligned)  -->
+      <!-- Output: the TAN-A-div file, with the following changes: (1) one <work> per <equate-works> is placed after <body>; (2) each <work> contains a merger of the <div>s of all sources that contain that work; (3) simple realignments are made directly in the appropriate place in <work>; (4) <div>s realigned via a complex realignment are omitted from the structure in <work> replaced by an anchor in the form of <realignment which=""/> that points by idref to the <realign> in question; (6) the sources are altered such that @src is added to every div and @realign-head is added, where appropriate. -->
+      <xsl:param name="tan-a-div-prepped" as="document-node()?"/>
+      <xsl:param name="tan-a-div-sources-prepped" as="document-node()*"/>
+      <xsl:param name="prioritize-source-order-over-conciseness" as="xs:boolean?"/>
+      <xsl:param name="proportionally-allocate-complex-realigns" as="xs:boolean?"/>
+      <xsl:param name="allocate-deeply" as="xs:boolean?"/>
+      <xsl:param name="work-filter" as="xs:string?"/>
+      <xsl:variable name="tan-a-div-sources-prepped-for-merge"
+         select="tan:prep-tan-a-div-sources-for-merge($tan-a-div-prepped, $tan-a-div-sources-prepped)"
          as="document-node()*"/>
-      <xsl:copy-of select="tan:get-src-1st-da-realigned($self-expanded-3, $src-1st-da-segmented)"/>
-   </xsl:function>-->
-   <xsl:function name="tan:get-src-1st-da-realigned" as="document-node()*">
-      <xsl:param name="self-expanded-3" as="document-node()?"/>
+      <xsl:variable name="results-pass1" as="document-node()?">
+         <!-- Goal: repopulate every <realign> and <align> with correctly realigned <div>s and <seg>s; if proportional realignment to an anchor is requested, adjust the children of all <div-ref>s so they are bijective with the anchor (either shallowly, at the level of realign heads, or deeply, with leaf divs); add one or more <work>s after <body>, copying the topmost <div>s, except for realigned <div>s -->
+         <xsl:document>
+            <xsl:apply-templates select="$tan-a-div-prepped" mode="tan-a-div-merge-pass1">
+               <xsl:with-param name="tan-a-div-sources-realigned"
+                  select="$tan-a-div-sources-prepped-for-merge" tunnel="yes"/>
+               <xsl:with-param name="allocate-deeply"
+                  select="
+                     if ($proportionally-allocate-complex-realigns = true()) then
+                        $allocate-deeply
+                     else
+                        ()"
+                  tunnel="yes"/>
+               <xsl:with-param name="work-filter" select="$work-filter" tunnel="yes"/>
+            </xsl:apply-templates>
+         </xsl:document>
+      </xsl:variable>
+      <xsl:variable name="results-pass2" as="document-node()?">
+         <!-- Goal: integrate <realign>s into <work> structure: (1) unanchored realigns are copied as the last children of <work>; (2) anchored divs: find the anchors (i.e., <div>s under <work>) and copy, as next siblings, the realignments: if proportional distribution is false then in the appropriate place wholly copy simple realignments and leave merely a placeholder for complex ones; if it is true, then copy, as next siblings, the <realign> <div> with the corresponding @ref (accuracy was guaranteed in the previous step) -->
+         <xsl:document>
+            <xsl:apply-templates select="$results-pass1" mode="tan-a-div-merge-pass2">
+               <xsl:with-param name="proportionally-allocate-complex-realigns"
+                  select="$proportionally-allocate-complex-realigns" tunnel="yes"/>
+            </xsl:apply-templates>
+         </xsl:document>
+      </xsl:variable>
+      <!-- Goal: complete the merge -->
+      <xsl:variable name="results-pass3" as="document-node()?"
+         select="
+            tan:merge-source-loop($results-pass2, 1, false(), if ($prioritize-source-order-over-conciseness = true()) then
+               $results-pass2/tan:TAN-A-div/tan:head/tan:source/@xml:id
+            else
+               ())"/>
+      <xsl:variable name="results-cleaned-up">
+         <xsl:document>
+            <xsl:copy-of
+               select="tan:copy-of-except($results-pass3, (), ('r', 'r-avg', 'realign-head', 'string-pos', 'string-length'), ())"
+            />
+         </xsl:document>
+      </xsl:variable>
+      <!--<xsl:copy-of select="$tan-a-div-prepped"/>-->
+      <!--<xsl:copy-of select="$tan-a-div-sources-prepped"/>-->
+      <!--<xsl:copy-of select="$tan-a-div-sources-prepped-for-merge"/>-->
+      <!--<xsl:copy-of select="$results-pass1"/>-->
+      <!--<xsl:copy-of select="$results-pass2"/>-->
+      <!--<xsl:copy-of select="$results-pass3"/>-->
+      <xsl:copy-of select="$results-cleaned-up"/>
+   </xsl:function>
+
+   <xsl:function name="tan:prep-tan-a-div-sources-for-merge" as="document-node()*">
+      <!-- Input: A TAN-A-div file that has reached at least level four of preparation (<realign> has @id); the sources of that TAN-A-div file, prepared -->
+      <!-- Output: The sources, realigned. -->
+      <!-- The function traverses each source, div by div via a template. If in a given source ($this-src) in a given div ($this-div) the ref ($this-ref) is found in the TAN-A-div's <realign> (in realign/div-ref/div/@ref), then if the realignment is simple (only one relaigned <div> to only one anchor <div>) then the anchor's @ref is adopted. In a complex realignment, the id of the <realign>, e.g., #realign1, is adopted. Whether a simple or complex realignment, @pre-realign-ref is added with the old @ref, and @src is added (to anticipate merges between sources). Whether simple or complex, a realigned <div> passes on its new @ref value to its children, whose @ref values are revised accordingly. -->
+      <xsl:param name="tan-a-div-prepped" as="document-node()?"/>
       <xsl:param name="src-1st-da-prepped-or-segmented" as="document-node()*"/>
       <xsl:for-each select="$src-1st-da-prepped-or-segmented">
-         <xsl:copy>
-            <xsl:apply-templates mode="realign-segmented-class-1">
-               <xsl:with-param name="self-expanded-3" select="$self-expanded-3" tunnel="yes"/>
+         <xsl:document>
+            <xsl:apply-templates mode="prepare-class-1-doc-for-merge">
+               <xsl:with-param name="keep-text" select="true()" as="xs:boolean" tunnel="yes"/>
+               <xsl:with-param name="tan-a-div-prepped" select="$tan-a-div-prepped" tunnel="yes"/>
             </xsl:apply-templates>
-         </xsl:copy>
+         </xsl:document>
       </xsl:for-each>
    </xsl:function>
-   <xsl:template match="node()" mode="realign-segmented-class-1">
+
+   <xsl:template match="comment() | processing-instruction()"
+      mode="tan-a-div-merge-pass1 tan-a-div-merge-pass2 process-splits drop-tokenization mark-splits-in-fragment">
+      <xsl:copy-of select="."/>
+   </xsl:template>
+   <xsl:template match="*"
+      mode="tan-a-div-merge-pass1 tan-a-div-merge-pass2 process-splits drop-tokenization mark-splits-in-fragment">
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:apply-templates mode="#current"/>
       </xsl:copy>
    </xsl:template>
-   <xsl:template match="tan:div" mode="realign-segmented-class-1">
-      <xsl:param name="self-expanded-3" as="document-node()?" tunnel="yes"/>
-      <xsl:variable name="this-src" select="root(.)/*/@src"/>
-      <xsl:variable name="this-ref" select="@ref"/>
-      <!--<xsl:variable name="explicit-realign-groups"
-         select="$self-expanded-5/tan:TAN-A-div/tan:body/tan:realign/tan:group[tan:div-ref[@src = $this-src][@ref = $this-ref]]"/>-->
-      <xsl:variable name="explicit-realignments"
-         select="$self-expanded-3/tan:TAN-A-div/tan:body/tan:realign[tan:div-ref[@src = $this-src][tan:div/@ref = $this-ref]]"
-      />
-      <xsl:variable name="explicit-segs"
-         select="tan:sequence-expand($explicit-realignments/tan:div-ref[@src = $this-src]/@seg, count(tan:seg))"
-      />
-      <xsl:variable name="ancestral-explicit-realignments"
-         select="$self-expanded-3/tan:TAN-A-div/tan:body/tan:realign[tan:div-ref[@src = $this-src][tan:div//tan:div/@ref = $this-ref]]"
-      />
-      <xsl:variable name="shortest-distance-to-explicitly-realigned-ancestor"
+   <xsl:template match="tan:source" mode="tan-a-div-merge-pass1">
+      <!-- We assume that the user of the resultant file wants little or no recourse to the original source files, so we add select metadata --> 
+      <xsl:param name="tan-a-div-sources-realigned" tunnel="yes" as="document-node()*"/>
+      <xsl:variable name="this-src" select="@xml:id"/>
+      <xsl:variable name="this-src-doc" select="$tan-a-div-sources-realigned[*/@src = $this-src]"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:copy-of select="node()"/>
+         <!-- We add <body>, so as to be able to easily retrieve the language of the transcription of the source, important for reuse of a TAN-A-div file -->
+         <body>
+            <xsl:copy-of select="$this-src-doc/tan:TAN-T/tan:body/@*"/>
+         </body>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:body" mode="tan-a-div-merge-pass1">
+      <xsl:param name="tan-a-div-sources-realigned" tunnel="yes" as="document-node()*"/>
+      <xsl:param name="work-filter" tunnel="yes" as="xs:string?"/>
+      <xsl:variable name="this-work-filter"
          select="
-            min(for $i in
-            $ancestral-explicit-realignments/tan:div-ref[@src = $this-src]//tan:div[@ref = $this-ref]
-            return
-               count($i/ancestor::tan:div))"
-      />
-      <xsl:variable name="nearest-ancestral-explicit-realignments" select="$ancestral-explicit-realignments/tan:div-ref[@src = $this-src]//tan:div[@ref = $this-ref][count(ancestor::tan:div) = $shortest-distance-to-explicitly-realigned-ancestor]"/>
-      <xsl:variable name="new-ref-value" as="xs:string">
+            if (string-length($work-filter) lt 1) then
+               '.+'
+            else
+               $work-filter"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+      <xsl:for-each
+         select="
+            tan:equate-works[(some $i in (tan:work/@src)
+               satisfies matches($i, $this-work-filter))
+            or string(count(preceding-sibling::tan:equate-works) + 1) = $this-work-filter]">
+         <xsl:variable name="these-srcs" select="tan:work/@src"/>
+         <work>
+            <xsl:copy-of select="@*"/>
+            <xsl:for-each
+               select="$tan-a-div-sources-realigned/*[@src = $these-srcs]/tan:body/tan:div">
+               <!-- Dec 2016: One of three sorts that need to be revisited -->
+               <!--<xsl:sort select="@r"/>-->
+               <xsl:copy>
+                  <xsl:copy-of select="@*"/>
+                  <xsl:copy-of select="tan:copy-of-except(node(), (), (), 'realign-head')"/>
+               </xsl:copy>
+            </xsl:for-each>
+         </work>
+      </xsl:for-each>
+   </xsl:template>
+   <xsl:template match="tan:realign" mode="tan-a-div-merge-pass1">
+      <xsl:param name="allocate-deeply" tunnel="yes" as="xs:boolean?"/>
+      <xsl:param name="tan-a-div-sources-realigned" tunnel="yes" as="document-node()*"/>
+      <!-- in an unanchored realignment, we treat the first <div-ref> as a proxy anchor -->
+      <xsl:variable name="this-anchor" select="(tan:anchor-div-ref, tan:div-ref)[1]" as="element()?"/>
+      <xsl:variable name="new-anchor-divs"
+         select="
+            $tan-a-div-sources-realigned/tan:TAN-T[@src = $this-anchor/@src]/tan:body//tan:div[(@ref, @pre-realign-ref) = $this-anchor/tan:div/@ref]"/>
+      <xsl:variable name="new-anchor-div-ref" as="element()">
+         <xsl:element name="{name($this-anchor)}">
+            <xsl:copy-of select="$this-anchor/@*"/>
+            <xsl:for-each select="$new-anchor-divs">
+               <xsl:copy-of select="$this-anchor/(* except tan:div)"/>
+               <xsl:copy>
+                  <xsl:copy-of select="@*"/>
+                  <xsl:copy-of select="tan:copy-of-except(*, (), (), 'realign-head')"/>
+               </xsl:copy>
+            </xsl:for-each>
+         </xsl:element>
+      </xsl:variable>
+      <xsl:variable name="new-div-refs" as="element()*">
+         <xsl:for-each
+            select="
+               if (exists(tan:anchor-div-ref)) then
+                  tan:div-ref
+               else
+                  tan:div-ref[position() gt 1]">
+            <xsl:variable name="this-div-ref" select="."/>
+            <xsl:variable name="these-new-divs-to-be-realigned"
+               select="
+                  $tan-a-div-sources-realigned/tan:TAN-T[@src = $this-div-ref/@src]/tan:body//tan:div[@pre-realign-ref = $this-div-ref/tan:div/@ref]"/>
+            <xsl:copy>
+               <xsl:copy-of select="@*"/>
+               <xsl:copy-of select="* except tan:div"/>
+               <xsl:for-each select="$these-new-divs-to-be-realigned">
+                  <xsl:copy>
+                     <xsl:copy-of select="@*"/>
+                     <xsl:copy-of select="tan:copy-of-except(*, (), 'r', 'realign-head')"/>
+                  </xsl:copy>
+               </xsl:for-each>
+            </xsl:copy>
+         </xsl:for-each>
+      </xsl:variable>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:copy-of select="* except (tan:div-ref, tan:anchor-div-ref)"/>
+         <xsl:if test="exists($this-anchor)">
+            <xsl:copy-of select="$new-anchor-div-ref"/>
+         </xsl:if>
+         <xsl:for-each select="$new-div-refs">
+            <xsl:variable name="is-complex"
+               select="count($new-anchor-div-ref/*) gt 1 or count(*) gt 1"/>
+            <xsl:choose>
+               <xsl:when test="$is-complex = true()">
+                  <xsl:copy-of
+                     select="tan:reanchor-div-ref(., $new-anchor-div-ref, $allocate-deeply)"/>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:copy-of select="."/>
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:for-each>
+
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:align" mode="tan-a-div-merge-pass1">
+      <!-- We repeat the align for as many groups of <div-ref>s, treating each on it turn as an <anchor-div>, then applying the same approach to <realign> -->
+      <xsl:param name="allocate-deeply" tunnel="yes" as="xs:boolean?"/>
+      <xsl:param name="tan-a-div-sources-realigned" tunnel="yes" as="document-node()*"/>
+      <xsl:variable name="this-align" select="."/>
+      <xsl:variable name="div-refs-repopulated" as="element()*">
+         <xsl:for-each select="tan:div-ref">
+            <xsl:variable name="this-div-ref" select="."/>
+            <xsl:variable name="new-divs"
+               select="
+                  $tan-a-div-sources-realigned/tan:TAN-T[@src = $this-div-ref/@src]/tan:body//tan:div[(@ref, @pre-realign-ref) = $this-div-ref/tan:div/@ref]"/>
+            <xsl:copy>
+               <xsl:copy-of select="@*"/>
+               <!--<xsl:copy-of select="* except tan:div"/>-->
+               <xsl:copy-of
+                  select="tan:copy-of-except($new-divs, ('error', 'warning', 'info', 'fatal'), (), 'realign-head')"
+               />
+            </xsl:copy>
+         </xsl:for-each>
+      </xsl:variable>
+      <xsl:choose>
+         <xsl:when test="exists(@topic)">
+            <xsl:copy>
+               <xsl:copy-of select="@*"/>
+               <xsl:copy-of select="$div-refs-repopulated"/>
+            </xsl:copy>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:for-each-group select="$div-refs-repopulated" group-by="@group">
+               <xsl:variable name="this-group" select="current-grouping-key()"/>
+               <xsl:variable name="pos" select="position()"/>
+               <xsl:variable name="this-div-ref" as="element()*"
+                  select="
+                     current-group()[if (exists(@work)) then
+                        (@work = @src)
+                     else
+                        true()]"/>
+               <align>
+                  <xsl:copy-of select="$this-align/@*"/>
+                  <xsl:if test="$pos = 1">
+                     <xsl:copy-of select="$this-align/(* except tan:div-ref)"/>
+                  </xsl:if>
+                  <xsl:variable name="this-anchor" as="element()">
+                     <anchor-div-ref>
+                        <xsl:copy-of select="$this-div-ref/@*"/>
+                        <xsl:copy-of select="$this-div-ref/node()"/>
+                     </anchor-div-ref>
+                  </xsl:variable>
+                  <xsl:copy-of select="$this-anchor"/>
+                  <xsl:for-each select="$div-refs-repopulated[not(@group = $this-group)]">
+                     <xsl:copy-of select="tan:reanchor-div-ref(., $this-anchor, $allocate-deeply)"/>
+                  </xsl:for-each>
+               </align>
+            </xsl:for-each-group>
+         </xsl:otherwise></xsl:choose>
+   </xsl:template>
+
+   <xsl:template match="tan:head | tan:body" mode="tan-a-div-merge-pass2">
+      <xsl:copy-of select="."/>
+   </xsl:template>
+   <xsl:template match="tan:work" mode="tan-a-div-merge-pass2">
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:apply-templates mode="#current"/>
+         <xsl:copy-of select="/tan:TAN-A-div/tan:body/tan:realign[not(tan:anchor-div-ref)]"/>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:div" mode="tan-a-div-merge-pass2">
+      <!--<xsl:param name="complex-realignments" tunnel="yes"/>-->
+      <xsl:param name="proportionally-allocate-complex-realigns" as="xs:boolean?" tunnel="yes"/>
+      <xsl:variable name="this-src" select="@src"/>
+      <xsl:variable name="this-ref" select="@ref"/>
+      <xsl:variable name="this-n" select="@n"/>
+      <xsl:variable name="these-realign-head-anchors"
+         select="/tan:TAN-A-div/tan:body/tan:realign/tan:anchor-div-ref/tan:div[@src = $this-src and @ref = $this-ref]"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+      <xsl:for-each select="$these-realign-head-anchors">
+         <xsl:variable name="this-realign" select="ancestor::tan:realign"/>
          <xsl:choose>
-            <xsl:when test="exists($explicit-realignments)">
-               <xsl:choose>
-                  <xsl:when
-                     test="
-                        count($explicit-realignments) = 1 and count($explicit-realignments/tan:anchor-div-ref/tan:div) = 1
-                        and (count($explicit-realignments/tan:div-ref[@src = $this-src]/tan:div) = 1)
-                        and not(exists($explicit-realignments/(tan:div-ref[@src = $this-src], tan:anchor-div-ref)/@seg[matches(., '\D')]))">
-                     <!-- If there is only one realignment, and it's in a one-to-one realignment, and the realignment does not involve multiple segments, then just adopt 
-                        the value of the anchor div's @ref -->
-                     <xsl:value-of select="$explicit-realignments/tan:anchor-div-ref/tan:div/@ref"/>
-                  </xsl:when>
-                  <xsl:when
-                     test="
-                        count($explicit-realignments) = 1 and not(exists($explicit-realignments/tan:anchor-div-ref))
-                        and (every $i in $src-ids
-                           satisfies count($explicit-realignments/tan:div-ref[@src = $i]/tan:div) le 1)">
-                     <!-- There is only one realignment, and it's one div and zero anchor divs, then just reassign the value 
-                        of @ref to the first div-ref, prepended by '#' (to make sure it's excluded from auto alignment) -->
-                     <xsl:value-of
-                        select="concat('#', $explicit-realignments/tan:div-ref[1]/tan:div/@ref)"/>
-                  </xsl:when>
-                  <xsl:otherwise>
-                     <!-- If there are multiple realignments, or any realignment where the realignment is one to many, 
-                        many to many, or many to one, then change @ref to the values of all relevant realignment numbers,
-                        delimited by space + hash + space, e.g., ref="realign#1 # realign#7" -->
-                     <xsl:value-of
-                        select="
-                           string-join(for $i in $explicit-realignments
-                           return
-                              concat('realign#', string(count($i/preceding-sibling::tan:realign) + 1)), ' # ')"
-                     />
-                  </xsl:otherwise>
-               </xsl:choose>
+            <xsl:when test="$proportionally-allocate-complex-realigns = true()">
+               <xsl:variable name="this-realign-head-pos"
+                  select="count(preceding-sibling::tan:div) + 1"/>
+               <xsl:for-each select="$this-realign/tan:div-ref">
+                  <div ref="{$this-ref}" src="{@src}">
+                     <xsl:copy-of select="*[$this-realign-head-pos]/*"/>
+                  </div>
+               </xsl:for-each>
             </xsl:when>
             <xsl:otherwise>
-               <xsl:choose>
-                  <xsl:when test="exists($ancestral-explicit-realignments)">
-                     <!-- In this case, there's not an explicit realignment of the div in question, but one of its
-                     ancestors has been realigned. In those cases, find the one that is the nearest ancestor. If there
-                     is only one, and it alone is pegged to only one anchor, then let @ref take the value of 
-                     its current value, with the opening part of the reference string replaced by the new one. For example,
-                     if the file has realigned 1 4 to 1 3 3, and the div in question is 1 4 b, then the result should be
-                     1 3 3 b. If there are multiple ancestral explicit realignments, or any of them those realignments involve
-                     realigning one div to many, many to many, or many to one, then just copy the number of the realignment,
-                     as above. It's up to subsequent users to determine how to interpret that realignment. -->
-                     <xsl:choose>
-                        <xsl:when
-                           test="
-                              count($nearest-ancestral-explicit-realignments) = 1 and count($nearest-ancestral-explicit-realignments/tan:anchor-div-ref/tan:div) = 1
-                              and count($nearest-ancestral-explicit-realignments/tan:div-ref[@src = $this-src]/tan:div)">
-                           <xsl:value-of
-                              select="replace(@ref, concat('^', $nearest-ancestral-explicit-realignments/tan:div-ref/tan:div/@ref), $nearest-ancestral-explicit-realignments/tan:anchor-div-ref/tan:div/@ref)"
-                           />
-                        </xsl:when>
-                        <xsl:when
-                           test="
-                              count($nearest-ancestral-explicit-realignments) = 1 and not(exists($nearest-ancestral-explicit-realignments/tan:anchor-div-ref))
-                              and (every $i in $src-ids
-                                 satisfies count($nearest-ancestral-explicit-realignments/tan:div-ref[@src = $i]/tan:div) le 1)">
-                           <!-- There is only one ancestral realignment, and it's one div and zero anchor divs, then just reassign the value 
-                        of @ref to the first div-ref, prepended by '#' (to make sure it's excluded from auto alignment) -->
-                           <xsl:value-of
-                              select="concat('#', $nearest-ancestral-explicit-realignments/tan:div-ref[1]/tan:div/@ref)"
-                           />
-                        </xsl:when>
-                        <xsl:otherwise>
-                           <xsl:value-of
-                              select="
-                                 string-join(for $i in $nearest-ancestral-explicit-realignments
-                                 return
-                                    concat('realign#', string(count($i/preceding-sibling::tan:realign) + 1)), ' # ')"
-                           />
-                        </xsl:otherwise>
-                     </xsl:choose>
-                  </xsl:when>
-                  <xsl:otherwise>
-                     <!-- In this case, there's no explicit realignment, and there's no ancestor that is explicitly realigned,
-                     so it's ok to just copy the @ref -->
-                     <xsl:value-of select="@ref"/>
-                  </xsl:otherwise>
-               </xsl:choose>
+               <xsl:variable name="anchor-count" select="count(../tan:div)"/>
+               <xsl:for-each select="$this-realign/tan:div-ref">
+                  <xsl:choose>
+                     <xsl:when test="$anchor-count = 1 and count(tan:div) = 1">
+                        <xsl:copy-of select="tan:div"/>
+                     </xsl:when>
+                     <xsl:otherwise>
+                        <div ref="{$this-ref}" src="{@src}">
+                           <realignment which="{$this-realign/@id}"/></div>
+                     </xsl:otherwise>
+                  </xsl:choose>
+               </xsl:for-each>
             </xsl:otherwise>
          </xsl:choose>
-      </xsl:variable>
-      <!--<xsl:variable name="explicit-realign-anchor"
-         select="($explicit-realignments/../../tan:anchor-div-ref[1])[1]"/>-->
-      <!--<xsl:variable name="explicit-realign-unanchored"
-         select="($explicit-realignments/../../tan:div-ref[1])[1]"/>-->
-      <!--<xsl:variable name="explicit-realign-div-ref-eq"
-         select="
-            if (exists($explicit-realign-unanchored)) then
-               concat('#' (:adding the # ensures it is removed from auto alignment :), $explicit-realign-unanchored/@ref)
-            else
-               ()"/>-->
-      <!--<xsl:variable name="realigned-ref"
-         select="
-            ($explicit-realign-anchor/@ref, $explicit-realign-div-ref-eq,
-            $this-ref)[1]"
-      />-->
-      <xsl:copy>
-         <xsl:copy-of select="@* except @ref"/>
-         <xsl:attribute name="ref" select="$new-ref-value"/>
-         <!--<xsl:attribute name="test" select="exists(tan:seg)"></xsl:attribute>-->
-         <!--<xsl:attribute name="test2" select="exists($explicit-realignments/tan:div-ref[@src = $this-src]/@seg)"></xsl:attribute>-->
-         <xsl:if test="not(exists(tan:seg)) and exists($explicit-realignments)">
-            <xsl:copy-of select="tan:error('seg01')"/>
-         </xsl:if>
-         <xsl:if test="$explicit-segs = 0">
-            <xsl:copy-of select="tan:error('seq01')"/>
-         </xsl:if>
-         <xsl:if test="$explicit-segs = -1">
-            <xsl:copy-of select="tan:error('seq02')"/>
-         </xsl:if>
-         <xsl:if test="$explicit-segs = -2">
-            <xsl:copy-of select="tan:error('seq03')"/>
-         </xsl:if>
-         <xsl:if test="count($explicit-realignments) gt 1">
-            <xsl:variable name="message">Realigned <xsl:value-of select="count($explicit-realignments)"/> times.</xsl:variable>
-            <xsl:copy-of select="tan:error('rea01', $message)"/>
-         </xsl:if>
-         <!--<xsl:if
-            test="
-               $explicit-segs = -1 or (some $i in $explicit-segs
-                  satisfies $i gt count(tan:seg))">
-            <xsl:copy-of select="$errors//*[@xml:id = 'seg02']"/>
-         </xsl:if>-->
-         <!--<xsl:choose>
-            <xsl:when test="count($explicit-realignments) = 1">
-               <!-\-<xsl:attribute name="ref" select="$realigned-ref"/>-\->
-               <xsl:attribute name="ref"
-                  select="replace($this-ref, concat('^', $explicit-realignments/@ref), $realigned-ref)"
-               />
-               <xsl:attribute name="orig-ref" select="$this-ref"/>
-            </xsl:when>
-            <xsl:when test="count($explicit-realignments) gt 1">
-               <xsl:attribute name="ref" select="$this-ref"/>
-               <xsl:attribute name="error" select="'rea01'"/>
-               <xsl:copy-of select="$errors//tan:error[@xml:id = 'rea01']"/>
-            </xsl:when>
-         </xsl:choose>-->
-         <xsl:apply-templates mode="#current">
-            <xsl:with-param name="realigned-ref"
-               select="
-                  if ($new-ref-value = @ref) then
-                     ()
-                  else
-                     $new-ref-value"
-            />
-            <xsl:with-param name="segs-to-realign"
-               select="
-                  if (exists($explicit-segs)) then
-                     $explicit-segs
-                  else
-                     1"
-            />
-            <!--<xsl:with-param name="self-expanded-5" select="$self-expanded-5"/>-->
-         </xsl:apply-templates>
-      </xsl:copy>
+      </xsl:for-each>
    </xsl:template>
-   <xsl:template match="tan:seg" mode="realign-segmented-class-1">
-      <xsl:param name="self-expanded-5" as="document-node()?" tunnel="yes"/>
-      <xsl:param name="realigned-ref" as="xs:string?"/>
-      <xsl:param name="segs-to-realign" as="xs:integer+"/>
-      <xsl:variable name="this-seg" select="."/>
-      <xsl:variable name="this-seg-no"
+
+   <!-- PROCESSING COMPLEX REALIGNMENTS -->
+   <xsl:function name="tan:reanchor-div-ref" as="element()?">
+      <!-- Input: (1) a <div-ref> containing one or more <div>s of unknown complexity, to be fused into (2) another <div-ref> or <anchor-div-ref> containing a <div>structure to be treated as a structural model of the first; a boolean indicating whether allocation should be shallow (top-level <div> only) or deep -->
+      <!-- Output: the deep or shallow element structure of (2), but with the text of each leaf div being replaced by the proportionally appropriate leaf divs (fragmentary or whole) of (1); in that structure, all copies of (2)'s attributes are retained, except for @src, which is replaced by the value of @src in (1) -->
+      <!-- This function is written for proportional realignments -->
+      <xsl:param name="div-ref-to-reanchor" as="element(tan:div-ref)?"/>
+      <xsl:param name="anchor-div-ref" as="element()?"/>
+      <xsl:param name="allocate-deeply" as="xs:boolean?"/>
+      <xsl:variable name="model-prepped"
+         select="tan:analyze-string-length($anchor-div-ref, false())"/>
+      <xsl:variable name="model-length" select="sum($model-prepped/*/@string-length)"/>
+      <xsl:variable name="model-divs-to-be-used"
          select="
-            if (exists(@n)) then
-               @n
+            if ($allocate-deeply = true()) then
+               ($model-prepped//tan:div[not(tan:div)])[position() gt 1]
             else
-               count(preceding-sibling::tan:seg) + 1"
-      />
-      <xsl:variable name="inherited-ref" select="../@ref"/>
-      
-      
-      <!--<xsl:variable name="this-src" select="root(.)/*/@src"/>
-      <xsl:variable name="explicit-realign-groups"
-         select="$self-expanded-5/tan:TAN-A-div/tan:body/tan:realign/tan:group[tan:div-ref[@src = $this-src][@ref = $inherited-ref][@seg = $this-seg/@n]]"/>
-      <xsl:variable name="explicit-realign-anchor"
-         select="($explicit-realign-groups/../tan:group/tan:anchor-div-ref[1])[1]"/>
-      <xsl:variable name="explicit-realign-unanchored"
-         select="($explicit-realign-groups/../tan:group/tan:div-ref[1])[1]"/>
-      <xsl:variable name="explicit-realign-div-ref-eq"
+               $model-prepped/tan:div[position() gt 1]"/>
+      <xsl:variable name="model-splits-at"
          select="
-            if (exists($explicit-realign-unanchored)) then
-               concat('#' (:adding the # ensures it is removed from auto alignment :), $explicit-realign-unanchored/@ref)
-            else
-               ()"/>-->
+            for $i in $model-divs-to-be-used
+            return
+               $i/@string-pos div $model-length"/>
+      <xsl:variable name="clay-tokenized" as="element()*">
+         <xsl:apply-templates select="$div-ref-to-reanchor" mode="tokenize-prepped-class-1">
+            <xsl:with-param name="token-definition" select="$tokenization-nonspace" tunnel="yes"/>
+            <xsl:with-param name="keep-copy-of-tei-elements" select="false()" tunnel="yes"/>
+         </xsl:apply-templates>
+      </xsl:variable>
+      <xsl:variable name="clay-analyzed" select="tan:analyze-string-length($clay-tokenized)"/>
+      <xsl:variable name="clay-length" select="sum($clay-analyzed/*/@string-length)"/>
+      <xsl:variable name="clay-splits-at"
+         select="
+            for $i in $model-splits-at
+            return
+               ceiling($i * $clay-length)"/>
+      <xsl:variable name="clean-clay-splits"
+         select="
+            for $i in $clay-splits-at
+            return
+               ($clay-analyzed//*[number(@string-pos) ge $i])[1]/@string-pos"/>
+      <xsl:variable name="clay-splits-marked" as="element()?">
+         <xsl:apply-templates select="$clay-analyzed" mode="mark-splits-in-fragment">
+            <xsl:with-param name="put-split-before-element-with-what-attr-string-pos"
+               select="$clean-clay-splits" tunnel="yes"/>
+         </xsl:apply-templates>
+      </xsl:variable>
+      <xsl:variable name="clay-splits-made" select="tan:process-splits($clay-splits-marked)"/>
+      <xsl:variable name="div-ref-reanchored" as="element()*">
+         <div-ref>
+            <xsl:copy-of select="$div-ref-to-reanchor/@*"/>
+            <xsl:apply-templates select="$model-prepped/*" mode="infuse-tokenized-div">
+               <xsl:with-param name="div-clay-tokenized" select="$clay-splits-made" tunnel="yes"/>
+               <xsl:with-param name="infuse-deeply" select="$allocate-deeply" tunnel="yes"/>
+            </xsl:apply-templates>
+         </div-ref>
+      </xsl:variable>
+      <!-- diagnostics, results -->
+      <!--<xsl:copy-of select="$div-ref-to-reanchor"/>-->
+      <!--<xsl:copy-of select="$model-prepped"/>-->
+      <!--<test><xsl:copy-of select="$model-divs-to-be-used"/></test>-->
+      <!--<test><xsl:copy-of select="$model-length"/></test>-->
+      <!--<test><xsl:copy-of select="$model-splits-at"/></test>-->
+      <!--<xsl:copy-of select="tan:analyze-string-length($div-ref-to-reanchor, false())"/>-->
+      <!--<xsl:copy-of select="$clay-tokenized"/>-->
+      <!--<xsl:copy-of select="$clay-analyzed"/>-->
+      <!--<test><xsl:copy-of select="$clay-length"/></test>-->
+      <!--<test><xsl:copy-of select="$clay-splits-at"/></test>-->
+      <!--<xsl:copy-of select="$clay-splits-marked"/>-->
+      <!--<test><xsl:copy-of select="$clay-splits-made"/></test>-->
+      <xsl:copy-of select="$div-ref-reanchored"/>
+   </xsl:function>
+
+   <xsl:function name="tan:process-splits" as="element()*">
+      <!-- Input: any document fragment with <split/> inserted in leaf elements representing where there should be a deep, top-level split -->
+      <!-- Output: A sequence of <fragment>s (the number of <split/>s plus one containing a deep copy of the fragment chosen -->
+      <xsl:param name="elements-to-process"/>
+      <xsl:choose>
+         <xsl:when test="not(exists($elements-to-process//tan:split))">
+            <!--<xsl:copy-of select="$elements-to-process"/>-->
+            <xsl:for-each-group select="$elements-to-process" group-adjacent="name()">
+               <xsl:if test="not(current-group()/self::tan:split)">
+                  <fragment>
+                     <xsl:copy-of select="current-group()"/>
+                  </fragment>
+               </xsl:if>
+            </xsl:for-each-group>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:variable name="next-step" as="element()*">
+               <xsl:apply-templates select="$elements-to-process" mode="process-splits"/>
+            </xsl:variable>
+            <xsl:copy-of select="tan:process-splits($next-step)"/>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:function>
+   <xsl:template match="*[tan:split]" mode="process-splits">
+      <xsl:variable name="this-element" select="."/>
+      <xsl:for-each-group select="*" group-starting-with="tan:split">
+         <xsl:copy-of select="current-group()/self::tan:split"/>
+         <xsl:element name="{name($this-element)}">
+            <xsl:copy-of select="$this-element/@*"/>
+            <xsl:copy-of select="current-group()[not(self::tan:split)]"/>
+         </xsl:element>
+      </xsl:for-each-group>
+   </xsl:template>
+
+   <xsl:template match="*[@string-pos]" mode="mark-splits-in-fragment">
+      <xsl:param name="put-split-before-element-with-what-attr-string-pos" tunnel="yes"/>
+      <xsl:variable name="these-matches"
+         select="index-of($put-split-before-element-with-what-attr-string-pos, @string-pos)"/>
+      <xsl:if
+         test="count($these-matches) gt 0 and not(ancestor::*/@string-pos = $put-split-before-element-with-what-attr-string-pos)">
+         <split n="{$these-matches}"/>
+      </xsl:if>
+      <!--<test><xsl:copy-of select="$put-split-before-element-with-what-attr-string-pos"/></test>-->
       <xsl:copy>
          <xsl:copy-of select="@*"/>
-         <!--<xsl:attribute name="ref"
-            select="
-               ($explicit-realign-anchor/@ref, $explicit-realign-div-ref-eq,
-               $inherited-ref)[1]"/>-->
-         <!--<xsl:attribute name="seg"
-            select="($explicit-realign-anchor/@seg, $explicit-realign-unanchored/@seg, @n)[1]"/>-->
          <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="*" mode="split-marked-fragment">
+      <xsl:param name="after-split-no" as="xs:integer?" tunnel="yes"/>
+      <xsl:param name="before-split-no" as="xs:integer?" tunnel="yes"/>
+      <xsl:variable name="child-left-marker" select="tan:split[@n = $after-split-no]"/>
+      <xsl:variable name="child-right-marker" select="tan:split[@n = $after-split-no]"/>
+      <xsl:variable name="descendant-left-marker"
+         select="*/descendant::tan:split[@n = $after-split-no]"/>
+      <xsl:variable name="descendant-right-marker"
+         select="*/descendant::tan:split[@n = $after-split-no]"/>
+      <xsl:choose>
+         <xsl:when test="true()">
+            <xsl:copy>
+               <xsl:copy-of select="@*"/>
+               <xsl:copy-of
+                  select="tan:split[@n = $before-split-no]/preceding-sibling::* except tan:split[@n = $after-split-no]/(self::*, preceding-sibling::*)"
+               />
+            </xsl:copy>
+         </xsl:when>
+         <xsl:otherwise> </xsl:otherwise>
+      </xsl:choose>
+   </xsl:template>
+
+   <xsl:template match="*[tan:tok or tan:non-tok]" mode="drop-tokenization">
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:value-of select="normalize-space(.)"/>
       </xsl:copy>
    </xsl:template>
 
-   <!-- resultant functions -->
-   <xsl:function name="tan:group-realigned-sources" as="element()*">
-      <xsl:param name="src-1st-da-realigned" as="document-node()*"/>
-      <xsl:sequence select="tan:group-realigned-sources($src-1st-da-realigned, ())"/>
-   </xsl:function>
-   <xsl:function name="tan:group-realigned-sources" as="element()*">
-      <!-- Groups non-leaf <div>s and <seg>s according to their @ref and @seg values -->
-      <xsl:param name="src-1st-da-realigned" as="document-node()*"/>
-      <xsl:param name="return-groups-of-size" as="xs:integer*"/>
-      <xsl:for-each-group
-         select="$src-1st-da-realigned/tan:TAN-T/tan:body//(tan:div, tan:seg)"
-         group-by="
-            if (self::tan:div) then
-               @ref
-            else
-               concat(@ref, '##', @seg)">
-         <xsl:if
-            test="count(current-group()) = $return-groups-of-size or empty($return-groups-of-size)">
-            <group ref="{current-grouping-key()}"
-               src="{for $i in current-group() return root($i)/*/@src}">
-               <xsl:sequence select="current-group()"/>
-            </group>
-         </xsl:if>
-      </xsl:for-each-group>
-   </xsl:function>
 
    <!-- STEP SRC-1ST-DA-STATTED: retrieve count, average, and standard deviations of tokens -->
    <!-- This function takes any tokenized source files or higher. It assumes that every <tok> has an @n -->
@@ -797,8 +1067,7 @@
       <xsl:variable name="this-ref" select="(@ref, '.+')[1]"/>
       <!-- One must look for all divs, not just descendants, because there may have been realignment -->
       <xsl:variable name="leaf-divs"
-         select="(self::*, root(current())/tan:TAN-T/tan:body//tan:div[matches(@ref, concat('^', $this-ref, ' '))])[tan:seg, tan:tok]"
-      />
+         select="(self::*, root(current())/tan:TAN-T/tan:body//tan:div[matches(@ref, concat('^', $this-ref, ' '))])[tan:div[@type = '#seg'], tan:tok]"/>
       <xsl:variable name="tok-qty-per-leaf-div"
          select="
             if (exists($leaf-divs)) then
@@ -806,8 +1075,7 @@
                return
                   count($i/tan:tok)
             else
-               0"
-      />
+               0"/>
       <xsl:variable name="tok-avg" select="avg($tok-qty-per-leaf-div)"/>
       <xsl:variable name="tok-deviations"
          select="
@@ -829,5 +1097,5 @@
          <xsl:apply-templates mode="count-tokenized-class-1"/>
       </xsl:copy>
    </xsl:template>
-
+   
 </xsl:stylesheet>

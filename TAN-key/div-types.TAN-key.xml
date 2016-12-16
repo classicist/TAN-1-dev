@@ -45,6 +45,12 @@
             <name>summary</name>
         </item>
         <item>
+            <IRI>http://dbpedia.org/resource/Act_(drama)</IRI>
+            <IRI>tag:textalign.net,2015:div-type:act</IRI>
+            <name>act</name>
+            <desc>A division or unit of a theatre work, including a play, film, opera, and musical theatre</desc>
+        </item>
+        <item>
             <IRI>tag:textalign.net,2015:div-type:ad_praeterea</IRI>
             <name>ad praeterea</name>
             <desc>division used particularly by Thomas Aquinas</desc>
@@ -419,6 +425,12 @@
             <IRI>tag:textalign.net,2015:div-type:rubric</IRI>
             <IRI>http://dbpedia.org/resource/Rubric</IRI>
             <name>rubric</name>
+        </item>
+        <item>
+            <IRI>http://dbpedia.org/resource/Scene_(drama)</IRI>
+            <IRI>tag:textalign.net,2015:div-type:scene</IRI>
+            <name>scene</name>
+            <desc>A unit of action, often a subdivision of an act</desc>
         </item>
         <item>
             <IRI>tag:textalign.net,2015:div-type:section</IRI>

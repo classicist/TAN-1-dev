@@ -47,5 +47,11 @@
             <desc>General tokenization pattern for any language, treating not only series of letters
                 as word tokens but also individual non-letter characters (e.g., punctuation).</desc>
         </item>
+        <item>
+            <token-definition regex="\S+"/>
+            <name>nonspace</name>
+            <desc>General tokenization pattern for any language, treating any contiguous run of
+                nonspace marks as a word.</desc>
+        </item>
     </body>
 </TAN-key>

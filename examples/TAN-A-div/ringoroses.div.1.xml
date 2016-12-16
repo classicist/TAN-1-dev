@@ -43,6 +43,9 @@
                 treats the following as words: sequences of letters, any individual character 
                 that is neither a letter nor a space (i.e., punctuation).</comment>
             <token-definition src="eng-us" regex="[-\w]+"/>
+            <rename-div-ns src="ger" div-type-ref="Zeile">
+                <rename old="e" new="4"/>
+            </rename-div-ns>
         </declarations>
         <agent xml:id="park" roles="creator">
             <IRI>tag:parkj@textalign.net,2015:self</IRI>
@@ -64,9 +67,5 @@
         <split-leaf-div-at>
             <tok src="eng-us" ref="2" pos="last-3"/>
         </split-leaf-div-at>
-        <realign>
-            <anchor-div-ref work="eng-us" ref="4"/>
-            <div-ref src="ger" ref="e"/>
-        </realign>
     </body>
 </TAN-A-div>

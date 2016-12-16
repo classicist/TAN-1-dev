@@ -26,11 +26,11 @@
    <!--<xsl:variable name="srcs-segmented-and-filtered" select="tan:get-src-1st-da-segmented($self4, $srcs-tokenized-and-filtered)"
       as="document-node()*"/>-->
    <!--<xsl:variable name="self5" select="tan:get-self-expanded-5($self4)"/>-->
-   <xsl:variable name="srcs-realigned" select="tan:get-src-1st-da-realigned($self3, $srcs-segmented)"
+   <xsl:variable name="srcs-realigned" select="tan:prep-tan-a-div-sources-for-merge($self3, $srcs-segmented)"
       as="document-node()*"/>
    <!--<xsl:variable name="srcs-realigned-and-filtered" select="tan:get-src-1st-da-realigned($self3, $srcs-segmented-and-filtered)"
       as="document-node()*"/>-->
-   <xsl:variable name="srcs-statted" select="tan:get-src-1st-da-statted($srcs-realigned)"
-      as="document-node()*"/>
+   <!--<xsl:variable name="srcs-statted" select="tan:get-src-1st-da-statted($srcs-realigned)"
+      as="document-node()*"/>-->
 
 </xsl:stylesheet>

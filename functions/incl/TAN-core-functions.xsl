@@ -4,7 +4,7 @@
    xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tei="http://www.tei-c.org/ns/1.0"
    xmlns:math="http://www.w3.org/2005/xpath-functions/math" xmlns:functx="http://www.functx.com"
    xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" xmlns:sch="http://purl.oclc.org/dsdl/schematron"
-   exclude-result-prefixes="xs math xd tan fn tei functx sch" version="2.0">
+   exclude-result-prefixes="#all" version="2.0">
    <xd:doc scope="stylesheet">
       <xd:desc>
          <xd:p><xd:b>Updated </xd:b>Oct 16, 2016</xd:p>
@@ -401,9 +401,9 @@
             select="
                distinct-values(for $i in $elements-that-must-be-expanded
                return
-                  name($i))"
-         />
-         <xsl:variable name="extra-keys-1st-da" select="tan:get-1st-doc($doc-attr-include-expanded/*/tan:head/tan:key[not(@include)])"/>
+                  name($i))"/>
+         <xsl:variable name="extra-keys-1st-da"
+            select="tan:get-1st-doc($doc-attr-include-expanded/*/tan:head/tan:key[not(@include)])"/>
          <xsl:variable name="extra-keys-resolved"
             select="tan:resolve-doc($extra-keys-1st-da, false(), (), (), ('group', 'item'), ())"
             as="document-node()*"/>
@@ -413,8 +413,8 @@
                <xsl:variable name="this-key" select="." as="document-node()"/>
                <xsl:if
                   test="
-                  not(some $i in $extra-keys-resolved[position() lt $pos]
-                  satisfies deep-equal($i/*, $this-key/*))">
+                     not(some $i in $extra-keys-resolved[position() lt $pos]
+                        satisfies deep-equal($i/*, $this-key/*))">
                   <xsl:sequence select="."/>
                </xsl:if>
             </xsl:for-each>
@@ -831,10 +831,15 @@
         corresponding to fn:match and fn:non-match for fn:analyze-string() -->
       <xsl:param name="text" as="xs:string?"/>
       <xsl:param name="token-definition" as="element()?"/>
-      <xsl:param name="count-toks" as="xs:boolean"/>
-      <xsl:variable name="regex"
-         select="($token-definition/@regex, $token-definitions-reserved[1]/@regex)[1]"/>
-      <xsl:variable name="flags" select="$token-definition/@flags"/>
+      <xsl:param name="count-toks" as="xs:boolean?"/>
+      <xsl:variable name="this-tok-def"
+         select="
+            if (count($token-definition) gt 0) then
+               $token-definition
+            else
+               $token-definitions-reserved[1]"/>
+      <xsl:variable name="regex" select="$this-tok-def/@regex"/>
+      <xsl:variable name="flags" select="$this-tok-def/@flags"/>
       <xsl:variable name="results" as="element()">
          <results regex="{$regex}" flags="{$flags}">
             <xsl:analyze-string select="$text" regex="{$regex}">
@@ -852,11 +857,11 @@
          </results>
       </xsl:variable>
       <xsl:choose>
-         <xsl:when test="$count-toks = false()">
-            <xsl:copy-of select="$results"/>
+         <xsl:when test="$count-toks = true()">
+            <xsl:apply-templates select="$results" mode="count-tokens"/>
          </xsl:when>
          <xsl:otherwise>
-            <xsl:apply-templates select="$results" mode="count-tokens"/>
+            <xsl:copy-of select="$results"/>
          </xsl:otherwise>
       </xsl:choose>
    </xsl:function>
@@ -971,52 +976,66 @@
       <xsl:variable name="pass-1"
          select="replace(tan:normalize-text($selector), '(\d)\s*-\s*(last|all|max|\d)', '$1 - $2')"/>
       <xsl:variable name="pass-2" select="replace($pass-1, '(\d)\s+(\d)', '$1, $2')"/>
-      <!-- replace 'last' with max value as string -->
-      <xsl:variable name="selector-norm" select="replace($pass-2, 'last|all|max', string($max))"/>
-      <xsl:variable name="seq-a" select="tokenize(normalize-space($selector-norm), '\s*,\s+')"/>
-      <xsl:copy-of
-         select="
-            for $i in $seq-a
-            return
-               if (matches($i, ' - '))
-               then
-                  for $j in tan:string-subtract(tokenize($i, ' - ')[1], $max),
-                     $k in tan:string-subtract(tokenize($i, ' - ')[2], $max)
-                  return
-                     if ($j gt $k) then
-                        for $l in ($k to $j)
-                        return
-                           -2
+      <xsl:variable name="pass-3" as="xs:string*">
+         <xsl:analyze-string select="$pass-2" regex="(last|all|max)(-\d+)?">
+            <xsl:matching-substring>
+               <xsl:variable name="second-numeral" select="replace(., '\D+', '')"/>
+               <xsl:variable name="second-number"
+                  select="
+                     if (string-length($second-numeral) gt 0) then
+                        number($second-numeral)
                      else
-                        ($j to $k)
-               else
-                  tan:string-subtract($i, $max)"
-      />
+                        0"/>
+               <xsl:value-of select="string(($max - $second-number))"/>
+            </xsl:matching-substring>
+            <xsl:non-matching-substring>
+               <xsl:value-of select="."/>
+            </xsl:non-matching-substring>
+         </xsl:analyze-string>
+      </xsl:variable>
+      <xsl:variable name="item" select="tokenize(string-join($pass-3, ''), ' ?, +')"/>
+      <xsl:for-each select="$item">
+         <xsl:variable name="range"
+            select="
+               for $i in tokenize(., ' - ')
+               return
+                  xs:integer($i)"/>
+         <xsl:choose>
+            <xsl:when test="$range[1] lt 1 or $range[2] lt 1">
+               <xsl:copy-of select="0"/>
+            </xsl:when>
+            <xsl:when test="$range[1] gt $max or $range[2] gt $max">
+               <xsl:copy-of select="-1"/>
+            </xsl:when>
+            <xsl:when test="$range[1] ge $range[2]">
+               <xsl:copy-of select="-2"/>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:copy-of select="$range[1] to $range[last()]"/>
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:for-each>
    </xsl:function>
-   <xsl:function name="tan:string-subtract" as="xs:integer?">
-      <!-- input: string of pattern \d+(-\d+)? and a maximum value
-        output: number giving the sum
-        E.g., "50-5" -> 45
-        Because this function is designed specifically for tan:sequence-expand(), any value above the maximum 
-        will return -1, and any value below 1, 0 
-      -->
-      <xsl:param name="input" as="xs:string"/>
-      <xsl:param name="max" as="xs:integer"/>
-      <xsl:variable name="pass1" as="xs:integer?"
-         select="
-            xs:integer(if (matches($input, '\d+-\d+'))
-            then
-               number(tokenize($input, '-')[1]) - (number(tokenize($input, '-')[2]))
-            else
-               number($input))"/>
-      <xsl:choose>
-         <xsl:when test="$pass1 gt $max">
-            <xsl:copy-of select="-1"/>
-         </xsl:when>
-         <xsl:otherwise>
-            <xsl:copy-of select="max(($pass1, 0))"/>
-         </xsl:otherwise>
-      </xsl:choose>
+   <xsl:function name="tan:sequence-error" as="element()*">
+      <xsl:param name="results-of-sequence-expand" as="xs:integer*"/>
+      <xsl:copy-of select="tan:sequence-error($results-of-sequence-expand, ())"/>
+   </xsl:function>
+   <xsl:function name="tan:sequence-error" as="element()*">
+      <!-- Input: any results of the function tan:sequence-expand() -->
+      <!-- Output: error nodes, if any -->
+      <xsl:param name="results-of-sequence-expand" as="xs:integer*"/>
+      <xsl:param name="message" as="xs:string?"/>
+      <xsl:for-each select="$results-of-sequence-expand[. lt 1]">
+         <xsl:if test=". = 0">
+            <xsl:copy-of select="tan:error('seq01', $message)"/>
+         </xsl:if>
+         <xsl:if test=". = -1">
+            <xsl:copy-of select="tan:error('seq02', $message)"/>
+         </xsl:if>
+         <xsl:if test=". = -2">
+            <xsl:copy-of select="tan:error('seq03', $message)"/>
+         </xsl:if>
+      </xsl:for-each>
    </xsl:function>
 
    <xsl:function name="tan:escape" as="xs:string*">
@@ -1032,12 +1051,24 @@
    </xsl:function>
 
    <xsl:function name="tan:duplicate-values" as="item()*">
-      <!-- Input: any sequente of items
-      Output: those items that appear in the sequence more than once
-      This function parallels the standard fn:distinct-values()
-      -->
+      <!-- Input: any sequente of items -->
+      <!-- Output: those items that appear in the sequence more than once -->
+      <!-- This function parallels the standard fn:distinct-values() -->
       <xsl:param name="sequence" as="item()*"/>
       <xsl:copy-of select="$sequence[index-of($sequence, .)[2]]"/>
+   </xsl:function>
+   
+   <xsl:function name="tan:most-common-value" as="item()?">
+      <!-- Input: any sequence of items -->
+      <!-- Output: the one item that appears most frequently -->
+      <!-- If two or more items appear equally frequently, only the first is returned -->
+      <xsl:param name="sequence" as="item()*"/>
+      <xsl:for-each-group select="$sequence" group-by=".">
+         <xsl:sort select="count(current-group())" order="descending"/>
+         <xsl:if test="position() = 1">
+            <xsl:copy-of select="current-group()[1]"/>
+         </xsl:if>
+      </xsl:for-each-group> 
    </xsl:function>
 
    <xsl:function name="tan:has-property" as="xs:boolean">
@@ -1335,10 +1366,10 @@
          select="
             for $i in $relevant-elements-to-include
             return
-               tan:prepend-id-or-idrefs($i, root($i)/*/@inclusion)"
-      />
+               tan:prepend-id-or-idrefs($i, root($i)/*/@inclusion)"/>
       <xsl:variable name="attr-in-this-element-to-suppress" select="'include'"/>
-      <xsl:variable name="attr-in-included-element-to-suppress" select="('ed-when', 'ed-who', 'which')"/>
+      <xsl:variable name="attr-in-included-element-to-suppress"
+         select="('ed-when', 'ed-who', 'which')"/>
       <!--<xsl:variable name="fetched-elements" select="tan:get-elements($this-element, (), ())" as="element()*"/>-->
       <!--<xsl:variable name="ambiguous-numeral-types"
          select="
@@ -1407,8 +1438,10 @@
             <!--<test><xsl:copy-of select="$relevant-docs"/></test>-->
             <xsl:for-each select="$relevant-elements-to-include">
                <xsl:copy>
-                  <xsl:copy-of select="$this-element/@*[not(name() = $attr-in-this-element-to-suppress)]"/>
-                  <xsl:for-each select="$this-element/@*[name() = $attr-in-this-element-to-suppress]">
+                  <xsl:copy-of
+                     select="$this-element/@*[not(name() = $attr-in-this-element-to-suppress)]"/>
+                  <xsl:for-each
+                     select="$this-element/@*[name() = $attr-in-this-element-to-suppress]">
                      <xsl:attribute name="orig-{name()}" select="."/>
                   </xsl:for-each>
                   <!-- We bring from the inclusion document only those attributes that have any meaning in the new document (e.g., @ed-when and @ed-who are skipped), and those attributes that are ambiguous outside their host context are normalized (@n and @ref are converted to Arabic numerals) -->
@@ -1445,7 +1478,8 @@
                   <xsl:variable name="vals" as="xs:string*">
                      <xsl:analyze-string select="." regex="\s+">
                         <xsl:non-matching-substring>
-                           <xsl:value-of select="concat($string-to-prepend, '--', .)"/></xsl:non-matching-substring>
+                           <xsl:value-of select="concat($string-to-prepend, '--', .)"/>
+                        </xsl:non-matching-substring>
                      </xsl:analyze-string>
                   </xsl:variable>
                   <xsl:attribute name="{$this-name}" select="string-join($vals, ' ')"/>
@@ -1474,11 +1508,11 @@
             (if ($shallow-analysis = true()) then
                $elements
             else
-               $elements//*)[@ref or @n or @old]"/>
+               $elements/descendant-or-self::*)[@ref or @n or @old]"/>
       <xsl:for-each-group select="$elements-to-analyze"
          group-by="
             if (string-length($group-by-what-attr-value) gt 0) then
-               tokenize(tan:normalize-text(@*[name() = $group-by-what-attr-value]), ' ')
+               tokenize(tan:normalize-text(@*[name() = $group-by-what-attr-value]), '\W+')
             else
                true()">
          <xsl:variable name="analysis" as="element()*">
@@ -1634,6 +1668,9 @@
                for $i in $pass1[matches(., 'i-or-a#')]
                return
                   replace($i, 'i-or-a#', '')"/>-->
+         <test>
+            <xsl:copy-of select="$elements-to-analyze"/>
+         </test>
          <xsl:if test="exists($analysis)">
             <ns>
                <xsl:if test="string-length($group-by-what-attr-value) gt 0">
@@ -1740,7 +1777,8 @@
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:copy-of select="$definition-matches/tan:token-definition/@regex"/>
-         <xsl:copy-of select="$definition-matches/@*[not(name() = $attr-in-key-element-to-suppress)]"/>
+         <xsl:copy-of
+            select="$definition-matches/@*[not(name() = $attr-in-key-element-to-suppress)]"/>
          <xsl:for-each select="$definition-matches/@*[name() = $attr-in-key-element-to-suppress]">
             <xsl:attribute name="orig-{name()}" select="."/>
          </xsl:for-each>
@@ -1811,7 +1849,7 @@
    </xsl:template>
 
    <xsl:template match="comment() | processing-instruction()"
-      mode="strip-all-attributes-except strip-specific-attributes strip-text">
+      mode="strip-all-attributes-except strip-specific-attributes strip-text copy-of-except">
       <xsl:copy-of select="."/>
    </xsl:template>
    <xsl:template match="*" mode="strip-all-attributes-except">
@@ -1834,5 +1872,78 @@
          <xsl:apply-templates select="* | comment() | processing-instruction()" mode="strip-text"/>
       </xsl:copy>
    </xsl:template>
+
+   <xsl:function name="tan:copy-of" as="item()*">
+      <!-- Input: any document fragment, and an optional integer specifying the depth of copy requested -->
+      <!-- Output: a copy of the fragment to the depth specified -->
+      <!-- This function depends upon the full version of tan:copy-of-except(); it is particularly useful for diagnostics, e.g., retrieving a long document's root element and its children, without descendants -->
+      <xsl:param name="doc-fragment" as="item()*"/>
+      <xsl:param name="exclude-elements-beyond-what-depth" as="xs:integer?"/>
+      <xsl:copy-of
+         select="tan:copy-of-except($doc-fragment, (), (), (), $exclude-elements-beyond-what-depth)"
+      />
+   </xsl:function>
+   <xsl:function name="tan:copy-of-except" as="item()*">
+      <!-- short version of the full function, below -->
+      <xsl:param name="doc-fragment" as="item()*"/>
+      <xsl:param name="exclude-elements-named" as="xs:string*"/>
+      <xsl:param name="exclude-attributes-named" as="xs:string*"/>
+      <xsl:param name="exclude-elements-with-attributes-named" as="xs:string*"/>
+      <xsl:copy-of
+         select="tan:copy-of-except($doc-fragment, $exclude-elements-named, $exclude-attributes-named, $exclude-elements-with-attributes-named, ())"
+      />
+   </xsl:function>
+   <xsl:function name="tan:copy-of-except" as="item()*">
+      <!-- Input: any document fragment; sequences of strings specifying names of elements to exclude, names of attributes to exclude, and names of attributes whose parent elements should be excluded; an integer beyond which depth copies should not be made -->
+      <!-- Output: the same fragment, filtered -->
+      <!-- This function was written primarily to service the merge of TAN-A-div sources, where realigned divs could be extracted from their source documents -->
+      <xsl:param name="doc-fragment" as="item()*"/>
+      <xsl:param name="exclude-elements-named" as="xs:string*"/>
+      <xsl:param name="exclude-attributes-named" as="xs:string*"/>
+      <xsl:param name="exclude-elements-with-attributes-named" as="xs:string*"/>
+      <xsl:param name="exclude-elements-beyond-what-depth" as="xs:integer?"/>
+      <xsl:apply-templates select="$doc-fragment" mode="copy-of-except">
+         <xsl:with-param name="exclude-elements-named" as="xs:string*"
+            select="$exclude-elements-named" tunnel="yes"/>
+         <xsl:with-param name="exclude-attributes-named" as="xs:string*"
+            select="$exclude-attributes-named" tunnel="yes"/>
+         <xsl:with-param name="exclude-elements-with-attributes-named" as="xs:string*"
+            select="$exclude-elements-with-attributes-named" tunnel="yes"/>
+         <xsl:with-param name="exclude-elements-beyond-what-depth"
+            select="$exclude-elements-beyond-what-depth" tunnel="yes"/>
+         <xsl:with-param name="current-depth" select="0"/>
+      </xsl:apply-templates>
+   </xsl:function>
+   <xsl:template match="*" mode="copy-of-except">
+      <xsl:param name="exclude-elements-named" as="xs:string*" tunnel="yes"/>
+      <xsl:param name="exclude-attributes-named" as="xs:string*" tunnel="yes"/>
+      <xsl:param name="exclude-elements-with-attributes-named" as="xs:string*" tunnel="yes"/>
+      <xsl:param name="exclude-elements-beyond-what-depth" as="xs:integer?" tunnel="yes"/>
+      <xsl:param name="current-depth" as="xs:integer?"/>
+      <xsl:if
+         test="
+            not(name() = $exclude-elements-named)
+            and not(some $i in @*
+               satisfies name($i) = $exclude-elements-with-attributes-named)
+            and not($current-depth ge $exclude-elements-beyond-what-depth)">
+         <xsl:copy>
+            <xsl:copy-of select="@*[not(name() = $exclude-attributes-named)]"/>
+            <xsl:apply-templates mode="copy-of-except">
+               <xsl:with-param name="current-depth"
+                  select="
+                     if (exists($current-depth)) then
+                        $current-depth + 1
+                     else
+                        ()"
+               />
+            </xsl:apply-templates>
+         </xsl:copy>
+      </xsl:if>
+   </xsl:template>
+
+   <xsl:function name="tan:value-of" as="xs:string?">
+      <xsl:param name="items" as="item()*"/>
+      <xsl:value-of select="$items"/>
+   </xsl:function>
 
 </xsl:stylesheet>

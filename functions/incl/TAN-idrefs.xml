@@ -55,4 +55,7 @@
     <id element="modal">
         <idrefs attribute="adverb"/>
     </id>
+    <id element="topic">
+        <idrefs attribute="topic"/>
+    </id>
 </id-idrefs>

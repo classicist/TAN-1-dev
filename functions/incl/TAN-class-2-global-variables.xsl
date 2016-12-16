@@ -39,7 +39,7 @@
          </xsl:otherwise>
       </xsl:choose>
    </xsl:variable>
-   <xsl:variable name="self3" select="tan:prep-class-2-doc-pass-3($self2, $srcs-prepped, false())"/>
+   <xsl:variable name="self3" select="tan:prep-class-2-doc-pass-3($self2, $srcs-prepped)"/>
    <xsl:param name="ref-filter" select="$self3//(tan:anchor-div-ref, tan:div-ref, tan:tok)" as="element()*"/>
    <xsl:variable name="srcs-prepped-and-filtered"
       select="tan:pick-prepped-class-1-data($ref-filter, $srcs-prepped, false())"/>

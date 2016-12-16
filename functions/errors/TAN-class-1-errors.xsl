@@ -36,7 +36,7 @@
       <xsl:variable name="other-models"
          select="(preceding-sibling::tan:see-also, following-sibling::tan:see-also)[tan:has-relationship(., 'model', ())]"/>
       <xsl:variable name="self-and-model-skeletons-merged"
-         select="tan:get-src-skeleton(($self-prepped, $target-prepped), 'type')"/>
+         select="tan:merge-sources(($self-prepped, $target-prepped), false(), false(), ())"/>
       <xsl:variable name="skeleton-divs" select="$self-and-model-skeletons-merged//*:div"/>
       <xsl:variable name="model-divergence-threshold" select="0.1"/>
       <xsl:variable name="divs-used-there-but-not-here" select="$skeleton-divs[@src = '2']"/>

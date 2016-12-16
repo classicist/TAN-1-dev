@@ -59,10 +59,10 @@
     </group>
     <group affects-element="location inclusion see-also source key">
         <error xml:id="loc01"><rule>Every element with a &lt;location> should have at least one document available.</rule></error>
-        <error xml:id="loc02"><rule>Every TAN file referred to by way of &lt;location> should have an @id that matches the &lt;IRI> of the parent of the &lt;location></rule></error>
+        <error xml:id="loc02"><rule>Every TAN file referred to by way of an element containing &lt;location> should have an @id that matches the &lt;IRI> of the parent of the &lt;location></rule></error>
         <error xml:id="loc03"><rule>No element may point to a TAN file that has an identical @id value; the only exception is a &lt;see-also> pointing to an older or new version.</rule></error>
         <warning xml:id="wrn02"><rule>If @when-accessed predates one or more dates in a target file, a warning will be returned.</rule></warning>
-        <warning xml:id="wrn03"><rule>If a target file does not explictly give the &lt;body>'s @in-progress the value of true() a warning will be returned.</rule><message>Target file is marked as being in progress.</message></warning>
+        <warning xml:id="wrn03"><rule>If a target file does not explicitly give the &lt;body>'s @in-progress the value of true() a warning will be returned.</rule><message>Target file is marked as being in progress.</message></warning>
         <warning xml:id="wrn05"><rule>If a target file has a &lt;see-also> marked as a new version (update) a warning will be returned.</rule></warning>
     </group>
     <group affects-attribute="when ed-when when-accessed from to">
@@ -94,8 +94,11 @@
         <error xml:id="tok02"><rule>&lt;tok> must reference a leaf &lt;div>.</rule></error>
         <!--<error xml:id="tok03"><rule>&lt;tok> does not reference &lt;div>.</rule></error>-->
     </group>
-    <group affects-element="div realign">
-        <error xml:id="rea01"><rule>A &lt;div> may appear in a &lt;realign> no more than once (whether &lt;anchor-div-ref> or &lt;div-ref>).</rule></error>
+    <group affects-element="anchor-div-ref div-ref realign">
+        <error xml:id="rea01"><rule>A &lt;div> may be referred to in a &lt;realign> no more than once (whether &lt;anchor-div-ref> or &lt;div-ref>).</rule></error>
+    </group>
+    <group affects-attribute="ref" affects-element="anchor-div-ref">
+        <error xml:id="rea03"><rule>Realignments must be anchored to contiguous runs of text. Therefore the comma is disallowed in the @ref of an &lt;anchor-div-ref> in an undistributed realignment.</rule></error>
     </group>
     <group affects-element="equate-works equate-div-types">
         <error xml:id="equ01"><rule>Items that share IRI values should not be equated.</rule></error>

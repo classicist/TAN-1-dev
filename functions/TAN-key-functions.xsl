@@ -58,7 +58,7 @@
          <xsl:copy-of select="@*"/>
          <!--<test><xsl:copy-of select="$affected-element"/></test>-->
          <xsl:if
-            test="($is-reserved = true()) and (not(exists(tan:IRI[starts-with(., $TAN-namespace)])))">
+            test="($is-reserved = true()) and (not(exists(tan:IRI[starts-with(., $TAN-namespace)]))) and (not(exists(tan:token-definition)))">
             <xsl:variable name="this-fix" as="element()">
                <IRI><xsl:value-of select="$TAN-namespace"/></IRI>
             </xsl:variable>

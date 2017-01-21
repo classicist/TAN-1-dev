@@ -88,16 +88,17 @@ n =
     
     ## names a <div> or <group>. 
     
-    ## In class 1 files, @n serves, concatenated with ancestral @ns, as an identifier for <div>s.
+    ## In a <div> of a class 1 file, the space-delimited concatenation of values of @n from the rootmost ancestor becomes the reference for a <div>.
     
-    ## Examples: '4', 'pr', 'Psalms'
+    ## Special use may be made of the tilde (~), as a kind of surrogate hyphen (which is disallowed), to indicate an @n that corresponds to a range of values, e.g., n="7~8" for a <div> that has text that mixes text from 7 and 8.
     attribute n { n-val }
 
 ## String that specifies a single item from a sequence: digits or "last(-digit)?" Similar to seq-picker.
-item-picker = xsd:string { pattern = "((last|max|all)|((last|max|all)-\d+)|(\d+))|.*\?\?\?.*" }
+item-picker = xsd:string { pattern = "((last|max)|((last|max)-\d+)|(\d+))|.*\?\?\?.*" }
 
-## Acceptable values of @n, used by class 1 and class 2 files
-n-val = xsd:string { pattern = "\w+|\w*\?\?\?\w*" }
+## Acceptable values of @n, used by class 1 and class 2 files; this is related to div-range-ref, in that it allows ranges of items, but ignores "last", "max", or "all" keyterms.
+n-val = xsd:string { pattern = "(\w|\d+-\d+)+(\s+(\w|\d+-\d+)+)*" }
+
 TAN-ver =
     
     ## specifies the version of TAN schemas used. 
@@ -156,7 +157,7 @@ role-ref =
 seq-picker =
     xsd:string {
         pattern =
-            "((last|max|all)|((last|max|all)-\d+)|(\d+))(\s*-\s*(((last|max|all))|((last|max|all)-\d+)|(\d+)))?(\s*[, ]\s*(((last|max|all))|((last|max|all)-\d+)|(\d+))(\s+-\s+(((last|max|all))|((last|max|all)-\d+)|(\d+)))?)*|.*\?\?\?.*"
+            "((last|max|all|\*)|((last|max)-\d+)|(\d+))(\s*-\s*(((last|max))|((last|max)-\d+)|(\d+)))?(\s*[, ]\s*(((last|max))|((last|max)-\d+)|(\d+))(\s+-\s+(((last|max))|((last|max)-\d+)|(\d+)))?)*|.*\?\?\?.*"
     }
 source-refs = empty
 type =

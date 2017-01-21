@@ -82,8 +82,11 @@
         <error xml:id="loc01"><rule>&lt;location> must point to an available document.</rule></error>
         <error xml:id="loc02"><rule>If there is no &lt;location> then @which must be present.</rule></error>
     </group>-->
+    <group affects-attribute="ref src">
+        <error xml:id="ref01"><rule>Every atomic reference in a @ref must correspond to a &lt;div> in every source mentioned by @src.</rule></error>
+        <error xml:id="ref04"><rule>Every range in a @ref must correspond to one or more &lt;div>s in every source mentioned by @src.</rule></error>
+    </group>
     <group affects-attribute="ref">
-        <error xml:id="ref01"><rule>Every @ref must be found in every source mentioned by @src.</rule></error>
         <error xml:id="ref02"><rule>If @ref points to a leaf div, it must be unique.</rule></error>
     </group>
     <group affects-element="div-ref align" affects-attribute="ref">
@@ -96,9 +99,6 @@
     </group>
     <group affects-element="anchor-div-ref div-ref realign">
         <error xml:id="rea01"><rule>A &lt;div> may be referred to in a &lt;realign> no more than once (whether &lt;anchor-div-ref> or &lt;div-ref>).</rule></error>
-    </group>
-    <group affects-attribute="ref" affects-element="anchor-div-ref">
-        <error xml:id="rea03"><rule>Realignments must be anchored to contiguous runs of text. Therefore the comma is disallowed in the @ref of an &lt;anchor-div-ref> in an undistributed realignment.</rule></error>
     </group>
     <group affects-element="equate-works equate-div-types">
         <error xml:id="equ01"><rule>Items that share IRI values should not be equated.</rule></error>

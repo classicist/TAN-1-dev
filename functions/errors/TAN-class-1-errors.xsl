@@ -116,7 +116,7 @@
          <xsl:if test="@ref = $self-leaf-div-flatref-duplicates">
             <xsl:copy-of select="tan:error('cl109', @ref)"/>
          </xsl:if>
-         <xsl:if test="not(matches(., '\S'))">
+         <xsl:if test="not(matches(., '\S')) and not(exists(@see))">
             <xsl:copy-of select="tan:error('cl110')"/>
          </xsl:if>
          <xsl:if test="exists($text-with-bad-modifiers-1)">

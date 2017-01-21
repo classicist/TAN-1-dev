@@ -15,9 +15,9 @@
    <xsl:template match="tan:body" mode="TAN-A-div-errors">
       <xsl:variable name="split-leaf-div-at-toks-grouped"
          select="tan:group-tok-elements(tan:split-leaf-div-at/tan:tok)" as="element()"/>
-      <xsl:variable name="anchor-divs" select="tan:realign/tan:anchor-div-ref/tan:div"/>
+      <xsl:variable name="anchor-divs" select="tan:realign/tan:anchor-div-ref/tan:div[not(@complex)]"/>
       
-      <xsl:variable name="realigned-divs" select="tan:realign/tan:div-ref/tan:div"/>
+      <xsl:variable name="realigned-divs" select="tan:realign/tan:div-ref/tan:div[not(@complex)]"/>
       
       <xsl:variable name="anchor-div-refs" as="xs:string*"
          select="

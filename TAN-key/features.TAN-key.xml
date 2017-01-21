@@ -7,7 +7,7 @@
         <name>TAN keywords for features</name>
         <desc>This file contains in TAN-key format the core vocabulare adopted by OLiA for parts of
             speech: http://purl.org/olia/olia.owl.</desc>
-        <master-location href="http://textalign.net/release/1/dev/TAN-key/features.TAN-key.xml"/>
+        <master-location href="http://textalign.net/release/TAN-1-dev/TAN-key/features.TAN-key.xml"/>
         <rights-excluding-sources rights-holder="kalvesmaki">
             <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
             <name>Creative Commons Attribution 4.0 International License</name>

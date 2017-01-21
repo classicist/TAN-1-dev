@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="../../schemas/TAN-A-tok.rnc" type="application/relax-ng-compact-syntax"?>
 <?xml-model href="../../schemas/TAN-A-tok.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
-<!--<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-tok.rnc" type="application/relax-ng-compact-syntax"?>
-<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-tok.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>-->
+<!--<?xml-model href="http://textalign.net/release/TAN-1-dev/schemas/TAN-A-tok.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="http://textalign.net/release/TAN-1-dev/schemas/TAN-A-tok.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>-->
 <TAN-A-tok xmlns="tag:textalign.net,2015:ns" TAN-version="1 dev" id="tag:parkj@textalign.net,2015:TAN-A-tok,ring01+ring03">
     <head>
         <name>token-based alignment of two versions of Ring o Roses</name>
-        <master-location href="http://textalign.net/release/1/dev/examples/TAN-A-tok/ringoroses.01+03.token.1.xml"/>
+        <master-location href="http://textalign.net/release/TAN-1-dev/examples/TAN-A-tok/ringoroses.01+03.token.1.xml"/>
         <rights-excluding-sources rights-holder="kalvesmaki">
             <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
             <name>Creative Commons Attribution 4.0 International License</name>
@@ -74,8 +74,8 @@
             <tok src="ger" ref="1" pos="2"/>
         </align>
         <align>
-            <tok src="eng" ref="1" pos="5" cert="low"/>
-            <tok src="ger" ref="1" pos="3" cert="low"/>
+            <tok src="eng" ref="1" pos="5" cert="0.3"/>
+            <tok src="ger" ref="1" pos="3" cert="0.3"/>
         </align>
     </body>
 </TAN-A-tok>

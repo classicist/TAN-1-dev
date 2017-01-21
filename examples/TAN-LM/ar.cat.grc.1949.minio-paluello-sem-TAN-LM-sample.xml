@@ -46,8 +46,7 @@
             <for-lang>grc</for-lang>
             <IRI>tag:kalvesmaki.com,2014:tan-r-mor:grc:perseus</IRI>
             <name xml:lang="eng">Perseus Greek morphology</name>
-            <location href="../../../LM/TAN-mor/grc.kalvesmaki.com,2014.1.xml"
-               when-accessed="2016-04-05"/>
+            <location href="../../../library/LM/TAN-mor/grc.kalvesmaki.com,2014.1.xml" when-accessed="2017-01-11"/>
          </morphology>
          <group-type xml:id="status" which="status"/>
       </declarations>

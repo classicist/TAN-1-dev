@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="../../schemas/TAN-A-div.rnc" type="application/relax-ng-compact-syntax"?>
 <?xml-model href="../../schemas/TAN-A-div.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
-<!--<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-div.rnc" type="application/relax-ng-compact-syntax"?>
-<?xml-model href="http://textalign.net/release/1/dev/schemas/TAN-A-div.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>-->
+<!--<?xml-model href="http://textalign.net/release/TAN-1-dev/schemas/TAN-A-div.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="http://textalign.net/release/TAN-1-dev/schemas/TAN-A-div.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>-->
 <TAN-A-div xmlns="tag:textalign.net,2015:ns" TAN-version="1 dev"
     id="tag:parkj@textalign.net,2015:ar.cat.tan-a-div">
     <head>
         <name>Alignment of Aristotle's Categories</name>
-        <!--<master-location href="http://textalign.net/release/1/dev/examples/TAN-A-div/ar.cat-tan-a-div.xml"/>-->
+        <!--<master-location href="http://textalign.net/release/TAN-1-dev/examples/TAN-A-div/ar.cat-tan-a-div.xml"/>-->
         <!--<master-location href="ar.cat-tan-a-div.xml"/>-->
         <rights-excluding-sources rights-holder="park">
             <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
@@ -49,6 +49,84 @@
         <change when="2016-07-07" who="park">Started file</change>
     </head>
     <body>
+        <split-leaf-div-at>
+            <tok src="fra" ref="5 5" val="Ceci"/>
+            <tok src="fra" ref="5 5" val="Il"/>
+            <tok src="fra" ref="5 6" val="Si" pos="1"/>
+            <tok src="fra" ref="5 12" val="Ainsi" pos="1, last"/>
+            <tok src="fra" ref="5 12" val="Quant"/>
+            <tok src="fra" ref="5 12" val="J"/>
+            <tok src="fra" ref="5 13" val="La"/>
+            <tok src="fra" ref="5 16" val="Pour"/>
+            <tok src="fra" ref="5 16" val="Quant"/>
+            <tok src="fra" ref="5 16" val="ceci"/>
+            <tok src="fra" ref="5 17" val="le" pos="3"/>
+            <tok src="fra" ref="5 17" val="Cependant"/>
+            <tok src="fra" ref="5 18" val="En"/>
+            <tok src="fra" ref="5 18" val="le" pos="2"/>
+            <tok src="fra" ref="5 21" val="Pour" pos="2"/>
+            <tok src="fra" ref="5 23" val="Ainsi" pos="last"/>
+            <tok src="fra" ref="6 5" val="car"/>
+            <tok src="fra" ref="6 14" val="On"/>
+            <tok src="fra" ref="6 14, 6 20" val="De"/>
+            <tok src="fra" ref="6 23" val="En"/>
+            <tok src="fra" ref="6 23" val="Il"/>
+            <tok src="fra" ref="6 23" val="Donc"/>
+            <tok src="fra" ref="6 24" val="C" pos="2"/>
+            <tok src="fra" ref="7 2" val="et"/>
+            <tok src="fra" ref="7 2" val="Voici"/>
+            <tok src="fra" ref="7 2, 7 3" val="Ainsi"/>
+            <tok src="fra" ref="7 11" val="Mais"/>
+            <tok src="fra" ref="7 11" val="et"/>
+            <tok src="fra" ref="7 13" val="J"/>
+            <tok src="fra" ref="7 16" val="Avec"/>
+            <tok src="fra" ref="7 17" val="et"/>
+            <tok src="fra" ref="7 17, 8 11" val="Il"/>
+            <tok src="fra" ref="7 19" val="J"/>
+            <tok src="fra" ref="7 20" val="En"/>
+            <tok src="fra" ref="7 20" val="La"/>
+            <tok src="fra" ref="7 22" val="Il" pos="*"/>
+            <tok src="fra" ref="7 26" val="Ceci"/>
+            <tok src="fra" ref="8 4" val="Les"/>
+            <tok src="fra" ref="8 5, 12 3" val="Ainsi"/>
+            <tok src="fra" ref="8 12" val="Toutes" pos="2"/>
+            <tok src="fra" ref="8 13" val="tout"/>
+            <tok src="fra" ref="8 13" val="On"/>
+            <tok src="fra" ref="8 13" val="Mais"/>
+            <tok src="fra" ref="8 14, 8 26" val="et" pos="last"/>
+            <tok src="fra" ref="8 25" val="et"/>
+            <tok src="fra" ref="8 27" val="Mais"/>
+            <tok src="fra" ref="8 27" val="Ces"/>
+            <tok src="fra" ref="8 27" val="Donc"/>
+            <tok src="fra" ref="8 28" val="En" pos="last"/>
+            <tok src="fra" ref="8 28" val="Donc"/>
+            <tok src="fra" ref="8 30" val="donc"/>
+            <tok src="fra" ref="8 32" val="Mais"/>
+            <tok src="fra" ref="8 32" val="Nous"/>
+            <tok src="fra" ref="9 2" val="ainsi"/>
+            <tok src="fra" ref="10 5" val="Et"/>
+            <tok src="fra" ref="10 9" val="Aussi"/>
+            <tok src="fra" ref="10 13" val="Si"/>
+            <tok src="fra" ref="10 19" val="D"/>
+            <tok src="fra" ref="10 19" val="On" pos="2"/>
+            <tok src="fra" ref="10 19" val="Concluons"/>
+            <tok src="fra" ref="10 25" val="Soit"/>
+            <tok src="fra" ref="10 25" val="s" pos="last"/>
+            <tok src="fra" ref="11 2" val="Ceci"/>
+            <tok src="fra" ref="12 7" val="Or"/>
+            <tok src="fra" ref="13 3" val="Placées"/>
+            <tok src="fra" ref="13 3" val="On"/>
+            <tok src="fra" ref="13 4" val="car"/>
+            <tok src="fra" ref="13 4" val="Par"/>
+            <tok src="fra" ref="14 2" val="la"/>
+            <tok src="fra" ref="14 4" val="Dans"/>
+            <tok src="fra" ref="14 4" val="Il"/>
+            <tok src="fra" ref="14 4" val="Si"/>
+            <tok src="fra" ref="14 4" val="or"/>
+            <tok src="fra" ref="14 5" val="Ainsi"/>
+            <tok src="fra" ref="15 7" val="Et"/>
+            <tok src="fra" ref="15 8" val="car"/>
+        </split-leaf-div-at>
         <!-- testing -->
         <!--<split-leaf-div-at>
             <tok src="fra" ref="1 1" pos="3"/>
@@ -57,31 +135,31 @@
             <div-ref src="fra" ref="1 1"/>
         </realign>-->
         <!-- real ones below -->
-        <realign distribute="1">
+        <realign>
             <anchor-div-ref src="grc" ref="1 1 1 - 1 1 3"/>
             <div-ref src="fra" ref="1 1 - 1 3"/>
         </realign>
-        <realign distribute="1">
+        <realign>
             <anchor-div-ref src="grc" ref="3 1 1 - 3 1 3"/>
             <div-ref src="fra" ref="3 1 - 3 3"/>
         </realign>
-        <realign distribute="1">
+        <realign>
             <anchor-div-ref src="grc" ref="4 1 1 - 4 1 3"/>
             <div-ref src="fra" ref="4 1 - 4 3"/>
         </realign>
-        <realign distribute="1">
+        <realign>
             <anchor-div-ref src="grc" ref="5 1 1-4"/>
             <div-ref src="fra" ref="5 1 - 5 4"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="5 1 5 - 5 1 7"/>
-            <div-ref src="fra" ref="5 5"/>
+            <div-ref src="fra" ref="5 5" seg="1-3"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="5 2 1 - 5 2 2"/>
-            <div-ref src="fra" ref="5 6"/>
+            <div-ref src="fra" ref="5 6" seg="1-2"/>
         </realign>
-        <realign distribute="1">
+        <realign>
             <anchor-div-ref src="grc" ref="5 2 3 - 5 2 5"/>
             <div-ref src="fra" ref="5 7 - 5 9"/>
         </realign>
@@ -91,11 +169,11 @@
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="5 4 1 - 5 4 5"/>
-            <div-ref src="fra" ref="5 12"/>
+            <div-ref src="fra" ref="5 12" seg="1-5"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="5 4 6 - 5 4 7"/>
-            <div-ref src="fra" ref="5 13"/>
+            <div-ref src="fra" ref="5 13" seg="1-2"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="5 4 8"/>
@@ -107,15 +185,15 @@
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="5 6 1 - 5 6 3 2"/>
-            <div-ref src="fra" ref="5 16"/>
+            <div-ref src="fra" ref="5 16" seg="1-4"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="5 6 3 3 - 5 6 4"/>
-            <div-ref src="fra" ref="5 17"/>
+            <div-ref src="fra" ref="5 17" seg="1-3"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="5 7 1 - 5 7 3"/>
-            <div-ref src="fra" ref="5 18"/>
+            <div-ref src="fra" ref="5 18" seg="1-3"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="5 7 4"/>
@@ -127,7 +205,7 @@
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="5 9 1 - 5 9 2"/>
-            <div-ref src="fra" ref="5 21"/>
+            <div-ref src="fra" ref="5 21" seg="1-2"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="5 9 3"/>
@@ -135,9 +213,9 @@
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="5 9 4 - 5 9 5"/>
-            <div-ref src="fra" ref="5 23"/>
+            <div-ref src="fra" ref="5 23" seg="1-2"/>
         </realign>
-        <realign distribute="1">
+        <realign>
             <anchor-div-ref src="grc" ref="5 9 6 - 5 9 8"/>
             <div-ref src="fra" ref="5 24 - 5 26"/>
         </realign>
@@ -159,7 +237,7 @@
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="6 1 5 1 - 6 1 5 2"/>
-            <div-ref src="fra" ref="6 5"/>
+            <div-ref src="fra" ref="6 5" seg="1-2"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="6 1 5 3"/>
@@ -195,7 +273,7 @@
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="6 2 3 - 6 2 5"/>
-            <div-ref src="fra" ref="6 14"/>
+            <div-ref src="fra" ref="6 14" seg="1-3"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="6 2 6"/>
@@ -215,7 +293,7 @@
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="6 4 2 - 6 4 3"/>
-            <div-ref src="fra" ref="6 20"/>
+            <div-ref src="fra" ref="6 20" seg="1-2"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="6 4 4"/>
@@ -227,11 +305,11 @@
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="6 4 6 - 6 4 9"/>
-            <div-ref src="fra" ref="6 23"/>
+            <div-ref src="fra" ref="6 23" seg="1-4"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="6 4 10 - 6 4 11"/>
-            <div-ref src="fra" ref="6 24"/>
+            <div-ref src="fra" ref="6 24" seg="1-2"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="6 5"/>
@@ -246,29 +324,38 @@
             <div-ref src="fra" ref="7 1"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="7 1 1 2 - 7 1 3 1"/>
-            <div-ref src="fra" ref="7 2"/>
+            <anchor-div-ref src="grc" ref="7 1 1 2 - 3"/>
+            <div-ref src="fra" ref="7 2" seg="1-2"/>
         </realign>
-        <!-- 7 1 3 1 is divided in half by the fra 72 and 7 3-->
+        <realign>
+            <anchor-div-ref src="grc" ref="7 1 2"/>
+            <div-ref src="fra" ref="7 2" seg="3"/>
+        </realign>
+        <realign>
+            <anchor-div-ref src="grc" ref="7 1 3 1"/>
+            <div-ref src="fra" ref="7 2" seg="4"/>
+            <div-ref src="fra" ref="7 3" seg="1"/>
+        </realign>
+        <!-- 7 1 3 1 is divided in half by the fra 7 2 and 7 3-->
         <realign>
             <anchor-div-ref src="grc" ref="7 1 3 2"/>
-            <div-ref src="fra" ref="7 3"/>
+            <div-ref src="fra" ref="7 3" seg="2"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="7 1 4"/>
             <div-ref src="fra" ref="7 4"/>
         </realign>
-        <realign distribute="1">
+        <realign>
             <anchor-div-ref src="grc" ref="7 2 1 - 7 2 4"/>
             <div-ref src="fra" ref="7 5 - 7 8"/>
         </realign>
-        <realign distribute="1">
+        <realign>
             <anchor-div-ref src="grc" ref="7 3 1 - 7 3 2"/>
             <div-ref src="fra" ref="7 9 - 7 10"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="7 3 3 - 7 3 5"/>
-            <div-ref src="fra" ref="7 11"/>
+            <div-ref src="fra" ref="7 11" seg="*"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="7 3 6"/>
@@ -276,31 +363,31 @@
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="7 3 7 - 7 3 8"/>
-            <div-ref src="fra" ref="7 13"/>
+            <div-ref src="fra" ref="7 13" seg="1-2"/>
         </realign>
-        <realign distribute="1">
+        <realign>
             <anchor-div-ref src="grc" ref="7 3 9 - 7 3 10"/>
             <div-ref src="fra" ref="7 14 - 7 15"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="7 3 11 - 7 3 12"/>
-            <div-ref src="fra" ref="7 16"/>
+            <div-ref src="fra" ref="7 16" seg="1-2"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="7 4 1 - 7 4 3"/>
-            <div-ref src="fra" ref="7 17"/>
+            <div-ref src="fra" ref="7 17" seg="1-3"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="7 4 4"/>
             <div-ref src="fra" ref="7 18"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="7 4 5 - 7 4 6"/>
-            <div-ref src="fra" ref="7 19"/>
+            <anchor-div-ref src="grc" ref="7 4 5 - 6"/>
+            <div-ref src="fra" ref="7 19" seg="1-2"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="7 4 7 - 7 4 9"/>
-            <div-ref src="fra" ref="7 20"/>
+            <anchor-div-ref src="grc" ref="7 4 7 - 9"/>
+            <div-ref src="fra" ref="7 20" seg="1-3"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="7 4 10"/>
@@ -308,25 +395,25 @@
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="7 5 1 - 7 5 4"/>
-            <div-ref src="fra" ref="7 22"/>
+            <div-ref src="fra" ref="7 22" seg="*"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="7 5 5 1"/>
             <div-ref src="fra" ref="7 23"/>
         </realign>
-        <realign distribute="1">
+        <realign>
             <anchor-div-ref src="grc" ref="7 5 5 2, 7 5 6"/>
             <div-ref src="fra" ref="7 24, 7 25"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="7 5 7 - 7 5 8"/>
-            <div-ref src="fra" ref="7 26"/>
+            <div-ref src="fra" ref="7 26" seg="*"/>
         </realign>
-        <realign distribute="1">
+        <realign>
             <anchor-div-ref src="grc" ref="7 5 9 - 7 5 11"/>
             <div-ref src="fra" ref="7 27 - 7 29"/>
         </realign>
-        <realign distribute="1">
+        <realign>
             <anchor-div-ref src="grc" ref="8 1 1 1 - 8 1 1 2"/>
             <div-ref src="fra" ref="8 1 - 8 2"/>
         </realign>
@@ -335,12 +422,12 @@
             <div-ref src="fra" ref="8 3"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 1 3 - 8 1 4"/>
-            <div-ref src="fra" ref="8 4"/>
+            <anchor-div-ref src="grc" ref="8 1 3 - 4"/>
+            <div-ref src="fra" ref="8 4" seg="*"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 1 5 - 8 1 6"/>
-            <div-ref src="fra" ref="8 5"/>
+            <anchor-div-ref src="grc" ref="8 1 5 - 6"/>
+            <div-ref src="fra" ref="8 5" seg="*"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="8 1 7"/>
@@ -350,7 +437,7 @@
             <anchor-div-ref src="grc" ref="8 2"/>
             <div-ref src="fra" ref="8 7"/>
         </realign>
-        <realign distribute="1">
+        <realign>
             <anchor-div-ref src="grc" ref="8 3 1 - 8 3 2"/>
             <div-ref src="fra" ref="8 8 - 8 9"/>
         </realign>
@@ -360,21 +447,21 @@
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="8 3 4 - 8 3 5"/>
-            <div-ref src="fra" ref="8 11"/>
+            <div-ref src="fra" ref="8 11" seg="*"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 3 6 - 8 3 7"/>
-            <div-ref src="fra" ref="8 12"/>
+            <anchor-div-ref src="grc" ref="8 3 6 - 7"/>
+            <div-ref src="fra" ref="8 12" seg="*"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 3 8 - 8 3 11"/>
-            <div-ref src="fra" ref="8 13"/>
+            <anchor-div-ref src="grc" ref="8 3 8 - 11"/>
+            <div-ref src="fra" ref="8 13" seg="*"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="8 4 1 - 8 4 2"/>
-            <div-ref src="fra" ref="8 14"/>
+            <div-ref src="fra" ref="8 14" seg="*"/>
         </realign>
-        <realign distribute="1">
+        <realign>
             <anchor-div-ref src="grc" ref="8 4 3 - 8 4 4"/>
             <div-ref src="fra" ref="8 15 - 8 16"/>
         </realign>
@@ -386,7 +473,7 @@
             <anchor-div-ref src="grc" ref="8 5 2"/>
             <div-ref src="fra" ref="8 19"/>
         </realign>
-        <realign distribute="1">
+        <realign>
             <anchor-div-ref src="grc" ref="8 5 3 - 8 5 5, 8 6 1"/>
             <div-ref src="fra" ref="8 20 - 8 22, 8 23"/>
         </realign>
@@ -395,33 +482,37 @@
             <div-ref src="fra" ref="8 24"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="8 6 3 - 8 6 4"/>
-            <div-ref src="fra" ref="8 25"/>
+            <anchor-div-ref src="grc" ref="8 6 3 - 4"/>
+            <div-ref src="fra" ref="8 25" seg="*"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="9 1 1 - 9 1 2 1"/>
-            <div-ref src="fra" ref="8 26"/>
+            <div-ref src="fra" ref="8 26" seg="*"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="9 1 2 2 - 9 1 4"/>
-            <div-ref src="fra" ref="8 27"/>
+            <div-ref src="fra" ref="8 27" seg="*"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="9 1 5 - 9 1 7"/>
-            <div-ref src="fra" ref="8 28"/>
+            <anchor-div-ref src="grc" ref="9 1 5 - 7"/>
+            <div-ref src="fra" ref="8 28" seg="*"/>
         </realign>
         <realign>
-            <!-- don't distribute, since there's not good correlation here -->
-            <anchor-div-ref src="grc" ref="9 2 1 - 9 2 2"/>
-            <div-ref src="fra" ref="8 29 - 8 30"/>
+            <anchor-div-ref src="grc" ref="9 2 1"/>
+            <div-ref src="fra" ref="8 29"/>
+            <div-ref src="fra" ref="8 30" seg="1"/>
+        </realign>
+        <realign>
+            <anchor-div-ref src="grc" ref="9 2 2"/>
+            <div-ref src="fra" ref="8 30" seg="2"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="9 3 1"/>
             <div-ref src="fra" ref="8 31"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="9 3 2 - 9 3 4"/>
-            <div-ref src="fra" ref="8 32"/>
+            <anchor-div-ref src="grc" ref="9 3 2 - 4"/>
+            <div-ref src="fra" ref="8 32" seg="*"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="9 3 5"/>
@@ -432,8 +523,8 @@
             <div-ref src="fra" ref="9 1"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="9 5 1 2 - 9 5 1 3"/>
-            <div-ref src="fra" ref="9 2"/>
+            <anchor-div-ref src="grc" ref="9 5 1 2 - 3"/>
+            <div-ref src="fra" ref="9 2" seg="*"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="9 5 2"/>
@@ -459,9 +550,9 @@
             <anchor-div-ref src="grc" ref="9 7 3 2"/>
             <div-ref src="fra" ref="10 1"/>
         </realign>
-        <realign distribute="1">
-            <anchor-div-ref src="grc" ref="10 1 1 - 10 1 2"/>
-            <div-ref src="fra" ref="10 2 - 10 3"/>
+        <realign>
+            <anchor-div-ref src="grc" ref="10 1 1 - 2"/>
+            <div-ref src="fra" ref="10 2 - 3"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="10 2 1"/>
@@ -469,60 +560,64 @@
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="10 3 1 - 10 3 2"/>
-            <div-ref src="fra" ref="10 5"/>
+            <div-ref src="fra" ref="10 5" seg="*"/>
         </realign>
-        <realign distribute="1">
-            <anchor-div-ref src="grc" ref="10 3 3 1 - 10 3 3 2"/>
-            <div-ref src="fra" ref="10 6 - 10 7"/>
+        <realign>
+            <anchor-div-ref src="grc" ref="10 3 3 1 - 2"/>
+            <div-ref src="fra" ref="10 6 - 7"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="10 3 4"/>
             <div-ref src="fra" ref="10 8"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="10 3 5 - 10 3 6"/>
-            <div-ref src="fra" ref="10 9"/>
+            <anchor-div-ref src="grc" ref="10 3 5 - 6"/>
+            <div-ref src="fra" ref="10 9" seg="*"/>
         </realign>
-        <realign distribute="1">
+        <realign>
             <anchor-div-ref src="grc" ref="10 3 7 - 10 4 2"/>
-            <div-ref src="fra" ref="10 10 - 10 12"/>
+            <div-ref src="fra" ref="10 10 - 12"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="10 4 3 - 10 4 4"/>
-            <div-ref src="fra" ref="10 13"/>
-        </realign>
-        <realign distribute="1">
-            <anchor-div-ref src="grc" ref="10 4 5 - 10 4 9"/>
-            <div-ref src="fra" ref="10 14 - 10 18"/>
+            <anchor-div-ref src="grc" ref="10 4 3 - 4"/>
+            <div-ref src="fra" ref="10 13" seg="*"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="10 5 1 - 10 5 4"/>
-            <div-ref src="fra" ref="10 19"/>
+            <anchor-div-ref src="grc" ref="10 4 5 - 9"/>
+            <div-ref src="fra" ref="10 14 - 18"/>
+        </realign>
+        <realign>
+            <anchor-div-ref src="grc" ref="10 5 1 - 4"/>
+            <div-ref src="fra" ref="10 19" seg="*"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="10 5 5"/>
             <div-ref src="fra" ref="10 20"/>
         </realign>
-        <realign distribute="1">
-            <anchor-div-ref src="grc" ref="10 6 1 - 10 6 4"/>
-            <div-ref src="fra" ref="10 21 - 10 24"/>
+        <realign>
+            <anchor-div-ref src="grc" ref="10 6 1 - 4"/>
+            <div-ref src="fra" ref="10 21 - 24"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="10 6 5 1 - 10 6 5 3"/>
-            <div-ref src="fra" ref="10 25"/>
+            <anchor-div-ref src="grc" ref="10 6 5 1 - 3"/>
+            <div-ref src="fra" ref="10 25" seg="*"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="10 6 5 4"/>
             <div-ref src="fra" ref="10 26"/>
         </realign>
         <realign>
-            <!-- don't distribute -->
-            <anchor-div-ref src="grc" ref="11 1 1 - 11 1 2"/>
-            <div-ref src="fra" ref="11 1 - 11 2"/>
+            <anchor-div-ref src="grc" ref="11 1 1"/>
+            <div-ref src="fra" ref="11 1"/>
+            <div-ref src="fra" ref="11 2" seg="1"/>
         </realign>
-        <realign distribute="1">
+        <realign>
+            <anchor-div-ref src="grc" ref="11 1 2"/>
+            <div-ref src="fra" ref="11 2" seg="2"/>
+        </realign>
+        <realign>
             <anchor-div-ref src="grc" ref="11 1 3 - 11 2 2"/>
-            <div-ref src="fra" ref="11 3 - 11 6"/>
+            <div-ref src="fra" ref="11 3 - 6"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="12 1 1 1"/>
@@ -533,8 +628,8 @@
             <div-ref src="fra" ref="12 2"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="12 1 1 3 - 12 1 1 4"/>
-            <div-ref src="fra" ref="12 3"/>
+            <anchor-div-ref src="grc" ref="12 1 1 3 - 4"/>
+            <div-ref src="fra" ref="12 3" seg="*"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="12 1 2"/>
@@ -549,69 +644,68 @@
             <div-ref src="fra" ref="12 6"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="12 2 2 - 12 2 3"/>
-            <div-ref src="fra" ref="12 7"/>
+            <anchor-div-ref src="grc" ref="12 2 2 - 3"/>
+            <div-ref src="fra" ref="12 7" seg="*"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="12 2 4"/>
             <div-ref src="fra" ref="12 8"/>
         </realign>
-        <realign distribute="1">
-            <anchor-div-ref src="grc" ref="13 1 1 - 13 1 2"/>
-            <div-ref src="fra" ref="13 1 - 13 2"/>
+        <realign>
+            <anchor-div-ref src="grc" ref="13 1 1 - 2"/>
+            <div-ref src="fra" ref="13 1 - 2"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="13 1 3 - 13 1 5 1"/>
-            <div-ref src="fra" ref="13 3"/>
+            <div-ref src="fra" ref="13 3" seg="*"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="13 1 5 2 - 13 1 5 4"/>
-            <div-ref src="fra" ref="13 4"/>
+            <anchor-div-ref src="grc" ref="13 1 5 2 - 4"/>
+            <div-ref src="fra" ref="13 4" seg="*"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="13 1 6"/>
             <div-ref src="fra" ref="13 5"/>
         </realign>
-        <realign distribute="1">
+        <realign>
             <anchor-div-ref src="grc" ref="14 1 1"/>
             <div-ref src="fra" ref="14 1"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="14 1 2 1 - 14 1 2 2"/>
-            <div-ref src="fra" ref="14 2"/>
+            <anchor-div-ref src="grc" ref="14 1 2 1 - 2"/>
+            <div-ref src="fra" ref="14 2" seg="*"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="14 1 2 3"/>
             <div-ref src="fra" ref="14 3"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="14 1 3 1 - 14 1 3 5"/>
-            <div-ref src="fra" ref="14 4"/>
+            <anchor-div-ref src="grc" ref="14 1 3 1 - 5"/>
+            <div-ref src="fra" ref="14 4" seg="*"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="14 1 4 - 14 1 5"/>
-            <div-ref src="fra" ref="14 5"/>
+            <anchor-div-ref src="grc" ref="14 1 4 - 5"/>
+            <div-ref src="fra" ref="14 5" seg="*"/>
         </realign>
         <realign>
             <anchor-div-ref src="grc" ref="14 2"/>
             <div-ref src="fra" ref="14 6 - 14 7"/>
         </realign>
-        <realign distribute="1">
-            <anchor-div-ref src="grc" ref="15 1 1 1 - 15 1 1 6"/>
-            <div-ref src="fra" ref="15 1 - 15 6"/>
+        <realign>
+            <anchor-div-ref src="grc" ref="15 1 1 1 - 6"/>
+            <div-ref src="fra" ref="15 1 - 6"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="15 1 1 7 - 15 1 1 8"/>
-            <div-ref src="fra" ref="15 7"/>
+            <anchor-div-ref src="grc" ref="15 1 1 7 - 8"/>
+            <div-ref src="fra" ref="15 7" seg="*"/>
         </realign>
         <realign>
-            <anchor-div-ref src="grc" ref="15 1 1 9 - 15 1 1 10"/>
-            <div-ref src="fra" ref="15 8"/>
+            <anchor-div-ref src="grc" ref="15 1 1 9 - 10"/>
+            <div-ref src="fra" ref="15 8" seg="*"/>
         </realign>
         <realign>
-            <!-- should be @distribute='1', but holding off, for testing purposes  -->
-            <anchor-div-ref src="grc" ref="15 1 2 - 15 1 3"/>
-            <div-ref src="fra" ref="15 9 - 15 10"/>
+            <anchor-div-ref src="grc" ref="15 1 2 - 3"/>
+            <div-ref src="fra" ref="15 9 - 10"/>
         </realign>
     </body>
 </TAN-A-div>

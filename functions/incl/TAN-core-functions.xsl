@@ -83,8 +83,11 @@
    <xsl:variable name="TAN-namespace" select="'tag:textalign.net,2015'"/>
    <xsl:variable name="id-idrefs" select="doc('TAN-idrefs.xml')"/>
 
-   <xsl:param name="separator-hierarchy" select="' '" as="xs:string"/>
+   <xsl:variable name="separator-hierarchy" select="' '" as="xs:string"/>
    <xsl:variable name="separator-hierarchy-regex" select="tan:escape($separator-hierarchy)"
+      as="xs:string"/>
+   <xsl:variable name="separator-hierarchy-minor" select="'#'" as="xs:string"/>
+   <xsl:variable name="separator-hierarchy-minor-regex" select="tan:escape($separator-hierarchy-minor)"
       as="xs:string"/>
 
    <!-- If one wishes to see if an entire string matches the following patterns defined by these 
@@ -294,7 +297,7 @@
       <!-- Input: any number of TAN documents; boolean indicating whether documents should be breadcrumbed or not; optional name of an attribute and a sequence of strings to stamp in each document's root element as a way of providing another identifier for the document; a list of element names to which any inclusion should be restricted; a list of ids for documents that should not be used to generate inclusions.
       Output: those same documents, resolved, along the following steps:
            1. Stamp each document with @base-uri and the optional root attribute; resolve @href, putting the original (if different) in @orig-href
-           2. Normalize @ref and @n, converting them whenever possible to Arabic numerals, and keeping the old versions as @orig-ref and @orig-n
+           2. Normalize @ref and @n, converting them whenever possible to Arabic numerals, and keeping the old versions as @orig-ref and @orig-n; if @n is a range or series, it will be expanded
            3. Resolve every element that has @include.
            4. Resolve every element that has @which.
            5. If anything happened at #3, remove any duplicate elements. -->
@@ -973,11 +976,12 @@
       <xsl:param name="selector" as="xs:string?"/>
       <xsl:param name="max" as="xs:integer?"/>
       <!-- first normalize syntax -->
-      <xsl:variable name="pass-1"
-         select="replace(tan:normalize-text($selector), '(\d)\s*-\s*(last|all|max|\d)', '$1 - $2')"/>
-      <xsl:variable name="pass-2" select="replace($pass-1, '(\d)\s+(\d)', '$1, $2')"/>
-      <xsl:variable name="pass-3" as="xs:string*">
-         <xsl:analyze-string select="$pass-2" regex="(last|all|max)(-\d+)?">
+      <xsl:variable name="pass-1" select="replace(tan:normalize-text($selector), 'all|\*', '1 - last')"
+      />
+      <xsl:variable name="pass-2" select="replace($pass-1, '(\d)\s*-\s*(last|max|\d)', '$1 - $2')"/>
+      <xsl:variable name="pass-3" select="replace($pass-2, '(\d)\s+(\d)', '$1, $2')"/>
+      <xsl:variable name="pass-4" as="xs:string*">
+         <xsl:analyze-string select="$pass-3" regex="(last|max)(-\d+)?">
             <xsl:matching-substring>
                <xsl:variable name="second-numeral" select="replace(., '\D+', '')"/>
                <xsl:variable name="second-number"
@@ -985,7 +989,8 @@
                      if (string-length($second-numeral) gt 0) then
                         number($second-numeral)
                      else
-                        0"/>
+                        0"
+               />
                <xsl:value-of select="string(($max - $second-number))"/>
             </xsl:matching-substring>
             <xsl:non-matching-substring>
@@ -993,13 +998,14 @@
             </xsl:non-matching-substring>
          </xsl:analyze-string>
       </xsl:variable>
-      <xsl:variable name="item" select="tokenize(string-join($pass-3, ''), ' ?, +')"/>
+      <xsl:variable name="item" select="tokenize(string-join($pass-4, ''), ' ?, +')"/>
       <xsl:for-each select="$item">
          <xsl:variable name="range"
             select="
                for $i in tokenize(., ' - ')
                return
-                  xs:integer($i)"/>
+                  xs:integer($i)"
+         />
          <xsl:choose>
             <xsl:when test="$range[1] lt 1 or $range[2] lt 1">
                <xsl:copy-of select="0"/>
@@ -1542,7 +1548,7 @@
                                     <xsl:if test="matches(., $n-type-pattern[3], 'i')">
                                        <val type="{$n-type[3]}">
                                           <xsl:value-of
-                                             select="concat(replace(., '\D+', ''), '-', tan:aaa-to-int(replace(., '\d+', '')))"
+                                             select="concat(replace(., '\D+', ''), $separator-hierarchy-minor, tan:aaa-to-int(replace(., '\d+', '')))"
                                           />
                                        </val>
                                     </xsl:if>
@@ -1554,7 +1560,7 @@
                                     <xsl:if test="matches(., $n-type-pattern[5], 'i')">
                                        <val type="{$n-type[5]}">
                                           <xsl:value-of
-                                             select="concat(tan:aaa-to-int(replace(., '\d+', '')), '-', replace(., '\D+', ''))"
+                                             select="concat(tan:aaa-to-int(replace(., '\d+', '')), $separator-hierarchy-minor, replace(., '\D+', ''))"
                                           />
                                        </val>
                                     </xsl:if>
@@ -1668,9 +1674,9 @@
                for $i in $pass1[matches(., 'i-or-a#')]
                return
                   replace($i, 'i-or-a#', '')"/>-->
-         <test>
+         <!--<test>
             <xsl:copy-of select="$elements-to-analyze"/>
-         </test>
+         </test>-->
          <xsl:if test="exists($analysis)">
             <ns>
                <xsl:if test="string-length($group-by-what-attr-value) gt 0">

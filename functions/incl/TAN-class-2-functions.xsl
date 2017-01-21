@@ -227,12 +227,6 @@
                      select="tan:help(concat('Valid values: ', string-join($all-possible-sources, ' ')), $all-possible-sources)"
                   />
                </xsl:if>
-               <xsl:if
-                  test="
-                     $this-element-name = 'anchor-div-ref' and not(exists($this-element/../@distribute))
-                     and matches($this-element/@ref, ',')">
-                  <xsl:copy-of select="tan:error('rea03')"/>
-               </xsl:if>
                <xsl:copy-of select="$this-element/node()"/>
             </xsl:element>
          </xsl:for-each>
@@ -1075,7 +1069,6 @@
          <xsl:variable name="ignore-error-if-ref-not-found"
             select="(exists($this-work) and position() gt 1)"/>
          <xsl:variable name="this-div-fragment" select="tan:convert-ref-to-div-fragment($this-src-doc, $this-element, $help-requested, $ignore-error-if-ref-not-found)"/>
-         <xsl:variable name="distribute-refs" select="false()"/>
          <xsl:choose>
             <xsl:when test="$this-element-name = 'tok'">
                <!-- In the case of <tok>, every @ref needs to be expanded -->
@@ -1200,6 +1193,9 @@
                select="concat('for source ', $this-src, ' try: ', string-join($ref-end-near-matches/@ref, '; '))"/>
             <xsl:copy-of select="tan:help($this-message, $this-fragment)"/>
          </xsl:if>
+         <xsl:if test="not(exists($this-fragment)) and (exists($div-start) and exists($div-end))">
+            <xsl:copy-of select="tan:error('ref04', concat($ref-start,' and ', $div-end/@ref, ' point to real divisions, but do not create a range'))"/>
+         </xsl:if>
          <xsl:if test="$div-start[not(tan:div)] and count($div-start) gt 1">
             <xsl:copy-of select="tan:error('ref02', $ref-start)"/>
          </xsl:if>
@@ -1230,7 +1226,7 @@
                </xsl:variable>
                <xsl:choose>
                   <xsl:when test="$missing-ref-returned-as-info-not-error = false()">
-                     <xsl:copy-of select="tan:error('ref01', string-join($this-message, ' '))"/>
+                     <xsl:copy-of select="tan:error('ref03', string-join($this-message, ' '))"/>
                   </xsl:when>
                   <xsl:otherwise>
                      <xsl:copy-of select="tan:info(string-join($this-message, ' '), ())"/>
@@ -1426,12 +1422,9 @@
    </xsl:function>
 
    <xsl:function name="tan:get-toks" as="element()*">
-      <!-- returns the <tok>s from a given <div>, including @n with integer position
-         Input: (1) any <div> with <tok> and <non-tok> children (result of tan:tokenize-prepped-1st-da())
-         (2) any number of <tok>s that are deemed to relate to the <div> chosen (i.e., @src and @ref will 
-         be ignored, assumed to correspond to the input <div>)
-         Output: the <tok> elements picked. 
-      -->
+      <!-- returns the <tok>s from a given <div>, including @n with integer position -->
+      <!-- Input: (1) any <div> with <tok> and <non-tok> children (result of tan:tokenize-prepped-1st-da()) (2) any number of <tok>s that are deemed to relate to the <div> chosen (i.e., @src and @ref will be ignored, assumed to correspond to the input <div>) -->
+      <!-- Output: the <tok> elements picked. -->
       <xsl:param name="tokenized-div" as="element()?"/>
       <xsl:param name="tok-elements" as="element()*"/>
       <xsl:for-each select="$tok-elements">
@@ -1460,12 +1453,14 @@
             <xsl:value-of select="concat('Close matches: ', string-join($pass1, ', '))"/>
          </xsl:variable>
          <xsl:variable name="max-toks" select="count($these-matches)"/>
+         <xsl:variable name="this-pos-norm" select="tan:normalize-text(@pos)"/>
          <xsl:variable name="these-pos-itemized" as="xs:integer*"
             select="
-               if (@pos) then
-                  tan:sequence-expand(tan:normalize-text(@pos), $max-toks)
+               if (string-length($this-pos-norm) gt 0) then
+                  tan:sequence-expand($this-pos-norm, $max-toks)
                else
-                  1"/>
+                  1"
+         />
          <xsl:variable name="this-help-requested" select="tan:help-requested(.)"/>
          <xsl:variable name="pos-help-requested" select="tan:help-requested(@pos)"/>
          <xsl:variable name="val-help-requested" select="tan:help-requested(@val)"/>
@@ -1519,6 +1514,7 @@
                </xsl:if>
                <xsl:if test="$this-help-requested = true()">
                   <xsl:if test="$pos-help-requested = true()">
+                     <test></test>
                      <xsl:copy-of
                         select="tan:help(concat('Maximum matched tokens: ', count($these-matches)), ())"
                      />

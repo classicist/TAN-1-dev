@@ -1067,7 +1067,7 @@
          <xsl:variable name="this-src" select="."/>
          <xsl:variable name="this-src-doc" select="$sources-prepped-1[*/@src = $this-src]"/>
          <xsl:variable name="ignore-error-if-ref-not-found"
-            select="(exists($this-work) and position() gt 1)"/>
+            select="(exists($this-work) and not($this-src = $this-work))"/>
          <xsl:variable name="this-div-fragment" select="tan:convert-ref-to-div-fragment($this-src-doc, $this-element, $help-requested, $ignore-error-if-ref-not-found)"/>
          <xsl:choose>
             <xsl:when test="$this-element-name = 'tok'">
@@ -1097,7 +1097,7 @@
                <xsl:element name="{$this-element-name}">
                   <xsl:copy-of select="$this-element/@*"/>
                   <xsl:copy-of select="$this-src"/>
-                  <xsl:copy-of select="$this-element/(tan:error, tan:help, tan:info, tan:message)"/>
+                  <xsl:copy-of select="$this-element/(tan:error, tan:help, tan:info, tan:message, tan:warning)"/>
                   <xsl:copy-of select="$this-div-fragment"/>
                </xsl:element>
             </xsl:otherwise>
@@ -1226,7 +1226,7 @@
                </xsl:variable>
                <xsl:choose>
                   <xsl:when test="$missing-ref-returned-as-info-not-error = false()">
-                     <xsl:copy-of select="tan:error('ref03', string-join($this-message, ' '))"/>
+                     <xsl:copy-of select="tan:error('ref01', string-join($this-message, ' '))"/>
                   </xsl:when>
                   <xsl:otherwise>
                      <xsl:copy-of select="tan:info(string-join($this-message, ' '), ())"/>

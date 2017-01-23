@@ -215,7 +215,7 @@
          select="$sources-segmented/tan:TAN-T[@src = $this-src]/tan:body//tan:div[@ref = $this-ref]"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
-         <xsl:copy-of select="(tan:error, tan:help, tan:fatal, tan:message)"/>
+         <xsl:copy-of select="(tan:error, tan:help, tan:fatal, tan:message, tan:warning)"/>
          <xsl:copy-of select="$this-div"/>
       </xsl:copy>
    </xsl:template>

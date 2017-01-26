@@ -8,7 +8,7 @@
 
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Updated </xd:b>Nov 15, 2016</xd:p>
+         <xd:p><xd:b>Updated </xd:b>Jan 24, 2017</xd:p>
          <xd:p>Core variables and functions for class 2 TAN files (i.e., applicable to multiple
             class 2 TAN file types). Written principally for Schematron validation, but suitable for
             general use in other contexts.</xd:p>
@@ -361,7 +361,7 @@
       <xsl:param name="ambiguous-numeral-types" as="element()*" tunnel="yes"/>
       <!--<xsl:param name="treat-ambiguous-a-or-i-type-as-roman-numeral" as="xs:boolean?" tunnel="yes"/>
       <xsl:param name="warn-on-ambiguous-numerals" as="xs:boolean?" tunnel="yes"/>-->
-      <xsl:variable name="this-ref-norm" select="tan:normalize-text(lower-case(@ref))"/>
+      <!--<xsl:variable name="this-ref-norm" select="tan:normalize-text(lower-case(@ref))"/>-->
       <xsl:variable name="raw-ref" select="tan:analyze-elements-with-numeral-attributes(., (), false(), true())"/>
       <!--<xsl:variable name="new-ref"
          select="tan:normalize-refs(@ref, $treat-ambiguous-a-or-i-type-as-roman-numeral)"/>-->
@@ -370,7 +370,7 @@
             <xsl:choose>
                <xsl:when test="self::tan:sep">
                   <xsl:choose>
-                     <xsl:when test="matches(.,'^ ?, $|^ ?- ?$')">
+                     <xsl:when test="matches(.,'^ *, $|^ *- *$')">
                         <xsl:value-of select="replace(., '(\S)', ' $1 ')"/>
                      </xsl:when>
                      <xsl:otherwise>
@@ -400,7 +400,7 @@
             </xsl:choose>
          </xsl:for-each>
       </xsl:variable>
-      <xsl:variable name="new-ref" select="string-join($new-ref-ns, '')"/>
+      <xsl:variable name="new-ref" select="normalize-space(string-join($new-ref-ns, ''))"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:if test="not(@ref = $new-ref)">
@@ -1115,7 +1115,207 @@
       <xsl:param name="keep-text" as="xs:boolean"/>
       <xsl:param name="missing-ref-returned-as-info-not-error" as="xs:boolean"/>
       <xsl:variable name="this-src" select="($element-with-ref-attr/@src, $prepped-src-doc/*/@src)[1]"/>
-      <xsl:for-each select="tokenize($element-with-ref-attr/@ref, ' ?, ')">
+      <xsl:variable name="ref-analyzed" select="tan:analyze-ref($element-with-ref-attr/@ref)" as="element()"/>
+      <!--<test><xsl:copy-of select="$ref-analyzed"/></test>-->
+      <xsl:for-each-group select="$ref-analyzed/*" group-starting-with="tan:comma">
+         <xsl:variable name="these-refs" select="current-group()/self::tan:ref"/>
+         <xsl:variable name="div-start-prelim" select="key('div-via-ref', $these-refs[1], $prepped-src-doc)"/>
+         <xsl:variable name="div-start"
+            select="
+               if (exists($div-start-prelim)) then
+                  $div-start-prelim
+               else
+                  key('div-via-ref', $these-refs[1]/@orig, $prepped-src-doc)"
+         />
+         <!--<xsl:variable name="div-start-and-following-siblings" select="($div-start, $div-start/following-sibling::*)"/>-->
+         <xsl:variable name="div-end-prelim" select="key('div-via-ref', $these-refs[2], $prepped-src-doc)"/>
+         <xsl:variable name="div-end"
+            select="
+               if (exists($div-end-prelim)) then
+                  $div-end-prelim
+               else
+                  key('div-via-ref', $these-refs[2]/@orig, $prepped-src-doc)"
+         />
+         <!--<test><xsl:copy-of select="$these-refs"/></test>-->
+         <!--<xsl:variable name="div-end-and-preceding-siblings" select="($div-end/preceding-sibling::*, $div-end)"/>-->
+         <!--<xsl:variable name="div-intersection" select="$div-start-and-following-siblings intersect $div-end-and-preceding-siblings"/>-->
+         <xsl:variable name="ref-options" select="$these-refs/(text(), @orig)"/>
+         <xsl:variable name="ref-options-help-requested"
+            select="$ref-options[matches(., $help-trigger-regex)]"/>
+         <xsl:variable name="ref-searches" as="xs:string*">
+            <xsl:for-each select="$ref-options-help-requested">
+               <xsl:variable name="this-ref-norm" select="tan:normalize-text(.)"/>
+               <xsl:value-of
+                  select="
+                     if (matches($this-ref-norm, '\S')) then
+                        $this-ref-norm
+                     else
+                        '^\w+$'"
+               />
+            </xsl:for-each>
+         </xsl:variable>
+         <xsl:variable name="this-regex-search"
+            select="string-join(distinct-values($ref-searches), '|')"/>
+         <xsl:variable name="ref-near-matches" select="$prepped-src-doc/tan:TAN-T/tan:body//tan:div[matches(@ref, $this-regex-search)]"/>
+         
+         <xsl:variable name="div-start-ancestry" select="$div-start/ancestor-or-self::*"/>
+         <xsl:variable name="div-end-ancestry" select="$div-end/ancestor-or-self::*"/>
+         <xsl:variable name="common-ancestry" select="$div-start-ancestry intersect $div-end-ancestry"/>
+         <xsl:variable name="last-common-ancestor" select="$common-ancestry[last()]"/>
+         <!--<xsl:variable name="lca-middle-children" select="$last-common-ancestor/*[@ref = $div-start-ancestry/@ref]/following-sibling::* 
+            except $last-common-ancestor/*[@ref = $div-end-ancestry/@ref]/(self::*, following-sibling::*)"/>-->
+         <xsl:variable name="lca-ancestry" select="$last-common-ancestor/ancestor-or-self::*"/>
+         <xsl:variable name="div-start-depth" select="count($div-start-ancestry)"/>
+         <xsl:variable name="div-end-depth" select="count($div-end-ancestry)"/>
+         <xsl:variable name="lca-depth" select="count($lca-ancestry)"/>
+         <xsl:variable name="default-level" select="min(($div-start-depth, $div-end-depth))"/>
+         <!--<xsl:variable name="shallower-start"
+            select="
+               if ($div-start-depth gt $default-level) then
+                  $div-start-ancestry[$default-level]
+               else
+                  ()"
+         />-->
+         <!--<xsl:variable name="shallower-start" select="$div-start-ancestry[$default-level]"/>
+         <xsl:variable name="shallower-end" select="$div-end-ancestry[$default-level]"/>-->
+         <xsl:variable name="plucked-fragment">
+            <plucked>
+               <xsl:copy-of select="tan:pluck($last-common-ancestor, $default-level - $lca-depth + 1, true())"/>
+            </plucked>
+         </xsl:variable>
+         <xsl:variable name="plucked-start" select="$plucked-fragment/tan:plucked/*[@ref = $div-start-ancestry/@ref]"/>
+         <xsl:variable name="plucked-end" select="$plucked-fragment/tan:plucked/*[@ref = $div-end-ancestry/@ref]"/>
+         <xsl:variable name="plucked-middle" select="$plucked-start/following-sibling::* intersect $plucked-end/preceding-sibling::*"/>
+         <!--<xsl:variable name="plucked-start-refined" as="element()*">
+            <xsl:choose>
+               <xsl:when test="exists($shallower-start)">
+                  <xsl:copy-of select="$div-start"/>
+                  <xsl:copy-of select="$div-start-ancestry[position() gt $default-level]/following-sibling::*"/>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:sequence select="$plucked-start"/>
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:variable>-->
+         <!--<xsl:variable name="plucked-end-refined" as="element()*">
+            <xsl:choose>
+               <xsl:when test="exists($shallower-end)">
+                  <xsl:copy-of select="$div-end-ancestry[position() gt $default-level]/preceding-sibling::*"/>
+                  <xsl:copy-of select="$div-end"/>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:sequence select="$plucked-end"/>
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:variable>-->
+         <!--<test><xsl:copy-of select="$div-start-depth"/></test>-->
+         <!--<test><xsl:copy-of select="$div-end-depth"/></test>-->
+         <!--<test><xsl:copy-of select="tan:shallow-copy($shallower-start)"/></test>-->
+         <!--<test><xsl:copy-of select="tan:shallow-copy($last-common-ancestor)"/></test>-->
+         <!--<test><xsl:copy-of select="$default-level"/></test>-->
+         <!--<test><xsl:copy-of select="$lca-depth"/></test>-->
+         <!--<test><xsl:copy-of select="tan:shallow-copy($plucked-fragment/*/*)"/></test>-->
+         <!--<test><xsl:copy-of select="tan:shallow-copy($plucked-end-refined)"/></test>-->
+         
+         <xsl:variable name="this-fragment" as="element()*">
+            <xsl:choose>
+               <xsl:when test="count($these-refs) = 1">
+                  <xsl:choose>
+                     <xsl:when test="$keep-text = true()">
+                        <xsl:copy-of select="$div-start"/>
+                     </xsl:when>
+                     <xsl:otherwise>
+                        <xsl:copy-of select="tan:shallow-copy($div-start)"/>
+                     </xsl:otherwise>
+                  </xsl:choose>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:variable name="this-fragment-range"
+                     select="
+                        ($div-start,
+                        $div-start-ancestry[position() gt $default-level]/following-sibling::*,
+                        $plucked-middle,
+                        $div-end-ancestry[position() gt $default-level]/preceding-sibling::*,
+                        $div-end)"
+                  />
+                  <!--<xsl:variable name="this-fragment-range" as="element()*">
+                     <!-\-<xsl:choose>
+                        <xsl:when test="exists($div-intersection)">
+                           <xsl:copy-of select="$div-intersection"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                           <xsl:copy-of select="$div-start-and-following-siblings"/>
+                           <xsl:copy-of
+                              select="tan:pluck($lca-middle-children, count($lca-ancestry), true())"/>
+                           <xsl:copy-of select="$div-end-and-preceding-siblings"/>
+                        </xsl:otherwise>
+                     </xsl:choose>-\->
+                     <xsl:sequence
+                        select="($plucked-start-refined, $plucked-middle, $plucked-end-refined)"/>
+                  </xsl:variable>-->
+                  <xsl:choose>
+                     <xsl:when test="$keep-text = true()">
+                        <xsl:copy-of select="$this-fragment-range"/>
+                     </xsl:when>
+                     <xsl:otherwise>
+                        <xsl:copy-of select="tan:shallow-copy($this-fragment-range)"/>
+                     </xsl:otherwise>
+                  </xsl:choose>
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:variable>
+         <xsl:if test="exists($ref-options-help-requested)">
+            <xsl:variable name="this-message"
+               select="concat('for source ', $this-src, ' try: ', string-join($ref-near-matches/@ref, '; '))"/>
+            <xsl:copy-of select="tan:help($this-message, $this-fragment)"/>
+         </xsl:if>
+         <xsl:if test="not(exists($this-fragment)) and (exists($div-start) and exists($div-end))">
+            <xsl:copy-of select="tan:error('ref04', concat($div-start/@ref,' and ', $div-end/@ref, ' point to real divisions, but do not create a range'))"/>
+         </xsl:if>
+         <xsl:if test="exists($div-start[not(tan:div)]) and count($div-start) gt 1">
+            <xsl:copy-of select="tan:error('ref02', string-join($these-refs[1]/(text(), @orig),' or '))"/>
+         </xsl:if>
+         <xsl:if test="exists($div-end[not(tan:div)]) and count($div-end) gt 1">
+            <xsl:copy-of select="tan:error('ref02', string-join($these-refs[2]/(text(), @orig),' or '))"/>
+         </xsl:if>
+         <xsl:choose>
+            <xsl:when
+               test="not(exists($div-start)) or (count($these-refs) gt 1 and not(exists($div-end)))">
+               <!-- ref doesn't match a div -->
+               <xsl:variable name="this-message" as="xs:string*">
+                  <xsl:text>source</xsl:text>
+                  <xsl:value-of select="$this-src"/>
+                  <xsl:text>does not have</xsl:text>
+                  <xsl:value-of
+                     select="
+                        if (not(exists($div-start))) then
+                           $these-refs[1]
+                        else
+                           ()"/>
+                  <xsl:value-of
+                     select="
+                        if (not(exists($div-end))) then
+                           $these-refs[2]
+                        else
+                           ()"
+                  />
+               </xsl:variable>
+               <xsl:choose>
+                  <xsl:when test="$missing-ref-returned-as-info-not-error = false()">
+                     <xsl:copy-of select="tan:error('ref01', string-join($this-message, ' '))"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:copy-of select="tan:info(string-join($this-message, ' '), ())"/>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:copy-of select="$this-fragment"/>
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:for-each-group> 
+      <!-- Jan 2017: delendum -->
+      <!--<xsl:for-each select="tokenize($element-with-ref-attr/@ref, ' ?, ')">
          <xsl:variable name="ref-atoms" select="tokenize(tan:normalize-text(.), '\s+-\s+')"/>
          <xsl:variable name="ref-start" select="$ref-atoms[1]"/>
          <xsl:variable name="ref-start-ns" select="tokenize($ref-start, '\W')"/>
@@ -1129,30 +1329,46 @@
                else
                   $ref-end-raw"
          />
+         <!-\-<xsl:variable name="div-start"
+            select="$prepped-src-doc/tan:TAN-T/tan:body//tan:div[@ref = $ref-start]"/>-\->
          <xsl:variable name="div-start"
-            select="$prepped-src-doc/tan:TAN-T/tan:body//tan:div[@ref = $ref-start]"/>
+            select="key('div-via-ref', $ref-start, $prepped-src-doc)"/>
+         <!-\-<xsl:variable name="div-end-prelim"
+            select="$prepped-src-doc/tan:TAN-T/tan:body//tan:div[@ref = $ref-end-norm]"/>-\->
+         <xsl:variable name="div-start-and-following-siblings" select="($div-start, $div-start/following-sibling::*)"/>
          <xsl:variable name="div-end-prelim"
-            select="$prepped-src-doc/tan:TAN-T/tan:body//tan:div[@ref = $ref-end-norm]"/>
-         <xsl:variable name="div-end"
+            select="key('div-via-ref', $ref-end-norm, $prepped-src-doc)"/>
+         <!-\-<xsl:variable name="div-end"
             select="
                if (exists($div-end-prelim)) then
                   $div-end-prelim
                else
                   $prepped-src-doc/tan:TAN-T/tan:body//tan:div[@ref = $ref-end-raw]"
+         />-\->
+         <xsl:variable name="div-end"
+            select="
+               if (exists($div-end-prelim)) then
+                  $div-end-prelim
+               else
+                  key('div-via-ref', $ref-end-raw, $prepped-src-doc)"
          />
-         <xsl:variable name="div-end-ancestors" select="$div-end/ancestor::tan:div"/>
+         <xsl:variable name="div-end-and-preceding-siblings" select="($div-end/preceding-sibling::*, $div-end)"/>
+         <xsl:variable name="div-intersection" select="$div-start-and-following-siblings intersect $div-end-and-preceding-siblings"/>
+
          <xsl:variable name="ref-start-search"
             select="
                if (not(matches($ref-start, '\S'))) then
                   '^\w+$'
                else
-                  $ref-start"/>
+                  $ref-start"
+         />
          <xsl:variable name="ref-end-search"
             select="
                if (not(matches($ref-end-norm, '\S'))) then
                   '^\w+$'
                else
-                  $ref-end-norm"/>
+                  $ref-end-norm"
+         />
          <xsl:variable name="ref-start-help-requested"
             select="matches($ref-atoms[1], $help-trigger-regex)"/>
          <xsl:variable name="ref-end-help-requested"
@@ -1161,25 +1377,74 @@
             select="$prepped-src-doc/tan:TAN-T/tan:body//tan:div[matches(@ref, $ref-start-search)]"/>
          <xsl:variable name="ref-end-near-matches"
             select="$prepped-src-doc/tan:TAN-T/tan:body//tan:div[matches(@ref, $ref-end-search)]"/>
+         
+
+         <xsl:variable name="div-start-ancestry" select="$div-start/ancestor-or-self::*"/>
+         <xsl:variable name="div-end-ancestry" select="$div-end/ancestor-or-self::*"/>
+         <xsl:variable name="common-ancestry" select="$div-start-ancestry intersect $div-end-ancestry"/>
+         <xsl:variable name="lowest-common-ancestor" select="$common-ancestry[last()]"/>
+         <xsl:variable name="lca-middle-children" select="$lowest-common-ancestor/*[@ref = $div-start-ancestry/@ref]/following-sibling::* 
+            except $lowest-common-ancestor/*[@ref = $div-end-ancestry/@ref]/(self::*, following-sibling::*)"/>
+         <xsl:variable name="lca-ancestry" select="$lowest-common-ancestor/ancestor-or-self::*"/>
+         <xsl:variable name="ref-level" select="min((count($div-start-ancestry), count($div-end-ancestry)))"/>
+         
+         
+
+
+         <xsl:variable name="div-end-ancestors" select="$div-end/ancestor::tan:div"/>
          <xsl:variable name="this-fragment" as="element()*">
             <xsl:choose>
-               <xsl:when test="count($ref-atoms) = 1 and $keep-text = true()">
-                  <xsl:copy-of select="$div-start"/>
+               <xsl:when test="count($ref-atoms) = 1">
+                  <xsl:choose>
+                     <xsl:when test="$keep-text = true()">
+                        <xsl:copy-of select="$div-start"/>
+                     </xsl:when>
+                     <xsl:otherwise>
+                        <xsl:copy-of select="tan:shallow-copy($div-start)"/>
+                     </xsl:otherwise>
+                  </xsl:choose>
                </xsl:when>
-               <xsl:when test="count($ref-atoms) = 1 and $keep-text = false()">
+               <!-\-<xsl:when test="count($ref-atoms) = 1 and $keep-text = false()">
                   <xsl:apply-templates select="$div-start" mode="strip-text"/>
-               </xsl:when>
+               </xsl:when>-\->
                <xsl:otherwise>
-                  <xsl:variable name="raw-divs"
+                  <xsl:variable name="this-fragment-range" as="element()*">
+                     <xsl:choose>
+                        <xsl:when test="exists($div-intersection)">
+                           <xsl:copy-of select="$div-intersection"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                           <xsl:copy-of select="$div-start-and-following-siblings"/>
+                           <xsl:copy-of
+                              select="tan:pluck($lca-middle-children, count($lca-ancestry), true())"/>
+                           <xsl:copy-of select="$div-end-and-preceding-siblings"/>
+                        </xsl:otherwise>
+                     </xsl:choose>
+                     <!-\-<xsl:copy-of select="$div-start"/>
+                     <xsl:copy-of
+                        select="$div-start/following-sibling::* except ($div-end, $div-end/following-sibling::*)"/>
+                     <xsl:copy-of
+                        select="$div-end/preceding-sibling::* except ($div-start, $div-start/preceding-sibling::*)"/>
+                     <xsl:copy-of select="$div-end"/>-\->
+                  </xsl:variable>
+                  <xsl:choose>
+                     <xsl:when test="$keep-text = true()">
+                        <xsl:copy-of select="$this-fragment-range"/>
+                     </xsl:when>
+                     <xsl:otherwise>
+                        <xsl:copy-of select="tan:shallow-copy($this-fragment-range)"/>
+                     </xsl:otherwise>
+                  </xsl:choose>
+
+                  <!-\-<xsl:variable name="raw-divs"
                      select="$div-start/(descendant-or-self::*, following::*) except $div-end/following::*"/>
-                  <xsl:apply-templates select="$prepped-src-doc/tan:TAN-T/tan:body/tan:div"
-                     mode="get-div-hierarchy-fragment">
-                     <!-- We add the caveat to exclude div-end ancestors because when we use a reference like 1 1 - 1 3 5, we are
-                        disinterested in grabbing 1 3, even if its last child is 1 3 5. -->
+                  <xsl:apply-templates select="$raw-divs" mode="get-div-hierarchy-fragment">
+                     <!-\\- We add the caveat to exclude div-end ancestors because when we use a reference like 1 1 - 1 3 5, we are
+                        disinterested in grabbing 1 3, even if its last child is 1 3 5. -\\->
                      <xsl:with-param name="refs-to-keep"
                         select="$raw-divs/@ref[not(. = $div-end-ancestors/@ref)]" tunnel="yes"/>
                      <xsl:with-param name="keep-text" select="$keep-text" tunnel="yes"/>
-                  </xsl:apply-templates>
+                  </xsl:apply-templates>-\->
                </xsl:otherwise>
             </xsl:choose>
          </xsl:variable>
@@ -1205,7 +1470,7 @@
          <xsl:choose>
             <xsl:when
                test="not(exists($div-start)) or (count($ref-atoms) gt 1 and not(exists($div-end)))">
-               <!-- ref doesn't match a div -->
+               <!-\- ref doesn't match a div -\->
                <xsl:variable name="this-message" as="xs:string*">
                   <xsl:text>source</xsl:text>
                   <xsl:value-of select="$this-src"/>
@@ -1237,8 +1502,70 @@
                <xsl:copy-of select="$this-fragment"/>
             </xsl:otherwise>
          </xsl:choose>
-      </xsl:for-each>
+      </xsl:for-each>-->
    </xsl:function>
+   
+   <xsl:function name="tan:analyze-ref" as="element()">
+      <!-- Input: any @ref's value -->
+      <!-- Output: series of <ref>s, punctuated by <comma> or <dash>; each <ref> holds the likely best value; if that differs from the original, @orig holds the original value of the ref -->
+      <xsl:param name="ref" as="xs:string"/>
+      <xsl:variable name="pass1" as="element()">
+         <analysis>
+            <xsl:analyze-string select="$ref" regex="\s*[,-]\s*">
+               <xsl:matching-substring>
+                  <xsl:choose>
+                     <xsl:when test="matches(.,',')">
+                        <comma/>
+                     </xsl:when>
+                     <xsl:otherwise>
+                        <dash/>
+                     </xsl:otherwise>
+                  </xsl:choose>
+               </xsl:matching-substring>
+               <xsl:non-matching-substring>
+                  <ref>
+                     <xsl:variable name="these-ns" select="tokenize(., '[^\w\?]+')"/>
+                     <xsl:attribute name="count" select="count($these-ns)"/>
+                     <xsl:for-each select="$these-ns">
+                        <n>
+                           <xsl:value-of select="."/>
+                        </n>
+                     </xsl:for-each>
+                  </ref>
+               </xsl:non-matching-substring>
+            </xsl:analyze-string>
+         </analysis>
+      </xsl:variable>
+      <xsl:variable name="pass2" as="element()">
+         <xsl:apply-templates select="$pass1" mode="analyze-ref"/>
+      </xsl:variable>
+      <xsl:copy-of select="$pass2"/>
+   </xsl:function>
+   
+   <xsl:template match="*" mode="analyze-ref">
+      <xsl:copy>
+         <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:ref" mode="analyze-ref">
+      <xsl:variable name="this-n-count" select="count(tan:n)"/>
+      <xsl:variable name="preceding-models" select="preceding-sibling::tan:ref"/>
+      <xsl:variable name="max-count" select="max($preceding-models/@count)"/>
+      <xsl:variable name="this-model" select="($preceding-models[@count = $max-count])[last()]"/>
+      <xsl:variable name="this-diff" select="$max-count - $this-n-count"/>
+      <xsl:copy>
+         <xsl:choose>
+            <xsl:when test="$this-diff gt 0">
+               <xsl:attribute name="orig" select="string-join(*, ' ')"/>
+               <xsl:value-of select="string-join(($this-model/*[position() le $this-diff], *), ' ')"
+               />
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:value-of select="string-join(*, ' ')"/>
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:copy>
+   </xsl:template>
 
    <xsl:template match="text()" mode="get-div-hierarchy-fragment">
       <xsl:param name="keep-text" as="xs:boolean?" tunnel="yes"/>

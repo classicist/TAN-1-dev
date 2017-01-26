@@ -35,10 +35,11 @@
       FOCUS           ALTERATIONS
       =======   =============================================================================================
       sources   Segment sources
-      self      Expand <div-ref> and <anchor-div-ref> on @seg, making a deep copy of the <div>s and <seg>s referred to
+      self      Expand <div-ref> and <anchor-div-ref> on @seg, making in <realign> a deep copy of the <div>s and <seg>s referred to
       self      Distribute <align> and <realign>; signal errors of realignment
       self      Mark errors
       -->
+      <!-- Note, because this function is designed to expedite validation, it does not realign the sources, which must be done through tan:merge-tan-a-div-prepped() -->
       <xsl:param name="self-and-sources-prepped-class-2" as="document-node()*"/>
       <xsl:variable name="this-class-2"
          select="
@@ -83,7 +84,7 @@
    <!-- Templates rooted in TAN-class-2-functions.xsl -->
 
    <xsl:template match="node()"
-      mode="segment-tokd-prepped-class-1 prep-tan-a-div-pass-a prep-tan-a-div-pass-b">
+      mode="segment-tokd-prepped-class-1 prep-tan-a-div-pass-a prep-tan-a-div-pass-b realign-tan-a-div-sources">
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:apply-templates mode="#current"/>
@@ -179,6 +180,7 @@
       </xsl:copy>
    </xsl:template>
    <xsl:template match="*[@seg]" mode="prep-tan-a-div-pass-a">
+      <!-- goal: flag errors in @seg; if it's a <realign>, make a copy of the entire <div> -->
       <xsl:param name="sources-segmented" as="document-node()*" tunnel="yes"/>
       <xsl:variable name="this-element" select="."/>
       <xsl:variable name="this-element-name" select="name(.)"/>
@@ -187,10 +189,10 @@
       <xsl:variable name="this-seg" select="@seg"/>
       <xsl:variable name="these-divs"
          select="$sources-segmented/tan:TAN-T[@src = $this-src]/tan:body//tan:div[@ref = $this-ref][not(@type = '#seg')]"/>
-
+      <xsl:variable name="is-in-realign" as="xs:boolean" select="exists(parent::tan:realign)"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
-         <xsl:copy-of select="(tan:error, tan:help, tan:message, tan:info)"/>
+         <xsl:copy-of select="(tan:error, tan:help, tan:warning, tan:message, tan:info)"/>
          <xsl:for-each select="$these-divs">
             <xsl:variable name="these-segs" select="tan:div[@type = '#seg']"/>
             <xsl:variable name="this-seg-count" select="count($these-segs)"/>
@@ -202,12 +204,22 @@
             <xsl:if test="exists(tan:div[not(@type = '#seg')])">
                <xsl:copy-of select="tan:error('seg01')"/>
             </xsl:if>
-            <xsl:copy-of select="$these-segs[position() = $seg-nos-picked]"/>
+            <xsl:choose>
+               <xsl:when test="$is-in-realign = false()">
+                  <div>
+                     <xsl:copy-of select="$these-segs[position() = $seg-nos-picked]/@*"/>
+                  </div>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:copy-of select="$these-segs[position() = $seg-nos-picked]"/>
+               </xsl:otherwise>
+            </xsl:choose>
          </xsl:for-each>
       </xsl:copy>
    </xsl:template>
-   <xsl:template match="tan:div-ref[not(@seg)] | tan:anchor-div-ref[not(@seg)]"
+   <xsl:template match="tan:div-ref[not(@seg)][parent::tan:realign] | tan:anchor-div-ref[not(@seg)][parent::tan:realign]"
       mode="prep-tan-a-div-pass-a">
+      <!-- We make a copy of the referenced <div> only if it is a <realign>, so that we can save work for a later process that adjusts the sources -->
       <xsl:param name="sources-segmented" as="document-node()*" tunnel="yes"/>
       <xsl:variable name="this-src" select="@src"/>
       <xsl:variable name="this-ref" select="*/@ref"/>
@@ -585,6 +597,7 @@
          </xsl:document>
       </xsl:for-each>
    </xsl:function>
+   
    <xsl:template match="tan:div[tan:tok]" mode="segment-tokd-prepped-class-1">
       <xsl:param name="all-leaf-div-splits" as="element()*" tunnel="yes"/>
       <xsl:variable name="this-div" select="."/>
@@ -619,7 +632,7 @@
          <xsl:sequence select="tei:*"/>
       </xsl:copy>
    </xsl:template>
-
+   
 
    <!-- STEP SRC-1ST-DA-REALIGNED: realign segmented source documents -->
 
@@ -651,7 +664,7 @@
          select="tan:prep-tan-a-div-sources-for-merge($tan-a-div-prepped, $tan-a-div-sources-prepped)"
          as="document-node()*"/>
       <xsl:variable name="results-pass1" as="document-node()?">
-         <!-- Goal: repopulate every <realign> and <align> with correctly realigned <div>s and <seg>s; if proportional realignment to an anchor is requested, adjust the children of all <div-ref>s so they are bijective with the anchor (either shallowly, at the level of realign heads, or deeply, with leaf divs); add one or more <work>s after <body>, copying the topmost <div>s, except for realigned <div>s -->
+         <!-- Goal: repopulate every <realign> and <align> with correctly realigned <div>s and <seg>s; add one or more <work>s after <body>, copying the topmost <div>s, except for realigned <div>s -->
          <xsl:document>
             <xsl:apply-templates select="$tan-a-div-prepped" mode="tan-a-div-merge-pass1">
                <xsl:with-param name="tan-a-div-sources-realigned"
@@ -841,9 +854,11 @@
 
       </xsl:copy>
    </xsl:template>-->
-   <xsl:template match="tan:align" mode="tan-a-div-merge-pass1">
-      <!-- We repeat the align for as many groups of <div-ref>s, treating each one in turn as an <anchor-div>, then applying the same approach to <realign> -->
-      <xsl:param name="allocate-deeply" tunnel="yes" as="xs:boolean?"/>
+   
+   <!-- Jan 2016: slated for deletion or massive reduction, since alignments have no (?) effect on merges -->
+   <!--<xsl:template match="tan:align" mode="tan-a-div-merge-pass1">
+      <!-\- We repeat the align for as many groups of <div-ref>s, treating each one in turn as an <anchor-div>, then applying the same approach to <realign> -\->
+      <!-\-<xsl:param name="allocate-deeply" tunnel="yes" as="xs:boolean?"/>-\->
       <xsl:param name="tan-a-div-sources-realigned" tunnel="yes" as="document-node()*"/>
       <xsl:variable name="this-align" select="."/>
       <xsl:variable name="div-refs-repopulated" as="element()*">
@@ -854,7 +869,7 @@
                   $tan-a-div-sources-realigned/tan:TAN-T[@src = $this-div-ref/@src]/tan:body//tan:div[(@ref, @pre-realign-ref) = $this-div-ref/tan:div/@ref]"/>
             <xsl:copy>
                <xsl:copy-of select="@*"/>
-               <!--<xsl:copy-of select="* except tan:div"/>-->
+               <!-\-<xsl:copy-of select="* except tan:div"/>-\->
                <xsl:copy-of
                   select="tan:copy-of-except($new-divs, ('error', 'warning', 'info', 'fatal'), (), 'realign-head')"
                />
@@ -891,12 +906,12 @@
                   </xsl:variable>
                   <xsl:copy-of select="$this-anchor"/>
                   <xsl:for-each select="$div-refs-repopulated[not(@group = $this-group)]">
-                     <xsl:copy-of select="tan:reanchor-div-ref(., $this-anchor, $allocate-deeply)"/>
+                     <xsl:copy-of select="tan:remodel-div-ref(., $this-anchor, $allocate-deeply)"/>
                   </xsl:for-each>
                </align>
             </xsl:for-each-group>
          </xsl:otherwise></xsl:choose>
-   </xsl:template>
+   </xsl:template>-->
 
    <!-- Jan 2017: tan-a-div-merge-pass2 is not needed, now that realigns are all simple -->
    <!--<xsl:template match="tan:head | tan:body" mode="tan-a-div-merge-pass2">
@@ -953,15 +968,15 @@
    </xsl:template>-->
 
    <!-- PROCESSING COMPLEX REALIGNMENTS -->
-   <xsl:function name="tan:reanchor-div-ref" as="element()?">
+   <xsl:function name="tan:remodel-div-ref" as="element()?">
       <!-- Input: (1) a <div-ref> containing one or more <div>s of unknown complexity, to be fused into (2) another <div-ref> or <anchor-div-ref> containing a <div>structure to be treated as a structural model of the first; a boolean indicating whether allocation should be shallow (top-level <div> only) or deep -->
       <!-- Output: the deep or shallow element structure of (2), but with the text of each leaf div being replaced by the proportionally appropriate leaf divs (fragmentary or whole) of (1); in that structure, all copies of (2)'s attributes are retained, except for @src, which is replaced by the value of @src in (1) -->
       <!-- This function is written for proportional realignments -->
-      <xsl:param name="div-ref-to-reanchor" as="element(tan:div-ref)?"/>
-      <xsl:param name="anchor-div-ref" as="element()?"/>
+      <xsl:param name="div-ref-to-remodel" as="element(tan:div-ref)?"/>
+      <xsl:param name="model-div-ref" as="element()?"/>
       <xsl:param name="allocate-deeply" as="xs:boolean?"/>
       <xsl:variable name="model-prepped"
-         select="tan:analyze-string-length($anchor-div-ref, false())"/>
+         select="tan:analyze-string-length($model-div-ref, false())"/>
       <xsl:variable name="model-length" select="sum($model-prepped/*/@string-length)"/>
       <xsl:variable name="model-divs-to-be-used"
          select="
@@ -975,7 +990,7 @@
             return
                $i/@string-pos div $model-length"/>
       <xsl:variable name="clay-tokenized" as="element()*">
-         <xsl:apply-templates select="$div-ref-to-reanchor" mode="tokenize-prepped-class-1">
+         <xsl:apply-templates select="$div-ref-to-remodel" mode="tokenize-prepped-class-1">
             <xsl:with-param name="token-definition" select="$tokenization-nonspace" tunnel="yes"/>
             <xsl:with-param name="keep-copy-of-tei-elements" select="false()" tunnel="yes"/>
          </xsl:apply-templates>
@@ -1001,7 +1016,7 @@
       <xsl:variable name="clay-splits-made" select="tan:process-splits($clay-splits-marked)"/>
       <xsl:variable name="div-ref-reanchored" as="element()*">
          <div-ref>
-            <xsl:copy-of select="$div-ref-to-reanchor/@*"/>
+            <xsl:copy-of select="$div-ref-to-remodel/@*"/>
             <xsl:apply-templates select="$model-prepped/*" mode="infuse-tokenized-div">
                <xsl:with-param name="div-clay-tokenized" select="$clay-splits-made" tunnel="yes"/>
                <xsl:with-param name="infuse-deeply" select="$allocate-deeply" tunnel="yes"/>

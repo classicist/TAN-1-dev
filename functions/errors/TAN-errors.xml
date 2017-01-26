@@ -112,6 +112,9 @@
     <group affects-element="split-leaf-div-at">
         <error xml:id="spl01"><rule>Splits may be made only at leaf divs.</rule></error>
     </group>
+    <group affects-element="align realign" affects-attribute="work">
+        <error xml:id="ali01"><rule>No &lt;div> that is a member of a complex realignment may be used to align all members of a work (@src should be used instead of @work)</rule></error>
+    </group>
     <group affects-attribute="pos chars seg feature-qty-test">
         <error xml:id="seq01"><rule>Sequences may not include values less than 1.</rule></error>
         <error xml:id="seq02"><rule>Sequences may not include values greater than the maximum allowed.</rule></error>

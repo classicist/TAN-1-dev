@@ -1522,45 +1522,55 @@
             else
                true()">
          <xsl:variable name="analysis" as="element()*">
-            <xsl:for-each select="tan:normalize-text(current-group()/(@ref, @n, @old))">
-               <xsl:analyze-string select="." regex="\W+">
+            <xsl:for-each select="current-group()/(@ref, @n, @old)">
+               <xsl:analyze-string select="." regex="[^\w\?]+">
                   <xsl:matching-substring>
                      <sep>
                         <xsl:value-of select="."/>
                      </sep>
                   </xsl:matching-substring>
                   <xsl:non-matching-substring>
+                     <xsl:variable name="this-n-norm" select="tan:normalize-text(.)"/>
+                     <xsl:variable name="help-flag"
+                        select="
+                           if (matches(., $help-trigger-regex)) then
+                              $help-trigger
+                           else
+                              ()"
+                     />
                      <n>
                         <xsl:choose>
                            <xsl:when test="$analyze-only-ambiguous-types = false()">
                               <xsl:choose>
-                                 <xsl:when test="matches(., $n-type-pattern[2], 'i')">
+                                 <xsl:when test="matches($this-n-norm, $n-type-pattern[2], 'i')">
                                     <val type="{$n-type[2]}">
                                        <xsl:value-of select="."/>
                                     </val>
                                  </xsl:when>
                                  <xsl:otherwise>
-                                    <xsl:if test="matches(., $n-type-pattern[1], 'i')">
+                                    <xsl:if test="matches($this-n-norm, $n-type-pattern[1], 'i')">
                                        <val type="{$n-type[1]}">
-                                          <xsl:value-of select="tan:rom-to-int(.)"/>
-                                       </val>
-                                    </xsl:if>
-                                    <xsl:if test="matches(., $n-type-pattern[3], 'i')">
-                                       <val type="{$n-type[3]}">
                                           <xsl:value-of
-                                             select="concat(replace(., '\D+', ''), $separator-hierarchy-minor, tan:aaa-to-int(replace(., '\d+', '')))"
+                                             select="concat(tan:rom-to-int($this-n-norm), $help-flag)"
                                           />
                                        </val>
                                     </xsl:if>
-                                    <xsl:if test="matches(., $n-type-pattern[4], 'i')">
-                                       <val type="{$n-type[4]}">
-                                          <xsl:value-of select="tan:aaa-to-int(.)"/>
+                                    <xsl:if test="matches($this-n-norm, $n-type-pattern[3], 'i')">
+                                       <val type="{$n-type[3]}">
+                                          <xsl:value-of
+                                             select="concat(replace($this-n-norm, '\D+', ''), $separator-hierarchy-minor, tan:aaa-to-int(replace($this-n-norm, '\d+', '')), $help-flag)"
+                                          />
                                        </val>
                                     </xsl:if>
-                                    <xsl:if test="matches(., $n-type-pattern[5], 'i')">
+                                    <xsl:if test="matches($this-n-norm, $n-type-pattern[4], 'i')">
+                                       <val type="{$n-type[4]}">
+                                          <xsl:value-of select="concat(tan:aaa-to-int($this-n-norm), $help-flag)"/>
+                                       </val>
+                                    </xsl:if>
+                                    <xsl:if test="matches($this-n-norm, $n-type-pattern[5], 'i')">
                                        <val type="{$n-type[5]}">
                                           <xsl:value-of
-                                             select="concat(tan:aaa-to-int(replace(., '\d+', '')), $separator-hierarchy-minor, replace(., '\D+', ''))"
+                                             select="concat(tan:aaa-to-int(replace($this-n-norm, '\d+', '')), $separator-hierarchy-minor, replace($this-n-norm, '\D+', ''), $help-flag)"
                                           />
                                        </val>
                                     </xsl:if>
@@ -1571,14 +1581,14 @@
                               </xsl:choose>
                            </xsl:when>
                            <xsl:otherwise>
-                              <xsl:if test="matches(., $n-type-pattern[1], 'i')">
+                              <xsl:if test="matches($this-n-norm, $n-type-pattern[1], 'i')">
                                  <val type="{$n-type[1]}">
-                                    <xsl:value-of select="tan:rom-to-int(.)"/>
+                                    <xsl:value-of select="concat(tan:rom-to-int($this-n-norm), $help-flag)"/>
                                  </val>
                               </xsl:if>
-                              <xsl:if test="matches(., $n-type-pattern[4], 'i')">
+                              <xsl:if test="matches($this-n-norm, $n-type-pattern[4], 'i')">
                                  <val type="{$n-type[4]}">
-                                    <xsl:value-of select="tan:aaa-to-int(.)"/>
+                                    <xsl:value-of select="concat(tan:aaa-to-int($this-n-norm), $help-flag)"/>
                                  </val>
                               </xsl:if>
                               <val type="$">
@@ -1946,6 +1956,71 @@
          </xsl:copy>
       </xsl:if>
    </xsl:template>
+   
+   <xsl:function name="tan:pluck" as="item()*">
+      <!-- Input: any document fragment or element; a number indicating a level in the hierarchy of the fragment; a boolean indicating whether leaf elements that fall short of the previous parameter should be included -->
+      <!-- Output: the fragment of the tree that is beyond the point indicated, and perhaps (depending upon the third parameter) with other leafs that are not quite at that level -->
+      <!-- This function was written primarily to serve tan:convert-ref-to-div-fragment(), to get a slice of divs that correspond to a range, without the ancestry of those divs -->
+      <xsl:param name="fragment" as="item()*"/>
+      <xsl:param name="pluck-beyond-level" as="xs:integer"/>
+      <xsl:param name="keep-short-branch-leaves" as="xs:boolean"/>
+      <xsl:apply-templates select="$fragment" mode="pluck">
+         <xsl:with-param name="prune-above-level" select="$pluck-beyond-level" tunnel="yes"/>
+         <xsl:with-param name="keep-short-branch-leaves" select="$keep-short-branch-leaves" tunnel="yes"/>
+         <xsl:with-param name="currently-at" select="1"/>
+      </xsl:apply-templates>
+   </xsl:function>
+   <xsl:template match="*" mode="pluck">
+      <xsl:param name="currently-at" as="xs:integer"/>
+      <xsl:param name="prune-above-level" as="xs:integer" tunnel="yes"/>
+      <xsl:param name="keep-short-branch-leaves" as="xs:boolean" tunnel="yes"/>
+      <!--<test>
+         <xsl:copy-of select="$currently-at"/>
+      </test>
+      <test>
+         <xsl:copy-of select="$prune-above-level"/>
+      </test>-->
+      <xsl:choose>
+         <xsl:when test="$prune-above-level = $currently-at">
+            <xsl:copy-of select="."/>
+         </xsl:when>
+         <xsl:when test="not(exists(*))">
+            <xsl:if test="$keep-short-branch-leaves = true()">
+               <xsl:copy-of select="."/>
+            </xsl:if>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:apply-templates mode="#current">
+               <xsl:with-param name="currently-at" select="$currently-at + 1"/>
+            </xsl:apply-templates>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:template>
+   <xsl:template match="text()" mode="pluck">
+      <xsl:if test="matches(.,'\S')">
+         <xsl:value-of select="."/>
+      </xsl:if>
+   </xsl:template>
+   <xsl:template match="comment() | processing-instruction()" mode="pluck"/>
+   
+   <xsl:function name="tan:shallow-copy" as="element()*">
+      <!-- one-parameter version of the fuller one, below -->
+      <xsl:param name="elements" as="element()*"/>
+      <xsl:copy-of select="tan:shallow-copy($elements, true())"/>
+   </xsl:function>
+   <xsl:function name="tan:shallow-copy" as="element()*">
+      <!-- Input: any document fragment; boolean indicating whether attributes should be kept -->
+      <!-- Output: a shallow copy of the fragment, perhaps with attributes -->
+      <xsl:param name="elements" as="element()*"/>
+      <xsl:param name="keep-attributes" as="xs:boolean"/>
+      <xsl:for-each select="$elements">
+         <xsl:copy>
+            <xsl:if test="$keep-attributes = true()">
+               <xsl:copy-of select="@*"/>
+            </xsl:if>
+         </xsl:copy>
+      </xsl:for-each>
+   </xsl:function>
 
    <xsl:function name="tan:value-of" as="xs:string?">
       <xsl:param name="items" as="item()*"/>

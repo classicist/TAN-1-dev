@@ -17,7 +17,9 @@
          select="tan:group-tok-elements(tan:split-leaf-div-at/tan:tok)" as="element()"/>
       <xsl:variable name="anchor-divs" select="tan:realign/tan:anchor-div-ref/tan:div[not(@complex)]"/>
       
-      <xsl:variable name="realigned-divs" select="tan:realign/tan:div-ref/tan:div[not(@complex)]"/>
+      <xsl:variable name="realigned-div-refs" select="tan:realign/tan:div-ref"/>
+      <xsl:variable name="realigned-divs" select="$realigned-div-refs/tan:div[not(@complex)]"/>
+      <xsl:variable name="realigned-div-refs-reanchoring-many-to-one" select="$realigned-div-refs[count(tan:div[not(@complex)]) gt 1]"/>
       
       <xsl:variable name="anchor-div-refs" as="xs:string*"
          select="
@@ -41,6 +43,7 @@
             <xsl:with-param name="split-leaf-div-at-toks-grouped" tunnel="yes"
                select="$split-leaf-div-at-toks-grouped"/>
             <xsl:with-param name="faulty-refs" select="$faulty-refs" tunnel="yes"/>
+            <xsl:with-param name="realigned-div-refs-reanchoring-many-to-one" select="$realigned-div-refs-reanchoring-many-to-one" tunnel="yes"/>
          </xsl:apply-templates>
       </xsl:copy>
    </xsl:template>
@@ -63,6 +66,10 @@
    </xsl:template>
    <xsl:template match="tan:div-ref | tan:anchor-div-ref" mode="TAN-A-div-errors">
       <xsl:param name="faulty-refs" tunnel="yes" as="xs:string*"/>
+      <xsl:param name="realigned-div-refs-reanchoring-many-to-one" tunnel="yes" as="element()*"/>
+      <xsl:variable name="this-work" select="@work"/>
+      <xsl:variable name="this-ref" select="@ref"/>
+      <xsl:variable name="error-ali01" select="$realigned-div-refs-reanchoring-many-to-one[@src = $this-work]/tan:div[@ref = $this-ref]"/>
       <xsl:variable name="these-div-refs"
          select="
             for $i in tan:div
@@ -80,6 +87,9 @@
                      replace($i, '#', ': ')"
             />
             <xsl:copy-of select="tan:error('rea01', $this-message)"/>
+         </xsl:if>
+         <xsl:if test="exists($error-ali01) and (@work = @src)">
+            <xsl:copy-of select="tan:error('ali01')"/>
          </xsl:if>
          <xsl:apply-templates mode="#current"/>
       </xsl:copy>

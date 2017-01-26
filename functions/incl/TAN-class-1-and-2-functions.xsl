@@ -8,7 +8,7 @@
 
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Updated </xd:b>Nov 23, 2016</xd:p>
+         <xd:p><xd:b>Updated </xd:b>Jan 24, 2017</xd:p>
          <xd:p>Core variables and functions for class 1 and 2 TAN files (i.e., not applicable to
             class 3 TAN file types). Written principally for Schematron validation, but suitable for
             general use in other contexts.</xd:p>
@@ -1003,8 +1003,10 @@
          </xsl:apply-templates>
       </xsl:copy>
    </xsl:template>
+   
+   
    <xsl:template match="tan:div" mode="prepare-class-1-doc-for-merge">
-      <!-- This template is long, because it deals with cases where individual <div>s have been realigned by a TAN-A-div file. -->
+      <!-- This template is long, because it deals with cases where individual <div>s have been realigned by a TAN-A-div file. <div>s that must be realigned are best done so in this method, since one cannot predict where in a hierarchy an anchor and anchoree are to be found -->
       <xsl:param name="src" tunnel="yes"/>
       <xsl:param name="tan-a-div-prepped" as="document-node()?" tunnel="yes"/>
       <xsl:param name="inherited-ref" as="xs:string?"/>

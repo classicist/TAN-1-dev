@@ -129,7 +129,7 @@
    <xsl:variable name="special-end-div-chars" select="($zwj, $soft-hyphen)" as="xs:string+"/>
    <xsl:variable name="special-end-div-chars-regex"
       select="concat('[', string-join($special-end-div-chars, ''), ']$')" as="xs:string"/>
-   <xsl:variable name="char-reg-exp" select="'\P{M}\p{M}+'"/>
+   <xsl:variable name="char-reg-exp" select="'\P{M}\p{M}*'"/>
 
    <xsl:function name="tan:chop-string" as="xs:string*">
       <!-- Input: any string -->
@@ -140,6 +140,9 @@
             <xsl:matching-substring>
                <xsl:value-of select="."/>
             </xsl:matching-substring>
+            <xsl:non-matching-substring>
+               <xsl:value-of select="."/>
+            </xsl:non-matching-substring>
          </xsl:analyze-string>
       </xsl:if>
    </xsl:function>

@@ -1068,16 +1068,17 @@
          <xsl:variable name="this-src-doc" select="$sources-prepped-1[*/@src = $this-src]"/>
          <xsl:variable name="ignore-error-if-ref-not-found"
             select="(exists($this-work) and not($this-src = $this-work))"/>
-         <xsl:variable name="this-div-fragment" select="tan:convert-ref-to-div-fragment($this-src-doc, $this-element, $help-requested, $ignore-error-if-ref-not-found)"/>
+         <xsl:variable name="this-div-fragment"
+            select="
+               if (exists($this-src-doc)) then
+                  tan:convert-ref-to-div-fragment($this-src-doc, $this-element, $help-requested, $ignore-error-if-ref-not-found)
+               else
+                  ()"
+         />
          <xsl:choose>
             <xsl:when test="$this-element-name = 'tok'">
                <!-- In the case of <tok>, every @ref needs to be expanded -->
-               <xsl:for-each
-                  select="
-                     if (exists($this-div-fragment)) then
-                        $this-div-fragment
-                     else
-                        ''">
+               <xsl:for-each select="$this-div-fragment">
                   <xsl:variable name="atomic-ref" select="@ref"/>
                   <xsl:element name="{$this-element-name}">
                      <xsl:copy-of select="$this-element/(@* except @ref)"/>
@@ -1110,8 +1111,8 @@
       <!-- Output: a fragment from the source document with the hierarchies of only those divs that correspond to the range specified by @ref -->
       <!-- It is assumed that the second parameter refers to the first; that is, the source document really is the one that the element with @ref is trying to cite. -->
       <!-- It is also assumed that in any range where the second element has fewer @n values than the first, then the abbreviated form will be checked before the form actually stated. For example, 1 1 - 2 will be tested first for 1 1 - 1 2, which, if not corresponding to an actual <div>, will be interpeted as 1 1 - 2 -->
-      <xsl:param name="prepped-src-doc" as="document-node()?"/>
-      <xsl:param name="element-with-ref-attr" as="element()?"/>
+      <xsl:param name="prepped-src-doc" as="document-node()"/>
+      <xsl:param name="element-with-ref-attr" as="element()"/>
       <xsl:param name="keep-text" as="xs:boolean"/>
       <xsl:param name="missing-ref-returned-as-info-not-error" as="xs:boolean"/>
       <xsl:variable name="this-src" select="($element-with-ref-attr/@src, $prepped-src-doc/*/@src)[1]"/>
@@ -1867,14 +1868,7 @@
       <xsl:copy-of select="."/>
    </xsl:template>
    <xsl:template mode="mark-tok-chars" match="tan:tok[@chars]">
-      <xsl:variable name="regex" select="'\P{M}\p{M}*'"/>
-      <xsl:variable name="string-analyzed" as="xs:string*">
-         <xsl:analyze-string select="text()" regex="{$regex}">
-            <xsl:matching-substring>
-               <xsl:value-of select="."/>
-            </xsl:matching-substring>
-         </xsl:analyze-string>
-      </xsl:variable>
+      <xsl:variable name="string-analyzed" as="xs:string*" select="tan:chop-string(text())"/>
       <xsl:variable name="char-nos" select="tan:sequence-expand(@chars, count($string-analyzed))"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
@@ -1977,16 +1971,13 @@
       <xsl:choose>
          <xsl:when
             test="(count(preceding-sibling::tan:tok) + 1) = $ref-tok-filter[@ref = $this-ref][@chars]/@n">
-            <xsl:variable name="regex" select="'\P{M}\p{M}*'"/>
             <xsl:copy>
                <xsl:copy-of select="@*"/>
-               <xsl:analyze-string select="text()" regex="{$regex}">
-                  <xsl:matching-substring>
-                     <c>
-                        <xsl:value-of select="."/>
-                     </c>
-                  </xsl:matching-substring>
-               </xsl:analyze-string>
+               <xsl:for-each select="tan:chop-string(text())">
+                  <c>
+                     <xsl:value-of select="."/>
+                  </c>
+               </xsl:for-each>
             </xsl:copy>
          </xsl:when>
          <xsl:otherwise>
@@ -2614,6 +2605,27 @@
                   0"
          as="xs:integer+"/>
       <xsl:value-of select="$last - max($input-3)"/>
+   </xsl:function>
+
+   <xsl:function name="tan:product" as="xs:double?">
+      <!-- Input: a sequence of numbers -->
+      <!-- Output: the product of those numbers -->
+      <xsl:param name="numbers" as="item()*"/>
+      <xsl:copy-of select="tan:product-loop($numbers[1], subsequence($numbers, 2))"/>
+   </xsl:function>
+   <xsl:function name="tan:product-loop" as="xs:double?">
+      <xsl:param name="product-so-far" as="xs:double?"/>
+      <xsl:param name="numbers-to-multiply" as="item()*"/>
+      <xsl:choose>
+         <xsl:when test="count($numbers-to-multiply) lt 1">
+            <xsl:copy-of select="$product-so-far"/>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:copy-of
+               select="tan:product-loop(($product-so-far * xs:double($numbers-to-multiply[1])), subsequence($numbers-to-multiply, 2))"
+            />
+         </xsl:otherwise>
+      </xsl:choose>
    </xsl:function>
 
 </xsl:stylesheet>

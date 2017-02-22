@@ -38,7 +38,9 @@
       <xsl:choose>
          <xsl:when test="exists($copy-diff)">
             <xsl:document>
-               <!--<xsl:copy-of select="$copy-diff-prep"/>-->
+               <!--<test><xsl:copy-of select="$copy-diff"/></test>-->
+               <!--<test><xsl:copy-of select="$copy-diff-prep"/></test>-->
+               <!--<test><xsl:copy-of select="tan:analyze-string-length($pass1, true())"/></test>-->
                <xsl:apply-templates select="tan:analyze-string-length($pass1, true())"
                   mode="class-1-copy-errors">
                   <xsl:with-param name="copy-diff-prepped" select="$copy-diff-prep" tunnel="yes"/>

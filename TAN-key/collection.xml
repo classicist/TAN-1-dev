@@ -10,5 +10,6 @@
    <doc href="relationships.TAN-key.xml"/>
    <doc href="reuse-types.TAN-key.xml"/>
    <doc href="rights.TAN-key.xml"/>
+   <doc href="roles.TAN-key.xml"/>
    <doc href="token-definitions.TAN-key.xml"/>
 </collection>

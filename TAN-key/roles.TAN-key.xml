@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../schemas/TAN-key.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="../schemas/TAN-key.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TAN-key xmlns="tag:textalign.net,2015:ns"
+         TAN-version="1 dev"
+         id="tag:textalign.net,2015:tan-key:roles">
+    <head>
+        <name>TAN keywords for types of roles</name>
+        <desc>This file has been created ad hoc to some basic terms for roles involved in the
+            creation and editing of TAN files.</desc>
+        <master-location href="http://textalign.net/release/TAN-1-dev/TAN-key/roles.TAN-key.xml"/>
+        <rights-excluding-sources rights-holder="kalvesmaki">
+            <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
+            <name>Creative Commons Attribution 4.0 International License</name>
+            <desc>This license is granted independent of rights and licenses associated with the
+                source. </desc>
+        </rights-excluding-sources>
+        <declarations/>
+        <agent xml:id="kalvesmaki" roles="creator">
+            <IRI>http://viaf.org/viaf/299582703</IRI>
+            <IRI>tag:textalign.net,2015:agent:kalvesmaki:joel</IRI>
+            <name xml:lang="eng">Joel Kalvesmaki</name>
+        </agent>
+        <role xml:id="creator">
+            <IRI>http://schema.org/creator</IRI>
+            <IRI>http://purl.org/dc/terms/creator</IRI>
+            <IRI>tag:textalign.net,2015:role:creator</IRI>
+            <name>creator</name>
+        </role>
+        <change when="2017-02-22" who="kalvesmaki">Started file</change>
+    </head>
+    <body in-progress="false" affects-element="role">
+        <item>
+            <IRI>http://schema.org/creator</IRI>
+            <IRI>http://purl.org/dc/terms/creator</IRI>
+            <IRI>tag:textalign.net,2015:role:creator</IRI>
+            <name>creator</name>
+        </item>
+        <item>
+            <IRI>http://schema.org/editor</IRI>
+            <IRI>tag:textalign.net,2015:role:editor</IRI>
+            <name>editor</name>
+        </item>
+        <item>
+            <IRI>http://purl.org/dc/elements/1.1/publisher</IRI>
+            <IRI>tag:textalign.net,2015:role:publisher</IRI>
+            <name>publisher</name>
+        </item>
+        <item>
+            <IRI>http://www.w3.org/1999/xhtml/vocab#stylesheet</IRI>
+            <IRI>tag:textalign.net,2015:role:stylesheet</IRI>
+            <name>stylesheet</name>
+        </item>
+    </body>
+</TAN-key>

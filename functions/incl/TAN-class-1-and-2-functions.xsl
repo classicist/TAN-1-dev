@@ -129,32 +129,76 @@
    <xsl:variable name="special-end-div-chars" select="($zwj, $soft-hyphen)" as="xs:string+"/>
    <xsl:variable name="special-end-div-chars-regex"
       select="concat('[', string-join($special-end-div-chars, ''), ']$')" as="xs:string"/>
+   <xsl:variable name="char-reg-exp" select="'\P{M}\p{M}+'"/>
 
+   <xsl:function name="tan:chop-string" as="xs:string*">
+      <!-- Input: any string -->
+      <!-- Output: that string chopped into a sequence of strings, following TAN rules about modifying characters -->
+      <xsl:param name="input" as="xs:string?"/>
+      <xsl:if test="string-length($input) gt 0">
+         <xsl:analyze-string select="$input" regex="{$char-reg-exp}">
+            <xsl:matching-substring>
+               <xsl:value-of select="."/>
+            </xsl:matching-substring>
+         </xsl:analyze-string>
+      </xsl:if>
+   </xsl:function>
+   <xsl:function name="tan:string-length" as="xs:integer">
+      <!-- Input: any string -->
+      <!-- Output: the number of characters in the string, as defined by TAN (i.e., modifiers are counted with the preceding base character) -->
+      <xsl:param name="input" as="xs:string?"/>
+      <xsl:copy-of select="count(tan:chop-string($input))"/>
+   </xsl:function>
    <xsl:function name="tan:text-join" as="xs:string">
       <xsl:param name="items" as="item()*"/>
       <xsl:copy-of select="tan:text-join($items, true())"/>
    </xsl:function>
    <xsl:function name="tan:text-join" as="xs:string">
       <!-- Input: any number of elements, text nodes, or strings; a boolean indicating whether the end of the sequence should also be prepared -->
-      <!-- Output: a single string that joins and normalizes them according to TAN rules: if the item is (1) a <tok> or <non-tok> that has following siblings or (2) the last leaf element and $prep-end is false then the bare text is used; otherwise the text return follows the rules of tan:normalize-div-text()
-         If  the second parameter is true, then the end of the 
-         resultant string is checked for special div-end characters
-      -->
+      <!-- Output: a single string that joins and normalizes them according to TAN rules: if the item is (1) a <tok> or <non-tok> that has following siblings or (2) the last leaf element and $prep-end is false then the bare text is used; otherwise the text return follows the rules of tan:normalize-div-text() --> 
+      <!-- If the second parameter is true, then the end of the resultant string is checked for special div-end characters -->
       <xsl:param name="items" as="item()*"/>
       <xsl:param name="prep-end" as="xs:boolean"/>
       <xsl:variable name="item-count" select="count($items)"/>
       <xsl:variable name="string-sequence" as="xs:string*">
          <xsl:for-each select="$items">
             <xsl:variable name="pos" select="position()"/>
+            <xsl:variable name="leaf-divs" select="descendant-or-self::*:div[not(*:div)]"/>
             <xsl:choose>
+               <xsl:when test="exists($leaf-divs)">
+                  <xsl:for-each select="$leaf-divs">
+                     <xsl:variable name="pos2" select="position()"/>
+                     <xsl:variable name="tok-children" select="(tan:tok, tan:non-tok)"/>
+                     <xsl:variable name="this-text" select="if (exists($tok-children)) then $tok-children/text() else text()"/>
+                     <xsl:variable name="child-text" select="string-join($this-text, '')"/>
+                     <xsl:choose>
+                        <xsl:when test="$pos = $item-count and $pos2 = count($leaf-divs) and $prep-end = false()">
+                           <xsl:value-of select="normalize-space($child-text)"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                           <xsl:value-of select="tan:normalize-div-text($child-text)"/>
+                        </xsl:otherwise>
+                     </xsl:choose>
+                     
+                  </xsl:for-each>
+               </xsl:when>
+               <xsl:when test="self::tan:tok or self::tan:non-tok">
+                  <xsl:value-of select="replace(., '\s+', ' ')"/>
+               </xsl:when>
+               <xsl:otherwise>
+                  <!-- The item doesn't have leaf divs, and it isn't a <tok> or <non-tok>. Who knows what it is, so we just normalize the text -->
+                  <xsl:value-of select="tan:normalize-div-text(.)"/>
+               </xsl:otherwise>
+            </xsl:choose>
+            <!--<xsl:choose>
                <xsl:when test=". instance of xs:string">
                   <xsl:value-of select="tan:normalize-div-text(.)"/>
                </xsl:when>
                <xsl:otherwise>
-                  <xsl:for-each select="descendant-or-self::*[not(*)]">
+                  <xsl:for-each select="descendant-or-self::*[self::tan:tok or self::tan:non-tok or not(*)]">
                      <xsl:choose>
                         <xsl:when test="name() = ('tok', 'non-tok')">
-                           <!-- many <non-tok> elements will have nothing but space, so normalize-text() is self-defeating -->
+                           <!-\- many <non-tok> elements will have nothing but space, so normalize-text() is self-defeating -\->
                            <xsl:value-of select="replace(., '\s+', ' ')"/>
                         </xsl:when>
                         <xsl:when test="$pos = $item-count and $prep-end = false()">
@@ -166,7 +210,7 @@
                      </xsl:choose>
                   </xsl:for-each>
                </xsl:otherwise>
-            </xsl:choose>
+            </xsl:choose>-->
          </xsl:for-each>
       </xsl:variable>
       <xsl:value-of select="string-join($string-sequence, '')"/>
@@ -243,7 +287,7 @@
       </body>
    </xsl:template>
    <xsl:template match="tei:text" mode="prep-class-1">
-      <!-- Makes sure the tei:body drops rootward one level, as is customary in TAN and HTML -->
+      <!-- Makes sure the tei:body rises rootward one level, as is customary in TAN and HTML -->
       <xsl:apply-templates mode="#current"/>
    </xsl:template>
    <xsl:template match="tan:div | tei:div" mode="prep-class-1">
@@ -280,10 +324,21 @@
                <xsl:if test="tan:help-requested(.) = true()">
                   <xsl:copy-of select="tan:help($orig-ref, ())"/>
                </xsl:if>
-               <xsl:apply-templates mode="#current">
-                  <xsl:with-param name="orig-ref-so-far" select="$orig-ref"/>
-                  <xsl:with-param name="new-ref-so-far" select="$new-ref"/>
-               </xsl:apply-templates>
+               <xsl:choose>
+                  <xsl:when test="not(*:div)">
+                     <!-- It's a leaf div, and we can normalize space, depending on whether it's TAN or TEI. Special TAN div-end punctuation (e.g., soft hyphen) is retained, for later use of tan:text-join() -->
+                     <xsl:value-of select="normalize-space(.)"/>
+                     <xsl:if test="exists(tei:*)">
+                        <xsl:copy-of select="node()"/>
+                     </xsl:if>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:apply-templates mode="#current">
+                        <xsl:with-param name="orig-ref-so-far" select="$orig-ref"/>
+                        <xsl:with-param name="new-ref-so-far" select="$new-ref"/>
+                     </xsl:apply-templates>
+                  </xsl:otherwise>
+               </xsl:choose>
             </div>
          </xsl:otherwise>
       </xsl:choose>
@@ -599,7 +654,9 @@
          </mold>
       </xsl:variable>
       <xsl:variable name="mold" as="element()">
-         <xsl:apply-templates select="$mold-prep-1" mode="c1-stamp-string-pos"/>
+         <xsl:apply-templates select="$mold-prep-1" mode="c1-stamp-string-pos">
+            <xsl:with-param name="parent-pos" select="0"/>
+         </xsl:apply-templates>
       </xsl:variable>
       <xsl:variable name="mold-infused" as="element()">
          <xsl:apply-templates select="$mold" mode="infuse-tokenized-text">
@@ -705,6 +762,7 @@
       <!--<xsl:copy-of select="$pass-1/*"/>-->
       <xsl:apply-templates select="$pass-1" mode="c1-stamp-string-pos">
          <xsl:with-param name="parent-pos" select="0"/>
+         <xsl:with-param name="mark-only-leaf-elements" select="$mark-only-leaf-divs" tunnel="yes"/>
       </xsl:apply-templates>
    </xsl:function>
    <xsl:template match="*:body | *:div | tan:tok | tan:non-tok" mode="c1-stamp-string-length">
@@ -726,7 +784,7 @@
                <!-- The string length will include the hypothetical space that follows the div (or if an special end-div marker is present, the space  and the marker will be ignored -->
                <xsl:attribute name="string-length"
                   select="
-                     string-length(if ($is-tok = true()) then
+                     tan:string-length(if ($is-tok = true()) then
                         .
                      else
                         tan:text-join(.))"/>
@@ -735,7 +793,7 @@
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
-   <!-- The following extensions of c1-add-string-length to process tan:diff() results -->
+   <!-- The following extensions of c1-stamp-string-length to process tan:diff() results -->
    <xsl:template match="tan:s1 | tan:s2 | tan:common" mode="c1-stamp-string-length">
       <xsl:variable name="this-length" select="string-length(.)"/>
       <xsl:copy>
@@ -751,17 +809,18 @@
    </xsl:template>
    <xsl:template match="*" mode="c1-stamp-string-pos">
       <xsl:param name="parent-pos" as="xs:integer"/>
-      <xsl:variable name="preceding-sibling-string-lengths"
-         select="preceding-sibling::*/@string-length"/>
-      <xsl:variable name="preceding-sibling-leaf-div-string-lengths"
-         select="preceding-sibling::*//*[@string-length and not(*)]/@string-length"/>
+      <xsl:param name="mark-only-leaf-elements" as="xs:boolean?" tunnel="yes"/>
+      <xsl:variable name="preceding-string-lengths"
+         select="
+            if ($mark-only-leaf-elements = true()) then
+               preceding-sibling::*//descendant-or-self::*[not(*)]/@string-length
+            else
+               preceding-sibling::*/@string-length"
+      />
       <xsl:variable name="preceding-sibling-pos" as="xs:integer">
          <xsl:choose>
-            <xsl:when test="exists($preceding-sibling-string-lengths)">
-               <xsl:copy-of select="xs:integer(sum($preceding-sibling-string-lengths))"/>
-            </xsl:when>
-            <xsl:when test="exists($preceding-sibling-leaf-div-string-lengths)">
-               <xsl:copy-of select="xs:integer(sum($preceding-sibling-leaf-div-string-lengths))"/>
+            <xsl:when test="exists($preceding-string-lengths)">
+               <xsl:copy-of select="xs:integer(sum($preceding-string-lengths))"/>
             </xsl:when>
             <xsl:otherwise>
                <xsl:copy-of select="0"/>

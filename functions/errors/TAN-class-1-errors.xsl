@@ -29,9 +29,11 @@
       <xsl:variable name="text-diff" select="tan:diff($this-doc-text, $target-doc-text)"/>
       <xsl:variable name="text-diff-analyzed">
          <xsl:variable name="pass1">
-            <xsl:apply-templates select="$text-diff" mode="c1-add-string-length"/>
+            <xsl:apply-templates select="$text-diff" mode="c1-stamp-string-length"/>
          </xsl:variable>
-         <xsl:apply-templates select="$pass1" mode="c1-add-string-pos"/>
+         <xsl:apply-templates select="$pass1" mode="c1-stamp-string-pos">
+            <xsl:with-param name="parent-pos" select="0"/>
+         </xsl:apply-templates>
       </xsl:variable>
       <xsl:variable name="other-models"
          select="(preceding-sibling::tan:see-also, following-sibling::tan:see-also)[tan:has-relationship(., 'model', ())]"/>

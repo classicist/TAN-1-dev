@@ -26,7 +26,7 @@
    <xsl:variable name="sources-prepped" select="$self-and-sources-prepped[position() gt 1]"/>
 
    <!-- PART II. 
-      PROCESSING SELF -->
+      FUNCTIONS PROCESSING SELF -->
 
    <xsl:function name="tan:prep-resolved-tan-a-div-doc" as="document-node()*">
       <!-- Input: a TAN-A-div document and its sources, as prepared by tan:prep-resolved-class-2-doc() -->

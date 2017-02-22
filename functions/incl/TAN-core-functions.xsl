@@ -47,25 +47,45 @@
    <xsl:variable name="all-root-names"
       select="$class-1-root-names, $class-2-root-names, $class-3-root-names"/>-->
    <xsl:function name="tan:class-number" as="xs:integer*">
-      <!-- Input: any nodes of a TAN document
-      Output: one digit per node, specifying which TAN class the file fits, based on the name of the root element.
-      If no match is found in the root element, 0 is returned -->
+      <!-- Input: any nodes of a TAN document -->
+      <!-- Output: one digit per node, specifying which TAN class the file fits, based on the name of the root element. If no match is found in the root element, 0 is returned -->
+      <xsl:param name="nodes" as="node()*"/>
+      <xsl:variable name="tan-classes" as="element()">
+         <tan>
+            <class n="1">
+               <root>TAN-T</root>
+               <root>TEI</root>
+            </class>
+            <class n="2">
+               <root>TAN-A-div</root>
+               <root>TAN-A-tok</root>
+               <root>TAN-LM</root>
+            </class>
+            <class n="3">
+               <root>TAN-mor</root>
+               <root>TAN-key</root>
+               <root>TAN-rdf</root>
+            </class>
+         </tan>
+      </xsl:variable>
+      <xsl:for-each select="$nodes">
+         <xsl:variable name="this-root-name" select="tan:tan-type(.)"/>
+         <xsl:variable name="this-class" select="$tan-classes/tan:class[tan:root = $this-root-name]/@n"/>
+         <xsl:copy-of
+            select="
+               if (exists($this-class)) then
+                  $this-class
+               else
+                  0"
+         />
+      </xsl:for-each>
+   </xsl:function>
+   <xsl:function name="tan:tan-type" as="xs:string*">
+      <!-- Input: any nodes -->
+      <!-- Output: the names of the root elements; if not present, a zero-length string is returned -->
       <xsl:param name="nodes" as="node()*"/>
       <xsl:for-each select="$nodes">
-         <xsl:choose>
-            <xsl:when test="exists(root()/(tan:TAN-T, tei:TEI/tan:head))">
-               <xsl:copy-of select="1"/>
-            </xsl:when>
-            <xsl:when test="exists(root()/(tan:TAN-A-div, tan:TAN-A-tok, tan:TAN-LM))">
-               <xsl:copy-of select="2"/>
-            </xsl:when>
-            <xsl:when test="exists(root()/(tan:TAN-mor, tan:TAN-key, tan:TAN-rdf))">
-               <xsl:copy-of select="3"/>
-            </xsl:when>
-            <xsl:otherwise>
-               <xsl:copy-of select="0"/>
-            </xsl:otherwise>
-         </xsl:choose>
+         <xsl:copy-of select="name(root()/*)"/>
       </xsl:for-each>
    </xsl:function>
 
@@ -200,10 +220,8 @@
       <xsl:copy-of select="(root($any-node)/*/@base-uri, base-uri($any-node))[1]"/>
    </xsl:function>
    <xsl:function name="tan:get-1st-doc" as="document-node()*">
-      <!-- input: any TAN elements naming files (e.g., <source>, <see-also>, <inclusion>, <key>;
-         an indication whether some basic errors should be checked if the retrieved file is a TAN document
-         output: the first document available for each element, plus/or any relevant error messages.
-      -->
+      <!-- Input: any TAN elements naming files (e.g., <source>, <see-also>, <inclusion>, <key>; an indication whether some basic errors should be checked if the retrieved file is a TAN document -->
+       <!-- Output: the first document available for each element, plus/or any relevant error messages. -->
       <xsl:param name="TAN-elements" as="element()*"/>
       <xsl:for-each select="$TAN-elements">
          <xsl:variable name="this-element" select="."/>
@@ -213,10 +231,11 @@
             <xsl:when test="string-length($first-la) lt 1">
                <xsl:document>
                   <xsl:choose>
-                     <xsl:when
+                     <!-- Feb 2017: not sure why we need the following condition, so commented out pending deletion -->
+                     <!--<xsl:when
                         test="not((self::tan:master-location, self::tan:location, tan:location))">
                         <xsl:copy-of select="$empty-doc"/>
-                     </xsl:when>
+                     </xsl:when>-->
                      <xsl:when test="self::tan:inclusion">
                         <xsl:copy-of select="tan:error('inc04')"/>
                      </xsl:when>
@@ -1865,7 +1884,7 @@
    </xsl:template>
 
    <xsl:template match="comment() | processing-instruction()"
-      mode="strip-all-attributes-except strip-specific-attributes strip-text copy-of-except">
+      mode="strip-all-attributes-except strip-specific-attributes strip-text copy-of-except stamp-element-id">
       <xsl:copy-of select="."/>
    </xsl:template>
    <xsl:template match="*" mode="strip-all-attributes-except">
@@ -2026,5 +2045,37 @@
       <xsl:param name="items" as="item()*"/>
       <xsl:value-of select="$items"/>
    </xsl:function>
+   
+   <xsl:function name="tan:stamp-id" as="item()*">
+      <xsl:param name="nodes" as="item()*"/>
+      <xsl:param name="names-of-elements-to-imprint-with-gloss-id" as="xs:string*"/>
+      <xsl:copy-of select="tan:stamp-id($nodes, $names-of-elements-to-imprint-with-gloss-id, 'id')"/>
+   </xsl:function>
+   <xsl:function name="tan:stamp-id" as="item()*">
+      <!-- Input: any element or document fragment, one or more strings of the names of elements that should be imprinted with @id -->
+      <!-- Output: the same, with any elements whose names match the input with @id added, consisting of the name of the element appended with the number of its position relative to all preceding elements of the same name. -->
+      <xsl:param name="nodes" as="item()*"/>
+      <xsl:param name="names-of-elements-to-imprint-with-gloss-id" as="xs:string*"/>
+      <xsl:param name="name-of-attribute-to-hold-id" as="xs:string?"/>
+      <xsl:apply-templates select="$nodes" mode="stamp-element-id">
+         <xsl:with-param name="names-of-elements-to-imprint-with-id"
+            select="$names-of-elements-to-imprint-with-gloss-id" tunnel="yes"/>
+         <xsl:with-param name="name-of-attribute-to-hold-id" select="$name-of-attribute-to-hold-id" tunnel="yes"/>
+      </xsl:apply-templates>
+   </xsl:function>
+   <xsl:template match="*" mode="stamp-element-id">
+      <xsl:param name="names-of-elements-to-imprint-with-id" tunnel="yes" as="xs:string*"/>
+      <xsl:param name="name-of-attribute-to-hold-id" tunnel="yes" as="xs:string"/>
+      <xsl:variable name="this-name" select="name(.)"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:if test="$this-name = $names-of-elements-to-imprint-with-id">
+            <xsl:variable name="prev-qty" select="count(preceding::*[name(.) = $names-of-elements-to-imprint-with-id]) + 1"/>
+            <xsl:attribute name="{$name-of-attribute-to-hold-id}" select="concat('gloss', string($prev-qty))"/>
+         </xsl:if>
+         <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+
+   </xsl:template>
 
 </xsl:stylesheet>

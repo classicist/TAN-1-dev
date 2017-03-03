@@ -6,7 +6,7 @@
       <ref name="TAN-root"/>
     </element>
   </start>
-  <include href="TAN-class-3.rng">
+  <include href="incl/TAN-class-3.rng">
     <define name="decl-id-ref-opt">
       <a:documentation>no declarations may have ids</a:documentation>
       <empty/>

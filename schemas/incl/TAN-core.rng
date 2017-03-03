@@ -124,21 +124,21 @@
   <define name="n">
     <attribute name="n">
       <a:documentation>names a &lt;div&gt; or &lt;group&gt;. </a:documentation>
-      <a:documentation>In class 1 files, @n serves, concatenated with ancestral @ns, as an identifier for &lt;div&gt;s.</a:documentation>
-      <a:documentation>Examples: '4', 'pr', 'Psalms'</a:documentation>
+      <a:documentation>In a &lt;div&gt; of a class 1 file, the space-delimited concatenation of values of @n from the rootmost ancestor becomes the reference for a &lt;div&gt;.</a:documentation>
+      <a:documentation>Special use may be made of the tilde (~), as a kind of surrogate hyphen (which is disallowed), to indicate an @n that corresponds to a range of values, e.g., n="7~8" for a &lt;div&gt; that has text that mixes text from 7 and 8.</a:documentation>
       <ref name="n-val"/>
     </attribute>
   </define>
   <define name="item-picker">
     <a:documentation>String that specifies a single item from a sequence: digits or "last(-digit)?" Similar to seq-picker.</a:documentation>
     <data type="string">
-      <param name="pattern">((last|max|all)|((last|max|all)-\d+)|(\d+))|.*\?\?\?.*</param>
+      <param name="pattern">((last|max)|((last|max)-\d+)|(\d+))|.*\?\?\?.*</param>
     </data>
   </define>
   <define name="n-val">
-    <a:documentation>Acceptable values of @n, used by class 1 and class 2 files</a:documentation>
+    <a:documentation>Acceptable values of @n, used by class 1 and class 2 files; this is related to div-range-ref, in that it allows ranges of items, but ignores "last", "max", or "all" keyterms.</a:documentation>
     <data type="string">
-      <param name="pattern">\w+|\w*\?\?\?\w*</param>
+      <param name="pattern">(\w|\d+-\d+)+(\s+(\w|\d+-\d+)+)*</param>
     </data>
   </define>
   <define name="TAN-ver">
@@ -209,7 +209,7 @@
   <define name="seq-picker">
     <a:documentation>String that specifies a range of items in a sequence: digits or "last(-digit)?" joined by hyphens (ranges) or commas. Similar to item-picker.</a:documentation>
     <data type="string">
-      <param name="pattern">((last|max|all)|((last|max|all)-\d+)|(\d+))(\s*-\s*(((last|max|all))|((last|max|all)-\d+)|(\d+)))?(\s*[, ]\s*(((last|max|all))|((last|max|all)-\d+)|(\d+))(\s+-\s+(((last|max|all))|((last|max|all)-\d+)|(\d+)))?)*|.*\?\?\?.*</param>
+      <param name="pattern">((last|max|all|\*)|((last|max)-\d+)|(\d+))(\s*-\s*(((last|max))|((last|max)-\d+)|(\d+)))?(\s*[, ]\s*(((last|max))|((last|max)-\d+)|(\d+))(\s+-\s+(((last|max))|((last|max)-\d+)|(\d+)))?)*|.*\?\?\?.*</param>
     </data>
   </define>
   <define name="source-refs">

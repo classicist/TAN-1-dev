@@ -206,9 +206,9 @@
   <define name="pointer-to-div-range">
     <a:documentation>   Pointer (link) to a div in a TAN-T(EI) file</a:documentation>
     <attribute name="ref">
-      <a:documentation>lists references to one or more &lt;div&gt;s. It consists of one or more atomic references joined by commas or hyphens. An atomic reference is a string value that points to a single &lt;div&gt;. In most cases (i.e., when @distribute is not in force), multiple atomic references are treated collectively, as a single reference to a complex passage, not as multiple references to individual passages. </a:documentation>
-      <a:documentation> It is assumed that in any range where the second element has fewer @n values than the first, then the abbreviated form will be checked before the form actually stated. For example, 1 1 - 2 will be tested first for 1 1 - 1 2, which, if not pointing to an existing &lt;div&gt;, will be interpeted as 1 1 - 2</a:documentation>
-      <a:documentation>Examples: '2.4 - 7, 2.9', 'iv 7 - 9'</a:documentation>
+      <a:documentation>lists references to one or more &lt;div&gt;s. It consists of one or more simple references joined by commas or hyphens. A simple reference is a string value that points to a single &lt;div&gt;. </a:documentation>
+      <a:documentation>It is assumed that any simple reference that has fewer @n values than preceding simple references has been truncated. The abbreviated form will be checked before the form actually stated. For example, 1 1 - 3 will be interpreted first as 1 1 through 1 3; if that is invalid, it will be interpeted as 1 1 through 3. Examples: '2.4 - 7, 9', 'iv 7 - 9'</a:documentation>
+      <a:documentation>In a range with members of uneven depth, those &lt;div&gt;s that are closest to the shallowest member are retrieved. For example, 2 - 3 2 2 might fetch 2, 3 1, 3 2 1, 3 2 2 (and not 3 or 3 1 1).</a:documentation>
       <a:documentation>For more, see main.xml#class_2_body </a:documentation>
       <ref name="div-range-ref"/>
     </attribute>

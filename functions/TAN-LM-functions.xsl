@@ -3,11 +3,11 @@
    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tan="tag:textalign.net,2015:ns"
    xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:tei="http://www.tei-c.org/ns/1.0"
    xmlns:math="http://www.w3.org/2005/xpath-functions/math"
-   xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" exclude-result-prefixes="tan fn tei xs math xd"
+   xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" exclude-result-prefixes="#all"
    version="2.0">
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Updated </xd:b>Sept 10, 2016</xd:p>
+         <xd:p><xd:b>Updated </xd:b>Feb. 13, 2017</xd:p>
          <xd:p>Set of functions for TAN-LM files. Used by Schematron validation, but suitable for
             other contexts.</xd:p>
       </xd:desc>

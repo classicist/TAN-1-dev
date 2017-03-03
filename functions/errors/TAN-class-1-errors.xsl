@@ -18,10 +18,11 @@
       <xsl:variable name="pos" select="count(preceding-sibling::tan:see-also) + 1"/>
       <xsl:variable name="target-doc"
          select="
-            if (exists($see-also-1st-da)) then
-               $see-also-1st-da[$pos]
+            if (exists($see-alsos-resolved)) then
+               $see-alsos-resolved[$pos]
             else
-               tan:resolve-doc(tan:get-1st-doc(.))"/>
+               tan:resolve-doc(tan:get-1st-doc(.))"
+      />
       <xsl:variable name="target-prepped" select="tan:prep-resolved-class-1-doc($target-doc)"/>
       <xsl:variable name="this-doc-text" select="tan:text-join(/tan:TAN-T/tan:body, true())"/>
       <xsl:variable name="target-doc-text"

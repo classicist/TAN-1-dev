@@ -227,41 +227,41 @@
       <xsl:variable name="this-relationship-IRIs" select="tan:relationship/tan:IRI"/>
       <xsl:variable name="this-TAN-reserved-relationships"
          select="$TAN-keywords/tan:TAN-key/tan:body//tan:item[tan:IRI = $this-relationship-IRIs]"/>
-      <xsl:variable name="target-1st-da" as="document-node()?">
+      <xsl:variable name="target-1st-da-resolved" as="document-node()?">
          <xsl:choose>
             <xsl:when test="self::tan:inclusion and $this-doc-id = $doc-id">
-               <xsl:copy-of select="$inclusions-1st-da[position() = $this-pos]"/>
+               <xsl:copy-of select="$inclusions-resolved[position() = $this-pos]"/>
             </xsl:when>
             <xsl:when test="self::tan:key and $this-doc-id = $doc-id">
-               <xsl:copy-of select="$keys-1st-da[position() = $this-pos]"/>
+               <xsl:copy-of select="$keys-resolved[position() = $this-pos]"/>
             </xsl:when>
             <xsl:when test="self::tan:source and $this-doc-id = $doc-id">
-               <xsl:copy-of select="$sources-1st-da[position() = $this-pos]"/>
+               <xsl:copy-of select="$sources-resolved[position() = $this-pos]"/>
             </xsl:when>
             <xsl:when test="self::tan:see-also and $this-doc-id = $doc-id">
-               <xsl:copy-of select="$see-also-1st-da[position() = $this-pos]"/>
+               <xsl:copy-of select="$see-alsos-resolved[position() = $this-pos]"/>
             </xsl:when>
             <xsl:otherwise>
                <xsl:copy-of select="tan:resolve-doc(tan:get-1st-doc(.))"/>
             </xsl:otherwise>
          </xsl:choose>
       </xsl:variable>
-      <xsl:variable name="target-class" select="tan:class-number($target-1st-da)"/>
+      <xsl:variable name="target-class" select="tan:class-number($target-1st-da-resolved)"/>
       <xsl:variable name="target-is-faulty"
          select="
-            deep-equal($target-1st-da, $empty-doc)
-            or $target-1st-da/(tan:error, tan:warning, tan:fatal, tan:help)"/>
+            deep-equal($target-1st-da-resolved, $empty-doc)
+            or $target-1st-da-resolved/(tan:error, tan:warning, tan:fatal, tan:help)"/>
       <xsl:variable name="target-is-in-progress"
          select="
-            if ($target-1st-da/(tan:body, tei:text/tei:body)/@in-progress = false())
+            if ($target-1st-da-resolved/(tan:body, tei:text/tei:body)/@in-progress = false())
             then
                false()
             else
                true()"/>
       <xsl:variable name="target-new-versions"
-         select="$target-1st-da/*/tan:head/tan:see-also[tan:has-relationship(., 'new version', ())]"/>
-      <xsl:variable name="target-hist" select="tan:get-doc-hist($target-1st-da)"/>
-      <xsl:variable name="target-id" select="$target-1st-da/*/@id"/>
+         select="$target-1st-da-resolved/*/tan:head/tan:see-also[tan:has-relationship(., 'new version', ())]"/>
+      <xsl:variable name="target-hist" select="tan:get-doc-hist($target-1st-da-resolved)"/>
+      <xsl:variable name="target-id" select="$target-1st-da-resolved/*/@id"/>
       <!--<xsl:variable name="target-elements-with-ids"
          select="$target-1st-da//*[@xml:id][not(self::tan:inclusion)]"/>
       <xsl:variable name="idid" select="$all-ids"/>-->
@@ -279,7 +279,7 @@
                <xsl:if
                   test="
                      count(current-group()) gt 1 and (some $i in current-group()
-                        satisfies root($i)/*/@id = $target-1st-da/*/@id)">
+                        satisfies root($i)/*/@id = $target-1st-da-resolved/*/@id)">
                   <duplicate affects-element="{$this-element-name}" name="{current-grouping-key()}"
                   />
                </xsl:if>
@@ -291,7 +291,7 @@
             <xsl:if
                test="
                   count(current-group()) gt 1 and (some $i in current-group()
-                     satisfies root($i)/*/@id = $target-1st-da/*/@id)">
+                     satisfies root($i)/*/@id = $target-1st-da-resolved/*/@id)">
                <duplicate
                   affects-element="{distinct-values(for $i in current-group() return tokenize(tan:normalize-text(($i/ancestor-or-self::*/@affects-element)[1]),' '))}"
                   iri="{current-grouping-key()}"/>
@@ -306,33 +306,33 @@
                $this-TAN-reserved-relationships//ancestor::tan:group/tan:name = 'TAN files'
                and $target-class = 0">
             <xsl:copy-of
-               select="tan:error('see01', concat('root element name: ', name($target-1st-da/*)))"/>
+               select="tan:error('see01', concat('root element name: ', name($target-1st-da-resolved/*)))"/>
          </xsl:if>
          <xsl:if
             test="
                $this-TAN-reserved-relationships//ancestor::tan:group/tan:name = 'TAN-rdf'
-               and not(name($target-1st-da/*) = 'TAN-rdf')">
+               and not(name($target-1st-da-resolved/*) = 'TAN-rdf')">
             <xsl:copy-of
-               select="tan:error('see02', concat('root element name: ', name($target-1st-da/*)))"/>
+               select="tan:error('see02', concat('root element name: ', name($target-1st-da-resolved/*)))"/>
          </xsl:if>
          <xsl:if
             test="
                $this-TAN-reserved-relationships//ancestor::tan:group/tan:name = 'copies'
-               and not(replace(name($target-1st-da/*), '^TEI$', 'TAN-T') = $prov-root-name)">
+               and not(replace(name($target-1st-da-resolved/*), '^TEI$', 'TAN-T') = $prov-root-name)">
             <xsl:copy-of
-               select="tan:error('see03', concat('root element name: ', name($target-1st-da/*)))"/>
+               select="tan:error('see03', concat('root element name: ', name($target-1st-da-resolved/*)))"/>
          </xsl:if>
          <xsl:if
             test="
                $this-TAN-reserved-relationships/tan:name = 'different work version' and
                not($prov-root-name = 'TAN-T'
-               and $head/tan:declarations/tan:work/tan:IRI = $target-1st-da/(tei:TEI, tan:TAN-T)/tan:head/tan:declarations/tan:work/tan:IRI)">
+               and $head/tan:declarations/tan:work/tan:IRI = $target-1st-da-resolved/(tei:TEI, tan:TAN-T)/tan:head/tan:declarations/tan:work/tan:IRI)">
             <xsl:copy-of select="tan:error('see04')"/>
          </xsl:if>
          <!--<xsl:if test="empty($target-1st-da)">
             <xsl:copy-of select="tan:error('loc01')"/>
          </xsl:if>-->
-         <xsl:copy-of select="$target-1st-da/tan:error"/>
+         <xsl:copy-of select="$target-1st-da-resolved/tan:error"/>
          <!--<test><xsl:copy-of select="$target-1st-da"/></test>-->
          <xsl:if test="exists(tan:location) and not($target-id = tan:IRI) and $target-class gt 0">
             <xsl:variable name="this-fix" as="element()">
@@ -344,7 +344,7 @@
                select="tan:error('loc02', concat('ID of see-also file: ', $target-id), $this-fix)"/>
          </xsl:if>
          <xsl:if
-            test="($doc-id = $target-1st-da/*/@id) and not(self::tan:see-also and $this-TAN-reserved-relationships/tan:name = ('new version', 'old version'))">
+            test="($doc-id = $target-1st-da-resolved/*/@id) and not(self::tan:see-also and $this-TAN-reserved-relationships/tan:name = ('new version', 'old version'))">
             <xsl:copy-of select="tan:error('loc03')"/>
          </xsl:if>
          <xsl:if test="exists($target-updates)">

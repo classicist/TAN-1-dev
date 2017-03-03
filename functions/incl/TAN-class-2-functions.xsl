@@ -4,7 +4,7 @@
    xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:fn="http://www.w3.org/2005/xpath-functions"
    xmlns:math="http://www.w3.org/2005/xpath-functions/math" xmlns:functx="http://www.functx.com"
    xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl"
-   exclude-result-prefixes="xs math xd tan tei fn functx xi" version="2.0">
+   exclude-result-prefixes="#all" version="2.0">
 
    <xd:doc scope="stylesheet">
       <xd:desc>
@@ -55,7 +55,39 @@
          else
             '1'"
       as="xs:string+"/>
+   <!--<xsl:variable name="sources-resolved" as="document-node()*">
+      <xsl:choose>
+         <xsl:when test="$self-resolved/*/@id = $doc-id and $sources-1st-da/*[@src]">
+            <!-\- If the input is the main document itself, and @src has been imprinted on the resolved sources, then just use $sources-1st-da -\->
+            <xsl:sequence select="$sources-1st-da"/>
+         </xsl:when>
+         <xsl:otherwise>
+            <!-\- Otherwise, get a resolved copy of every source -\->
+            <xsl:copy-of
+               select="tan:resolve-doc(tan:get-1st-doc($self-resolved/*/tan:head/tan:source), false(), 'src', $self-resolved/*/tan:head/tan:source/@xml:id, (), ())"
+            />
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:variable>-->
 
+   <xsl:function name="tan:prep-resolved-class-2-doc" as="document-node()*">
+      <xsl:param name="resolved-class-2-doc" as="document-node()?"/>
+      <xsl:variable name="these-sources-resolved" as="document-node()*">
+         <xsl:choose>
+            <xsl:when test="$resolved-class-2-doc/*/@id = $doc-id">
+               <!-- If the input is the main document itself, then just use $sources-resolved -->
+               <xsl:sequence select="$sources-resolved"/>
+            </xsl:when>
+            <xsl:otherwise>
+               <!-- Otherwise, get a resolved copy of every source -->
+               <xsl:copy-of
+                  select="tan:resolve-doc(tan:get-1st-doc($resolved-class-2-doc/*/tan:head/tan:source), false(), 'src', $resolved-class-2-doc/*/tan:head/tan:source/@xml:id, (), ())"
+               />
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:variable>
+      <xsl:copy-of select="tan:prep-resolved-class-2-doc($resolved-class-2-doc, $these-sources-resolved)"/>
+   </xsl:function>
    <xsl:function name="tan:prep-resolved-class-2-doc" as="document-node()*">
       <!-- Input: a class 2 document -->
       <!-- Output: that same document, prepped, followed by its source documents, which have been prepped enough to justify or explain the content of the original class 2 document -->
@@ -75,32 +107,19 @@
       [Further preparation is then conducted by the functions specific to the particular class 2 format]
       -->
       <xsl:param name="resolved-class-2-doc" as="document-node()?"/>
+      <xsl:param name="resolved-class-2-sources" as="document-node()*"/>
       <xsl:variable name="is-tan-lm-lang"
          select="exists($resolved-class-2-doc/tan:TAN-LM) and not(exists($resolved-class-2-doc/tan:TAN-LM/tan:head/tan:source))"
       />
-      <xsl:variable name="these-sources-resolved" as="document-node()*">
-         <xsl:choose>
-            <xsl:when test="$resolved-class-2-doc/*/@id = $doc-id and $sources-1st-da/*[@src]">
-               <!-- If the input is the main document itself, and @src has been imprinted on the resolved sources, then just use $sources-1st-da -->
-               <xsl:sequence select="$sources-1st-da"/>
-            </xsl:when>
-            <xsl:otherwise>
-               <!-- Otherwise, get a resolved copy of every source -->
-               <xsl:copy-of
-                  select="tan:resolve-doc(tan:get-1st-doc($resolved-class-2-doc/*/tan:head/tan:source), false(), 'src', $resolved-class-2-doc/*/tan:head/tan:source/@xml:id, (), ())"
-               />
-            </xsl:otherwise>
-         </xsl:choose>
-      </xsl:variable>
       <xsl:variable name="class-2-doc-pass-1" as="document-node()">
          <xsl:document>
             <xsl:apply-templates select="$resolved-class-2-doc" mode="prep-class-2-doc-pass-1"/>
          </xsl:document>
       </xsl:variable>
       <xsl:variable name="class-2-doc-pass-2" as="document-node()?"
-         select="tan:prep-class-2-doc-pass-2($class-2-doc-pass-1, $these-sources-resolved)"/>
+         select="tan:prep-class-2-doc-pass-2($class-2-doc-pass-1, $resolved-class-2-sources)"/>
       <xsl:variable name="class-1-sources-prepped-pass-1"
-         select="tan:prep-resolved-class-1-doc($class-2-doc-pass-1, $these-sources-resolved)"
+         select="tan:prep-resolved-class-1-doc($class-2-doc-pass-1, $resolved-class-2-sources)"
          as="document-node()*"/>
       <xsl:variable name="class-2-doc-pass-3"
          select="tan:prep-class-2-doc-pass-3($class-2-doc-pass-2, $class-1-sources-prepped-pass-1)"
@@ -1598,21 +1617,21 @@
    <!-- STEP SRC-1ST-DA-TOKENIZED: tokenize prepped source documents, using token definitions in self-expanded-2 -->
    <xsl:function name="tan:get-src-1st-da-tokenized" as="document-node()*">
       <xsl:param name="class-2-doc-prepped-step-3" as="document-node()?"/>
-      <xsl:param name="prepped-class-1-doc" as="document-node()*"/>
+      <xsl:param name="resolved-class-1-doc" as="document-node()*"/>
       <xsl:copy-of
-         select="tan:get-src-1st-da-tokenized($class-2-doc-prepped-step-3, $prepped-class-1-doc, true(), false())"
+         select="tan:get-src-1st-da-tokenized($class-2-doc-prepped-step-3, $resolved-class-1-doc, true(), false())"
       />
    </xsl:function>
    <xsl:function name="tan:get-src-1st-da-tokenized" as="document-node()*">
-      <!-- Input: class-2 document prepped through stage 3; related source class 1 documents, prepped; boolean indicating whether @n should be added to new <tok>s; boolean indicating whether the entirety of the documents should be tokenized, or only those leaf difvs that are mentioned by the class 2 document -->
+      <!-- Input: class-2 document prepped through stage 3; related source class 1 documents, resolved; boolean indicating whether @n should be added to new <tok>s; boolean indicating whether the entirety of the documents should be tokenized, or only those leaf difvs that are mentioned by the class 2 document -->
       <!-- Output: same class 1 documents tokenized, selectively or completely -->
       <xsl:param name="class-2-doc-prepped-step-3" as="document-node()?"/>
-      <xsl:param name="prepped-class-1-doc" as="document-node()*"/>
+      <xsl:param name="resolved-class-1-doc" as="document-node()*"/>
       <xsl:param name="add-n-attr" as="xs:boolean"/>
       <xsl:param name="tokenize-selectively" as="xs:boolean"/>
       <xsl:variable name="token-definitions"
          select="$class-2-doc-prepped-step-3/*/tan:head/tan:declarations/tan:token-definition"/>
-      <xsl:for-each select="$prepped-class-1-doc">
+      <xsl:for-each select="$resolved-class-1-doc">
          <xsl:variable name="this-src" select="*/@src"/>
          <xsl:variable name="ref-filter"
             select="$class-2-doc-prepped-step-3/*/tan:body//tan:tok[@src = $this-src]/@ref"/>

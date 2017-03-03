@@ -355,6 +355,13 @@
             <IRI>http://dbpedia.org/page/Paragraph</IRI>
             <name>paragraph</name>
         </item>
+        <item group="inline-start inline-end">
+            <IRI>tag:textalign.net,2015:div-type:gloss:parenthetical</IRI>
+            <name>parenthetical gloss</name>
+            <name>parenthetical aside</name>
+            <name>parenthetical comment</name>
+            <name>inline gloss</name>
+        </item>
         <item>
             <IRI>tag:textalign.net,2015:div-type:part</IRI>
             <name>part</name>

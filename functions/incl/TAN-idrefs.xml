@@ -3,6 +3,7 @@
     <id element="agent">
         <idrefs attribute="who"/>
         <idrefs attribute="ed-who"/>
+        <idrefs attribute="rights-holder"/>
     </id>
     <id element="role">
         <idrefs attribute="roles"/>

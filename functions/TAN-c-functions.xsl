@@ -7,7 +7,7 @@
    <xd:doc scope="stylesheet">
       <xd:desc>
          <xd:p><xd:b>Updated </xd:b>September 10, 2016</xd:p>
-         <xd:p>Set of functions for TAN-rdf files. Used by Schematron validation, but suitable for
+         <xd:p>Set of functions for TAN-c files. Used by Schematron validation, but suitable for
             general use in other contexts </xd:p>
       </xd:desc>
    </xd:doc>

@@ -70,7 +70,7 @@
       </xsl:for-each>
    </xsl:variable>-->
    <!--<xsl:variable name="srcs-see-also-1st-da" select="tan:get-1st-doc($srcs-resolved/*/tan:head/tan:see-also)"/>
-   <xsl:variable name="srcs-context-1st-da" select="$srcs-see-also-1st-da[tan:TAN-rdf]"/>-->
+   <xsl:variable name="srcs-context-1st-da" select="$srcs-see-also-1st-da[tan:TAN-c]"/>-->
    <xsl:variable name="srcs-see-also-resolved">
       <xsl:for-each select="$srcs-resolved">
          <xsl:variable name="this-src" select="."/>
@@ -84,7 +84,7 @@
             select="tan:resolve-doc($these-see-also-docs, false(), 'src', $these-src-ids, (), ())"/>
       </xsl:for-each>
    </xsl:variable>
-   <xsl:variable name="srcs-context-resolved" select="$srcs-see-also-resolved[tan:TAN-rdf]"/>
+   <xsl:variable name="srcs-context-resolved" select="$srcs-see-also-resolved[tan:TAN-c]"/>
    <!--<xsl:variable name="srcs-context-resolved"
       select="
          for $i in $srcs-context-1st-da-locations

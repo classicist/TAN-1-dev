@@ -2186,7 +2186,7 @@
       CONTEXTUAL FUNCTIONS
    -->
    <!-- In this part, a context is a <see-also> with a <relationship which="context"/>. 
-      Contexts are class 2 files or TAN-rdf files that provide supplementary TAN data. 
+      Contexts are class 2 files or TAN-c files that provide supplementary TAN data. 
       For example, a TAN-T transcription may
       point to a contextual TAN-LM file for lexico-morphological data, or to 
       a TAN-A-div file that aligns it with others. Or a TAN-A-div file may directly supply

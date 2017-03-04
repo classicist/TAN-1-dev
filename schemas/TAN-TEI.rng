@@ -387,7 +387,7 @@
           <element name="desc">
             <a:documentation>provides a description of a concept, person, or thing referred to by the parent element (or the current document, if the parent element is &lt;head&gt;). &lt;desc&gt; is, in effect, a &lt;comment&gt; about that concept, person, or thing. It has two possible structures, one human-readable and the other computer-readable.</a:documentation>
             <a:documentation>The first, human-readable approach defines &lt;desc&gt; as taking merely a string that comments on the entity. Because TAN files may need to be shared across language communities, this data can be stated any number of times in any language (probably in conjunction with @xml:lang), in any Unicode-compliant script. If you provide a comment in multiple languages, it best to make sure that each version says roughly the same thing.</a:documentation>
-            <a:documentation>The second, computer-readable approach has &lt;desc&gt; take an IRI + name pattern plus @href in &lt;location&gt; pointing to a &lt;TAN-rdf&gt; file, providing more information about the concept, person, or thing. </a:documentation>
+            <a:documentation>The second, computer-readable approach has &lt;desc&gt; take an IRI + name pattern plus @href in &lt;location&gt; pointing to a &lt;TAN-c&gt; file, providing more information about the concept, person, or thing. </a:documentation>
             <choice>
               <ref name="metadata-desc"/>
               <choice>
@@ -780,7 +780,7 @@
       <define name="decl-vers">
         <element name="version">
           <a:documentation>identifies the version of a work. Applicable to works that go through multiple versions, whether through revision, translation, or some other process. Like &lt;work&gt;, &lt;version&gt; points to a conceptual entity, not a physical one.</a:documentation>
-          <a:documentation>In the context of a class 1 file, the entity identified by &lt;version&gt; is assumed to be a version of the entity defined in &lt;work&gt;. In class 3 files, however, the relationship between &lt;version&gt; and &lt;work&gt; must be explicitly declared in a TAN-rdf file. </a:documentation>
+          <a:documentation>In the context of a class 1 file, the entity identified by &lt;version&gt; is assumed to be a version of the entity defined in &lt;work&gt;. In class 3 files, however, the relationship between &lt;version&gt; and &lt;work&gt; must be explicitly declared in a TAN-c file. </a:documentation>
           <a:documentation>Very few work-versions have their own URN names. It is advisable to assign a tag URN or a UUID. If you have used an IRI for &lt;work&gt; that you are entitled to modify, you may wish to add a suffix that will name the version. If you need to specify exactly where on a text-bearing object a version appears, &lt;desc&gt; or &lt;comment&gt; should be used.</a:documentation>
           <a:documentation>This element takes the IRI + name pattern. For more, see iris.xml and main.xml#conceptual_works</a:documentation>
           <ref name="decl-pattern-default"/>

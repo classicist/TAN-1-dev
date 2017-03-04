@@ -198,6 +198,10 @@
             <name>distinctio</name>
             <desc>Terminology used of medieval works, e.g., Gratian.</desc>
         </item>
+        <item group="line-start line-end">
+            <IRI>tag:textalign.net,2015:div-type:endnote</IRI>
+            <name>endnote</name>
+        </item>
         <item group="line-start line-end leading-start leading-end">
             <IRI>tag:textalign.net,2015:div-type:epigraph</IRI>
             <IRI>http://www.tei-c.org/ns/1.0/epigraph</IRI>
@@ -217,6 +221,10 @@
             <IRI>tag:textalign.net,2015:div-type:folio</IRI>
             <IRI>http://dbpedia.org/resource/Recto_and_verso</IRI>
             <name>folio</name>
+        </item>
+        <item group="line-start line-end">
+            <IRI>tag:textalign.net,2015:div-type:footnote</IRI>
+            <name>footnote</name>
         </item>
         <item>
             <IRI>tag:textalign.net,2015:div-type:gloss</IRI>
@@ -324,6 +332,7 @@
             <IRI>http://www.tei-c.org/ns/1.0/note</IRI>
             <IRI>http://dbpedia.org/resource/Note_(typography)</IRI>
             <name>note</name>
+            <desc>Notes placed anywhere, including footnotes and endnotes.</desc>
         </item>
         <item>
             <IRI>tag:textalign.net,2015:div-type:objection</IRI>

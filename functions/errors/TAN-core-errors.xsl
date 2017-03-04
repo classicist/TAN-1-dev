@@ -199,7 +199,7 @@
       <xsl:copy-of select="."/>
    </xsl:template>
    <xsl:template mode="core-errors"
-      match="tan:TAN-T | tei:TEI | tan:TAN-A-div | tan:TAN-A-tok | tan:TAN-LM | tan:TAN-key | tan:TAN-rdf | tan:TAN-mor">
+      match="tan:TAN-T | tei:TEI | tan:TAN-A-div | tan:TAN-A-tok | tan:TAN-LM | tan:TAN-key | tan:TAN-c | tan:TAN-mor">
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:copy-of select="tan:error('wrn04')"/>
@@ -310,8 +310,8 @@
          </xsl:if>
          <xsl:if
             test="
-               $this-TAN-reserved-relationships//ancestor::tan:group/tan:name = 'TAN-rdf'
-               and not(name($target-1st-da-resolved/*) = 'TAN-rdf')">
+               $this-TAN-reserved-relationships//ancestor::tan:group/tan:name = 'TAN-c'
+               and not(name($target-1st-da-resolved/*) = 'TAN-c')">
             <xsl:copy-of
                select="tan:error('see02', concat('root element name: ', name($target-1st-da-resolved/*)))"/>
          </xsl:if>

@@ -43,7 +43,7 @@
 
    <!--<xsl:variable name="class-1-root-names" select="('TAN-T', 'TEI')"/>
    <xsl:variable name="class-2-root-names" select="('TAN-A-div', 'TAN-A-tok', 'TAN-LM')"/>
-   <xsl:variable name="class-3-root-names" select="('TAN-mor', 'TAN-key', 'TAN-rdf')"/>
+   <xsl:variable name="class-3-root-names" select="('TAN-mor', 'TAN-key', 'TAN-c')"/>
    <xsl:variable name="all-root-names"
       select="$class-1-root-names, $class-2-root-names, $class-3-root-names"/>-->
    <xsl:function name="tan:class-number" as="xs:integer*">
@@ -64,7 +64,7 @@
             <class n="3">
                <root>TAN-mor</root>
                <root>TAN-key</root>
-               <root>TAN-rdf</root>
+               <root>TAN-c</root>
             </class>
          </tan>
       </xsl:variable>
@@ -208,7 +208,7 @@
    <!-- see-also, context -->
    <xsl:variable name="see-alsos-1st-da" select="tan:get-1st-doc($head/tan:see-also)"/>
    <xsl:variable name="see-alsos-resolved" select="tan:resolve-doc($see-alsos-1st-da)"/>
-   <xsl:variable name="contexts-resolved" select="$see-alsos-resolved[*/self::tan:TAN-rdf]"/>
+   <xsl:variable name="contexts-resolved" select="$see-alsos-resolved[*/self::tan:TAN-c]"/>
    <!-- token definitions -->
    <xsl:variable name="token-definitions-reserved" select="$TAN-keywords//tan:token-definition"/>
 

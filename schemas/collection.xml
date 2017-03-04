@@ -6,7 +6,7 @@
    <doc href="TAN-LM-lang.sch"/>
    <doc href="TAN-LM.sch"/>
    <doc href="TAN-mor.sch"/>
-   <doc href="TAN-rdf.sch"/>
+   <doc href="TAN-c.sch"/>
    <doc href="TAN-T.sch"/>
    <doc href="TAN-TEI.sch"/>
    <doc href="TAN-A-div.rng"/>
@@ -15,17 +15,10 @@
    <doc href="TAN-LM-lang.rng"/>
    <doc href="TAN-LM.rng"/>
    <doc href="TAN-mor.rng"/>
-   <doc href="TAN-rdf.rng"/>
+   <doc href="TAN-c.rng"/>
    <doc href="TAN-T.rng"/>
    <doc href="TAN-TEI.rng"/>
    <doc href="incl/self-resolved-errors.sch"/>
-   <doc href="incl/TAN-class-1.sch"/>
-   <doc href="incl/TAN-class-2-edit.sch"/>
-   <doc href="incl/TAN-class-2-full.sch"/>
-   <doc href="incl/TAN-class-2-half.sch"/>
-   <doc href="incl/TAN-class-2-quarter.sch"/>
-   <doc href="incl/TAN-class-2.sch"/>
-   <doc href="incl/TAN-class-3.sch"/>
    <doc href="incl/TAN-core.sch"/>
    <doc href="incl/TAN-class-1.rng"/>
    <doc href="incl/TAN-class-2.rng"/>

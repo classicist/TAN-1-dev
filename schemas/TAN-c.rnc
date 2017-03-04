@@ -5,17 +5,17 @@ datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 start =
     
     ## specifies that the TAN file makes assertions subject a conceptual work. Root element.
-    element TAN-rdf { TAN-root }
+    element TAN-c { TAN-root }
 include "incl/TAN-class-3.rnc" {
     
     ## all declarations must have ids
     decl-id-ref-opt = internal-id
     source-list = source-item*
-    declaration-items = TAN-rdf-decl
-    item = TAN-rdf-item
+    declaration-items = TAN-c-decl
+    item = TAN-c-item
     other-body-attributes = claimant, subject
 }
-TAN-rdf-decl = decl-work* & decl-place* & decl-verb+ & decl-unit* & decl-pers* & decl-mode* & decl-vers*
+TAN-c-decl = decl-work* & decl-place* & decl-verb+ & decl-unit* & decl-pers* & decl-mode* & decl-vers*
 decl-place =
     
     ## contains an IRI + name pattern identifying a spatial location, usually somewhere on earth
@@ -55,7 +55,7 @@ decl-mode =
     
     ## See main.xml# keywords-modal for standard vocabulary.
     element modal { decl-pattern-default }
-TAN-rdf-item = claim+
+TAN-c-item = claim+
 claim =
 ## contains one or more claims.
     element claim {
@@ -74,11 +74,11 @@ claimant =
     
     ## points to an <agent> or <person> who makes a claim. @claimant within <body> indicates the default persons to be credited or blamed for an assertion.
     
-    ## Claimants are not to be confused with the editor of a TAN file. If an editor X writes a TAN-rdf file that says that person Y makes such-and-such a claim, then the implication is that X claims that Y claims that....  
+    ## Claimants are not to be confused with the editor of a TAN file. If an editor X writes a TAN-c file that says that person Y makes such-and-such a claim, then the implication is that X claims that Y claims that....  
 
     ##  This attribute is taken into account before all other attributes. That is, @claimant is to be interpreted to mean: "@claimant states the following:...."
     
-    ## The concept of @claimant is not recursive. TAN-rdf is not suited to make claims that claimant X claimed that claimant Y claimed that claimant Z....
+    ## The concept of @claimant is not recursive. TAN-c is not suited to make claims that claimant X claimed that claimant Y claimed that claimant Z....
     
     ## This attribute is inheritable. See main.xml#inheritable_attributes
 attribute claimant { text }
@@ -97,7 +97,7 @@ simple-object =
     
     ## points to one or more ID refs of entities defined in <head> that serve as the grammatical object of a claim. For example, if you wish to say that work A is a commentary on work B, then the object would have the ID ref for work B. If you wish to make more complex assertions, use <object>.
     
-    ## In RDF, the concept of object (the third element of a triple) is required. In TAN-rdf, it is not required, since some <verb>s may be intransitive (e.g., "Charlie slept.").
+    ## In RDF, the concept of object (the third element of a triple) is required. In TAN-c, it is not required, since some <verb>s may be intransitive (e.g., "Charlie slept.").
     attribute object { text }
 complex-object = 
 ## is similar to @object, but for complex content, mainly concepts that do not lend themselves to the IRI + name pattern, particularly languages and units.

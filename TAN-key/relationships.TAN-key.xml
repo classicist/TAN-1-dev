@@ -48,8 +48,8 @@
                 <desc>Points to a TAN file that uses the current file as a source.</desc>
             </item>
             <group>
-                <name>TAN-rdf</name>
-                <desc>Relationships where the parent &lt;see-also> must point exclusively to the TAN-rdf format.</desc>
+                <name>TAN-c</name>
+                <desc>Relationships where the parent &lt;see-also> must point exclusively to the TAN-c format.</desc>
                 <item>
                     <IRI>tag:textalign.net,2015:relationship:context</IRI>
                     <name>context</name>

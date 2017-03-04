@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <grammar ns="tag:textalign.net,2015:ns" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <start>
-    <element name="TAN-rdf">
+    <element name="TAN-c">
       <a:documentation>specifies that the TAN file makes assertions subject a conceptual work. Root element.</a:documentation>
       <ref name="TAN-root"/>
     </element>
@@ -17,17 +17,17 @@
       </zeroOrMore>
     </define>
     <define name="declaration-items">
-      <ref name="TAN-rdf-decl"/>
+      <ref name="TAN-c-decl"/>
     </define>
     <define name="item">
-      <ref name="TAN-rdf-item"/>
+      <ref name="TAN-c-item"/>
     </define>
     <define name="other-body-attributes">
       <ref name="claimant"/>
       <ref name="subject"/>
     </define>
   </include>
-  <define name="TAN-rdf-decl">
+  <define name="TAN-c-decl">
     <interleave>
       <zeroOrMore>
         <ref name="decl-work"/>
@@ -104,7 +104,7 @@
       <ref name="decl-pattern-default"/>
     </element>
   </define>
-  <define name="TAN-rdf-item">
+  <define name="TAN-c-item">
     <oneOrMore>
       <ref name="claim"/>
     </oneOrMore>
@@ -147,9 +147,9 @@
   <define name="claimant">
     <attribute name="claimant">
       <a:documentation>points to an &lt;agent&gt; or &lt;person&gt; who makes a claim. @claimant within &lt;body&gt; indicates the default persons to be credited or blamed for an assertion.</a:documentation>
-      <a:documentation>Claimants are not to be confused with the editor of a TAN file. If an editor X writes a TAN-rdf file that says that person Y makes such-and-such a claim, then the implication is that X claims that Y claims that....  </a:documentation>
+      <a:documentation>Claimants are not to be confused with the editor of a TAN file. If an editor X writes a TAN-c file that says that person Y makes such-and-such a claim, then the implication is that X claims that Y claims that....  </a:documentation>
       <a:documentation> This attribute is taken into account before all other attributes. That is, @claimant is to be interpreted to mean: "@claimant states the following:...."</a:documentation>
-      <a:documentation>The concept of @claimant is not recursive. TAN-rdf is not suited to make claims that claimant X claimed that claimant Y claimed that claimant Z....</a:documentation>
+      <a:documentation>The concept of @claimant is not recursive. TAN-c is not suited to make claims that claimant X claimed that claimant Y claimed that claimant Z....</a:documentation>
       <a:documentation>This attribute is inheritable. See main.xml#inheritable_attributes</a:documentation>
     </attribute>
   </define>
@@ -173,7 +173,7 @@
   <define name="simple-object">
     <attribute name="object">
       <a:documentation>points to one or more ID refs of entities defined in &lt;head&gt; that serve as the grammatical object of a claim. For example, if you wish to say that work A is a commentary on work B, then the object would have the ID ref for work B. If you wish to make more complex assertions, use &lt;object&gt;.</a:documentation>
-      <a:documentation>In RDF, the concept of object (the third element of a triple) is required. In TAN-rdf, it is not required, since some &lt;verb&gt;s may be intransitive (e.g., "Charlie slept.").</a:documentation>
+      <a:documentation>In RDF, the concept of object (the third element of a triple) is required. In TAN-c, it is not required, since some &lt;verb&gt;s may be intransitive (e.g., "Charlie slept.").</a:documentation>
     </attribute>
   </define>
   <define name="complex-object">

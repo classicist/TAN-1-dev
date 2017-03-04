@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <errors xmlns="tag:textalign.net,2015:ns">
     <!-- NB, @affects-element and @affects-attribute are present to populate the guidelines, not to trigger errors -->
-    <group affects-element="TAN-T TEI TAN-A-div TAN-A-tok TAN-LM TAN-key TAN-rdf TAN-mor">
+    <group affects-element="TAN-T TEI TAN-A-div TAN-A-tok TAN-LM TAN-key TAN-c TAN-mor">
         <warning xml:id="wrn04"><rule>Every validated TAN file will include the following message at its root.</rule><message>This version of TAN is unstable and unpublished. Use it at your own risk.</message></warning>
     </group>
     <group affects-element="agent" affects-attribute="id">
@@ -39,7 +39,7 @@
     </group>
     <group affects-element="see-also relationship">
         <error xml:id="see01"><rule>Any &lt;see-also> whose &lt;relationship> is defined as requiring a target TAN file must point to a file whose root element is a TAN file.</rule></error>
-        <error xml:id="see02"><rule>Any &lt;see-also> whose &lt;relationship> is defined as requiring a target TAN-rdf file must point to a TAN file whose root element is &lt;TAN-rdf>.</rule></error>
+        <error xml:id="see02"><rule>Any &lt;see-also> whose &lt;relationship> is defined as requiring a target TAN-c file must point to a TAN file whose root element is &lt;TAN-c>.</rule></error>
         <error xml:id="see03"><rule>Any &lt;see-also> whose &lt;relationship> is defined as requiring a target copy must point to a TAN file whose root element is identical.</rule></error>
         <error xml:id="see04"><rule>&lt;see-also> may have the &lt;relationship> of a different work version only if both are class 1 files and both share the same work.</rule></error>
         <error xml:id="cl101"><rule>In class 1 files, alternative editions must share the same source.</rule></error>

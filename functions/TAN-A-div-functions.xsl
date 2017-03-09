@@ -68,15 +68,18 @@
             <xsl:apply-templates select="$tan-a-div-prepped-pass-a" mode="prep-tan-a-div-pass-b"/>
          </xsl:document>
       </xsl:variable>
+      <xsl:variable name="tan-a-div-prepped-pass-c" as="document-node()?"
+         select="tan:prep-TAN-claims($tan-a-div-prepped-pass-b)"/>
       <xsl:variable name="tan-a-div-prepped-errors-flagged" as="document-node()?">
          <xsl:document>
-            <xsl:apply-templates select="$tan-a-div-prepped-pass-b" mode="TAN-A-div-errors"/>
+            <xsl:apply-templates select="$tan-a-div-prepped-pass-c" mode="TAN-A-div-errors"/>
          </xsl:document>
       </xsl:variable>
       <!-- diagnostics, output -->
       <!--<xsl:copy-of select="$this-class-2"/>-->
       <!--<xsl:copy-of select="$tan-a-div-prepped-pass-a"/>-->
       <!--<xsl:copy-of select="$tan-a-div-prepped-pass-b"/>-->
+      <!--<xsl:copy-of select="$tan-a-div-prepped-pass-c"/>-->
       <xsl:copy-of select="$tan-a-div-prepped-errors-flagged"/>
       <xsl:copy-of select="$class-1-sources-prepped-pass-a"/>
    </xsl:function>

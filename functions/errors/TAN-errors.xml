@@ -194,9 +194,27 @@
     <group affects-element="report assert" affects-attribute="feature-test context">
         <error xml:id="tmo03"><rule>@feature-test and @context must point to one or more feature @codes or @xml:ids a space or +</rule></error>
     </group>
+    <group affects-attribute="object-datatype object-lexical-constraint" affects-element="claim verb">
+        <error xml:id="clm01"><rule>Claims involving verbs whose object is constrained must use &lt;object>, not @object.</rule></error>
+    </group>
+    <group affects-attribute="object-datatype object-lexical-constraint" affects-element="claim verb"><error xml:id="clm02"><rule>Verbs that have object constraints must not be combined with other verbs in @verb.</rule></error></group>
+    <group affects-element="object" affects-attribute="object-datatype">
+        <error xml:id="clm03"><rule>&lt;object>s taking strings must match the predefined @object-datatype for the verb.</rule></error>
+    </group>
+    <group affects-element="object" affects-attribute="object-lexical-constraint">
+        <error xml:id="clm04"><rule>&lt;object>s taking strings for verbs that have lexical constraints must match those lexical constraints.</rule></error>
+    </group>
+    <group affects-attribute="subject" affects-element="claim subject">
+        <error xml:id="clm05"><rule>Every &lt;claim> must have at least one subject, either @subject (self or ancestral &lt;body>) or a child &lt;subject></rule></error>
+    </group>
+    <group affects-attribute="verb" affects-element="claim">
+        <error xml:id="clm06"><rule>Any predefined strictures on verbs must be respected.</rule></error>
+        <error xml:id="clm07"><rule>Every &lt;claim> must have at least one subject, either @subject (self or ancestral &lt;body>) or a child &lt;subject></rule></error>
+    </group>
     <group>
+        <!-- This group is for advanced uses only, not for regulating the standard TAN elements -->
         <error xml:id="adv01"><rule>Token-based assertions of multiple class 2 TAN documents that share the same class 1 source may be compared or collated only if those class 2 documents adopt identical token definitions.</rule></error>
-        <error xml:id="adv02"><rule>Assertions of multiple TAN-A-div documents that share the same class 1 source may be compared or collated only they suppress, or fail to suppress, the same div types.</rule></error>
+        <error xml:id="adv02"><rule>Assertions of multiple TAN-A-div documents that share the same class 1 source may be compared or collated only if they suppress, or fail to suppress, the same div types.</rule></error>
         <error xml:id="adv03"><rule>Mismatched sets of statistics may not be merged.</rule></error>
     </group>
 </errors>

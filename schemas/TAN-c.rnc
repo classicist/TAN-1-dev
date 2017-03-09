@@ -1,116 +1,22 @@
 default namespace = "tag:textalign.net,2015:ns"
 
-datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
-
 start =
     
     ## specifies that the TAN file makes assertions subject a conceptual work. Root element.
     element TAN-c { TAN-root }
 include "incl/TAN-class-3.rnc" {
     
-    ## all declarations must have ids
+    ## declarations by default have ids
     decl-id-ref-opt = internal-id
-    source-list = source-item*
+    
+    ## claims made of textual objects should be done in the context of TAN-A-div files
+    source-list = empty
     declaration-items = TAN-c-decl
     item = TAN-c-item
-    other-body-attributes = claimant, subject
+    other-body-attributes = claimant, subject?, verb?
 }
-TAN-c-decl = decl-work* & decl-place* & decl-verb+ & decl-unit* & decl-pers* & decl-mode* & decl-vers*
-decl-place =
-    
-    ## contains an IRI + name pattern identifying a spatial location, usually somewhere on earth
-    element place { decl-pattern-default }
-decl-verb =
-    
-    ## contains an IRI + name pattern identifying a property, relationship, action, or something else that is used to say something about something. 
-    
-    ## The preferred term "verb" is equivalent to RDF "predicate." The latter term is avoided as misleading, since in ordinary usage the term "predicate" implies everything in a sentence that is not the subject.
-    element verb { object-datatype?, object-lexical-constraint?, decl-pattern-default }
-object-datatype =
-    
-    ## specifies the type of data that the object must take. This attribute is intended to specify that a particular verb governs raw units, not entities definable by the IRI + name pattern. Use this attribute if and only if the verb may not govern objects defined in <declarations>.
-    attribute object-datatype {
-        xsd:string {
-            pattern =
-                "string|boolean|decimal|float|double|duration|dateTime|time|date|gYearMonth|gYear|gMonthDay|gDay|gMonth|hexBinary|base64Binary|anyURI|QName|NOTATION|normalizedString|token|language|NMTOKEN|NMTOKENS|Name|NCName|ID|IDREF|IDREFS|ENTITY|ENTITIES|integer|nonPositiveInteger|negativeInteger|long|int|short|byte|nonNegativeInteger|unsignedLong|unsignedInt|unsignedShort|unsignedByte|positiveInteger"
-        }
-    }
-object-lexical-constraint =
-    
-    ## specifies a regular expression that constrains the value of any <object>
-    attribute object-lexical-constraint { text }
-decl-unit =
-    
-    ## contains an IRI + name pattern identifying a unit type (e.g., millimeters, seconds, Euros), to be used in conjunction with <object> to specify the meaning of a value
-    element unit { decl-pattern-default }
-decl-pers =
-    
-    ## contains an IRI + name pattern identifying a person. This element is very similar to <agent>, but does not imply that the person had anything to do with the data in the TAN file.
-    
-    ## Although person implies a single individual, this element may be applied to corporate entities, or groups of more than one person.
-    element person { decl-pattern-default }
-decl-mode =
-    
-    ## contains an IRI + name pattern identifying a modal that qualifies an assertion.
-    
-    ## See main.xml# keywords-modal for standard vocabulary.
-    element modal { decl-pattern-default }
+include "incl/TAN-c-core.rnc" {
+    complex-subjects = empty
+}
 TAN-c-item = claim+
-claim =
-## contains one or more claims.
-    element claim {
-        inclusion
-        | (ed-stamp?,
-           claimant?,
-           subject?,
-           verb,
-           object?,
-           period-filter*,
-           place-filter?,
-           cert-claim?,
-           modal-claim?)
-    }
-claimant =
-    
-    ## points to an <agent> or <person> who makes a claim. @claimant within <body> indicates the default persons to be credited or blamed for an assertion.
-    
-    ## Claimants are not to be confused with the editor of a TAN file. If an editor X writes a TAN-c file that says that person Y makes such-and-such a claim, then the implication is that X claims that Y claims that....  
-
-    ##  This attribute is taken into account before all other attributes. That is, @claimant is to be interpreted to mean: "@claimant states the following:...."
-    
-    ## The concept of @claimant is not recursive. TAN-c is not suited to make claims that claimant X claimed that claimant Y claimed that claimant Z....
-    
-    ## This attribute is inheritable. See main.xml#inheritable_attributes
-attribute claimant { text }
-subject =
-    
-    ## points to one or more ID refs of entities defined in <head> that serve as the grammatical subject of a claim. @subject within <body> indicates the default subject(s) for <claim>s. 
-    attribute subject { text }
-
-## points to one or more <verb>s that serve to assert something of the @subject.
-verb =
-    
-    ## The preferred term "verb" is equivalent to RDF "predicate." The latter term is avoided as being misleading -- most who use TAN will understand "predicate," grammatically speaking, to refer to everything in a sentence that is not the subject,
-    attribute verb { text }
-object = simple-object | complex-object
-simple-object =
-    
-    ## points to one or more ID refs of entities defined in <head> that serve as the grammatical object of a claim. For example, if you wish to say that work A is a commentary on work B, then the object would have the ID ref for work B. If you wish to make more complex assertions, use <object>.
-    
-    ## In RDF, the concept of object (the third element of a triple) is required. In TAN-c, it is not required, since some <verb>s may be intransitive (e.g., "Charlie slept.").
-    attribute object { text }
-complex-object = 
-## is similar to @object, but for complex content, mainly concepts that do not lend themselves to the IRI + name pattern, particularly languages and units.
-element object { (lang-of-content | units)?, text }
-units =
-    
-    ## points to the ID ref of a <unit>, defining the type of units.
-    attribute units { text }
-place-filter =
-    
-    ## restricts the <claim> to a specific <place> 
-    attribute where { text }
-modal-claim =
-    
-    ## names a <modal> that qualifies the claim.
-    attribute adverb { text }
+TAN-c-decl = TAN-c-decl-core

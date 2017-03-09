@@ -11,17 +11,17 @@
     <a:documentation>Option to allow an @xml:id in children of &lt;declarations&gt;</a:documentation>
     <empty/>
   </define>
-  <define name="div-range-ref">
+  <define name="div-item-ref">
     <a:documentation>String that specifies a range of divs using the div-ref pattern joined by a hyphen or a comma.</a:documentation>
-    <a:documentation>For more see main.xml#leaf_div_uniqueness_rule</a:documentation>
-    <data type="string">
-      <param name="pattern">(\w+([^\w\-]\w+)*)(((\s*-\s*)|(\s*,\s+))(\w+([^\w\-]\w+)*))*|.*\?\?\?.*</param>
-    </data>
-  </define>
-  <define name="div-range-item">
     <a:documentation>String that specifies a single &lt;div&gt;</a:documentation>
     <data type="string">
       <param name="pattern">(\w+([^\w\-]\w+)*)|.*\?\?\?.*</param>
+    </data>
+  </define>
+  <define name="div-range-ref">
+    <a:documentation>For more see main.xml#leaf_div_uniqueness_rule</a:documentation>
+    <data type="string">
+      <param name="pattern">(\w+([^\w\-]\w+)*)(((\s*-\s*)|(\s*,\s+))(\w+([^\w\-]\w+)*))*|.*\?\?\?.*</param>
     </data>
   </define>
   <define name="ed-agent">
@@ -170,7 +170,8 @@
   </define>
   <define name="period-filter">
     <element name="when">
-      <a:documentation>constrains an event to a period of time</a:documentation>
+      <a:documentation>constrains an event to a period of time.</a:documentation>
+      <a:documentation>Multiple values of &lt;when&gt; are interpreted to mean "or" with union. No distribution takes place (e.g., x &lt;when/&gt; with y &lt;when/&gt; means "at time x or y", not "at time x" and "at time y").</a:documentation>
       <attribute name="from">
         <a:documentation>specifies the beginning of a period of time</a:documentation>
         <choice>
@@ -274,6 +275,20 @@
           <ref name="entity-nondigital-ref"/>
         </interleave>
       </group>
+    </choice>
+  </define>
+  <define name="decl-pattern-no-id">
+    <optional>
+      <ref name="ed-stamp"/>
+    </optional>
+    <choice>
+      <ref name="inclusion"/>
+      <interleave>
+        <zeroOrMore>
+          <ref name="comment"/>
+        </zeroOrMore>
+        <ref name="entity-nondigital-ref"/>
+      </interleave>
     </choice>
   </define>
   <define name="decl-pattern-language">

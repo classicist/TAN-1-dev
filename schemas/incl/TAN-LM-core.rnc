@@ -20,7 +20,6 @@ include "TAN-class-2.rnc" {
     ## Because TAN-LM files depend on only one source, no id references to sources are needed
     source-refs = empty
     id-option = empty
-    continuation-opt = continuation
     other-body-attributes = lexicon-attr, grammar-attr
     item = TAN-LM-item
 }

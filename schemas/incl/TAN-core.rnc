@@ -15,11 +15,14 @@ decl-id-ref-opt = empty
 
 ## String that specifies a range of divs using the div-ref pattern joined by a hyphen or a comma.
 
-## For more see main.xml#leaf_div_uniqueness_rule
-div-range-ref = xsd:string { pattern = "(\w+([^\w\-]\w+)*)(((\s*-\s*)|(\s*,\s+))(\w+([^\w\-]\w+)*))*|.*\?\?\?.*" }
-
 ## String that specifies a single <div>
-div-range-item = xsd:string { pattern = "(\w+([^\w\-]\w+)*)|.*\?\?\?.*" }
+div-item-ref = xsd:string { pattern = "(\w+([^\w\-]\w+)*)|.*\?\?\?.*" }
+
+## For more see main.xml#leaf_div_uniqueness_rule
+div-range-ref =
+    xsd:string {
+        pattern = "(\w+([^\w\-]\w+)*)(((\s*-\s*)|(\s*,\s+))(\w+([^\w\-]\w+)*))*|.*\?\?\?.*"
+    }
 ed-agent =
     
     ## refers to one or more <agent>s who have edited (added or modified) an element or its content.
@@ -98,7 +101,6 @@ item-picker = xsd:string { pattern = "((last|max)|((last|max)-\d+)|(\d+))|.*\?\?
 
 ## Acceptable values of @n, used by class 1 and class 2 files; this is related to div-range-ref, in that it allows ranges of items, but ignores "last", "max", or "all" keyterms.
 n-val = xsd:string { pattern = "(\w|\d+-\d+)+(\s+(\w|\d+-\d+)+)*" }
-
 TAN-ver =
     
     ## specifies the version of TAN schemas used. 
@@ -125,7 +127,9 @@ lang-outside =
     element for-lang { xsd:language }
 period-filter =
     
-    ## constrains an event to a period of time
+    ## constrains an event to a period of time.
+    
+    ## Multiple values of <when> are interpreted to mean "or" with union. No distribution takes place (e.g., x <when/> with y <when/> means "at time x or y", not "at time x" and "at time y").
     element when {
         
         ## specifies the beginning of a period of time
@@ -198,6 +202,10 @@ decl-pattern-default =
     ed-stamp?,
     (inclusion
      | (decl-id-ref-opt, (comment* & entity-nondigital-ref)))
+decl-pattern-no-id =
+    ed-stamp?,
+    (inclusion
+     | (comment* & entity-nondigital-ref))
 decl-pattern-language =
     ed-stamp?,
     (inclusion

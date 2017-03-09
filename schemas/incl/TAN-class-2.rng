@@ -86,42 +86,6 @@
     <a:documentation>Option to include an internal id. Not needed in TAN-LM files.</a:documentation>
     <ref name="internal-id"/>
   </define>
-  <define name="alignment">
-    <element name="align">
-      <a:documentation>declares one or more groups of words or divs that should be aligned with each other. If in a TAN-A-tok file, &lt;align&gt; governs &lt;tok&gt;s (words); in TAN-A-div files, &lt;div-ref&gt; (divs and segments)</a:documentation>
-      <a:documentation>In TAN-A-tok files, &lt;align&gt; specifies that all the tokens invoked for one source collectively align with the tokens in the other. This version of &lt;align&gt; allows @cert, @bitext-relation, and @reuse-type, in addition to the editorial stamp. </a:documentation>
-      <a:documentation>In TAN-A-div files, &lt;align&gt; specifies that every group of divs or segments (defined by a child &lt;div-ref&gt;) should be aligned with every other group in the alingment. This alignment is to be taken as adding to any default, automatic alignment. If @distribute is true, then every nth reference in every &lt;div-ref&gt; will be aligned to the nth reference in every other &lt;div-ref&gt;.  </a:documentation>
-      <a:documentation>Anomalous alignments will not be reconciled. For example, if passages A, B, and C are realigned to passages X and Y, there is no stipulation on how or if this realignment should be refined. </a:documentation>
-      <a:documentation>Furthermore, one-to-one matches will entail an attempt to align the descendants. That is, if X is aligned to Y, then a TAN processor will also attempt to align every child in X with every child in Y, based on values of @n.</a:documentation>
-      <a:documentation>For more see main.xml#tan-a-div_align</a:documentation>
-      <choice>
-        <ref name="alignment-inclusion-opt"/>
-        <group>
-          <ref name="alignment-attributes-non-class-2"/>
-          <ref name="certainty-stamp"/>
-          <ref name="non-class-2-opt"/>
-          <interleave>
-            <zeroOrMore>
-              <ref name="comment"/>
-            </zeroOrMore>
-            <ref name="alignment-content-non-class-2"/>
-          </interleave>
-        </group>
-      </choice>
-    </element>
-  </define>
-  <define name="non-class-2-opt">
-    <empty/>
-  </define>
-  <define name="alignment-attributes-non-class-2">
-    <empty/>
-  </define>
-  <define name="alignment-content-non-class-2">
-    <empty/>
-  </define>
-  <define name="alignment-inclusion-opt">
-    <ref name="inclusion"/>
-  </define>
   <define name="div-type-ref">
     <attribute name="div-type-ref">
       <a:documentation>is used by class-2 files to point to one or more &lt;div-type&gt;s in class-1 files. Permits multiple values separated by spaces.</a:documentation>
@@ -215,7 +179,7 @@
   </define>
   <define name="pointer-to-div-item">
     <attribute name="ref">
-      <ref name="div-range-item"/>
+      <ref name="div-item-ref"/>
     </attribute>
   </define>
   <define name="token-value-ref">
@@ -248,7 +212,7 @@
     </attribute>
   </define>
   <define name="continuation-opt">
-    <empty/>
+    <ref name="continuation"/>
   </define>
   <define name="continuation">
     <attribute name="cont">

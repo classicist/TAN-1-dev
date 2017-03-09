@@ -13,18 +13,29 @@
         <ref name="source-item"/>
       </oneOrMore>
     </define>
+    <define name="decl-id-ref-opt">
+      <a:documentation>declarations by default have ids</a:documentation>
+      <ref name="internal-id"/>
+    </define>
     <define name="source-id-opt">
       <a:documentation>TAN-A-div sources must be named</a:documentation>
       <ref name="internal-id"/>
     </define>
-    <define name="certainty-stamp">
-      <a:documentation>no levels of certainty are allowed in TAN-A-div files; substitute is strength-claim</a:documentation>
-      <optional>
-        <ref name="ed-stamp"/>
-      </optional>
+    <define name="declaration-items">
+      <interleave>
+        <zeroOrMore>
+          <ref name="decl-tok-def"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="decl-supp-div-type"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="decl-rename-div-n"/>
+        </zeroOrMore>
+        <ref name="TAN-c-decl-core"/>
+      </interleave>
     </define>
-    <define name="char-ref">
-      <a:documentation>TAN-A-div files may not point to individual characters/glyphs</a:documentation>
+    <define name="continuation-opt">
       <empty/>
     </define>
     <define name="TAN-body-core">
@@ -41,81 +52,24 @@
       <zeroOrMore>
         <ref name="realignment"/>
       </zeroOrMore>
-      <zeroOrMore>
-        <ref name="alignment"/>
-      </zeroOrMore>
-    </define>
-    <define name="alignment-attributes-non-class-2">
-      <a:documentation>alignments may take either an id with no supplementary variables or else no id and optional variables indicating strength, exclusivity, distribution, and auto-alignment</a:documentation>
       <optional>
-        <ref name="strength-claim"/>
+        <ref name="set-of-claims"/>
       </optional>
-      <optional>
-        <choice>
-          <ref name="distribute-claim"/>
-          <ref name="topic-opt"/>
-        </choice>
-      </optional>
-    </define>
-    <define name="alignment-content-non-class-2">
-      <a:documentation>alignments must contain either one or more div-refs or a list of references to other alignments</a:documentation>
-      <zeroOrMore>
-        <choice>
-          <ref name="div-ref-item-for-source"/>
-          <ref name="div-ref-group-for-source"/>
-          <ref name="div-ref-item-for-work"/>
-          <ref name="div-ref-group-for-work"/>
-        </choice>
-      </zeroOrMore>
-    </define>
-    <define name="declaration-items">
-      <interleave>
-        <zeroOrMore>
-          <ref name="decl-tok-def"/>
-        </zeroOrMore>
-        <zeroOrMore>
-          <ref name="decl-supp-div-type"/>
-        </zeroOrMore>
-        <zeroOrMore>
-          <ref name="decl-rename-div-n"/>
-        </zeroOrMore>
-        <zeroOrMore>
-          <ref name="decl-topics"/>
-        </zeroOrMore>
-      </interleave>
-    </define>
-    <define name="non-class-2-opt">
-      <empty/>
-    </define>
-    <define name="cert-opt">
-      <a:documentation>alignments suppres @cert in &lt;tok&gt; (used only to split leaf divs)</a:documentation>
-      <empty/>
     </define>
   </include>
-  <define name="decl-topics">
-    <element name="topic">
-      <a:documentation>declares one or more topics, to be used in conjunction with @topic under &lt;align&gt; to associate alignments with specific topics instead of verbatim parallels.  </a:documentation>
-      <optional>
-        <ref name="ed-stamp"/>
-      </optional>
-      <choice>
-        <ref name="inclusion"/>
-        <group>
-          <ref name="internal-id"/>
-          <interleave>
-            <zeroOrMore>
-              <ref name="comment"/>
-            </zeroOrMore>
-            <ref name="entity-nondigital-ref"/>
-          </interleave>
-        </group>
-      </choice>
-    </element>
+  <!-- <equate-works> -->
+  <define name="work-ref">
+    <attribute name="work">
+      <a:documentation>refers to a work by means of a source ID as a proxy. The attribute will be treated as indicating all sources that share the same work as the one mentioned.</a:documentation>
+      <a:documentation>If you wish to avoid making a claim applying to all other versions of a work, use @src instead.</a:documentation>
+      <data type="string">
+        <param name="pattern">\S+</param>
+      </data>
+    </attribute>
   </define>
-  <define name="topic-opt">
-    <attribute name="topic">
-      <a:documentation>points to one or more topics to which an alignment should be associated. If this attribute is not present, it is assumed that the alignment links different versions of roughly the same text.</a:documentation>
-      <a:documentation>TAN does not stipluate what can be inferred via @topic. If ref A is aligned with B via topic x, and B with C via topic y, no guarantee is made as to what relationship A has to C. </a:documentation>
+  <define name="work-refs">
+    <attribute name="work">
+      <a:documentation>refers to works by means of source IDs as a proxy. </a:documentation>
     </attribute>
   </define>
   <define name="work-equiv">
@@ -132,6 +86,7 @@
       </choice>
     </element>
   </define>
+  <!-- <equate-div-types> -->
   <define name="div-type-equiv">
     <element name="equate-div-types">
       <a:documentation>declares an ad hoc equivalence between div types that are not defined by the &lt;IRI&gt; values in their sources as being identical.</a:documentation>
@@ -161,6 +116,7 @@
       <ref name="div-type-ref"/>
     </element>
   </define>
+  <!-- <split-leaf-div-at> -->
   <define name="split">
     <element name="split-leaf-div-at">
       <a:documentation>creates ad hoc splits in leaf &lt;div&gt;s, to facilitate alignments and realignments of textual units smaller than leaf &lt;div&gt;s. Any leaf div may be split as many times as there are token, as defined by &lt;tokenization&gt;s.</a:documentation>
@@ -181,15 +137,44 @@
       </choice>
     </element>
   </define>
-  <define name="strength-claim">
-    <attribute name="strength">
-      <a:documentation>tempers the strength of an alignment. Suitable for alignments you would wish to differentiate, such as verbatim parallels from indirect references, this attribute does not imply doubt, uncertainty, or the reason for strengthening or weakening the alignment. If you need to specify exactly what concept of text reuse attaches to an alignment, you should use TAN-A-tok and &lt;tok&gt; with @reuse-type and @cert.</a:documentation>
-      <a:documentation>This attribute takes an arbitrary rational decimal number from 0 to 1 indicating how strong the alignment should be. No specific meaning is to be assigned to this attribute. Interpretation of these values is processor-dependent.  </a:documentation>
-      <a:documentation>This attribute is inheritable. See main.xml#inheritable_attributes</a:documentation>
-      <data type="string">
-        <param name="pattern">0\.\d+</param>
-      </data>
+  <!-- <realign> -->
+  <define name="anchor-div-ref-item">
+    <element name="anchor-div-ref">
+      <a:documentation>refers to a group of one or more &lt;div&gt;s (or segments of &lt;div&gt;s) to which &lt;div&gt;s from other versions of the same work should be realigned (defined by the &lt;div-ref&gt;s that follow). The first child of a &lt;realign&gt;, it is constructed exactly like &lt;div-ref&gt;, except that only @src, not @work, is used, and @seg is excluded. </a:documentation>
+      <a:documentation>&lt;anchor-div-ref&gt; does not permit the comma in @ref in an undistributed realignment, since realignment must always be made to a contiguous range of text. </a:documentation>
+      <a:documentation>If the parent &lt;realign&gt;'s @distribute is false, or missing, then each &lt;div-ref&gt; group will be realigned as a whole to the anchor, treated as a whole.</a:documentation>
+      <a:documentation>If @distribute is true, then every nth realign head will serve as the anchor for the nth realign head in each subsequent &lt;div-ref&gt;s (grouped by source).</a:documentation>
+      <a:documentation>@seg, which applies to splits in specific sources, is not allowed because the job of an anchor is to reconcile other &lt;div&gt;s to a reference that is valid independent of any particular edition. @seg would defeat that purpose.</a:documentation>
+      <a:documentation>For more, see &lt;div-ref&gt;.</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <ref name="source-ref"/>
+      <ref name="pointer-to-div-range"/>
+    </element>
+  </define>
+  <define name="seg-ref">
+    <attribute name="seg">
+      <a:documentation>picks specific segments in a leaf div. There must be an appropriate number of splits declared for those leaf divs in &lt;split-leaf-div-at&gt;.</a:documentation>
+      <ref name="seq-picker"/>
     </attribute>
+  </define>
+  <define name="reanchor-div-ref-item">
+    <element name="div-ref">
+      <a:documentation>refers to and groups one or more &lt;div&gt;s (or segments of &lt;div&gt;s).</a:documentation>
+      <a:documentation>&lt;div-ref&gt;s are expanded against @src/@work, @ref, and @seg. That is, a &lt;div-ref&gt; points to every segment of every div of every source cited.</a:documentation>
+      <a:documentation>A &lt;div-ref&gt;, or a group of &lt;div-ref&gt;s joined by @cont, are treated as many groups as sources referred to. That is, &lt;div-ref src="X Y" ... /&gt; will be treated as shorthand for &lt;div-ref src="X" ... /&gt; and &lt;div-ref src="Y" ... /&gt;. This applies to @work as well: &lt;div-ref work="w" ... /&gt; is equivalent to &lt;div-ref src="w1" ... /&gt;, &lt;div-ref src="w2" ... /&gt;, etc. </a:documentation>
+      <a:documentation>After this distinction between sources is made, the entire set of &lt;div&gt;s pointed to will be treated as a group, and processed as a whole (see @distribute). </a:documentation>
+      <a:documentation>&lt;div-ref&gt; is a grouping device, and is therefore unlike &lt;tok&gt;, which always refers to single items, never sets. As a result, the siblings &lt;div-ref src="X" ref="a"/&gt; and &lt;div-ref src="X" ref="b"/&gt; are NOT identical to &lt;div-ref src="X" ref="a, b"/&gt;   </a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <ref name="source-refs"/>
+      <ref name="pointer-to-div-range"/>
+      <optional>
+        <ref name="seg-ref"/>
+      </optional>
+    </element>
   </define>
   <define name="realignment">
     <element name="realign">
@@ -198,7 +183,7 @@
       <a:documentation>An UNANCHORED, ONE-SOURCE realigment consists solely of one or more &lt;div-ref&gt;s belonging to only one source. Any number of &lt;div&gt;s may be referred to by the child &lt;div-ref&gt;s. All &lt;div&gt;s referred to will be excluded from automatic alignment with every other version of the same work.</a:documentation>
       <a:documentation>An UNANCHORED, MULTIPLE-SOURCE realignment realigns &lt;div&gt;s from multiple sources. The number of &lt;div&gt;s per source must be identical, since these &lt;div&gt;s will not only be excluded from automatic alignment, but realigned with each other, with the nth &lt;div&gt; in each source constituting a realigned group.</a:documentation>
       <a:documentation>An ANCHORED, ONE-TO-ONE realignment consists of an &lt;anchor-div-ref&gt; that points to n &lt;div&gt;s, and each source invoked by the following &lt;div-ref&gt;s also point to n &lt;div&gt;s, which will be reanchored to the nth &lt;div&gt; in the anchor. </a:documentation>
-      <a:documentation>An ANCHORED ONE-TO-MANY realignment consists of an &lt;anchor-div-ref&gt; that points only to one &lt;div&gt;, and &lt;div-ref&gt;s that point to any number of sources and any number of &lt;div&gt;s. To that one anchor will be remapped each source's collection of &lt;div&gt;s to be reanchored. The sequence of &lt;div&gt;s referred to will be respected. If to an anchor A is remapped &lt;div&gt;s 2, 4, and 3, then  </a:documentation>
+      <a:documentation>An ANCHORED, ONE-TO-MANY realignment consists of an &lt;anchor-div-ref&gt; that points only to one &lt;div&gt;, and &lt;div-ref&gt;s that point to any number of sources and any number of &lt;div&gt;s. To that one anchor will be remapped each source's collection of &lt;div&gt;s to be reanchored. The sequence of &lt;div&gt;s referred to will be respected. If to an anchor A is remapped &lt;div&gt;s 2, 4, and 3, then  </a:documentation>
       <a:documentation>Realignment is disruptive, displacing any default alignment that might have been inferred in the reanchored source. Assume a case where a &lt;div&gt; with reference B is being realigned to an anchor with reference A. In the source to be reanchored reference A, if it exists, will be excluded from automatic alignment with the anchor, unless if it is explicitly included in a &lt;realign&gt;. </a:documentation>
       <a:documentation>All realignment, except one-to-many anchored, is inheritable, affecting not only the specified &lt;div&gt;s but also their descendants. That is, if X is realigned to Y, then children in X will be automatically aligned with children in Y, based on normalized values of @n. Children of &lt;div&gt;s in one-to-many anchored realignments must be explicitly realigned.</a:documentation>
       <a:documentation>Because of the distributive nature of the realignment, every value of @ref that involves a hyphen must have siblings with balanced depth on the left and right side of the hyphen (i.e., ref="1 - 2.1" would be invalid).</a:documentation>
@@ -217,124 +202,61 @@
             <zeroOrMore>
               <ref name="anchor-div-ref-item"/>
             </zeroOrMore>
-            <zeroOrMore>
-              <ref name="div-ref-item-for-source"/>
-            </zeroOrMore>
+            <oneOrMore>
+              <ref name="reanchor-div-ref-item"/>
+            </oneOrMore>
           </group>
         </interleave>
       </choice>
     </element>
   </define>
-  <define name="distribute-claim">
-    <attribute name="distribute">
-      <a:documentation>indicates whether div refs should be treated as groups, or if they should be matched one-to-one. </a:documentation>
-      <a:documentation>If @distribute is true, then every nth &lt;div&gt; referred to in every set (defined by a &lt;div-ref&gt; or a group of &lt;div-ref&gt;s joined by @cont) will be treated as a separate pairing/grouping. Therefore the number of references derived from @refs must be identical. (Sets must be isomorphic, each set having a bijective relationship to every other one.)</a:documentation>
-      <a:documentation>If this attribute is false, then each set of references in a single &lt;div-ref&gt; (or a group of &lt;div-ref&gt;s joined by @cont) will be aligned or realigned as a whole against every other group, without stipulating how alignments might be refined further.</a:documentation>
-      <a:documentation>If @distribute is not present, then if sets are isomorphic, @distribute is assumed to be true, otherwise false.</a:documentation>
-      <a:documentation>Take for example a case where the refs "1 - 2", "a - b", and "i - ii" are to be aligned. If @distribute is false, only one alignment set is created (presumably the divisions do not match well). But if @distribute is true, or if it is missing, then two sets are created: "1, a, i" and "2, b, ii".</a:documentation>
-      <a:documentation>In calculating the number of &lt;div&gt;s to be distributed, ranges in @ref are resolved shallowly. For example, ref="2 - 4 b" would be resolved something like ("2", "3", "4 a", "4 b"), not, e.g., ("2 a", "2 b", "3 a", "3 b", "4 a", "4 b").  </a:documentation>
-      <data type="boolean"/>
-    </attribute>
+  <!-- <claim> -->
+  <include href="incl/TAN-c-core.rng">
+    <define name="textual-objects">
+      <choice>
+        <ref name="source-refs"/>
+        <ref name="work-ref"/>
+      </choice>
+      <choice>
+        <group>
+          <ref name="pointer-to-div-range"/>
+          <optional>
+            <ref name="seg-ref"/>
+          </optional>
+        </group>
+        <oneOrMore>
+          <ref name="complex-text-ref"/>
+        </oneOrMore>
+      </choice>
+    </define>
+  </include>
+  <define name="set-of-claims">
+    <ref name="claimant"/>
+    <optional>
+      <ref name="subject"/>
+    </optional>
+    <optional>
+      <ref name="verb"/>
+    </optional>
+    <oneOrMore>
+      <ref name="claim"/>
+    </oneOrMore>
   </define>
-  <!-- <div-ref> and <anchor-div-ref> -->
-  <define name="anchor-div-ref-item">
-    <element name="anchor-div-ref">
-      <a:documentation>refers to a group of one or more &lt;div&gt;s (or segments of &lt;div&gt;s) to which &lt;div&gt;s from other versions of the same work should be realigned (defined by the &lt;div-ref&gt;s that follow). The first child of a &lt;realign&gt;, it is constructed exactly like &lt;div-ref&gt;, except that only @src, not @work, is used, and @seg is excluded. </a:documentation>
-      <a:documentation>&lt;anchor-div-ref&gt; does not permit the comma in @ref in an undistributed realignment, since realignment must always be made to a contiguous range of text. </a:documentation>
-      <a:documentation>If the parent &lt;realign&gt;'s @distribute is false, or missing, then each &lt;div-ref&gt; group will be realigned as a whole to the anchor, treated as a whole.</a:documentation>
-      <a:documentation>If @distribute is true, then every nth realign head will serve as the anchor for the nth realign head in each subsequent &lt;div-ref&gt;s (grouped by source).</a:documentation>
-      <a:documentation>@seg, which applies to splits in specific sources, is not allowed because the job of an anchor is to reconcile other &lt;div&gt;s to a reference that is valid independent of any particular edition. @seg would defeat that purpose.</a:documentation>
-      <a:documentation>For more, see &lt;div-ref&gt;.</a:documentation>
+  <define name="complex-text-ref">
+    <choice>
+      <ref name="claim-div-ref-item"/>
+      <ref name="tok-regular"/>
+    </choice>
+  </define>
+  <define name="claim-div-ref-item">
+    <element name="div-ref">
       <optional>
         <ref name="ed-stamp"/>
       </optional>
-      <ref name="source-ref"/>
       <ref name="pointer-to-div-range"/>
-    </element>
-  </define>
-  <define name="div-ref-item-for-work">
-    <element name="div-ref">
-      <ref name="div-ref-attr-core"/>
       <optional>
-        <ref name="strength-claim"/>
+        <ref name="seg-ref"/>
       </optional>
-      <ref name="work-ref"/>
     </element>
-  </define>
-  <define name="div-ref-group-for-work">
-    <element name="div-ref">
-      <a:documentation>refers to and groups one or more &lt;div&gt;s (or segments of &lt;div&gt;s).</a:documentation>
-      <a:documentation>&lt;div-ref&gt;s are expanded against @src/@work, @ref, and @seg. That is, a &lt;div-ref&gt; points to every segment of every div of every source cited.</a:documentation>
-      <a:documentation>A &lt;div-ref&gt;, or a group of &lt;div-ref&gt;s joined by @cont, are treated as many groups as sources referred to. That is, &lt;div-ref src="X Y" ... /&gt; will be treated as shorthand for &lt;div-ref src="X" ... /&gt; and &lt;div-ref src="Y" ... /&gt;. This applies to @work as well: &lt;div-ref work="w" ... /&gt; is equivalent to &lt;div-ref src="w1" ... /&gt;, &lt;div-ref src="w2" ... /&gt;, etc. </a:documentation>
-      <a:documentation>After this distinction between sources is made, the entire set of &lt;div&gt;s pointed to will be treated as a group, and processed as a whole (see @distribute). </a:documentation>
-      <a:documentation>&lt;div-ref&gt; is a grouping device, and is therefore unlike &lt;tok&gt;, which always refers to single items, never sets. As a result, the siblings &lt;div-ref src="X" ref="a"/&gt; and &lt;div-ref src="X" ref="b"/&gt; are NOT identical to &lt;div-ref src="X" ref="a, b"/&gt;   </a:documentation>
-      <ref name="div-ref-attr-core"/>
-      <optional>
-        <ref name="strength-claim"/>
-      </optional>
-      <ref name="work-ref"/>
-      <ref name="continuation"/>
-    </element>
-    <ref name="div-ref-group-continuation"/>
-  </define>
-  <define name="div-ref-item-for-source">
-    <element name="div-ref">
-      <ref name="div-ref-attr-core"/>
-      <optional>
-        <ref name="strength-claim"/>
-      </optional>
-      <ref name="source-refs"/>
-    </element>
-  </define>
-  <define name="div-ref-group-for-source">
-    <element name="div-ref">
-      <ref name="div-ref-attr-core"/>
-      <optional>
-        <ref name="strength-claim"/>
-      </optional>
-      <ref name="source-refs"/>
-      <ref name="continuation"/>
-    </element>
-    <ref name="div-ref-group-continuation"/>
-  </define>
-  <define name="div-ref-group-continuation">
-    <zeroOrMore>
-      <element name="div-ref">
-        <ref name="div-ref-attr-core"/>
-        <ref name="continuation"/>
-      </element>
-    </zeroOrMore>
-    <element name="div-ref">
-      <ref name="div-ref-attr-core"/>
-    </element>
-  </define>
-  <define name="div-ref-attr-core">
-    <optional>
-      <ref name="ed-stamp"/>
-    </optional>
-    <ref name="pointer-to-div-range"/>
-    <optional>
-      <ref name="seg-ref"/>
-    </optional>
-  </define>
-  <define name="seg-ref">
-    <attribute name="seg">
-      <a:documentation>picks specific segments in a leaf div. There must be an appropriate number of splits declared for those leaf divs in &lt;split-leaf-div-at&gt;.</a:documentation>
-      <ref name="seq-picker"/>
-    </attribute>
-  </define>
-  <define name="work-ref">
-    <attribute name="work">
-      <a:documentation>refers to a work by means of a source ID as a proxy. The attribute will be treated as indicating all sources that share the same work as the one mentioned.</a:documentation>
-      <a:documentation>If you wish to avoid aligning with all other versions of a work, use @src instead.</a:documentation>
-      <data type="string">
-        <param name="pattern">\S+</param>
-      </data>
-    </attribute>
-  </define>
-  <define name="work-refs">
-    <attribute name="work">
-      <a:documentation>refers to works by means of source IDs as a proxy. </a:documentation>
-    </attribute>
   </define>
 </grammar>

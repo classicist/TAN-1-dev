@@ -12,4 +12,5 @@
    <doc href="rights.TAN-key.xml"/>
    <doc href="roles.TAN-key.xml"/>
    <doc href="token-definitions.TAN-key.xml"/>
+   <doc href="verbs.TAN-key.xml"/>
 </collection>

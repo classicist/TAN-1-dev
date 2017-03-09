@@ -52,35 +52,6 @@
     <define name="item">
       <ref name="alignment"/>
     </define>
-    <define name="non-class-2-opt">
-      <optional>
-        <ref name="group-ref"/>
-      </optional>
-    </define>
-    <define name="alignment-attributes-non-class-2">
-      <a:documentation>alignments may claim bitext relations and reuse type</a:documentation>
-      <optional>
-        <ref name="internal-id"/>
-      </optional>
-      <optional>
-        <ref name="bitext-relation-attr"/>
-      </optional>
-      <optional>
-        <ref name="reuse-type-attr"/>
-      </optional>
-    </define>
-    <define name="alignment-content-non-class-2">
-      <a:documentation>alignments must contain one or more toks</a:documentation>
-      <oneOrMore>
-        <choice>
-          <ref name="tok-regular"/>
-          <ref name="tok-sequence"/>
-        </choice>
-      </oneOrMore>
-    </define>
-    <define name="continuation-opt">
-      <ref name="continuation"/>
-    </define>
   </include>
   <define name="decl-brel">
     <element name="bitext-relation">
@@ -111,5 +82,53 @@
       <a:documentation>points to one or more &lt;reuse-type&gt; @xml:id values that qualify the type of textual reuse that holds. Multiple values assume inclusive or (A or B or A and B)</a:documentation>
       <a:documentation>This attribute is inheritable. See main.xml#inheritable_attributes</a:documentation>
     </attribute>
+  </define>
+  <define name="alignment">
+    <element name="align">
+      <a:documentation>declares one or more groups of words that should be aligned with each other. &lt;align&gt; specifies that all the tokens invoked for one source collectively align with the tokens in the other. </a:documentation>
+      <choice>
+        <ref name="alignment-inclusion-opt"/>
+        <group>
+          <ref name="alignment-attributes-non-class-2"/>
+          <ref name="certainty-stamp"/>
+          <ref name="non-class-2-opt"/>
+          <interleave>
+            <zeroOrMore>
+              <ref name="comment"/>
+            </zeroOrMore>
+            <ref name="alignment-content-non-class-2"/>
+          </interleave>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="non-class-2-opt">
+    <optional>
+      <ref name="group-ref"/>
+    </optional>
+  </define>
+  <define name="alignment-inclusion-opt">
+    <ref name="inclusion"/>
+  </define>
+  <define name="alignment-attributes-non-class-2">
+    <a:documentation>alignments may claim bitext relations and reuse type</a:documentation>
+    <optional>
+      <ref name="internal-id"/>
+    </optional>
+    <optional>
+      <ref name="bitext-relation-attr"/>
+    </optional>
+    <optional>
+      <ref name="reuse-type-attr"/>
+    </optional>
+  </define>
+  <define name="alignment-content-non-class-2">
+    <a:documentation>alignments must contain one or more toks</a:documentation>
+    <oneOrMore>
+      <choice>
+        <ref name="tok-regular"/>
+        <ref name="tok-sequence"/>
+      </choice>
+    </oneOrMore>
   </define>
 </grammar>

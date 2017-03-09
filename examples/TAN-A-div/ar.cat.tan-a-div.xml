@@ -7,8 +7,7 @@
     id="tag:parkj@textalign.net,2015:ar.cat.tan-a-div">
     <head>
         <name>Alignment of Aristotle's Categories</name>
-        <!--<master-location href="http://textalign.net/release/TAN-1-dev/examples/TAN-A-div/ar.cat-tan-a-div.xml"/>-->
-        <!--<master-location href="ar.cat-tan-a-div.xml"/>-->
+        <master-location href="http://textalign.net/release/TAN-1-dev/examples/TAN-A-div/ar.cat.tan-a-div.xml"/>
         <rights-excluding-sources rights-holder="park">
             <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
             <name>Creative Commons Attribution 4.0 International License</name>
@@ -127,14 +126,6 @@
             <tok src="fra" ref="15 7" val="Et"/>
             <tok src="fra" ref="15 8" val="car"/>
         </split-leaf-div-at>
-        <!-- testing -->
-        <!--<split-leaf-div-at>
-            <tok src="fra" ref="1 1" pos="3"/>
-        </split-leaf-div-at>-->
-        <!--<realign>
-            <div-ref src="fra" ref="1 1"/>
-        </realign>-->
-        <!-- real ones below -->
         <realign>
             <anchor-div-ref src="grc" ref="1 1 1 - 1 1 3"/>
             <div-ref src="fra" ref="1 1 - 1 3"/>

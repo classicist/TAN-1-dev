@@ -12,7 +12,7 @@
       </xd:desc>
    </xd:doc>
    
-   <xsl:variable name="self-prepped" select="$self-core-errors-marked"/>
+   <xsl:variable name="self-prepped" select="tan:prep-TAN-claims($self-core-errors-marked)"/>
    <xsl:include href="incl/TAN-class-3-functions.xsl"/>
    <!-- CONTEXT INDEPEDENT FUNCTIONS -->
    <!-- CONTEXT DEPEDENT FUNCTIONS -->

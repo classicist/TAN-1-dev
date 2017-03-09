@@ -50,8 +50,9 @@
     <id element="agent person">
         <idrefs attribute="claimant"/>
     </id>
-    <id element="person agent verb work version modal">
+    <id element="person agent work version scriptum topic">
         <idrefs attribute="subject"/>
+        <idrefs attribute="object"/>
     </id>
     <id element="modal">
         <idrefs attribute="adverb"/>

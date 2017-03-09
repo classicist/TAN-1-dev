@@ -1340,7 +1340,7 @@
             else
                name($element-that-takes-attribute-which)"/>
       <xsl:variable name="all-TAN-key-docs" select="$extra-TAN-key-docs, $TAN-keywords"/>
-      <xsl:copy-of
+      <xsl:sequence
          select="
             for $i in $all-TAN-key-docs
             return

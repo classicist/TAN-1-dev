@@ -59,30 +59,6 @@ name-change =
 
 ## Option to include an internal id. Not needed in TAN-LM files.
 id-option = internal-id
-alignment =
-    
-    ## declares one or more groups of words or divs that should be aligned with each other. If in a TAN-A-tok file, <align> governs <tok>s (words); in TAN-A-div files, <div-ref> (divs and segments)
-    
-    ## In TAN-A-tok files, <align> specifies that all the tokens invoked for one source collectively align with the tokens in the other. This version of <align> allows @cert, @bitext-relation, and @reuse-type, in addition to the editorial stamp. 
-    
-    ## In TAN-A-div files, <align> specifies that every group of divs or segments (defined by a child <div-ref>) should be aligned with every other group in the alingment. This alignment is to be taken as adding to any default, automatic alignment. If @distribute is true, then every nth reference in every <div-ref> will be aligned to the nth reference in every other <div-ref>.  
-    
-    ## Anomalous alignments will not be reconciled. For example, if passages A, B, and C are realigned to passages X and Y, there is no stipulation on how or if this realignment should be refined. 
-    
-    ## Furthermore, one-to-one matches will entail an attempt to align the descendants. That is, if X is aligned to Y, then a TAN processor will also attempt to align every child in X with every child in Y, based on values of @n.
-    
-    ## For more see main.xml#tan-a-div_align
-    element align {
-        alignment-inclusion-opt
-        | (alignment-attributes-non-class-2,
-           certainty-stamp,
-           non-class-2-opt,
-           (comment* & alignment-content-non-class-2))
-    }
-non-class-2-opt = empty
-alignment-attributes-non-class-2 = empty
-alignment-content-non-class-2 = empty
-alignment-inclusion-opt = inclusion
 div-type-ref =
     
     ## is used by class-2 files to point to one or more <div-type>s in class-1 files. Permits multiple values separated by spaces.
@@ -132,7 +108,7 @@ pointer-to-div-range =
     
     ## For more, see main.xml#class_2_body 
     attribute ref { div-range-ref }
-pointer-to-div-item = attribute ref { div-range-item }
+pointer-to-div-item = attribute ref { div-item-ref }
 token-value-ref =
     
     ## specifies a particular word token by means of its string value. Permits regular expressions.
@@ -156,7 +132,7 @@ char-ref =
     
     ## Examples: '1', 'last', 'last-3 - last-1', '1, 3, 5, 7 - 11, last-8, last'
     attribute chars { seq-picker }
-continuation-opt = empty
+continuation-opt = continuation
 continuation =
     
     ## indicates whether the current element is continued by the next one and to be treated as a single one. Value must be 1 or true, implied by the very presence of the attribute. If you wish to decare it to be false, delete the attribute altogether.

@@ -1,7 +1,5 @@
 default namespace local = "tag:textalign.net,2015:ns"
 
-datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
-
 start =
     
     ## specifies that the file is a token-based TAN alignment file. Root element.
@@ -26,14 +24,6 @@ include "incl/TAN-class-2.rnc" {
         & decl-group-type*
     other-body-attributes = bitext-relation-attr, reuse-type-attr
     item = alignment
-    non-class-2-opt = group-ref?
-    
-    ## alignments may claim bitext relations and reuse type
-    alignment-attributes-non-class-2 = internal-id?, bitext-relation-attr?, reuse-type-attr?
-    
-    ## alignments must contain one or more toks
-    alignment-content-non-class-2 = (tok-regular | tok-sequence)+
-    continuation-opt = continuation
 }
 decl-brel =
     
@@ -63,3 +53,21 @@ reuse-type-attr =
     
     ## This attribute is inheritable. See main.xml#inheritable_attributes
     attribute reuse-type { text }
+alignment =
+    
+    ## declares one or more groups of words that should be aligned with each other. <align> specifies that all the tokens invoked for one source collectively align with the tokens in the other. 
+    element align {
+        alignment-inclusion-opt
+        | (alignment-attributes-non-class-2,
+           certainty-stamp,
+           non-class-2-opt,
+           (comment* & alignment-content-non-class-2))
+    }
+non-class-2-opt = group-ref?
+alignment-inclusion-opt = inclusion
+
+## alignments may claim bitext relations and reuse type
+alignment-attributes-non-class-2 = internal-id?, bitext-relation-attr?, reuse-type-attr?
+
+## alignments must contain one or more toks
+alignment-content-non-class-2 = (tok-regular | tok-sequence)+

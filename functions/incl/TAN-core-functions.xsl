@@ -204,7 +204,8 @@
    <!-- sources -->
    <xsl:variable name="sources-1st-da" select="tan:get-1st-doc($head/tan:source)"/>
    <xsl:variable name="sources-resolved"
-      select="tan:resolve-doc($sources-1st-da, false(), 'src', $source-ids, (), ())"/>
+      select="tan:resolve-doc($sources-1st-da, false(), 'src', $source-ids, (), ())"
+   />
    <!-- see-also, context -->
    <xsl:variable name="see-alsos-1st-da" select="tan:get-1st-doc($head/tan:see-also)"/>
    <xsl:variable name="see-alsos-resolved" select="tan:resolve-doc($see-alsos-1st-da)"/>
@@ -1426,6 +1427,10 @@
          <xsl:copy-of select="@*"/>
          <xsl:apply-templates mode="#current"/>
       </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:tail" mode="#all" priority="0">
+      <!-- We ignore, but retain, tails throughout -->
+      <xsl:copy-of select="."/>
    </xsl:template>
 
    <!-- Mode-specific templates -->

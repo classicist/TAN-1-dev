@@ -23,6 +23,6 @@
    <doc href="incl/TAN-class-2.rng"/>
    <doc href="incl/TAN-class-3.rng"/>
    <doc href="incl/TAN-core.rng"/>
-   <doc href="incl/TAN-c-core.rnc"/>
+   <doc href="incl/TAN-c-core.rng"/>
    <doc href="incl/TAN-LM-core.rng"/>
 </collection>

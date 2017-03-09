@@ -2,5 +2,5 @@
 	path = functions/regex
 	url = https://github.com/textalign/TAN-regex.git
 [submodule "stylesheets/incl/xslt-for-docx"]
-	path = stylesheets/incl/xslt-for-docx
+	path = do things/incl/xslt-for-docx
 	url = https://github.com/Arithmeticus/xslt-for-docx.git

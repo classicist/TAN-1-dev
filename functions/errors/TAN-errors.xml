@@ -37,6 +37,10 @@
     <group affects-attribute="n ref">
         <error xml:id="tan12"><rule>No single set of references may mix Roman numerals, alphabetic numerals, and numerals that are ambiguously either.</rule></error>
     </group>
+    <group affects-attribute="idrefs" affects-element="proxy">
+        <error xml:id="tan13"><rule>A &lt;proxy> may not mix idrefs from different elements.</rule></error>
+        <error xml:id="tan14"><rule>&lt;proxy> references must not be circular.</rule></error>
+    </group>
     <group affects-element="see-also relationship">
         <error xml:id="see01"><rule>Any &lt;see-also> whose &lt;relationship> is defined as requiring a target TAN file must point to a file whose root element is a TAN file.</rule></error>
         <error xml:id="see02"><rule>Any &lt;see-also> whose &lt;relationship> is defined as requiring a target TAN-c file must point to a TAN file whose root element is &lt;TAN-c>.</rule></error>

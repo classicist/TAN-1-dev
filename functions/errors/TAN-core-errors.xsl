@@ -170,6 +170,56 @@
          </xsl:if>
       </help>
    </xsl:function>
+   <xsl:function name="tan:idrefs" as="node()*">
+      <!-- Input: a string, documents or document fragments -->
+      <!-- Output: the elements that have an @xml:id value that matches the string, after it has been normalized and resolved for proxies -->
+      <xsl:param name="idrefs" as="xs:string?"/>
+      <xsl:param name="nodes" as="node()*"/>
+      <xsl:variable name="idrefs-norm" select="tokenize(tan:normalize-text($idrefs), ' ')"/>
+      <xsl:sequence select="tan:idrefs-loop($idrefs-norm, (), $nodes, ())"/>
+   </xsl:function>
+   <xsl:function name="tan:idrefs-loop" as="node()*">
+      <!-- Loop function for tan:idrefs -->
+      <xsl:param name="id-refs-to-check" as="xs:string*"/>
+      <xsl:param name="results-so-far" as="node()*"/>
+      <xsl:param name="nodes-to-check" as="node()*"/>
+      <xsl:param name="proxy-ids-already-checked" as="xs:string*"/>
+      <xsl:choose>
+         <xsl:when test="not(exists($id-refs-to-check))">
+            <xsl:sequence select="$results-so-far"/>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:variable name="nodes-that-match" select="$nodes-to-check//*[@xml:id = $id-refs-to-check]"/>
+            <xsl:variable name="proxies-that-match" select="$nodes-that-match/self::tan:proxy"/>
+            <xsl:variable name="ids-that-match-nothing" select="$id-refs-to-check[not(. = $nodes-that-match/@xml:id)]"/>
+            <xsl:if test="exists($ids-that-match-nothing)">
+               <xsl:copy-of select="tan:error('tan05', $ids-that-match-nothing)"/>
+            </xsl:if>
+            <xsl:choose>
+               <xsl:when test="not(exists($proxies-that-match))">
+                  <xsl:sequence select="$results-so-far, $nodes-that-match"/>
+               </xsl:when>
+               <xsl:when test="$proxies-that-match/@xml:id = $proxy-ids-already-checked">
+                  <xsl:sequence select="$results-so-far"/>
+                  <xsl:copy-of
+                     select="tan:error('tan14', $proxy-ids-already-checked[. = $proxies-that-match/@xml:id])"
+                  />
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:variable name="new-refs-to-check"
+                     select="
+                        for $i in $nodes-that-match/self::tan:proxy
+                        return
+                           tokenize(tan:normalize-text($i/@idrefs), ' ')"
+                  />
+                  <xsl:sequence
+                     select="tan:idrefs-loop($new-refs-to-check, ($results-so-far, $nodes-that-match[not(self::tan:proxy)]), $nodes-to-check, ($proxy-ids-already-checked, $nodes-that-match[self::tan:proxy]/@xml:id))"
+                  />
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:function>
 
 
    <!-- STYLESHEETS TO GENERATE ERRORS -->
@@ -400,6 +450,27 @@
          </xsl:apply-templates>
       </xsl:copy>
    </xsl:template>
+   <xsl:template match="tan:proxy" mode="core-errors">
+      <xsl:variable name="these-entities" select="tan:idrefs(@idrefs, root())"/>
+      <xsl:variable name="these-entity-names"
+         select="
+            distinct-values(for $i in $these-entities[not(self::tan:error)]
+            return
+               name($i))"
+      />
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:if test="exists(@idrefs) and not(exists($these-entities))">
+            <xsl:copy-of select="tan:error('tan05')"/>
+         </xsl:if>
+         <xsl:if test="count($these-entity-names) gt 1">
+            <xsl:variable name="this-message"
+               select="concat('mixes ', string-join($these-entity-names, ', '))"/>
+            <xsl:copy-of select="tan:error('tan13', $this-message)"/>
+         </xsl:if>
+         <xsl:copy-of select="$these-entities[self::tan:error]"/>
+      </xsl:copy>
+   </xsl:template>
    <xsl:template match="tan:agent[1]" mode="core-errors">
       <xsl:copy>
          <xsl:copy-of select="@*"/>
@@ -444,24 +515,41 @@
       <xsl:variable name="these-refs" as="element()*">
          <xsl:for-each
             select="@*[name(.) = $id-idrefs//tan:idrefs/@attribute][parent::tan:* or parent::tei:div]">
-            <xsl:variable name="these-values" select="tokenize(tan:normalize-text(.), '\s+')"/>
-            <xsl:variable name="these-distinct-values" select="distinct-values($these-values)"/>
-            <xsl:variable name="help-requested" select="tan:help-requested(.)"/>
+            <!-- we concern ourselves only with attributes that are meant to refer to other entities in the document -->
             <xsl:variable name="this-attribute-name" select="name(.)"/>
+            <xsl:variable name="help-requested" select="tan:help-requested(.)"/>
             <xsl:variable name="should-refer-to-which-element"
                select="
                   for $i in $id-idrefs//tan:id[tan:idrefs/@attribute = $this-attribute-name]/@element
                   return
                      tokenize($i, ' ')"
             />
-            <xsl:variable name="valid-referents"
+            <xsl:variable name="all-possible-valid-entities"
                select="$head//*[name(.) = $should-refer-to-which-element]"/>
-            <xsl:variable name="these-valid-referents"
-               select="$valid-referents[@xml:id = $these-values]"/>
-            <attribute name="{$this-attribute-name}">
-               <xsl:copy-of select="$these-valid-referents"/>
-               <xsl:for-each select="$these-values[not(. = $valid-referents/@xml:id)]">
-                  <xsl:variable name="this-error" select="."/>
+            
+            <xsl:variable name="entities-pointed-to"
+               select="
+                  if (. = '*') then
+                     $all-possible-valid-entities
+                  else
+                     tan:idrefs(., $head)"
+            />
+            <!--<xsl:variable name="these-values" select="tokenize(tan:normalize-text(.), '\s+')"/>-->
+            <xsl:variable name="these-values" select="$entities-pointed-to/@xml:id"/>
+            <xsl:variable name="these-distinct-values" select="distinct-values($these-values)"/>
+            <!--<xsl:variable name="these-valid-entities"
+               select="$valid-referents[@xml:id = $these-values]"/>-->
+            <xsl:variable name="these-valid-entities"
+               select="$entities-pointed-to[name() = $should-refer-to-which-element]"/>
+            <xsl:variable name="these-invalid-entities"
+               select="$entities-pointed-to[not(name() = $should-refer-to-which-element)]"/>
+            <xsl:variable name="value-normalized" select="string-join($entities-pointed-to/@xml:id, ' ')"/>
+            <attribute name="{$this-attribute-name}" val="{$value-normalized}">
+               <xsl:if test="not($value-normalized = .)">
+                  <xsl:attribute name="orig-val" select="."/>
+               </xsl:if>
+               <xsl:for-each select="$these-invalid-entities">
+                  <xsl:variable name="this-erroneous-id" select="@xml:id"/>
                   <xsl:variable name="this-message">
                      <xsl:value-of
                         select="concat('@', $this-attribute-name, ' must point to valid values of ')"/>
@@ -471,13 +559,13 @@
                            return
                               concat('&lt;', $i, '>'), ', ')"/>
                      <xsl:value-of
-                        select="concat(': delete ', ., ' or change to: ', string-join($valid-referents/@xml:id, ' '))"
+                        select="concat(': delete ', ., ' or change to: ', string-join($all-possible-valid-entities/@xml:id, ' '))"
                      />
                   </xsl:variable>
                   <xsl:variable name="this-fix" as="element()*">
                      <xsl:for-each select="$should-refer-to-which-element">
                         <xsl:element name="{.}">
-                           <xsl:attribute name="xml:id" select="$this-error"/>
+                           <xsl:attribute name="xml:id" select="$this-erroneous-id"/>
                         </xsl:element>
                      </xsl:for-each>
                   </xsl:variable>
@@ -491,10 +579,10 @@
                <xsl:if test="$help-requested = true()">
                   <xsl:variable name="referents-to-query"
                      select="
-                        if (exists($these-valid-referents)) then
-                           $these-valid-referents
+                        if (exists($these-valid-entities)) then
+                           $these-valid-entities
                         else
-                           $valid-referents"/>
+                           $all-possible-valid-entities"/>
                   <xsl:variable name="this-message">
                      <xsl:text>Options: </xsl:text>
                      <xsl:for-each select="$referents-to-query">
@@ -512,7 +600,23 @@
       <xsl:variable name="this-href-resolved"
          select="resolve-uri(@href, (root()/*/@base-uri, $doc-uri)[1])"/>
       <xsl:copy>
-         <xsl:copy-of select="@*"/>
+         <!--<xsl:copy-of select="@*"/>-->
+         <xsl:for-each select="@*">
+            <xsl:variable name="this-attr-name" select="name()"/>
+            <xsl:variable name="ref-check" select="$these-refs[@name = $this-attr-name]"/>
+            <xsl:choose>
+               <xsl:when test="exists($ref-check)">
+                  <xsl:attribute name="{$this-attr-name}" select="$ref-check/@val"/>
+                  <xsl:if test="exists($ref-check/@orig-val)">
+                     <xsl:attribute name="{concat('orig-',$this-attr-name)}"
+                        select="$ref-check/@orig-val"/>
+                  </xsl:if>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:copy-of select="."/>
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:for-each>
          <xsl:if test="@xml:id = $duplicate-ids">
             <xsl:copy-of select="tan:error('tan03')"/>
          </xsl:if>

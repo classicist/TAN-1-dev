@@ -115,6 +115,11 @@
       </data>
     </attribute>
   </define>
+  <define name="internal-idrefs">
+    <attribute name="idrefs">
+      <a:documentation>contains references to one or more values of xml:id in the file </a:documentation>
+    </attribute>
+  </define>
   <define name="IRI-gen">
     <a:documentation>Any generic IRI identifier.</a:documentation>
     <data type="anyURI">
@@ -855,6 +860,7 @@
         <zeroOrMore>
           <ref name="comment"/>
         </zeroOrMore>
+        <ref name="declaration-core"/>
         <ref name="declaration-items"/>
       </interleave>
     </element>
@@ -938,6 +944,26 @@
     </element>
   </define>
   <!-- 4th level of any TAN file, specifically the /*/head/declarations element -->
+  <define name="declaration-core">
+    <zeroOrMore>
+      <ref name="decl-alias"/>
+    </zeroOrMore>
+  </define>
+  <define name="decl-alias">
+    <element name="alias">
+      <a:documentation>assigns multiple values of xml:id to a single xml:id.</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <choice>
+        <ref name="inclusion"/>
+        <group>
+          <ref name="internal-id"/>
+          <ref name="internal-idrefs"/>
+        </group>
+      </choice>
+    </element>
+  </define>
   <define name="declaration-items">
     <a:documentation>declaration-items to be filled out by each TAN-class-X.rnc file</a:documentation>
     <empty/>

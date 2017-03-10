@@ -109,7 +109,7 @@
       <a:documentation>COMPLEX: There are cases where one wishes to treat more than one token, in whole or part, as a single entity. In this case, @cont should be used, and it must join &lt;tok&gt;s that have only single values for @src, @ref, and @pos. @chars may take multiple values.</a:documentation>
       <a:documentation>The behavior of &lt;tok&gt; differs from &lt;div-ref&gt;. The former is never treated as a group, whereas the latter is. For more, see &lt;div-ref&gt;.</a:documentation>
       <ref name="tok-attr-core"/>
-      <ref name="source-refs"/>
+      <ref name="tok-source-ref-opt"/>
       <ref name="pointer-to-div-range"/>
       <choice>
         <ref name="token-value-ref"/>
@@ -119,8 +119,14 @@
           <ref name="seq-pos-ref"/>
         </group>
       </choice>
-      <ref name="cert-opt"/>
+      <ref name="tok-cert-opt"/>
     </element>
+  </define>
+  <define name="tok-source-ref-opt">
+    <ref name="source-refs"/>
+  </define>
+  <define name="tok-cert-opt">
+    <ref name="cert-opt"/>
   </define>
   <define name="tok-sequence">
     <ref name="tok-with-src-and-cont"/>

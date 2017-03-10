@@ -38,6 +38,12 @@
     <define name="continuation-opt">
       <empty/>
     </define>
+    <define name="tok-source-ref-opt">
+      <empty/>
+    </define>
+    <define name="tok-cert-opt">
+      <empty/>
+    </define>
     <define name="TAN-body-core">
       <a:documentation>Redefining TAN-body-core not only defines what is in the body of a TAN-A-div but also excludes groups from it.</a:documentation>
       <zeroOrMore>
@@ -126,14 +132,17 @@
       </optional>
       <choice>
         <ref name="inclusion"/>
-        <interleave>
-          <zeroOrMore>
-            <ref name="comment"/>
-          </zeroOrMore>
-          <oneOrMore>
-            <ref name="tok-regular"/>
-          </oneOrMore>
-        </interleave>
+        <group>
+          <ref name="source-refs"/>
+          <interleave>
+            <zeroOrMore>
+              <ref name="comment"/>
+            </zeroOrMore>
+            <oneOrMore>
+              <ref name="tok-regular"/>
+            </oneOrMore>
+          </interleave>
+        </group>
       </choice>
     </element>
   </define>

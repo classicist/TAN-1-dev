@@ -35,6 +35,9 @@
     <define name="complex-subjects">
       <empty/>
     </define>
+    <define name="locus">
+      <empty/>
+    </define>
   </include>
   <define name="TAN-c-item">
     <oneOrMore>

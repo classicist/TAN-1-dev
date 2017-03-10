@@ -59,22 +59,19 @@ decl-mode =
 decl-scri =
     
     ## contains an IRI + name pattern identifying a text-bearing object.
-    element sciptum { decl-pattern-default }
+    element scriptum { decl-pattern-default }
 claim =
     
     ## contains one or more claims.
     element claim {
         inclusion
         | (ed-stamp?,
-           claimant?,
-           subject?,
-           verb?,
-           object?,
-           period-filter*,
-           place-filter?,
            cert-claim?,
-           locus?,
-           modal-claim?)
+           claimant?,
+           modal-claim?,
+           verb?,
+           place-filter?,
+           (subject? & object? & locus? & period-filter*))
     }
 claimant =
     
@@ -136,7 +133,7 @@ place-filter =
     ## restricts the <claim> to a specific <place>.
     ##  Multiple values of @where are interpreted to mean "or" with union. No distribution takes place (e.g., where="x y" means "[subject] x or y [verby]...", not "[subject] x [verb]..." and "[subject] y [verb]...").
     attribute where { text }
-locus = element locus { ed-stamp?, textual-objects }
+locus = element locus { ed-stamp?, textual-objects }+
 modal-claim =
     
     ## names a <modal> that qualifies the claim.

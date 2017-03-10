@@ -61,6 +61,13 @@
                 <name>Verbs that establish transitive relationships between subject and object. If X
                     [verb] Y and Y [verb] Z then X [verb] Z.</name>
             </group-type>
+            <group-type xml:id="locus-based">
+                <IRI>tag:textalign.net,2015:verb:group:locus-based</IRI>
+                <name>Verbs that require or or more &lt;locus>.</name>
+                <desc>These verbs are intended to support claims about how specific persons or
+                    scripta corroborate or depart from the reading of a particular locus of
+                    text.</desc>
+            </group-type>
         </declarations>
         <agent xml:id="kalvesmaki" roles="creator">
             <IRI>http://viaf.org/viaf/299582703</IRI>
@@ -108,6 +115,28 @@
                     </item>
                 </group>
             </group>
+        </group>
+        <group type="locus-based text-subject">
+            <item>
+                <IRI>tag:textalign.net,2015:verb:omits</IRI>
+                <name>omits</name>
+                <desc>The subject omits the reading at the locus. The claim takes no object.</desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:verb:agrees</IRI>
+                <name>agrees</name>
+                <desc>The subject agrees with the reading at the locus. The claim takes no object.</desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:verb:appends</IRI>
+                <name>appends</name>
+                <desc>The subject adds words defined by the object to the end of the locus.</desc>
+            </item>
+            <item>
+                <IRI>tag:textalign.net,2015:verb:replaces</IRI>
+                <name>replaces</name>
+                <desc>The subject replaces the reading at the locus with the words defined by the object.</desc>
+            </item>
         </group>
     </body>
 </TAN-key>

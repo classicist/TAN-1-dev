@@ -17,6 +17,7 @@ include "incl/TAN-class-3.rnc" {
 }
 include "incl/TAN-c-core.rnc" {
     complex-subjects = empty
+    locus = empty
 }
 TAN-c-item = claim+
 TAN-c-decl = TAN-c-decl-core

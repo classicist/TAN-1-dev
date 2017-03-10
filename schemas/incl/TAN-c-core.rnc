@@ -73,6 +73,7 @@ claim =
            period-filter*,
            place-filter?,
            cert-claim?,
+           locus?,
            modal-claim?)
     }
 claimant =
@@ -94,7 +95,12 @@ simple-subject =
     
     ##  Multiple values of @subject are interpreted to mean "and", resulting in distribution of the claim (e.g., subject="x y" becomes "x [verby]..." and "y [verb]...").
     attribute subject { text }
-complex-subjects = element subject { ed-stamp?, textual-objects }
+complex-subjects =
+    
+    ## points to text references that act as the subject of the claim.
+    
+    ##  Multiple values of <subject> are interpreted to mean "and", resulting in distribution of the claim (e.g., subject="x y" becomes "x [verby]..." and "y [verb]...").
+    element subject { ed-stamp?, textual-objects }
 verb =
     
     ## points to one or more <verb>s that serve to assert something of the @subject.
@@ -130,6 +136,7 @@ place-filter =
     ## restricts the <claim> to a specific <place>.
     ##  Multiple values of @where are interpreted to mean "or" with union. No distribution takes place (e.g., where="x y" means "[subject] x or y [verby]...", not "[subject] x [verb]..." and "[subject] y [verb]...").
     attribute where { text }
+locus = element locus { ed-stamp?, textual-objects }
 modal-claim =
     
     ## names a <modal> that qualifies the claim.

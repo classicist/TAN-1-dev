@@ -16,6 +16,8 @@ include "incl/TAN-class-2.rnc" {
     source-id-opt = internal-id
     declaration-items = decl-tok-def* & decl-supp-div-type* & decl-rename-div-n* & TAN-c-decl-core
     continuation-opt = empty
+    tok-source-ref-opt = empty
+    tok-cert-opt = empty
     
     ## Redefining TAN-body-core not only defines what is in the body of a TAN-A-div but also excludes groups from it.
     TAN-body-core = work-equiv*, div-type-equiv*, split*, realignment*, set-of-claims?
@@ -65,7 +67,8 @@ split =
     ## Each split creates a provisional segment, a textual subdivision of a leaf <div>.
     element split-leaf-div-at {
         ed-stamp?,
-        (inclusion | (comment* & tok-regular+))
+        (inclusion
+         | (source-refs, (comment* & tok-regular+)))
     }
 # <realign>
 anchor-div-ref-item =

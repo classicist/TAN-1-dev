@@ -81,11 +81,13 @@ tok-regular =
     ## The behavior of <tok> differs from <div-ref>. The former is never treated as a group, whereas the latter is. For more, see <div-ref>.
     element tok {
         tok-attr-core,
-        source-refs,
+        tok-source-ref-opt,
         pointer-to-div-range,
         (token-value-ref | seq-pos-ref | (token-value-ref, seq-pos-ref)),
-        cert-opt
+        tok-cert-opt
     }
+tok-source-ref-opt = source-refs
+tok-cert-opt = cert-opt
 tok-sequence = tok-with-src-and-cont, tok-with-cont-but-no-src*, tok-without-cont-or-src
 tok-sequence-attr-core =
     tok-attr-core,

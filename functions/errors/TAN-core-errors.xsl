@@ -183,14 +183,14 @@
       <xsl:param name="id-refs-to-check" as="xs:string*"/>
       <xsl:param name="results-so-far" as="node()*"/>
       <xsl:param name="nodes-to-check" as="node()*"/>
-      <xsl:param name="proxy-ids-already-checked" as="xs:string*"/>
+      <xsl:param name="alias-ids-already-checked" as="xs:string*"/>
       <xsl:choose>
          <xsl:when test="not(exists($id-refs-to-check))">
             <xsl:sequence select="$results-so-far"/>
          </xsl:when>
          <xsl:otherwise>
             <xsl:variable name="nodes-that-match" select="$nodes-to-check//*[@xml:id = $id-refs-to-check]"/>
-            <xsl:variable name="proxies-that-match" select="$nodes-that-match/self::tan:proxy"/>
+            <xsl:variable name="proxies-that-match" select="$nodes-that-match/self::tan:alias"/>
             <xsl:variable name="ids-that-match-nothing" select="$id-refs-to-check[not(. = $nodes-that-match/@xml:id)]"/>
             <xsl:if test="exists($ids-that-match-nothing)">
                <xsl:copy-of select="tan:error('tan05', $ids-that-match-nothing)"/>
@@ -199,21 +199,21 @@
                <xsl:when test="not(exists($proxies-that-match))">
                   <xsl:sequence select="$results-so-far, $nodes-that-match"/>
                </xsl:when>
-               <xsl:when test="$proxies-that-match/@xml:id = $proxy-ids-already-checked">
+               <xsl:when test="$proxies-that-match/@xml:id = $alias-ids-already-checked">
                   <xsl:sequence select="$results-so-far"/>
                   <xsl:copy-of
-                     select="tan:error('tan14', $proxy-ids-already-checked[. = $proxies-that-match/@xml:id])"
+                     select="tan:error('tan14', $alias-ids-already-checked[. = $proxies-that-match/@xml:id])"
                   />
                </xsl:when>
                <xsl:otherwise>
                   <xsl:variable name="new-refs-to-check"
                      select="
-                        for $i in $nodes-that-match/self::tan:proxy
+                        for $i in $nodes-that-match/self::tan:alias
                         return
                            tokenize(tan:normalize-text($i/@idrefs), ' ')"
                   />
                   <xsl:sequence
-                     select="tan:idrefs-loop($new-refs-to-check, ($results-so-far, $nodes-that-match[not(self::tan:proxy)]), $nodes-to-check, ($proxy-ids-already-checked, $nodes-that-match[self::tan:proxy]/@xml:id))"
+                     select="tan:idrefs-loop($new-refs-to-check, ($results-so-far, $nodes-that-match[not(self::tan:alias)]), $nodes-to-check, ($alias-ids-already-checked, $nodes-that-match[self::tan:alias]/@xml:id))"
                   />
                </xsl:otherwise>
             </xsl:choose>
@@ -450,7 +450,7 @@
          </xsl:apply-templates>
       </xsl:copy>
    </xsl:template>
-   <xsl:template match="tan:proxy" mode="core-errors">
+   <xsl:template match="tan:alias" mode="core-errors">
       <xsl:variable name="these-entities" select="tan:idrefs(@idrefs, root())"/>
       <xsl:variable name="these-entity-names"
          select="

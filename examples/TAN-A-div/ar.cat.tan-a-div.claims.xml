@@ -49,22 +49,22 @@
             <work xml:id="δ" which="Commentarium graecum Dexippi"/>
             <work xml:id="α" which="Lemmata de commentario graeco Ammonii"/>
             <work xml:id="αc" which="Explanationes de commentario graeco Ammonii"/>
-            <proxy xml:id="αd" idrefs="α αc"/>
+            <alias xml:id="αd" idrefs="α αc"/>
             <work xml:id="φ" which="Lemmata de commentario graeco Ioannis Philoponi"/>
             <work xml:id="φc" which="Explanationes de commentario graeco Ioannis Philoponi"/>
-            <proxy xml:id="φd" idrefs="φ φc"/>
+            <alias xml:id="φd" idrefs="φ φc"/>
             <work xml:id="ο" which="Lemmata de commentario graeco Olympiodori"/>
             <work xml:id="οc" which="Explanationes de commentario graeco Olympiodori"/>
-            <proxy xml:id="οd" idrefs="ο οc"/>
+            <alias xml:id="οd" idrefs="ο οc"/>
             <work xml:id="η" which="Lemmata de commentario graeco Eliae"/>
             <work xml:id="ηc" which="Explanationes de commentario graeco Eliae"/>
-            <proxy xml:id="ηd" idrefs="η ηc"/>
+            <alias xml:id="ηd" idrefs="η ηc"/>
             <work xml:id="σ" which="Lemmata de commentario graeco Simplicii"/>
             <work xml:id="σc" which="Explanationes de commentario graeco Simplicii"/>
-            <proxy xml:id="σd" idrefs="σ σc"/>
+            <alias xml:id="σd" idrefs="σ σc"/>
             <verb xml:id="omits" which="omits"/>
             <verb xml:id="agrees" which="agrees"/>
-            <proxy xml:id="comm-omnes" idrefs="π δ αd φd οd ηd σd"/>
+            <alias xml:id="comm-omnes" idrefs="π δ αd φd οd ηd σd"/>
         </declarations>
         <agent xml:id="park" roles="creator">
             <IRI>tag:parkj@textalign.net,2015:self</IRI>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../schemas/TAN-A-div.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="../../schemas/TAN-A-div.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<!--<?xml-model href="http://textalign.net/release/TAN-1-dev/schemas/TAN-A-div.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="http://textalign.net/release/TAN-1-dev/schemas/TAN-A-div.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>-->
+<TAN-A-div xmlns="tag:textalign.net,2015:ns" TAN-version="1 dev"
+    id="tag:parkj@textalign.net,2015:ar.cat.tan-a-div:claims">
+    <head>
+        <name>Comments and claims on Aristotle's Categories</name>
+        <master-location href="http://textalign.net/release/TAN-1-dev/examples/TAN-A-div/ar.cat.tan-a-div.xml"/>
+        <rights-excluding-sources rights-holder="park">
+            <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
+            <name>Creative Commons Attribution 4.0 International License</name>
+            <desc>This data file is licensed under a Creative Commons Attribution 4.0 International
+                License. The license is granted independent of rights and licenses associated with
+                the source. </desc>
+        </rights-excluding-sources>
+        <key>
+            <IRI>tag:parkj@textalign.net,2015:TAN-key:ar.cat</IRI>
+            <name>Keywords for Aristotle's Categories</name>
+            <location href="../TAN-key/ar.cat.TAN-key.xml"
+                when-accessed="2017-03-10T11:50:15.499-05:00"/>
+        </key>
+        <source xml:id="grc">
+            <IRI>tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:semantic-refs</IRI>
+            <name>Categories, Aristotle, Greek text by Minio-Paluello</name>
+            <location href="../ar.cat.grc.1949.minio-paluello-sem.xml"
+                when-accessed="2016-07-08T15:17:28.037-04:00"/>
+        </source>
+        <declarations>
+            <person xml:id="andronicus">
+                <IRI>https://inpho.cogs.indiana.edu/thinker/2532</IRI>
+                <IRI>http://dbpedia.org/resource/Andronicus_of_Rhodes</IRI>
+                <name>Andronicus of Rhodes</name>
+            </person>
+            <person xml:id="boethus">
+                <IRI>http://dbpedia.org/resource/Boethus_of_Sidon</IRI>
+                <name>Boethus of Sidon</name>
+            </person>
+            <person xml:id="herminus">
+                <IRI>http://dbpedia.org/resource/Herminus</IRI>
+                <name>Herminus</name>
+            </person>
+            <person xml:id="lmp">
+                <IRI>http://viaf.org/viaf/9855932/</IRI>
+                <name>Lorenzo Minio-Paluello</name>
+            </person>
+            <work xml:id="π" which="Commentarium graecum Porphyrii"/>
+            <work xml:id="δ" which="Commentarium graecum Dexippi"/>
+            <work xml:id="α" which="Lemmata de commentario graeco Ammonii"/>
+            <work xml:id="αc" which="Explanationes de commentario graeco Ammonii"/>
+            <proxy xml:id="αd" idrefs="α αc"/>
+            <work xml:id="φ" which="Lemmata de commentario graeco Ioannis Philoponi"/>
+            <work xml:id="φc" which="Explanationes de commentario graeco Ioannis Philoponi"/>
+            <proxy xml:id="φd" idrefs="φ φc"/>
+            <work xml:id="ο" which="Lemmata de commentario graeco Olympiodori"/>
+            <work xml:id="οc" which="Explanationes de commentario graeco Olympiodori"/>
+            <proxy xml:id="οd" idrefs="ο οc"/>
+            <work xml:id="η" which="Lemmata de commentario graeco Eliae"/>
+            <work xml:id="ηc" which="Explanationes de commentario graeco Eliae"/>
+            <proxy xml:id="ηd" idrefs="η ηc"/>
+            <work xml:id="σ" which="Lemmata de commentario graeco Simplicii"/>
+            <work xml:id="σc" which="Explanationes de commentario graeco Simplicii"/>
+            <proxy xml:id="σd" idrefs="σ σc"/>
+            <verb xml:id="omits" which="omits"/>
+            <verb xml:id="agrees" which="agrees"/>
+            <proxy xml:id="comm-omnes" idrefs="π δ αd φd οd ηd σd"/>
+        </declarations>
+        <agent xml:id="park" roles="creator">
+            <IRI>tag:parkj@textalign.net,2015:self</IRI>
+            <name xml:lang="eng">Jenny Park</name>
+        </agent>
+        <role xml:id="creator">
+            <IRI>http://schema.org/creator</IRI>
+            <name xml:lang="eng">creator</name>
+        </role>
+        <change when="2016-07-07" who="park">Started file</change>
+    </head>
+    <body claimant="lmp">
+        <comment when="2017-03-10-05:00" who="park">The following two claims interpret
+            Minio-Paluello's apparatus criticus entry for 1a2, which wonders whether Andronicus and
+            Boethus omitted τῆς οὐσίας and asserts that the reading adopted is found in the seven
+            commentators.</comment>
+        <claim subject="andronicus boethus" verb="omits" cert="0.5">
+            <locus work="grc">
+                <tok ref="1 1 1 1" pos="12-13"/>
+            </locus>
+        </claim>
+        <claim subject="herminus comm-omnes" verb="agrees">
+            <locus work="grc">
+                <tok ref="1 1 1 1" pos="12-13"/>
+            </locus>
+        </claim>
+    </body>
+</TAN-A-div>

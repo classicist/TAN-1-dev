@@ -64,8 +64,8 @@
             <div-type-ref src="ger" div-type-ref="Zeile"/>
             <div-type-ref src="eng-uk" div-type-ref="line"/>
         </equate-div-types>
-        <split-leaf-div-at>
-            <tok src="eng-us" ref="2" pos="last-3"/>
+        <split-leaf-div-at src="eng-us">
+            <tok ref="2" pos="last-3"/>
         </split-leaf-div-at>
     </body>
 </TAN-A-div>

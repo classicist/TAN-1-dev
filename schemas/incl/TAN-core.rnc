@@ -58,6 +58,9 @@ attr-cert2 =
     ## provides a second measure of certainty. The value is taken along with @cert as the range in which an editors certainty resides. 
     attribute cert2 { cert-content }
 cert-content = xsd:double { pattern = "1|0|(0\.\d*[1-9])" }
+error-flag = 
+    ## indicates the level of error that should be flagged to any algorithm that uses the parent element . Similar to Schematron's @role, but under a different name, to avoid confusion with TAN @roles.
+attribute flags { xsd:string { pattern = "warn(ing)?|error|info|fatal"}}
 group-ref =
     
     ## identifies one or more <group-type>s under which the parent element, and its children, should be grouped.
@@ -350,7 +353,7 @@ TAN-head =
             role-list+,
             agent-role-list*,
             # Changes, which must indicate through @who and @when who made the change, when  
-            change-list+))
+            change-list))
     }
 TAN-body =
     
@@ -503,7 +506,7 @@ change-list =
     ## The editor has discretion as to how long or detailed a <change> should be, or how many should be retained in a changelog. Ideally, <change>s documenting every published version should be retained.
     
     ## <change> elements may appear in any order, but it is good practice to put the most recent at the top.
-    element change { ed-stamp?, when-claim, agent-ref, text }
+    element change { ed-stamp?, when-claim, error-flag?, agent-ref, text }+
 # 4th level of any TAN file, specifically the /*/head/declarations element
 declaration-core = decl-alias*
 decl-alias =

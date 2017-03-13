@@ -7,7 +7,7 @@
    exclude-result-prefixes="#all" version="2.0">
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Updated </xd:b>August 18, 2016</xd:p>
+         <xd:p><xd:b>Updated </xd:b>March 11, 2017</xd:p>
          <xd:p>Variables, functions, and templates for marking errors in TAN files. To be used in
             conjunction with TAN-core-functions.xsl. Includes items related to help requests.</xd:p>
       </xd:desc>
@@ -410,7 +410,24 @@
                </xsl:for-each>
                <xsl:text>)</xsl:text>
             </xsl:variable>
-            <xsl:copy-of select="tan:error('wrn02', $this-message, $target-updates)"/>
+            <xsl:copy-of select="tan:info($this-message, $target-updates)"/>
+            <xsl:for-each select="$target-updates[@flags]">
+               <xsl:variable name="this-id" select="@when"/>
+               <xsl:choose>
+                  <xsl:when test="@flags = ('warn', 'warning')">
+                     <warning xml:id="{$this-id}"><rule><xsl:value-of select="."/></rule></warning>
+                  </xsl:when>
+                  <xsl:when test="@flags = 'error'">
+                     <error xml:id="{$this-id}"><rule><xsl:value-of select="."/></rule></error>
+                  </xsl:when>
+                  <xsl:when test="@flags = 'fatal'">
+                     <fatal xml:id="{$this-id}"><rule><xsl:value-of select="."/></rule></fatal>
+                  </xsl:when>
+                  <xsl:when test="@flags = 'info'">
+                     <info xml:id="{$this-id}"><message><xsl:value-of select="."/></message></info>
+                  </xsl:when>
+               </xsl:choose>
+            </xsl:for-each>
          </xsl:if>
          <xsl:if test="$target-is-faulty = false() and $target-is-in-progress = true()">
             <xsl:copy-of select="tan:error('wrn03')"/>

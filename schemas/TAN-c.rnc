@@ -16,7 +16,7 @@ include "incl/TAN-class-3.rnc" {
     other-body-attributes = claimant, subject?, verb?
 }
 include "incl/TAN-c-core.rnc" {
-    complex-subjects = empty
+    complex-subject = empty
     locus = empty
 }
 TAN-c-item = claim+

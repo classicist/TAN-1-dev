@@ -71,7 +71,7 @@ claim =
            modal-claim?,
            verb?,
            place-filter?,
-           (subject? & object? & locus? & period-filter*))
+           (subject? & object? & locus? & period-filter* & rationale?))
     }
 claimant =
     
@@ -81,23 +81,29 @@ claimant =
     
     ## This attribute is taken into account before all other attributes. That is, @claimant is to be interpreted to mean: "@claimant states the following:...." Multiple values of @claimant are interpreted to mean "and", resulting in distribution of the claim (e.g., claimant="x y" becomes "x claims that..." and "y claims that...").
     
-    ## The concept of @claimant is not recursive. TAN-c is not designed to make claims that claimant X claimed that claimant Y claimed that claimant Z....
+    ## If you wish to claim that claimant X claimed that claimant Y claimed that claimant Z...., only the original claimant is given to @claimant, and each of the other claimants are placed in a @subject in an embedded <claim> that serves as the object of the master <claim>. 
     
     ## This attribute is inheritable. See main.xml#inheritable_attributes
     attribute claimant { text }
-subject = simple-subject | complex-subjects+
+subject = simple-subject | complex-subject+
 simple-subject =
     
     ## points to one or more ID refs of entities defined in <head> that serve as the grammatical subject of a claim. @subject within <body> indicates the default subject(s) for <claim>s. 
     
     ##  Multiple values of @subject are interpreted to mean "and", resulting in distribution of the claim (e.g., subject="x y" becomes "x [verby]..." and "y [verb]...").
     attribute subject { text }
-complex-subjects =
+complex-subject =
     
     ## points to text references that act as the subject of the claim.
     
     ##  Multiple values of <subject> are interpreted to mean "and", resulting in distribution of the claim (e.g., subject="x y" becomes "x [verby]..." and "y [verb]...").
-    element subject { ed-stamp?, textual-objects }
+    element subject { ed-stamp?, textual-reference }
+modal-claim =
+    
+    ## names a <modal> that qualifies the claim.
+    
+    ##  Multiple values of @adverb are interpreted to mean "and" with intersection. No distribution takes place (e.g., adverb="x y" means "[subject] x & y [verby]...", not "[subject] x [verb]..." and "[subject] y [verb]...").
+    attribute adverb { text }
 verb =
     
     ## points to one or more <verb>s that serve to assert something of the @subject.
@@ -106,7 +112,12 @@ verb =
     
     ##  Multiple values of @verb are interpreted to mean "and", resulting in distribution of the claim (e.g., verb="x y" becomes "[subject] x ..." and "[subject] y...").
     attribute verb { text }
-object = simple-object | complex-objects+
+place-filter =
+    
+    ## restricts the <claim> to a specific <place>.
+    ##  Multiple values of @where are interpreted to mean "or" with union. No distribution takes place (e.g., where="x y" means "[subject] x or y [verby]...", not "[subject] x [verb]..." and "[subject] y [verb]...").
+    attribute where { text }
+object = simple-object | complex-object+
 simple-object =
     
     ## takes one or more ID refs of entities defined in <head> that serve as the grammatical object of a claim. For example, if you wish to say that work A is a commentary on work B, then the object would have the ID ref for work B. If you wish to make more complex assertions, use <object>.
@@ -115,28 +126,24 @@ simple-object =
     
     ## In RDF, the concept of object (the third element of a triple) is required. In TAN-c, it is not required, since some <verb>s may be intransitive (e.g., "Charlie slept.").
     attribute object { text }
-complex-objects =
+complex-object = object-element | claim+
+object-element =
     
     ## is similar to @object, but for complex content, mainly concepts that do not lend themselves to the IRI + name pattern, particularly languages and units or passages of text.
-    element object {
-        ed-stamp?,
-        (((lang-of-content | units)?, text)
-         | textual-objects)
-    }
-textual-objects = empty
+    element object { ed-stamp?, (nontextual-reference | textual-reference) }
+nontextual-reference = (lang-of-content | units)?, text
+textual-reference = empty
 units =
     
     ## points to the ID ref of a <unit>, defining the type of units.
     attribute units { text }
-place-filter =
+locus = element locus { ed-stamp?, textual-reference }+
+rationale = simple-rationale | complex-rationale+
+simple-rationale =
     
-    ## restricts the <claim> to a specific <place>.
-    ##  Multiple values of @where are interpreted to mean "or" with union. No distribution takes place (e.g., where="x y" means "[subject] x or y [verby]...", not "[subject] x [verb]..." and "[subject] y [verb]...").
-    attribute where { text }
-locus = element locus { ed-stamp?, textual-objects }+
-modal-claim =
+    ## points to an entity that serves as the rationale for why a claim was made. 
+    attribute claim-basis { text }
+complex-rationale =
     
-    ## names a <modal> that qualifies the claim.
-    
-    ##  Multiple values of @adverb are interpreted to mean "and" with intersection. No distribution takes place (e.g., adverb="x y" means "[subject] x & y [verby]...", not "[subject] x [verb]..." and "[subject] y [verb]...").
-    attribute adverb { text }
+    ## points to a textual passage that serves as the rationale for why a claim was made.
+    element claim-basis { ed-stamp?, textual-reference }

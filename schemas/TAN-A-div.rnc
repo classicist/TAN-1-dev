@@ -131,10 +131,10 @@ realignment =
     }
 # <claim>
 include "incl/TAN-c-core.rnc" {
-    textual-objects =
-        (source-refs | work-ref),
-        ((pointer-to-div-range, seg-ref?) | complex-text-ref+)
+    textual-reference = simple-textual-reference | complex-textual-reference-set
 }
 set-of-claims = claimant, subject?, verb?, claim+
+simple-textual-reference = (source-refs | work-ref), pointer-to-div-range, seg-ref?
+complex-textual-reference-set = (source-refs | work-ref), complex-text-ref+
 complex-text-ref = claim-div-ref-item | tok-regular
 claim-div-ref-item = element div-ref { ed-stamp?, pointer-to-div-range, seg-ref? }

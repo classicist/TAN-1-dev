@@ -30,6 +30,7 @@
         <declarations>
             <work>
                 <IRI>http://dbpedia.org/resource/Categories_(Aristotle)</IRI>
+                <IRI>tag:textalign.net,2015:work:aristotle:categories</IRI>
                 <name>Aristotle, Categories</name>
             </work>
             <div-type xml:id="p">

@@ -22,10 +22,11 @@
                 when-accessed="2017-03-10T11:50:15.499-05:00"/>
         </key>
         <source xml:id="grc">
-            <IRI>tag:kalvesmaki.com,2014:tan-t:ar.cat.grc.1949.minio-paluello:semantic-refs</IRI>
-            <name>Categories, Aristotle, Greek text by Minio-Paluello</name>
-            <location href="../ar.cat.grc.1949.minio-paluello-sem.xml"
-                when-accessed="2016-07-08T15:17:28.037-04:00"/>
+            <IRI>tag:kalvesmaki.com,2014:tan-t:ar.cat.eng.1926.edghill:model-object-refs</IRI>
+            <name>Categories, Aristotle, English translation by E. M. Edghill</name>
+            <location
+                href="file:/Users/joelk/Dropbox/TAN/TAN-1-dev/examples/ar.cat.eng.1926.edghill.obj.xml"
+                when-accessed="2017-03-13T11:19:47.558-04:00"/>
         </source>
         <declarations>
             <person xml:id="andronicus">
@@ -37,9 +38,17 @@
                 <IRI>http://dbpedia.org/resource/Boethus_of_Sidon</IRI>
                 <name>Boethus of Sidon</name>
             </person>
+            <person xml:id="dexippus">
+                <IRI>http://dbpedia.org/resource/Dexippus</IRI>
+                <name>Dexippus</name>
+            </person>
             <person xml:id="herminus">
                 <IRI>http://dbpedia.org/resource/Herminus</IRI>
                 <name>Herminus</name>
+            </person>
+            <person xml:id="porphyry">
+                <IRI>http://dbpedia.org/resource/Porphyry_(Philosopher)</IRI>
+                <name>Porphyry</name>
             </person>
             <person xml:id="lmp">
                 <IRI>http://viaf.org/viaf/9855932/</IRI>
@@ -48,32 +57,48 @@
             <person xml:id="nc">
                 <IRI>tag:parkj@textalign.net,2015:person:ita:milan:ambrosianus:L-93:manus-recentior</IRI>
                 <name>Anonymous scribe</name>
-                <desc>Someone after the ninth century added 13a1-30.</desc>
+                <desc>A person who sometime after the ninth century added 13a1-30.</desc>
             </person>
-            <person xml:id="Δ">
-                <IRI>tag:parkj@textalign.net,2015:person:armenian-translator-x</IRI>
-                <name>Anonymous Armenian translator</name>
-                <desc>Flourished in the fifth century; once ascribed to a translator named David.</desc>
-            </person>
-            <person xml:id="Λ">
+            <person xml:id="boethius">
                 <IRI>http://dbpedia.org/resource/Boethius</IRI>
                 <name>Anicius Manlius Severinus Boëthius</name>
             </person>
-            <person xml:id="Ρ">
+            <person xml:id="sergius">
                 <IRI>http://viaf.org/viaf/103637653</IRI>
-                <IRI>http://syriaca.org/person/49</IRI>
+                <IRI>http://syriaca.org/work/49</IRI>
                 <name>Sergius of Reshaina</name>
             </person>
-            <person xml:id="Ι">
+            <person xml:id="jacob">
                 <IRI>http://viaf.org/viaf/50027842</IRI>
-                <IRI>http://syriaca.org/person/113</IRI>
+                <IRI>http://syriaca.org/work/113</IRI>
                 <name>Jacob of Edessa</name>
             </person>
-            <person xml:id="Γ">
+            <person xml:id="george">
                 <IRI>http://viaf.org/viaf/88628511</IRI>
-                <IRI>http://syriaca.org/person/122</IRI>
+                <IRI>http://syriaca.org/work/122</IRI>
                 <name>George, Bishop of the Arabs</name>
             </person>
+            <work xml:id="Δ">
+                <IRI>tag:textalign.net,2015:work:aristotle:categories:translation:armenian</IRI>
+                <name>Anonymous Armenian translation</name>
+                <desc>5th-c. translation once ascribed to a translator named David.</desc>
+            </work>
+            <work xml:id="Λ">
+                <IRI>tag:textalign.net,2015:work:aristotle:categories:translation:latin</IRI>
+                <name>Latin translation of Aristotle's Categories by Anicius Manlius Severinus Boëthius</name>
+            </work>
+            <work xml:id="Ρ">
+                <IRI>tag:textalign.net,2015:work:aristotle:categories:translation:syriac:sergius</IRI>
+                <name>Syriac translation of Aristotle's Categories by Sergius of Reshaina</name>
+            </work>
+            <work xml:id="Ι">
+                <IRI>tag:textalign.net,2015:work:aristotle:categories:translation:syriac:jacob</IRI>
+                <name>Syriac translation of Aristotle's Categories by Jacob of Edessa</name>
+            </work>
+            <work xml:id="Γ">
+                <IRI>tag:textalign.net,2015:work:aristotle:categories:translation:syriac:george</IRI>
+                <name>Syriac translation of Aristotle's Categories by George, Bishop of the Arabs</name>
+            </work>
             <scriptum xml:id="n">
                 <IRI>tag:parkj@textalign.net,2015:scriptum:ita:milan:ambrosianus:L-93</IRI>
                 <name>Ambrosianus L 93</name>
@@ -101,10 +126,13 @@
             <work xml:id="σ" which="Lemmata de commentario graeco Simplicii"/>
             <work xml:id="σc" which="Explanationes de commentario graeco Simplicii"/>
             <alias xml:id="σd" idrefs="σ σc"/>
+            <alias xml:id="comm-omnes" idrefs="π δ αd φd οd ηd σd"/>
+            
             <verb xml:id="omits" which="omits"/>
             <verb xml:id="agrees" which="agrees"/>
             <verb xml:id="replaces" which="replaces" object-datatype="string"/>
-            <alias xml:id="comm-omnes" idrefs="π δ αd φd οd ηd σd"/>
+            
+            <modal which="possibly" xml:id="perhaps"/>
         </declarations>
         <agent xml:id="park" roles="creator">
             <IRI>tag:parkj@textalign.net,2015:self</IRI>
@@ -118,37 +146,47 @@
     </head>
     <body claimant="lmp">
         <comment when="2017-03-10-05:00" who="park">The following two claims interpret
-            Minio-Paluello's apparatus criticus entry for 1a2, which wonders whether Andronicus and
-            Boethus omitted τῆς οὐσίας and asserts that the reading adopted is found in the seven
-            commentators. The TAN assertions do not convey the evidence M-P supplies.</comment>
-        <claim subject="andronicus boethus" verb="omits" cert="0.5">
+            Minio-Paluello's apparatus criticus entry for 1a2, which suggests that Andronicus and
+            Boethus might have omitted τῆς οὐσίας (based on what Porphyry and Dexippus say) and
+            asserts that the reading adopted is found in the seven commentators. This interpretation
+            sticks close to M-P's original, and does not fill in important gaps. For example,
+            Dexippus's remark comes from his commentary, 1.18 (p. 21.20) and is reliant wholly on a
+            fragment of Porphyry preserved in Simplicius's commentary, p. 30.1-2. Furthermore, these
+            sources show that the claim is not that Andronicus and Boethus omitted the text, or
+            relied on sources that had omitted it, but that they observed that there were
+            manuscripts that had done so.</comment>
+        <claim subject="andronicus boethus" adverb="perhaps" verb="omits"
+            claim-basis="dexippus porphyry">
             <locus work="grc">
-                <tok ref="1 1 1 1" pos="12-13"/>
+                <tok ref="1 a 2" pos="3-4"/>
             </locus>
         </claim>
         <claim subject="herminus comm-omnes" verb="agrees">
             <locus work="grc">
-                <tok ref="1 1 1 1" pos="12-13"/>
+                <tok ref="1 a 2" pos="3-4"/>
             </locus>
         </claim>
         <comment when="2017-03-10" who="park">The next three claims assert that the reading, ἀποδιδῷ
             τις, is attested to by π α φ ο but B transposes the words, and perhaps Boethius does as
-            well.</comment>
+            well. The claim sticks close to M-P's syntax, and does not fill in statements he would
+            expect an intelligent reader to supply, e.g., that the claim is not that Boethius's
+            translation perhaps transposed the words, but that Boethius was perhaps following one or
+            more Greek manuscripts that did.</comment>
         <claim subject="B" verb="replaces">
             <locus work="grc">
-                <tok ref="1 1 1 3" pos="3-4"/>
+                <tok ref="1 a 5" pos="1-2"/>
             </locus>
             <object>τις ἀποδιδῷ</object>
         </claim>
-        <claim subject="Λ" verb="replaces" cert="0.5">
+        <claim subject="Λ" adverb="perhaps" verb="replaces">
             <locus work="grc">
-                <tok ref="1 1 1 3" pos="3-4"/>
+                <tok ref="1 a 5" pos="1-2"/>
             </locus>
             <object>τις ἀποδιδῷ</object>
         </claim>
         <claim subject="π α φ ο" verb="agrees">
             <locus work="grc">
-                <tok ref="1 1 1 3" pos="3-4"/>
+                <tok ref="1 a 5" pos="1-2"/>
             </locus>
         </claim>
     </body>

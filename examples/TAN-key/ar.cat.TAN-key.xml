@@ -17,11 +17,20 @@
             <IRI>tag:parkj@textalign.net,2015:self</IRI>
             <name xml:lang="eng">Jenny Park</name>
         </agent>
+        <agent xml:id="xslt1" roles="stylesheet1">
+            <IRI>tag:textalign.net,2015:stylesheet:rearrange-tan-file-and-tan-key</IRI>
+            <name>Stylesheet to populate a TAN-A-div file from collections.</name>
+            <desc>Stylesheet at: ../../../stylesheets/core-for-TAN-output.xsl</desc>
+        </agent>
         <role xml:id="creator">
             <IRI>http://schema.org/creator</IRI>
             <name xml:lang="eng">creator</name>
         </role>
+        <role xml:id="stylesheet1" which="stylesheet"/>
         <change when="2016-07-07" who="park">Started file</change>
+        <change who="xslt1" when="2017-03-13T12:39:16.391-04:00">File populated with &lt;item&gt;s
+            imported from dependent file tag:parkj@textalign.net,2015:ar.cat.tan-a-div:claims at
+            file:/Users/joelk/Dropbox/TAN/TAN-1-dev/examples/TAN-A-div/ar.cat.tan-a-div.claims.xml.</change>
     </head>
     <body in-progress="true" affects-element="work">
         <item>
@@ -104,5 +113,27 @@
                     Categories</name>
             </item>
         </group>
+        <item>
+            <IRI>tag:textalign.net,2015:work:aristotle:categories:translation:armenian</IRI>
+            <name>Anonymous Armenian translation</name>
+            <desc>5th-c. translation once ascribed to a translator named David.</desc>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:work:aristotle:categories:translation:latin</IRI>
+            <name>Latin translation of Aristotle's Categories by Anicius Manlius Severinus
+                Boëthius</name>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:work:aristotle:categories:translation:syriac:sergius</IRI>
+            <name>Syriac translation of Aristotle's Categories by Sergius of Reshaina</name>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:work:aristotle:categories:translation:syriac:jacob</IRI>
+            <name>Syriac translation of Aristotle's Categories by Jacob of Edessa</name>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:work:aristotle:categories:translation:syriac:george</IRI>
+            <name>Syriac translation of Aristotle's Categories by George, Bishop of the Arabs</name>
+        </item>
     </body>
 </TAN-key>

@@ -196,7 +196,7 @@
             <xsl:copy-of select="tan:error('clm07')"/>
          </xsl:if>
          <xsl:if
-            test="not(exists(@object)) and not(exists(tan:object)) and $verbal-groups = 'object-required'">
+            test="not(exists(@object)) and not(exists(tan:object) or exists(tan:claim)) and $verbal-groups = 'object-required'">
             <xsl:copy-of select="tan:error('clm06', 'object is required')"/>
          </xsl:if>
          <xsl:if test="$verbal-groups = 'text-object' and (not(exists(tan:object//@ref)) or exists($objects-that-are-not-textual))">

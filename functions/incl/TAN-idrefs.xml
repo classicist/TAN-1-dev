@@ -53,6 +53,7 @@
     <id element="person agent work version scriptum topic">
         <idrefs attribute="subject"/>
         <idrefs attribute="object"/>
+        <idrefs attribute="claim-basis"/>
     </id>
     <id element="modal">
         <idrefs attribute="adverb"/>

@@ -25,6 +25,10 @@
                 <name>Verbs that have objects that are text-bearing objects: persons, agents,
                     scripta, versions, works.</name>
             </group-type>
+            <group-type xml:id="claim-object">
+                <IRI>tag:textalign.net,2015:verb:group:claim-object</IRI>
+                <name>Verbs that have objects that are claims.</name>
+            </group-type>
             <group-type xml:id="object-required">
                 <IRI>tag:textalign.net,2015:verb:group:object-required</IRI>
                 <name>Verbs that require objects</name>
@@ -136,6 +140,14 @@
                 <IRI>tag:textalign.net,2015:verb:replaces</IRI>
                 <name>replaces</name>
                 <desc>The subject replaces the reading at the locus with the words defined by the object.</desc>
+            </item>
+        </group>
+        <group type="text-subject claim-object object-required">
+            <item>
+                <IRI>tag:textalign.net,2015:verb:indicates</IRI>
+                <name>indicates</name>
+                <name>provides written evidence that</name>
+                <desc>The subject provides evidence for a certain claim.</desc>
             </item>
         </group>
     </body>

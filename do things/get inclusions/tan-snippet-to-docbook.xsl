@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0"
     xmlns="http://docbook.org/ns/docbook" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:rng="http://relaxng.org/ns/structure/1.0"
+    xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:docbook="http://docbook.org/ns/docbook" 
     xmlns:math="http://www.w3.org/2005/xpath-functions/math" xmlns:tan="tag:textalign.net,2015:ns"
     exclude-result-prefixes="#all" version="3.0">
     <xsl:function name="tan:examples" as="element()*">
@@ -20,31 +20,36 @@
                 select="concat('\s', $element-or-attribute-name, '=&quot;[^&quot;]+&quot;|&lt;/?', $element-or-attribute-name, '(/?>|\s+[^&gt;]*>)')"/>
             <xsl:variable name="text-emphasized" select="analyze-string($text, $text-to-emphasize)"/>
             <xsl:variable name="example-file-name" select="replace(base-uri(current-group()[1]),'.+/([^/]+)$','$1')"/>
-            <para>
-                <example>
-                    <title>
-                        <code>
-                            <xsl:value-of
-                                select="
-                                    tan:node-string-norm($element-or-attribute-name,
-                                    if ($is-attribute = true()) then
-                                        'attribute'
-                                    else
-                                        'element')"
-                            />
-                        </code>
-                    </title>
-                    <programlisting><xsl:apply-templates select="$text-emphasized" mode="emph-string-for-docbook"/></programlisting>
-                </example>
-                <note>
-                    <para>
-                        <xsl:text>Taken from </xsl:text>
-                        <link xlink:href="{'../../examples/' || $example-file-name}">
-                            <xsl:value-of select="$example-file-name"/>
-                        </link>
-                    </para>
-                </note>
-            </para>
+            <xsl:variable name="docbook-example" as="element()">
+                <para>
+                    <example>
+                        <title>
+                            <code>
+                                <xsl:value-of
+                                    select="
+                                        tan:string-representation-of-component($element-or-attribute-name,
+                                        if ($is-attribute = true()) then
+                                            'attribute'
+                                        else
+                                            'element')"
+                                />
+                            </code>
+                        </title>
+                        <programlisting><xsl:apply-templates select="$text-emphasized" mode="emph-string-for-docbook"/></programlisting>
+                    </example>
+                    <note>
+                        <para>
+                            <xsl:text>Taken from </xsl:text>
+                            <link xlink:href="{'../../examples/' || $example-file-name}">
+                                <xsl:value-of select="$example-file-name"/>
+                            </link>
+                        </para>
+                    </note>
+                </para>
+            </xsl:variable>
+            <xsl:if test="string-length($docbook-example/docbook:example/docbook:programlisting) le $max-example-size">
+                <xsl:sequence select="$docbook-example"/>
+            </xsl:if>
         </xsl:for-each-group>
     </xsl:function>
     <xsl:function name="tan:element-to-example-text" as="xs:string?">
@@ -194,14 +199,14 @@
             <!-- the node is neither an example nor an ancestor of an example, so we should ignore it unless if it is a contextual sibling or contextual child, in which case we shallow copy it -->
             <xsl:otherwise>
                 <xsl:if test="$is-contextual-sibling = true() or $is-contextual-child = true()">
-                    <xsl:value-of select="tan:shallow-copy(.)"/>
+                    <xsl:value-of select="tan:guidelines-shallow-copy(.)"/>
                 </xsl:if>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
     
     <xsl:template match="@*" mode="tree-to-text" as="xs:string?">
-        <xsl:value-of select="concat(' ', name(.), '=&quot;', ., '&quot;')"/>
+        <xsl:value-of select="concat(' ', name(.), '=&quot;', replace(.,'\s(\s+)','&#xa;$1'), '&quot;')"/>
     </xsl:template>
 
     <xsl:function name="tan:indent" as="xs:string?">
@@ -247,7 +252,7 @@
                     (), '&lt;/', name($element), '>&#xA;')"
         />
     </xsl:function>
-    <xsl:function name="tan:shallow-copy" as="xs:string?">
+    <xsl:function name="tan:guidelines-shallow-copy" as="xs:string?">
         <xsl:param name="element" as="element()?"/>
         <xsl:variable name="raw" as="xs:string*">
             <xsl:value-of select="tan:first-tag-to-text($element)"/>

@@ -8,7 +8,7 @@
 
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Updated </xd:b>Jan 24, 2017</xd:p>
+         <xd:p><xd:b>Updated </xd:b>March 2017</xd:p>
          <xd:p>Core variables and functions for class 2 TAN files (i.e., applicable to multiple
             class 2 TAN file types). Written principally for Schematron validation, but suitable for
             general use in other contexts.</xd:p>
@@ -493,19 +493,6 @@
       <xsl:param name="picked-src-ids" as="xs:string*"/>
       <xsl:copy-of
          select="tan:resolve-doc($picked-class-1-docs, false(), 'src', $picked-src-ids, (), ())"/>
-   </xsl:function>
-
-   <!-- resultant functions -->
-   <!-- Why do we need this function? -->
-   <xsl:function name="tan:extract-src-elements" as="element()*">
-      <xsl:param name="src-1st-da-resolved-elements" as="element()*"/>
-      <xsl:for-each select="$src-1st-da-resolved-elements">
-         <xsl:copy>
-            <xsl:copy-of select="@*"/>
-            <xsl:attribute name="src" select="root()/*/@src"/>
-            <xsl:copy-of select="*"/>
-         </xsl:copy>
-      </xsl:for-each>
    </xsl:function>
 
    <!-- CLASS-2 PREPARATION, STEP 2: fully expand <equate-works>, <equate-div-types>, <token-definition>; check
@@ -1402,8 +1389,8 @@
 
    <!-- Derivative functions -->
    <xsl:function name="tan:tokenize-div" as="element()*">
-      <!-- This function allows one to quickly get select <divs> in tokenized form, but
-      requires the <token-definition> -->
+      <!-- Input: any <div>s, a <token-definition> -->
+      <!-- Output: the <divs>s in tokenized form -->
       <xsl:param name="divs" as="element()*"/>
       <xsl:param name="token-definitions" as="element()"/>
       <xsl:apply-templates select="$divs" mode="tokenize-prepped-class-1">
@@ -1414,12 +1401,6 @@
 
    <!-- STEP SELF-EXPANDED-4: revise self-expanded-3 to fully expand @val and @pos in <tok>; not applicable to TAN-A-div -->
 
-   <!--<xsl:function name="tan:get-self-expanded-4">
-      <!-\- zero parameter function of the next -\->
-      <xsl:copy-of
-         select="tan:get-self-expanded-4(tan:get-self-expanded-3(), tan:get-src-1st-da-tokenized())"
-      />
-   </xsl:function>-->
    <xsl:function name="tan:prep-class-2-doc-pass-4" as="document-node()?">
       <xsl:param name="class-2-doc-prepped-pass-3" as="document-node()?"/>
       <xsl:param name="sources-selectively-tokenized" as="document-node()*"/>
@@ -1862,8 +1843,9 @@
    </xsl:function>
 
    <xsl:function name="tan:get-src-1st-da-with-lms" as="document-node()">
-      <!-- For now, this function assumes that every TAN-LM document pertains to
-      the tokenized class-1 doc -->
+      <!-- Input: any tokenized class 1 document; any prepped TAN-LM documents -->
+      <!-- Output: the original document, imprinted with lexico-morphological data -->
+      <!-- For now, this function assumes that every TAN-LM document pertains to the tokenized class-1 doc -->
       <xsl:param name="tokenized-class-1-doc" as="document-node()"/>
       <xsl:param name="prepped-tan-lm-docs" as="document-node()*"/>
       <xsl:document>
@@ -1909,16 +1891,9 @@
    -->
 
    <xsl:function name="tan:get-context-prepped" as="document-node()*">
-      <!-- Input: a class 2 document, transformed to level $self2 or higher; one or more contextual class 2 documents
-      whose should reference system should be reconciled to the first document; the intervening source documents, in both
-      prepped and resolved forms.
-      Output: the class 2 context documents, with values converted (where needed) to the main class 2 document
-      
-      This function is used primarily in the context of a TAN-A-div file, where one finds supplementary TAN-LM and TAN-A-tok
-      data that provides contextual information about source documents. This function will convert those satellite class 2 files
-      to the naming conventions adopted in the original class 2 files. Because the prepped sources are oftentimes the intermediary,
-      they are like a spoke connecting the original document (the hub) to the contextual documents (the rim).
-      -->
+      <!-- Input: a class 2 document, transformed to level $self2 or higher; one or more contextual class 2 documents whose should reference system should be reconciled to the first document; the intervening source documents, in both prepped and resolved forms. -->
+      <!-- Output: the class 2 context documents, with values converted (where needed) to the main class 2 document -->
+      <!-- This function is used primarily in the context of a TAN-A-div file, where one finds supplementary TAN-LM and TAN-A-tok data that provide contextual information about source documents. This function will convert those satellite class 2 files to the naming conventions adopted in the original class 2 files. Because the prepped sources are oftentimes the intermediary, they are like a spoke connecting the original document (the hub) to the contextual documents (the rim). -->
       <xsl:param name="class-2-self3" as="document-node()"/>
       <xsl:param name="class-2-context-self2" as="document-node()*"/>
       <xsl:param name="srcs-prepped" as="document-node()*"/>

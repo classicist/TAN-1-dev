@@ -379,11 +379,7 @@
                and $head/tan:declarations/tan:work/tan:IRI = $target-1st-da-resolved/(tei:TEI, tan:TAN-T)/tan:head/tan:declarations/tan:work/tan:IRI)">
             <xsl:copy-of select="tan:error('see04')"/>
          </xsl:if>
-         <!--<xsl:if test="empty($target-1st-da)">
-            <xsl:copy-of select="tan:error('loc01')"/>
-         </xsl:if>-->
          <xsl:copy-of select="$target-1st-da-resolved/tan:error"/>
-         <!--<test><xsl:copy-of select="$target-1st-da"/></test>-->
          <xsl:if test="exists(tan:location) and not($target-id = tan:IRI) and $target-class gt 0">
             <xsl:variable name="this-fix" as="element()">
                <IRI>
@@ -656,6 +652,9 @@
          </xsl:if>
          <xsl:if test="exists(@href) and (doc-available($this-href-resolved) = false())">
             <xsl:copy-of select="tan:error('wrn01')"/>
+         </xsl:if>
+         <xsl:if test="exists(self::tan:master-location) and matches(@href,'!/')">
+            <xsl:copy-of select="tan:error('tan15')"/>
          </xsl:if>
          <xsl:if test="exists(@href) and not((self::tan:location, self::tan:master-location))">
             <xsl:variable name="target-doc" select="doc($this-href-resolved)"/>

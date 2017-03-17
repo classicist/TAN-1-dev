@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <collection stable="true">
-   <doc href="collection-generator.xsl"/>
    <doc href="collection.xml"/>
    <doc href="TAN-A-div-functions.xsl"/>
-   <doc href="TAN-A-div-global-variables.xsl"/>
    <doc href="TAN-A-tok-functions.xsl"/>
-   <doc href="TAN-A-tok-global-variables.xsl"/>
+   <doc href="TAN-c-functions.xsl"/>
    <doc href="TAN-key-functions.xsl"/>
    <doc href="TAN-LM-functions.xsl"/>
    <doc href="TAN-mor-functions.xsl"/>
-   <doc href="TAN-c-functions.xsl"/>
    <doc href="TAN-T-functions.xsl"/>
    <doc href="TAN-TEI-functions.xsl"/>
    <doc href="incl/diff-for-xslt2.xsl"/>
@@ -17,9 +14,13 @@
    <doc href="incl/TAN-class-1-functions.xsl"/>
    <doc href="incl/TAN-class-2-and-3-functions.xsl"/>
    <doc href="incl/TAN-class-2-functions.xsl"/>
-   <doc href="incl/TAN-class-2-global-variables.xsl"/>
    <doc href="incl/TAN-class-3-functions.xsl"/>
    <doc href="incl/TAN-core-functions.xsl"/>
    <doc href="incl/TAN-idrefs.xml"/>
    <doc href="incl/TAN-schema-functions.xsl"/>
+   <doc href="errors/TAN-A-div-errors.xsl"/>
+   <doc href="errors/TAN-class-1-errors.xsl"/>
+   <doc href="errors/TAN-class-2-errors.xsl"/>
+   <doc href="errors/TAN-core-errors.xsl"/>
+   <doc href="errors/TAN-errors.xml"/>
 </collection>

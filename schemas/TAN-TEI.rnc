@@ -11,7 +11,7 @@ namespace xlink = "http://www.w3.org/1999/xlink"
 
 datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
-# Schema generated from ODD source 2017-03-03T02:39:52Z. .
+# Schema generated from ODD source 2017-03-17T03:22:38Z. .
 # TEI Edition: Version 3.0.0. Last updated on
 #	29th March 2016, revision 89ba24e
 # TEI Edition Location: http://www.tei-c.org/Vault/P5/Version 3.0.0/
@@ -60,6 +60,12 @@ div {
       ## provides a second measure of certainty. The value is taken along with @cert as the range in which an editors certainty resides. 
       attribute cert2 { cert-content }
     cert-content = xsd:double { pattern = "1|0|(0\.\d*[1-9])" }
+    error-flag =
+      
+      ## indicates the level of error that should be flagged to any algorithm that uses the parent element . Similar to Schematron's @role, but under a different name, to avoid confusion with TAN @roles.
+      attribute flags {
+        xsd:string { pattern = "warn(ing)?|error|info|fatal" }
+      }
     help-opt =
       
       ## requests help on the context element. This attribute is equivalent to the help requested string, ???, but is useful in cases where the string cannot be placed (e.g., elements with no content or few attributes)
@@ -78,6 +84,10 @@ div {
       attribute xml:id {
         d:ID { pattern = "\w\S*" }
       }
+    internal-idrefs =
+      
+      ## contains references to one or more values of xml:id in the file 
+      attribute idrefs { text }
     
     ## Any generic IRI identifier.
     IRI-gen = xsd:anyURI { pattern = "[a-zA-Z][\-.+a-zA-Z0-9]+:\S+" }
@@ -114,7 +124,9 @@ div {
       element for-lang { xsd:language }
     period-filter =
       
-      ## constrains an event to a period of time
+      ## constrains an event to a period of time.
+      
+      ## Multiple values of <when> are interpreted to mean "or" with union. No distribution takes place (e.g., x <when/> with y <when/> means "at time x or y", not "at time x" and "at time y").
       element when {
         
         ## specifies the beginning of a period of time
@@ -289,7 +301,7 @@ div {
             agent-list+,
             role-list+,
             agent-role-list*,
-            change-list+))
+            change-list))
       }
     TAN-body =
       
@@ -302,10 +314,10 @@ div {
     TAN-tail =
       
       ## permits any arbitrary content. This element is suitable as a placeholder for temporary data, especially to facilitate time-consuming validation routines. 
-      element tail { any_content }?
-    any_content = any_element* & text
-    any_element = element * { any_attribute*, any_content }
-    any_attribute = attribute * { text }
+      element tail { any-content }?
+    any-content = any-element* & text
+    any-element = element * { any-attribute*, any-content }
+    any-attribute = attribute * { text }
     nonsource-rights =
       
       ## states the license under which the data is distributed and the rights associated with it, EXCLUSIVE of any rights attached to the source.
@@ -327,7 +339,7 @@ div {
       
       ## Invoking an <inclusion> does not require its use. 
       
-      ## For more on this, see main.xml#inclusions
+      ## For more on this, see main.xml#inclusions-and-keys
       element inclusion {
         ed-stamp?,
         internal-id,
@@ -340,7 +352,7 @@ div {
       
       ## Any number of <key>s may be supplied, but all <item>s with unique names for the element indicated by @affects-elements.
       
-      ## For more discussion, see main.xml#TAN-key
+      ## For more discussion, see main.xml#tan-key
       element key {
         ed-stamp?,
         (inclusion | (comment* & entity-digital-tan-other-ref))
@@ -400,7 +412,9 @@ div {
     decl-opt =
       
       ## contains assumptions or decisions made that materially affect the interpretation of the data in <body>. Every TAN format's <declarations> is unique.
-      element declarations { ed-stamp?, (comment* & declaration-items) }
+      element declarations {
+        ed-stamp?, (comment* & declaration-core & declaration-items)
+      }
     agent-list =
       
       ## specifies a person or organization that played a direct or indirect role in preparing, creating, or editing the data.
@@ -439,7 +453,17 @@ div {
       ## The editor has discretion as to how long or detailed a <change> should be, or how many should be retained in a changelog. Ideally, <change>s documenting every published version should be retained.
       
       ## <change> elements may appear in any order, but it is good practice to put the most recent at the top.
-      element change { ed-stamp?, when-claim, agent-ref, text }
+      element change {
+        ed-stamp?, when-claim, error-flag?, agent-ref, text
+      }+
+    declaration-core = decl-alias*
+    decl-alias =
+      
+      ## assigns multiple values of xml:id to a single xml:id.
+      element alias {
+        ed-stamp?,
+        (inclusion | (internal-id, internal-idrefs))
+      }
     decl-work =
       
       ## indicates a creative work. The element identifies a conceptual entity, not a physical one.

@@ -7,7 +7,7 @@
    id="tag:kalvesmaki.com,2014:tan-r-mor:eng:penn">
    <head>
       <name>University of Pennsylvania (Penn) Treebank Tag-set</name>
-      <!--<master-location href="https://raw.githubusercontent.com/Arithmeticus/TAN-lexico-morphology/master/TAN-R-mor/eng.kalvesmaki.com%2C2014.2.xml"/>-->
+      <master-location href="https://raw.githubusercontent.com/Arithmeticus/TAN-lexico-morphology/master/TAN-mor/eng.kalvesmaki.com%2C2014.2.xml"/>
       <rights-excluding-sources rights-holder="kalvesmaki">
          <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
          <name>Creative Commons Attribution 4.0 International License</name>

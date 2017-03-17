@@ -68,7 +68,7 @@
       select="'m{0,4}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})'"/>
    <xsl:variable name="letter-numeral-pattern"
       select="'a+|b+|c+|d+|e+|f+|g+|h+|i+|j+|k+|l+|m+|n+|o+|p+|q+|r+|s+|t+|u+|v+|w+|x+|y+|z+'"/>
-   <xsl:variable name="n-type-pattern" xml:id="v-n-type-pattern"
+   <xsl:variable name="n-type-pattern"
       select="
          (concat('^(', $roman-numeral-pattern, ')$'),
          '^(\d+)$',
@@ -76,7 +76,7 @@
          concat('^(', $letter-numeral-pattern, ')$'),
          concat('^(', $letter-numeral-pattern, ')(\d+)$'),
          '(.)')"/>
-   <xsl:variable name="n-type" xml:id="v-n-type"
+   <xsl:variable name="n-type"
       select="
          ('i',
          '1',
@@ -84,7 +84,7 @@
          'a',
          'a1',
          '$')"/>
-   <xsl:variable name="n-type-label" xml:id="v-n-type-label"
+   <xsl:variable name="n-type-label"
       select="
          ('Roman numerals',
          'Arabic numerals',
@@ -136,8 +136,6 @@
    <!-- keys -->
    <xsl:key name="item-via-node-name" match="tan:item"
       use="tokenize(string-join(((ancestor-or-self::*/@affects-element)[last()], (ancestor-or-self::*/@affects-attribute)[last()]), ' '), '\s+')"/>
-   <xsl:key name="item-via-group-name" match="tan:item"
-      use="tokenize(string-join((@group, ancestor::tan:group/@type), ' '), '\s+')"/>
    <xsl:variable name="TAN-keyword-files" as="document-node()*"
       select="collection('../../TAN-key/collection.xml')"/>
    <xsl:variable name="TAN-keywords" as="document-node()*">
@@ -186,6 +184,19 @@
             <xsl:copy-of select="current-group()[1]"/>
          </xsl:if>
       </xsl:for-each-group>
+   </xsl:function>
+   
+   <xsl:function name="tan:distinct-items" as="item()*">
+      <!-- Input: any sequence of items -->
+      <!-- Output: Those items that are not deeply equal to any other item in the sequence -->
+      <xsl:param name="items" as="item()*"/>
+      <xsl:copy-of select="$items[1]"/>
+      <xsl:for-each select="$items[position() gt 1]">
+         <xsl:variable name="this-item" select="."/>
+         <xsl:if test="not(some $i in 1 to position() satisfies deep-equal($this-item, $items[$i]))">
+            <xsl:copy-of select="."/>
+         </xsl:if>
+      </xsl:for-each>
    </xsl:function>
 
 
@@ -433,14 +444,12 @@
    <!-- Functions that take regular expressions, to support TAN extensions -->
    <xsl:function name="tan:sequence-expand" as="xs:integer*">
       <!-- Input: a string representing a TAN selector (used by @pos, @char, @seg), and an integer defining the value of 'last' -->
-      <!-- Output: a sequence of numbers representing the positions selected, unsorted, and retaining
-            duplicate values.
-            E.g., ("2 - 4, last-5 - last, 36", 50) -> (2, 3, 4, 45, 46, 47, 48, 49, 50, 36)
+      <!-- Output: a sequence of numbers representing the positions selected, unsorted, and retaining duplicate values.
+            Example: ("2 - 4, last-5 - last, 36", 50) -> (2, 3, 4, 45, 46, 47, 48, 49, 50, 36)
             Errors will be flagged as follows:
             0 = value that falls below 1
             -1 = value that surpasses the value of $max
-            -2 = ranges that call for negative steps, e.g., '4 - 2'
-        -->
+            -2 = ranges that call for negative steps, e.g., '4 - 2' -->
       <xsl:param name="selector" as="xs:string?"/>
       <xsl:param name="max" as="xs:integer?"/>
       <!-- first normalize syntax -->
@@ -511,8 +520,8 @@
    </xsl:function>
 
    <xsl:function name="tan:escape" as="xs:string*">
-      <!-- Input: any sequence of strings; Output: each string prepared for regular expression searches,
-        i.e., with reserved characters escaped out. -->
+      <!-- Input: any sequence of strings -->
+      <!-- Output: each string prepared for regular expression searches, i.e., with reserved characters escaped out. -->
       <xsl:param name="strings" as="xs:string*"/>
       <xsl:copy-of
          select="
@@ -718,6 +727,9 @@
                      <xsl:when test="$this-class = 1">
                         <xsl:copy-of select="tan:error('wrn01')"/>
                      </xsl:when>
+                     <xsl:when
+                        test="self::tan:source and not(exists(tan:location)) and tan:tan-type(.) = 'TAN-mor'"
+                     />
                      <xsl:otherwise>
                         <xsl:copy-of select="tan:error('loc01')"/>
                      </xsl:otherwise>
@@ -1514,7 +1526,7 @@
       <xsl:param name="doc-fragment" as="item()*"/>
       <xsl:param name="exclude-elements-beyond-what-depth" as="xs:integer?"/>
       <xsl:copy-of
-         select="tan:copy-of-except($doc-fragment, (), (), (), $exclude-elements-beyond-what-depth)"
+         select="tan:copy-of-except($doc-fragment, (), (), (), $exclude-elements-beyond-what-depth, ())"
       />
    </xsl:function>
    <xsl:function name="tan:copy-of-except" as="item()*">
@@ -1524,7 +1536,7 @@
       <xsl:param name="exclude-attributes-named" as="xs:string*"/>
       <xsl:param name="exclude-elements-with-attributes-named" as="xs:string*"/>
       <xsl:copy-of
-         select="tan:copy-of-except($doc-fragment, $exclude-elements-named, $exclude-attributes-named, $exclude-elements-with-attributes-named, ())"
+         select="tan:copy-of-except($doc-fragment, $exclude-elements-named, $exclude-attributes-named, $exclude-elements-with-attributes-named, (), ())"
       />
    </xsl:function>
    <xsl:function name="tan:copy-of-except" as="item()*">
@@ -1536,6 +1548,7 @@
       <xsl:param name="exclude-attributes-named" as="xs:string*"/>
       <xsl:param name="exclude-elements-with-attributes-named" as="xs:string*"/>
       <xsl:param name="exclude-elements-beyond-what-depth" as="xs:integer?"/>
+      <xsl:param name="shallow-skip-elements-named" as="xs:string*"/>
       <xsl:apply-templates select="$doc-fragment" mode="copy-of-except">
          <xsl:with-param name="exclude-elements-named" as="xs:string*"
             select="$exclude-elements-named" tunnel="yes"/>
@@ -1546,6 +1559,8 @@
          <xsl:with-param name="exclude-elements-beyond-what-depth"
             select="$exclude-elements-beyond-what-depth" tunnel="yes"/>
          <xsl:with-param name="current-depth" select="0"/>
+         <xsl:with-param name="shallow-skip-elements-named"
+            select="$shallow-skip-elements-named" tunnel="yes"/>
       </xsl:apply-templates>
    </xsl:function>
    <xsl:template match="*" mode="copy-of-except">
@@ -1553,16 +1568,12 @@
       <xsl:param name="exclude-attributes-named" as="xs:string*" tunnel="yes"/>
       <xsl:param name="exclude-elements-with-attributes-named" as="xs:string*" tunnel="yes"/>
       <xsl:param name="exclude-elements-beyond-what-depth" as="xs:integer?" tunnel="yes"/>
+      <xsl:param name="shallow-skip-elements-named" as="xs:string*" tunnel="yes"/>
       <xsl:param name="current-depth" as="xs:integer?"/>
-      <xsl:if
-         test="
-            not(name() = $exclude-elements-named)
-            and not(some $i in @*
-               satisfies name($i) = $exclude-elements-with-attributes-named)
-            and not($current-depth ge $exclude-elements-beyond-what-depth)">
-         <xsl:copy>
-            <xsl:copy-of select="@*[not(name() = $exclude-attributes-named)]"/>
-            <xsl:apply-templates mode="copy-of-except">
+      <xsl:choose>
+         <xsl:when test="name() = $exclude-elements-named"/>
+         <xsl:when test="name() = $shallow-skip-elements-named">
+            <xsl:apply-templates mode="#current">
                <xsl:with-param name="current-depth"
                   select="
                      if (exists($current-depth)) then
@@ -1571,8 +1582,26 @@
                         ()"
                />
             </xsl:apply-templates>
-         </xsl:copy>
-      </xsl:if>
+         </xsl:when>
+         <xsl:when
+            test="
+               not(some $i in @*
+                  satisfies name($i) = $exclude-elements-with-attributes-named)
+               and not($current-depth ge $exclude-elements-beyond-what-depth)">
+            <xsl:copy>
+               <xsl:copy-of select="@*[not(name() = $exclude-attributes-named)]"/>
+               <xsl:apply-templates mode="#current">
+                  <xsl:with-param name="current-depth"
+                     select="
+                        if (exists($current-depth)) then
+                           $current-depth + 1
+                        else
+                           ()"
+                  />
+               </xsl:apply-templates>
+            </xsl:copy>
+         </xsl:when>
+      </xsl:choose>
    </xsl:template>
 
    <xsl:function name="tan:pluck" as="item()*">

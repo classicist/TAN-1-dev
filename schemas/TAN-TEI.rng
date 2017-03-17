@@ -477,28 +477,28 @@
         <optional>
           <element name="tail">
             <a:documentation>permits any arbitrary content. Suitable as a placeholder for temporary data, especially to facilitate time-consuming validation routines. </a:documentation>
-            <ref name="any_content"/>
+            <ref name="any-content"/>
           </element>
         </optional>
       </define>
-      <define name="any_content">
+      <define name="any-content">
         <interleave>
           <zeroOrMore>
-            <ref name="any_element"/>
+            <ref name="any-element"/>
           </zeroOrMore>
           <text/>
         </interleave>
       </define>
-      <define name="any_element">
+      <define name="any-element">
         <element>
           <anyName/>
           <zeroOrMore>
-            <ref name="any_attribute"/>
+            <ref name="any-attribute"/>
           </zeroOrMore>
-          <ref name="any_content"/>
+          <ref name="any-content"/>
         </element>
       </define>
-      <define name="any_attribute">
+      <define name="any-attribute">
         <attribute>
           <anyName/>
         </attribute>
@@ -537,7 +537,7 @@
           <a:documentation>Only the elements of that name X will be included, not the entire inclusion file. It is up to you to specify exactly which elements should be included.</a:documentation>
           <a:documentation>You may include as many &lt;inclusion&gt;s as you wish, and do not have to use them all.</a:documentation>
           <a:documentation>If you are using an &lt;inclusion&gt; primarily for metadata (&lt;head&gt;) it is recommended to put the value of @xml:id in uppercase. &lt;body&gt; inclusions should be set in lowercase.</a:documentation>
-          <a:documentation>For more on this, see main.xml#inclusions</a:documentation>
+          <a:documentation>For more on this, see main.xml#inclusions-and-keys</a:documentation>
           <optional>
             <ref name="ed-stamp"/>
           </optional>
@@ -559,7 +559,7 @@
         <element name="key">
           <a:documentation>specifies a tan:item from a TAN-key (predefined, or declared in a &lt;key&gt;) that defines the meaning of an element that has @which.</a:documentation>
           <a:documentation>You may include as many &lt;key&gt;s as you wish, and do not have to use them all. All &lt;key&gt;s must have &lt;item&gt;s with unique names for the element touched by @affects-elements.</a:documentation>
-          <a:documentation>For more on this, see main.xml#TAN-key</a:documentation>
+          <a:documentation>For more on this, see main.xml#tan-key</a:documentation>
           <optional>
             <ref name="ed-stamp"/>
           </optional>

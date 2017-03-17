@@ -221,21 +221,10 @@
   </define>
   <!-- <claim> -->
   <include href="incl/TAN-c-core.rng">
-    <define name="textual-objects">
+    <define name="textual-reference">
       <choice>
-        <ref name="source-refs"/>
-        <ref name="work-ref"/>
-      </choice>
-      <choice>
-        <group>
-          <ref name="pointer-to-div-range"/>
-          <optional>
-            <ref name="seg-ref"/>
-          </optional>
-        </group>
-        <oneOrMore>
-          <ref name="complex-text-ref"/>
-        </oneOrMore>
+        <ref name="simple-textual-reference"/>
+        <ref name="complex-textual-reference-set"/>
       </choice>
     </define>
   </include>
@@ -249,6 +238,25 @@
     </optional>
     <oneOrMore>
       <ref name="claim"/>
+    </oneOrMore>
+  </define>
+  <define name="simple-textual-reference">
+    <choice>
+      <ref name="source-refs"/>
+      <ref name="work-ref"/>
+    </choice>
+    <ref name="pointer-to-div-range"/>
+    <optional>
+      <ref name="seg-ref"/>
+    </optional>
+  </define>
+  <define name="complex-textual-reference-set">
+    <choice>
+      <ref name="source-refs"/>
+      <ref name="work-ref"/>
+    </choice>
+    <oneOrMore>
+      <ref name="complex-text-ref"/>
     </oneOrMore>
   </define>
   <define name="complex-text-ref">

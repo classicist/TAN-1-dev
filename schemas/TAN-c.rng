@@ -32,7 +32,7 @@
     </define>
   </include>
   <include href="incl/TAN-c-core.rng">
-    <define name="complex-subjects">
+    <define name="complex-subject">
       <empty/>
     </define>
     <define name="locus">

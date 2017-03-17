@@ -375,10 +375,10 @@ item = empty
 TAN-tail =
     
     ## permits any arbitrary content. This element is suitable as a placeholder for temporary data, especially to facilitate time-consuming validation routines. 
-    element tail { any_content }?
-any_content = any_element* & text
-any_element = element * { any_attribute*, any_content }
-any_attribute = attribute * { text }
+    element tail { any-content }?
+any-content = any-element* & text
+any-element = element * { any-attribute*, any-content }
+any-attribute = attribute * { text }
 # 
 # 3rd level of any TAN file, head metadata only (the body, which differs widely across TAN file types, are defined in other schema files)
 nonsource-rights =
@@ -402,7 +402,7 @@ inclusion-item =
     
     ## Invoking an <inclusion> does not require its use. 
     
-    ## For more on this, see main.xml#inclusions
+    ## For more on this, see main.xml#inclusions-and-keys
     element inclusion { ed-stamp?, internal-id, (comment* & entity-digital-tan-other-ref) }
 key-list = key-item*
 key-item =
@@ -411,7 +411,7 @@ key-item =
     
     ## Any number of <key>s may be supplied, but all <item>s with unique names for the element indicated by @affects-elements.
     
-    ## For more discussion, see main.xml#TAN-key
+    ## For more discussion, see main.xml#tan-key
     element key {
         ed-stamp?,
         (inclusion | (comment* & entity-digital-tan-other-ref))

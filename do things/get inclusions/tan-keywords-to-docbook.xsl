@@ -2,10 +2,11 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:tei="http://www.tei-c.org/ns/1.0"
     xmlns="http://docbook.org/ns/docbook" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:rng="http://relaxng.org/ns/structure/1.0"
+    xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:docbook="http://docbook.org/ns/docbook" 
     xmlns:math="http://www.w3.org/2005/xpath-functions/math" xmlns:tan="tag:textalign.net,2015:ns"
     exclude-result-prefixes="#all" version="3.0">
     <xsl:mode name="keyword-to-docbook" on-no-match="deep-skip"/>
+    <xsl:mode name="adjust-docbook-keyword-desc" on-no-match="shallow-copy"/>
     <xsl:template match="tan:head" mode="keyword-to-docbook">
         <xsl:apply-templates select="tan:name | tan:desc | tan:master-location" mode="#current"/>
     </xsl:template>
@@ -16,10 +17,24 @@
                 select="
                     for $i in tokenize(/tan:TAN-key/tan:body/@affects-element, '\s+')
                     return
-                        tan:prep-string-for-docbook(tan:node-string-norm($i, 'element'))"
+                        tan:prep-string-for-docbook(tan:string-representation-of-component($i, 'element'))"
             />
             <xsl:text>)</xsl:text>
         </title>
+    </xsl:template>
+    <xsl:template match="docbook:code" mode="adjust-docbook-keyword-desc">
+        <xsl:choose>
+            <xsl:when
+                test="
+                    some $i in docbook:link/@linkend
+                        satisfies matches($i, '^pattern-')">
+                <!-- we drop anything that looks like a pattern, because patterns won't be discussed in keyword descriptions -->
+                <xsl:value-of select="."/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:copy-of select="."/>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     <xsl:template match="tan:desc" mode="keyword-to-docbook">
         <para>
@@ -91,7 +106,7 @@
                                 <entry>
                                     <xsl:for-each select="tan:desc">
                                         <para>
-                                            <xsl:copy-of select="tan:prep-string-for-docbook(.)"/>
+                                            <xsl:apply-templates select="tan:prep-string-for-docbook(.)" mode="adjust-docbook-keyword-desc"/>
                                         </para>
                                     </xsl:for-each>
                                 </entry>

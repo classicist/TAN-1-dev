@@ -3,16 +3,22 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     exclude-result-prefixes="xs"
     version="2.0">
-    <!-- Generates a catalog file for schema/ and functions/; important for functions, where catalog files 
-        are used in lieu of bare fn:collection() so that validation files can be housed on an apache server -->
+    <!-- Input: any file -->
+    <!-- Output: a catalog file for schemas/, functions/, and TAN-key -->
+    <!-- The resultant files are important for the function library and validation, which can use fn:collection() only in connection with an XML file listing the XML files available. -->
     <xsl:output indent="yes"/>
     <xsl:variable name="function-URIs">
         <collection stable="true">
             <xsl:for-each select="collection('.?select=*.x[ms]l')">
-                <doc href="{replace(base-uri(.),'.+[/\\]([^/\\]+)$','$1')}"/>
+                <xsl:if test="not(base-uri(.) = static-base-uri())">
+                    <doc href="{replace(base-uri(.),'.+[/\\]([^/\\]+)$','$1')}"/>
+                </xsl:if>
             </xsl:for-each>
             <xsl:for-each select="collection('incl/.?select=*.x[ms]l')">
                 <doc href="{replace(base-uri(.),'.+[/\\]([^/\\]+)$','incl/$1')}"/>
+            </xsl:for-each>
+            <xsl:for-each select="collection('errors/.?select=*.x[ms]l')">
+                <doc href="{replace(base-uri(.),'.+[/\\]([^/\\]+)$','errors/$1')}"/>
             </xsl:for-each>
         </collection>
     </xsl:variable>

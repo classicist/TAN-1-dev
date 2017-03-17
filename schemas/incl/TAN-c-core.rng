@@ -136,6 +136,9 @@
             <zeroOrMore>
               <ref name="period-filter"/>
             </zeroOrMore>
+            <optional>
+              <ref name="rationale"/>
+            </optional>
           </interleave>
         </group>
       </choice>
@@ -146,7 +149,7 @@
       <a:documentation>points to an &lt;agent&gt; or &lt;person&gt; who makes a claim. @claimant within &lt;body&gt; indicates the default persons to be credited or blamed for an assertion.</a:documentation>
       <a:documentation>Claimants are not to be confused with the editor of a TAN file. If an editor X writes a TAN-c file that says that person Y makes such-and-such a claim, then the implication is that X claims that Y claims that....  </a:documentation>
       <a:documentation>This attribute is taken into account before all other attributes. That is, @claimant is to be interpreted to mean: "@claimant states the following:...." Multiple values of @claimant are interpreted to mean "and", resulting in distribution of the claim (e.g., claimant="x y" becomes "x claims that..." and "y claims that...").</a:documentation>
-      <a:documentation>The concept of @claimant is not recursive. TAN-c is not designed to make claims that claimant X claimed that claimant Y claimed that claimant Z....</a:documentation>
+      <a:documentation>If you wish to claim that claimant X claimed that claimant Y claimed that claimant Z...., only the original claimant is given to @claimant, and each of the other claimants are placed in a @subject in an embedded &lt;claim&gt; that serves as the object of the master &lt;claim&gt;. </a:documentation>
       <a:documentation>This attribute is inheritable. See main.xml#inheritable_attributes</a:documentation>
     </attribute>
   </define>
@@ -154,7 +157,7 @@
     <choice>
       <ref name="simple-subject"/>
       <oneOrMore>
-        <ref name="complex-subjects"/>
+        <ref name="complex-subject"/>
       </oneOrMore>
     </choice>
   </define>
@@ -164,15 +167,21 @@
       <a:documentation> Multiple values of @subject are interpreted to mean "and", resulting in distribution of the claim (e.g., subject="x y" becomes "x [verby]..." and "y [verb]...").</a:documentation>
     </attribute>
   </define>
-  <define name="complex-subjects">
+  <define name="complex-subject">
     <element name="subject">
       <a:documentation>points to text references that act as the subject of the claim.</a:documentation>
       <a:documentation> Multiple values of &lt;subject&gt; are interpreted to mean "and", resulting in distribution of the claim (e.g., subject="x y" becomes "x [verby]..." and "y [verb]...").</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
-      <ref name="textual-objects"/>
+      <ref name="textual-reference"/>
     </element>
+  </define>
+  <define name="modal-claim">
+    <attribute name="adverb">
+      <a:documentation>names a &lt;modal&gt; that qualifies the claim.</a:documentation>
+      <a:documentation> Multiple values of @adverb are interpreted to mean "and" with intersection. No distribution takes place (e.g., adverb="x y" means "[subject] x &amp; y [verby]...", not "[subject] x [verb]..." and "[subject] y [verb]...").</a:documentation>
+    </attribute>
   </define>
   <define name="verb">
     <attribute name="verb">
@@ -181,11 +190,17 @@
       <a:documentation> Multiple values of @verb are interpreted to mean "and", resulting in distribution of the claim (e.g., verb="x y" becomes "[subject] x ..." and "[subject] y...").</a:documentation>
     </attribute>
   </define>
+  <define name="place-filter">
+    <attribute name="where">
+      <a:documentation>restricts the &lt;claim&gt; to a specific &lt;place&gt;.
+ Multiple values of @where are interpreted to mean "or" with union. No distribution takes place (e.g., where="x y" means "[subject] x or y [verby]...", not "[subject] x [verb]..." and "[subject] y [verb]...").</a:documentation>
+    </attribute>
+  </define>
   <define name="object">
     <choice>
       <ref name="simple-object"/>
       <oneOrMore>
-        <ref name="complex-objects"/>
+        <ref name="complex-object"/>
       </oneOrMore>
     </choice>
   </define>
@@ -196,38 +211,41 @@
       <a:documentation>In RDF, the concept of object (the third element of a triple) is required. In TAN-c, it is not required, since some &lt;verb&gt;s may be intransitive (e.g., "Charlie slept.").</a:documentation>
     </attribute>
   </define>
-  <define name="complex-objects">
+  <define name="complex-object">
+    <choice>
+      <ref name="object-element"/>
+      <oneOrMore>
+        <ref name="claim"/>
+      </oneOrMore>
+    </choice>
+  </define>
+  <define name="object-element">
     <element name="object">
       <a:documentation>is similar to @object, but for complex content, mainly concepts that do not lend themselves to the IRI + name pattern, particularly languages and units or passages of text.</a:documentation>
       <optional>
         <ref name="ed-stamp"/>
       </optional>
       <choice>
-        <group>
-          <optional>
-            <choice>
-              <ref name="lang-of-content"/>
-              <ref name="units"/>
-            </choice>
-          </optional>
-          <text/>
-        </group>
-        <ref name="textual-objects"/>
+        <ref name="nontextual-reference"/>
+        <ref name="textual-reference"/>
       </choice>
     </element>
   </define>
-  <define name="textual-objects">
+  <define name="nontextual-reference">
+    <optional>
+      <choice>
+        <ref name="lang-of-content"/>
+        <ref name="units"/>
+      </choice>
+    </optional>
+    <text/>
+  </define>
+  <define name="textual-reference">
     <empty/>
   </define>
   <define name="units">
     <attribute name="units">
       <a:documentation>points to the ID ref of a &lt;unit&gt;, defining the type of units.</a:documentation>
-    </attribute>
-  </define>
-  <define name="place-filter">
-    <attribute name="where">
-      <a:documentation>restricts the &lt;claim&gt; to a specific &lt;place&gt;.
- Multiple values of @where are interpreted to mean "or" with union. No distribution takes place (e.g., where="x y" means "[subject] x or y [verby]...", not "[subject] x [verb]..." and "[subject] y [verb]...").</a:documentation>
     </attribute>
   </define>
   <define name="locus">
@@ -236,14 +254,30 @@
         <optional>
           <ref name="ed-stamp"/>
         </optional>
-        <ref name="textual-objects"/>
+        <ref name="textual-reference"/>
       </element>
     </oneOrMore>
   </define>
-  <define name="modal-claim">
-    <attribute name="adverb">
-      <a:documentation>names a &lt;modal&gt; that qualifies the claim.</a:documentation>
-      <a:documentation> Multiple values of @adverb are interpreted to mean "and" with intersection. No distribution takes place (e.g., adverb="x y" means "[subject] x &amp; y [verby]...", not "[subject] x [verb]..." and "[subject] y [verb]...").</a:documentation>
+  <define name="rationale">
+    <choice>
+      <ref name="simple-rationale"/>
+      <oneOrMore>
+        <ref name="complex-rationale"/>
+      </oneOrMore>
+    </choice>
+  </define>
+  <define name="simple-rationale">
+    <attribute name="claim-basis">
+      <a:documentation>points to an entity that serves as the rationale for why a claim was made. </a:documentation>
     </attribute>
+  </define>
+  <define name="complex-rationale">
+    <element name="claim-basis">
+      <a:documentation>points to a textual passage that serves as the rationale for why a claim was made.</a:documentation>
+      <optional>
+        <ref name="ed-stamp"/>
+      </optional>
+      <ref name="textual-reference"/>
+    </element>
   </define>
 </grammar>

@@ -235,6 +235,7 @@
       </xsl:copy>
    </xsl:template>
 
+   <!-- March 2017: <align> has been retired from TAN-A-div, so this template needs to be wholly revised. -->
    <xsl:template match="tan:align | tan:realign" mode="prep-tan-a-div-pass-b">
       <!-- Goal: redistribute contents of aligns and realigns -->
       <xsl:variable name="this-align-or-realign" select="."/>

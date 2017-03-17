@@ -3,7 +3,7 @@
    xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:tan="tag:textalign.net,2015:ns"
    xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="#all" version="2.0">
    <xsl:import href="../../functions/TAN-A-tok-functions.xsl"/>
-   <xsl:import href="../../functions/TAN-class-2-global-variables.xsl"/>
+   
    <xsl:output indent="yes"/>
    <!-- Stylesheet to transform a TAN-A-tok file. Offers the following features:
         1. Convert <tok> references to and from @pos and @val

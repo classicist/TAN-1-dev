@@ -23,8 +23,6 @@
     </xd:doc>
 
     <xsl:variable name="schema-collection" select="collection('../../schemas/collection.xml')"/>
-    <!--<xsl:variable name="schema-collection" as="document-node()*"/>-->
-    <!--<xsl:variable name="rng-collection" select="collection('../schemas/?select=*.rng;recurse=yes')"/>-->
     <xsl:variable name="rng-collection" select="$schema-collection[rng:*]"/>
     <xsl:variable name="rng-collection-without-TEI"
         select="$rng-collection[not(matches(base-uri(.), 'TAN-TEI'))]"/>

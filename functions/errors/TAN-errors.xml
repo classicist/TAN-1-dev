@@ -41,6 +41,9 @@
         <error xml:id="tan13"><rule>A &lt;alias> may not mix idrefs from different elements.</rule></error>
         <error xml:id="tan14"><rule>&lt;alias> references must not be circular.</rule></error>
     </group>
+    <group affects-element="master-location" affects-attribute="href">
+        <error xml:id="tan15"><rule>No &lt;master-location> may have an @href that points to a compressed archive.</rule></error>
+    </group>
     <group affects-element="see-also relationship">
         <error xml:id="see01"><rule>Any &lt;see-also> whose &lt;relationship> is defined as requiring a target TAN file must point to a file whose root element is a TAN file.</rule></error>
         <error xml:id="see02"><rule>Any &lt;see-also> whose &lt;relationship> is defined as requiring a target TAN-c file must point to a TAN file whose root element is &lt;TAN-c>.</rule></error>
@@ -82,10 +85,6 @@
         <error xml:id="whi03"><rule>Any element that takes @which must have keywords defined for that element.</rule></error>
         <fatal xml:id="whi04"><rule>Keys are integral parts of a document. Access to at least one version is absolutely mandatory.</rule></fatal>
     </group>
-    <!--<group affects-element="location">
-        <error xml:id="loc01"><rule>&lt;location> must point to an available document.</rule></error>
-        <error xml:id="loc02"><rule>If there is no &lt;location> then @which must be present.</rule></error>
-    </group>-->
     <group affects-attribute="ref src">
         <error xml:id="ref01"><rule>Every atomic reference in a @ref must correspond to a &lt;div> in every source mentioned by @src.</rule></error>
         <error xml:id="ref04"><rule>Every range in a @ref must correspond to one or more &lt;div>s in every source mentioned by @src.</rule></error>
@@ -110,7 +109,7 @@
     <group affects-attribute="seg">
         <error xml:id="seg01"><rule>@seg may not be applied to any element that is not a leaf div</rule></error>
     </group>
-    <group affects-attribute="distribute">
+    <group affects-element="realign">
         <error xml:id="dst01"><rule>Distribution must be applied to groups of equal size.</rule></error>
     </group>
     <group affects-element="split-leaf-div-at">

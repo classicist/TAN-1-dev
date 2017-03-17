@@ -6,7 +6,7 @@
         <name>Part-of-speech analysis of 1881 version of Ring a Ring o' Roses</name>
         <master-location href="ring-o-roses.eng.1881.lm.xml"/>
         <!--<master-location href="http://textalign.net/release/TAN-1-dev/examples/TAN-LM/ring-o-roses.eng.1881.lm.xml"/>-->
-        <rights-excluding-sources rights-holder="kalvesmaki">
+        <rights-excluding-sources rights-holder="park">
             <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
             <name>Creative Commons Attribution 4.0 International License</name>
             <desc>This license is granted independent of rights and licenses associated with the
@@ -21,7 +21,7 @@
             <morphology xml:id="penn" ed-when="2015-08-20-04:00" ed-who="park">
                 <IRI>tag:kalvesmaki.com,2014:tan-r-mor:eng:penn</IRI>
                 <name>Penn Treebank tag set</name>
-                <!--<location href="https://raw.githubusercontent.com/Arithmeticus/TAN-lexico-morphology/master/TAN-R-mor/eng.kalvesmaki.com%2C2014.2.xml" when-accessed="2015-08-20"/>-->
+                <!--<location href="https://raw.githubusercontent.com/Arithmeticus/TAN-lexico-morphology/master/TAN-mor/eng.kalvesmaki.com%2C2014.2.xml" when-accessed="2015-08-20"/>-->
                 <!--<location href="http://textalign.net/release/TAN-1-dev/examples/TAN-R-mor/eng.kalvesmaki.com,2014.2.xml" when-accessed="2016-01-25"/>-->
                 <location href="../TAN-mor/eng.kalvesmaki.com%2C2014.2.xml" when-accessed="2015-11-03-05:00"/>
             </morphology>

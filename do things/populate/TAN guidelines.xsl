@@ -119,15 +119,6 @@
    <xsl:mode name="rng-to-docbook" on-no-match="shallow-copy"/>
    <xsl:mode name="errors-to-docbook" on-no-match="shallow-skip"/>
    <xsl:mode name="context-errors-to-docbook" on-no-match="shallow-skip"/>
-
-   <xsl:function name="tan:cfn" as="xs:string*">
-      <!-- Input: any items -->
-      <!-- Output: the Current File Name, without extension, of the host document node of each item -->
-      <xsl:param name="item" as="item()*"/>
-      <xsl:for-each select="$item">
-         <xsl:value-of select="replace(base-uri(.), '.+/(.+)\.\w+$', '$1')"/>
-      </xsl:for-each>
-   </xsl:function>
    
    <xsl:variable name="indent"
       select="

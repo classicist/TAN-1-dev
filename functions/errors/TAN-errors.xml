@@ -16,6 +16,7 @@
     <group affects-attribute="href">
         <error xml:id="tan08"><rule>@href must have &lt;location> or &lt;master-location> as a parent; any other parent will trigger a quick fix to populate the element with the IRI + name pattern of the target file.</rule></error>
         <warning xml:id="wrn01"><rule>If fn:doc-available() for an @href returns false, the following message will be returned.</rule><message>@href points to file that is either (1) not available, (2) not valid XML, or (3) at a server not trusted by the validation engine.</message></warning>
+        <error xml:id="tan16"><rule>The only @href in a TAN document that may point to the same document id that of &lt;master-location></rule></error>
     </group>
     <group affects-element="IRI">
         <error xml:id="tan09"><rule>An IRI may appear no more than once in a TAN document.</rule></error>
@@ -180,7 +181,7 @@
     </group>
     <group affects-element="name">
         <error xml:id="tky01"><rule>Names may not duplicate reserved TAN keywords for the affected element.</rule></error>
-        <error xml:id="tky02"><rule>Names may not be duplicated for the same element.</rule></error>
+        <error xml:id="tky02"><rule>Names may not be duplicates of, case-variants of, or hyphen variants of other names for the same element.</rule></error>
     </group>
     <group affects-attribute="affects-element" affects-element="item group">
         <error xml:id="tky03"><rule>@affects-element must include only names of TAN elements that accept @which</rule></error>

@@ -390,7 +390,7 @@
             <xsl:choose>
                <xsl:when test="self::tan:sep">
                   <xsl:choose>
-                     <xsl:when test="matches(.,'^ *, $|^ *- *$')">
+                     <xsl:when test="matches(.,'^ *[-,] *$')">
                         <xsl:value-of select="replace(., '(\S)', ' $1 ')"/>
                      </xsl:when>
                      <xsl:otherwise>
@@ -1211,6 +1211,8 @@
                <xsl:choose>
                   <xsl:when test="$missing-ref-returned-as-info-not-error = false()">
                      <xsl:copy-of select="tan:error('ref01', string-join($this-message, ' '))"/>
+                     <test1><xsl:copy-of select="$element-with-ref-attr/@ref"/></test1>
+                     <test2><xsl:copy-of select="$ref-analyzed"/></test2>
                   </xsl:when>
                   <xsl:otherwise>
                      <xsl:copy-of select="tan:info(string-join($this-message, ' '), ())"/>

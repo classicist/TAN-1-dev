@@ -664,7 +664,7 @@
             <xsl:variable name="this-message">
                <xsl:text>Target file has the following IRI + name pattern: </xsl:text>
                <xsl:value-of select="$target-IRI"/>
-               <xsl:value-of select="concat(' (', $target-name, ')')"/>
+               <xsl:value-of select="concat(' (', $target-name[1], ')')"/>
             </xsl:variable>
             <xsl:variable name="this-fix" as="element()*">
                <IRI>
@@ -673,7 +673,7 @@
                <xsl:copy-of select="$target-name"/>
                <xsl:copy-of select="$target-desc"/>
                <location when-accessed="{current-dateTime()}">
-                  <xsl:copy-of select="@href"/>
+                  <xsl:copy-of select="tan:uri-relative-to(@href, $doc-uri)"/>
                </location>
             </xsl:variable>
             <xsl:copy-of select="tan:error('tan08', $this-message, $this-fix)"/>

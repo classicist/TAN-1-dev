@@ -92,6 +92,48 @@
          'alphabet numeral',
          'alphabet numeral + Arabic numeral',
          'string')"/>
+   <xsl:function name="tan:interpret-n-vals" as="element()*">
+      <!-- Input: any strings representing values of @n -->
+      <!-- Output: one element per @n, with at least one <val @type="[n-type]"> corresponding to the six types of numeral patterns/strings; if the input can be legitimately interpreted as that type, its converted value is in the element, otherwise it is empty -->
+      <xsl:param name="ns" as="xs:string*"/>
+      <xsl:for-each select="$ns">
+         <xsl:variable name="this-n-norm" select="."/>
+         <n orig="{.}">
+            <xsl:if test="matches($this-n-norm, $n-type-pattern[1], 'i')">
+               <val type="{$n-type[1]}">
+                  <xsl:value-of select="tan:rom-to-int($this-n-norm)"/>
+               </val>
+            </xsl:if>
+            <xsl:if test="matches($this-n-norm, $n-type-pattern[2])">
+               <val type="{$n-type[2]}">
+                  <xsl:value-of select="."/>
+               </val>
+            </xsl:if>
+            <xsl:if test="matches($this-n-norm, $n-type-pattern[3], 'i')">
+               <val type="{$n-type[3]}">
+                  <xsl:value-of
+                     select="concat(replace($this-n-norm, '\D+', ''), $separator-hierarchy-minor, tan:aaa-to-int(replace($this-n-norm, '\d+', '')))"
+                  />
+               </val>
+            </xsl:if>
+            <xsl:if test="matches($this-n-norm, $n-type-pattern[4], 'i')">
+               <val type="{$n-type[4]}">
+                  <xsl:value-of select="tan:aaa-to-int($this-n-norm)"/>
+               </val>
+            </xsl:if>
+            <xsl:if test="matches($this-n-norm, $n-type-pattern[5], 'i')">
+               <val type="{$n-type[5]}">
+                  <xsl:value-of
+                     select="concat(tan:aaa-to-int(replace($this-n-norm, '\d+', '')), $separator-hierarchy-minor, replace($this-n-norm, '\D+', ''))"
+                  />
+               </val>
+            </xsl:if>
+            <val type="$">
+               <xsl:value-of select="."/>
+            </val>
+         </n>
+      </xsl:for-each>
+   </xsl:function>
 
    <!-- self -->
    <xsl:variable name="root" select="/"/>
@@ -141,7 +183,10 @@
    <xsl:variable name="TAN-keywords" as="document-node()*">
       <xsl:for-each select="$TAN-keyword-files">
          <xsl:document>
-            <xsl:apply-templates mode="resolve-href"/>
+            <xsl:variable name="pass1">
+               <xsl:apply-templates mode="resolve-href"/>
+            </xsl:variable>
+            <xsl:apply-templates select="$pass1" mode="prep-tan-key"/>
          </xsl:document>
       </xsl:for-each>
    </xsl:variable>
@@ -149,7 +194,14 @@
       select="tan:get-attr-which-definition('relationship', (), 'TAN files')"/>
    <xsl:variable name="keys-1st-da" select="tan:get-1st-doc($head/tan:key)"/>
    <xsl:variable name="keys-resolved" select="tan:resolve-doc($keys-1st-da)"/>
-   <xsl:variable name="all-keywords" select="$keys-resolved, $TAN-keywords" as="document-node()*"/>
+   <xsl:variable name="keys-prepped" as="document-node()*">
+      <xsl:for-each select="$keys-resolved">
+         <xsl:document>
+            <xsl:apply-templates mode="prep-tan-key"/>
+         </xsl:document>
+      </xsl:for-each>
+   </xsl:variable>
+   <xsl:variable name="all-keywords" select="($keys-resolved, $TAN-keywords)" as="document-node()*"/>
    <!-- sources -->
    <xsl:variable name="sources-1st-da" select="tan:get-1st-doc($head/tan:source)"/>
    <xsl:variable name="sources-resolved"
@@ -185,7 +237,7 @@
          </xsl:if>
       </xsl:for-each-group>
    </xsl:function>
-   
+
    <xsl:function name="tan:distinct-items" as="item()*">
       <!-- Input: any sequence of items -->
       <!-- Output: Those items that are not deeply equal to any other item in the sequence -->
@@ -193,12 +245,91 @@
       <xsl:copy-of select="$items[1]"/>
       <xsl:for-each select="$items[position() gt 1]">
          <xsl:variable name="this-item" select="."/>
-         <xsl:if test="not(some $i in 1 to position() satisfies deep-equal($this-item, $items[$i]))">
+         <xsl:if
+            test="
+               not(some $i in 1 to position()
+                  satisfies deep-equal($this-item, $items[$i]))">
             <xsl:copy-of select="."/>
          </xsl:if>
       </xsl:for-each>
    </xsl:function>
 
+   <xsl:function name="tan:sequence-expand" as="xs:integer*">
+      <!-- Input: a string representing a TAN selector (used by @pos, @char, @seg), and an integer defining the value of 'last' -->
+      <!-- Output: a sequence of numbers representing the positions selected, unsorted, and retaining duplicate values.
+            Example: ("2 - 4, last-5 - last, 36", 50) -> (2, 3, 4, 45, 46, 47, 48, 49, 50, 36)
+            Errors will be flagged as follows:
+            0 = value that falls below 1
+            -1 = value that surpasses the value of $max
+            -2 = ranges that call for negative steps, e.g., '4 - 2' -->
+      <xsl:param name="selector" as="xs:string?"/>
+      <xsl:param name="max" as="xs:integer?"/>
+      <!-- first normalize syntax -->
+      <xsl:variable name="pass-1"
+         select="replace(tan:normalize-text($selector), 'all|\*', '1 - last')"/>
+      <xsl:variable name="pass-2" select="replace($pass-1, '(\d)\s*-\s*(last|max|\d)', '$1 - $2')"/>
+      <xsl:variable name="pass-3" select="replace($pass-2, '(\d)\s+(\d)', '$1, $2')"/>
+      <xsl:variable name="pass-4" as="xs:string*">
+         <xsl:analyze-string select="$pass-3" regex="(last|max)(-\d+)?">
+            <xsl:matching-substring>
+               <xsl:variable name="second-numeral" select="replace(., '\D+', '')"/>
+               <xsl:variable name="second-number"
+                  select="
+                     if (string-length($second-numeral) gt 0) then
+                        number($second-numeral)
+                     else
+                        0"/>
+               <xsl:value-of select="string(($max - $second-number))"/>
+            </xsl:matching-substring>
+            <xsl:non-matching-substring>
+               <xsl:value-of select="."/>
+            </xsl:non-matching-substring>
+         </xsl:analyze-string>
+      </xsl:variable>
+      <xsl:variable name="item" select="tokenize(string-join($pass-4, ''), ' ?, +')"/>
+      <xsl:for-each select="$item">
+         <xsl:variable name="range"
+            select="
+               for $i in tokenize(., ' - ')
+               return
+                  xs:integer($i)"/>
+         <xsl:choose>
+            <xsl:when test="$range[1] lt 1 or $range[2] lt 1">
+               <xsl:copy-of select="0"/>
+            </xsl:when>
+            <xsl:when test="$range[1] gt $max or $range[2] gt $max">
+               <xsl:copy-of select="-1"/>
+            </xsl:when>
+            <xsl:when test="$range[1] ge $range[2]">
+               <xsl:copy-of select="-2"/>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:copy-of select="$range[1] to $range[last()]"/>
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:for-each>
+   </xsl:function>
+   <xsl:function name="tan:sequence-error" as="element()*">
+      <xsl:param name="results-of-sequence-expand" as="xs:integer*"/>
+      <xsl:copy-of select="tan:sequence-error($results-of-sequence-expand, ())"/>
+   </xsl:function>
+   <xsl:function name="tan:sequence-error" as="element()*">
+      <!-- Input: any results of the function tan:sequence-expand() -->
+      <!-- Output: error nodes, if any -->
+      <xsl:param name="results-of-sequence-expand" as="xs:integer*"/>
+      <xsl:param name="message" as="xs:string?"/>
+      <xsl:for-each select="$results-of-sequence-expand[. lt 1]">
+         <xsl:if test=". = 0">
+            <xsl:copy-of select="tan:error('seq01', $message)"/>
+         </xsl:if>
+         <xsl:if test=". = -1">
+            <xsl:copy-of select="tan:error('seq02', $message)"/>
+         </xsl:if>
+         <xsl:if test=". = -2">
+            <xsl:copy-of select="tan:error('seq03', $message)"/>
+         </xsl:if>
+      </xsl:for-each>
+   </xsl:function>
 
 
    <!-- Functions: date, time, version -->
@@ -278,17 +409,31 @@
       </xsl:for-each>
    </xsl:function>
 
+
    <!-- Functions: text, numerals -->
 
    <xsl:function name="tan:normalize-text" as="xs:string*">
-      <!-- Input: any sequence of strings -->
-      <!-- Output: that sequence, with each item's space normalized, and removal of any help requested -->
+      <!-- one-parameter version of full function below -->
       <xsl:param name="text" as="xs:string*"/>
-      <xsl:copy-of
+      <xsl:copy-of select="tan:normalize-text($text, false())"/>
+   </xsl:function>
+   <xsl:function name="tan:normalize-text" as="xs:string*">
+      <!-- Input: any sequence of strings; a boolean indicating whether the results should be normalized further to a common form -->
+      <!-- Output: that sequence, with each item's space normalized, and removal of any help requested -->
+      <!-- A common form is one where the string is converted to lower-case, and hyphens are replaced by spaces -->
+      <xsl:param name="text" as="xs:string*"/>
+      <xsl:param name="render-common" as="xs:boolean"/>
+      <xsl:variable name="pass1"
          select="
             for $i in $text
             return
-               normalize-space(replace($i, $help-trigger-regex, ''))"
+               normalize-space(replace($i, $help-trigger-regex, ''))"/>
+      <xsl:copy-of
+         select="
+            if ($render-common = true()) then
+               lower-case(replace($pass1, '-', ' '))
+            else
+               $pass1"
       />
    </xsl:function>
 
@@ -362,27 +507,6 @@
       </xsl:for-each>
    </xsl:function>
 
-   <xsl:function name="tan:letter-to-number" as="xs:integer*">
-      <!-- Input: any sequence of strings that represent alphabetic numerals -->
-      <!-- Output: those numerals -->
-      <!-- NB, currently works only for Greek and Syriac; anything else produces null results -->
-      <xsl:param name="numerical-letters" as="xs:anyAtomicType*"/>
-      <xsl:for-each select="$numerical-letters">
-         <xsl:variable name="this-letter" select="."/>
-         <xsl:choose>
-            <xsl:when test="matches(., '^\p{IsSyriac}+$')">
-               <xsl:copy-of
-                  select="xs:integer(($alphabet-numeral-key/*[matches(@syc, $this-letter, 'i')]/@int))"
-               />
-            </xsl:when>
-            <xsl:when test="matches(., '^\p{IsGreek}+$')">
-               <xsl:copy-of
-                  select="xs:integer(($alphabet-numeral-key/*[matches(@grc, $this-letter, 'i')]/@int))"
-               />
-            </xsl:when>
-         </xsl:choose>
-      </xsl:for-each>
-   </xsl:function>
    <xsl:variable name="alphabet-numeral-key" as="element()">
       <key>
          <convert grc="α" syc="ܐ" int="1"/>
@@ -403,7 +527,7 @@
          <convert grc="ο" syc="ܥ" int="70"/>
          <convert grc="π" syc="ܦ" int="80"/>
          <convert grc="ϙ" syc="ܨ" int="90"/>
-         <convert grc="π" syc="ܩ" int="100"/>
+         <convert grc="ρ" syc="ܩ" int="100"/>
          <convert grc="σ" syc="ܪ" int="200"/>
          <convert grc="τ" syc="ܫ" int="300"/>
          <convert grc="υ" syc="ܬ" int="400"/>
@@ -415,107 +539,65 @@
       </key>
    </xsl:variable>
 
-   <xsl:function name="tan:syc-to-int" as="xs:integer">
-      <!-- Input: Syriac letters -->
-      <!-- Output: the numerical value of the letters -->
-      <!-- NB, this does not take into account the use of letters representing numbers 1000 and greater -->
-      <xsl:param name="syriac-numeral" as="xs:string"/>
-      <xsl:variable name="orig-numeral-seq" as="xs:string*">
-         <xsl:analyze-string select="$syriac-numeral" regex=".">
-            <xsl:matching-substring>
-               <xsl:value-of select="."/>
-            </xsl:matching-substring>
-         </xsl:analyze-string>
-      </xsl:variable>
-      <!-- The following removes redoubled numerals as often happens in Syriac, to indicate clearly that a character is a numeral not a letter. -->
-      <xsl:variable name="duplicates-stripped"
-         select="
-            for $i in (1 to count($orig-numeral-seq))
-            return
-               if ($orig-numeral-seq[$i] = $orig-numeral-seq[$i + 1]) then
-                  ()
-               else
-                  $orig-numeral-seq[$i]"/>
-      <xsl:variable name="arabic-numeral-seq" select="tan:letter-to-number($duplicates-stripped)"
-         as="xs:integer*"/>
-      <xsl:value-of select="sum($arabic-numeral-seq)"/>
-   </xsl:function>
-
-   <!-- Functions that take regular expressions, to support TAN extensions -->
-   <xsl:function name="tan:sequence-expand" as="xs:integer*">
-      <!-- Input: a string representing a TAN selector (used by @pos, @char, @seg), and an integer defining the value of 'last' -->
-      <!-- Output: a sequence of numbers representing the positions selected, unsorted, and retaining duplicate values.
-            Example: ("2 - 4, last-5 - last, 36", 50) -> (2, 3, 4, 45, 46, 47, 48, 49, 50, 36)
-            Errors will be flagged as follows:
-            0 = value that falls below 1
-            -1 = value that surpasses the value of $max
-            -2 = ranges that call for negative steps, e.g., '4 - 2' -->
-      <xsl:param name="selector" as="xs:string?"/>
-      <xsl:param name="max" as="xs:integer?"/>
-      <!-- first normalize syntax -->
-      <xsl:variable name="pass-1"
-         select="replace(tan:normalize-text($selector), 'all|\*', '1 - last')"/>
-      <xsl:variable name="pass-2" select="replace($pass-1, '(\d)\s*-\s*(last|max|\d)', '$1 - $2')"/>
-      <xsl:variable name="pass-3" select="replace($pass-2, '(\d)\s+(\d)', '$1, $2')"/>
-      <xsl:variable name="pass-4" as="xs:string*">
-         <xsl:analyze-string select="$pass-3" regex="(last|max)(-\d+)?">
-            <xsl:matching-substring>
-               <xsl:variable name="second-numeral" select="replace(., '\D+', '')"/>
-               <xsl:variable name="second-number"
-                  select="
-                     if (string-length($second-numeral) gt 0) then
-                        number($second-numeral)
-                     else
-                        0"/>
-               <xsl:value-of select="string(($max - $second-number))"/>
-            </xsl:matching-substring>
-            <xsl:non-matching-substring>
-               <xsl:value-of select="."/>
-            </xsl:non-matching-substring>
-         </xsl:analyze-string>
-      </xsl:variable>
-      <xsl:variable name="item" select="tokenize(string-join($pass-4, ''), ' ?, +')"/>
-      <xsl:for-each select="$item">
-         <xsl:variable name="range"
-            select="
-               for $i in tokenize(., ' - ')
-               return
-                  xs:integer($i)"/>
-         <xsl:choose>
-            <xsl:when test="$range[1] lt 1 or $range[2] lt 1">
-               <xsl:copy-of select="0"/>
-            </xsl:when>
-            <xsl:when test="$range[1] gt $max or $range[2] gt $max">
-               <xsl:copy-of select="-1"/>
-            </xsl:when>
-            <xsl:when test="$range[1] ge $range[2]">
-               <xsl:copy-of select="-2"/>
-            </xsl:when>
-            <xsl:otherwise>
-               <xsl:copy-of select="$range[1] to $range[last()]"/>
-            </xsl:otherwise>
-         </xsl:choose>
+   <xsl:function name="tan:letter-to-number" as="xs:integer*">
+      <!-- Input: any sequence of strings that represent alphabetic numerals -->
+      <!-- Output: those numerals -->
+      <!-- NB, currently works only for Greek and Syriac; anything else produces null results -->
+      <xsl:param name="numerical-letters" as="xs:anyAtomicType*"/>
+      <xsl:for-each select="$numerical-letters">
+         <xsl:variable name="pass1" as="xs:integer*">
+            <xsl:analyze-string select="." regex=".">
+               <xsl:matching-substring>
+                  <xsl:variable name="this-letter" select="."/>
+                  <xsl:choose>
+                     <xsl:when test="matches(., '^\p{IsSyriac}+$')">
+                        <xsl:copy-of
+                           select="xs:integer(($alphabet-numeral-key/*[matches(@syc, $this-letter, 'i')][1]/@int))"
+                        />
+                     </xsl:when>
+                     <xsl:when test="matches(., '^\p{IsGreek}+$')">
+                        <xsl:copy-of
+                           select="xs:integer(($alphabet-numeral-key/*[matches(@grc, $this-letter, 'i')][1]/@int))"
+                        />
+                     </xsl:when>
+                  </xsl:choose>
+               </xsl:matching-substring>
+            </xsl:analyze-string>
+         </xsl:variable>
+         <xsl:value-of select="sum($pass1)"/>
       </xsl:for-each>
    </xsl:function>
-   <xsl:function name="tan:sequence-error" as="element()*">
-      <xsl:param name="results-of-sequence-expand" as="xs:integer*"/>
-      <xsl:copy-of select="tan:sequence-error($results-of-sequence-expand, ())"/>
+
+   <xsl:function name="tan:grc-to-int" as="xs:integer*">
+      <!-- Input: Greek letters that represent numerals -->
+      <!-- Output: the numerical value of the letters -->
+      <!-- NB, this does not take into account the use of letters representing numbers 1000 and greater -->
+      <xsl:param name="greek-numerals" as="xs:string*"/>
+      <xsl:value-of select="tan:letter-to-number($greek-numerals)"/>
    </xsl:function>
-   <xsl:function name="tan:sequence-error" as="element()*">
-      <!-- Input: any results of the function tan:sequence-expand() -->
-      <!-- Output: error nodes, if any -->
-      <xsl:param name="results-of-sequence-expand" as="xs:integer*"/>
-      <xsl:param name="message" as="xs:string?"/>
-      <xsl:for-each select="$results-of-sequence-expand[. lt 1]">
-         <xsl:if test=". = 0">
-            <xsl:copy-of select="tan:error('seq01', $message)"/>
-         </xsl:if>
-         <xsl:if test=". = -1">
-            <xsl:copy-of select="tan:error('seq02', $message)"/>
-         </xsl:if>
-         <xsl:if test=". = -2">
-            <xsl:copy-of select="tan:error('seq03', $message)"/>
-         </xsl:if>
+   <xsl:function name="tan:syc-to-int" as="xs:integer*">
+      <!-- Input: Syriac letters that represent numerals -->
+      <!-- Output: the numerical value of the letters -->
+      <!-- NB, this does not take into account the use of letters representing numbers 1000 and greater -->
+      <xsl:param name="syriac-numerals" as="xs:string*"/>
+      <xsl:for-each select="$syriac-numerals">
+         <xsl:variable name="orig-numeral-seq" as="xs:string*">
+            <xsl:analyze-string select="." regex=".">
+               <xsl:matching-substring>
+                  <xsl:value-of select="."/>
+               </xsl:matching-substring>
+            </xsl:analyze-string>
+         </xsl:variable>
+         <!-- The following removes redoubled numerals as often happens in Syriac, to indicate clearly that a character is a numeral not a letter. -->
+         <xsl:variable name="duplicates-stripped"
+            select="
+               for $i in (1 to count($orig-numeral-seq))
+               return
+                  if ($orig-numeral-seq[$i] = $orig-numeral-seq[$i + 1]) then
+                     ()
+                  else
+                     $orig-numeral-seq[$i]"/>
+         <xsl:value-of select="tan:letter-to-number(string-join($duplicates-stripped, ''))"/>
       </xsl:for-each>
    </xsl:function>
 
@@ -531,10 +613,39 @@
       />
    </xsl:function>
 
+   <xsl:function name="tan:batch-replace" as="xs:string?">
+      <!-- Input: a string, a sequence of <[ANY NAME] pattern="" replacement="" [flags=""]> -->
+      <!-- Output: the string, after those replaces are processed in order -->
+      <xsl:param name="string" as="xs:string?"/>
+      <xsl:param name="replace-elements" as="element()*"/>
+      <xsl:choose>
+         <xsl:when test="not(exists($replace-elements))">
+            <xsl:value-of select="$string"/>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:variable name="new-string"
+               select="
+                  if (exists($replace-elements[1]/@flags)) then
+                     tan:replace($string, $replace-elements[1]/@pattern, $replace-elements[1]/@replacement, $replace-elements[1]/@flags)
+                  else
+                     tan:replace($string, $replace-elements[1]/@pattern, $replace-elements[1]/@replacement)"/>
+            <xsl:value-of
+               select="tan:batch-replace($new-string, $replace-elements[position() gt 1])"/>
+         </xsl:otherwise>
+      </xsl:choose>
+   </xsl:function>
 
 
-   <!-- Functions: uris -->
+   <!-- Functions: uris, filenames -->
 
+   <xsl:function name="tan:cfn" as="xs:string*">
+      <!-- Input: any items -->
+      <!-- Output: the Current File Name, without extension, of the host document node of each item -->
+      <xsl:param name="item" as="item()*"/>
+      <xsl:for-each select="$item">
+         <xsl:value-of select="replace(xs:string(tan:base-uri(.)), '.+/(.+)\.\w+$', '$1')"/>
+      </xsl:for-each>
+   </xsl:function>
    <xsl:function name="tan:uri-directory" as="xs:string*">
       <!-- Input: any URIs, as strings -->
       <!-- Output: the file path -->
@@ -574,24 +685,28 @@
       <xsl:variable name="uri-b-resolved" select="resolve-uri($uri-to-revise-against)"/>
       <xsl:variable name="path-a" as="element()">
          <path-a>
-            <xsl:analyze-string select="$uri-a-resolved" regex="/">
-               <xsl:non-matching-substring>
-                  <step>
-                     <xsl:value-of select="."/>
-                  </step>
-               </xsl:non-matching-substring>
-            </xsl:analyze-string>
+            <xsl:if test="string-length($uri-a-resolved) gt 0">
+               <xsl:analyze-string select="$uri-a-resolved" regex="/">
+                  <xsl:non-matching-substring>
+                     <step>
+                        <xsl:value-of select="."/>
+                     </step>
+                  </xsl:non-matching-substring>
+               </xsl:analyze-string>
+            </xsl:if>
          </path-a>
       </xsl:variable>
       <xsl:variable name="path-b" as="element()">
          <path-b>
-            <xsl:analyze-string select="$uri-b-resolved" regex="/">
-               <xsl:non-matching-substring>
-                  <step>
-                     <xsl:value-of select="."/>
-                  </step>
-               </xsl:non-matching-substring>
-            </xsl:analyze-string>
+            <xsl:if test="string-length($uri-b-resolved) gt 0">
+               <xsl:analyze-string select="$uri-b-resolved" regex="/">
+                  <xsl:non-matching-substring>
+                     <step>
+                        <xsl:value-of select="."/>
+                     </step>
+                  </xsl:non-matching-substring>
+               </xsl:analyze-string>
+            </xsl:if>
          </path-b>
       </xsl:variable>
       <xsl:variable name="path-a-steps" select="count($path-a/tan:step)"/>
@@ -714,6 +829,7 @@
          <xsl:variable name="this-element" select="."/>
          <xsl:variable name="this-class" select="tan:class-number(.)"/>
          <xsl:variable name="first-la" select="tan:first-loc-available(.)"/>
+         <xsl:variable name="this-id" select="root(.)/*/@id"/>
          <xsl:choose>
             <xsl:when test="string-length($first-la) lt 1">
                <xsl:document>
@@ -728,8 +844,7 @@
                         <xsl:copy-of select="tan:error('wrn01')"/>
                      </xsl:when>
                      <xsl:when
-                        test="self::tan:source and not(exists(tan:location)) and tan:tan-type(.) = 'TAN-mor'"
-                     />
+                        test="self::tan:source and not(exists(tan:location)) and tan:tan-type(.) = 'TAN-mor'"/>
                      <xsl:otherwise>
                         <xsl:copy-of select="tan:error('loc01')"/>
                      </xsl:otherwise>
@@ -737,7 +852,17 @@
                </xsl:document>
             </xsl:when>
             <xsl:otherwise>
-               <xsl:sequence select="doc($first-la)"/>
+               <xsl:variable name="this-doc" select="doc($first-la)"/>
+               <xsl:choose>
+                  <xsl:when test="$this-doc/*/@id = $this-id">
+                     <xsl:document>
+                        <xsl:copy-of select="tan:error('tan16')"/>
+                     </xsl:document>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:sequence select="$this-doc"></xsl:sequence>
+                  </xsl:otherwise>
+               </xsl:choose>
             </xsl:otherwise>
          </xsl:choose>
       </xsl:for-each>
@@ -1030,7 +1155,7 @@
       />
    </xsl:function>
    <xsl:function name="tan:get-attr-which-definition" as="element()*">
-      <!-- Input: any element that has @which (or a string value of an element that takes @which); any TAN-key documents other than the standard TAN ones; and an optional name that restricts the search to a particular group -->
+      <!-- Input: any element that has @which (or a string value of the name of an element that takes @which); any TAN-key documents other than the standard TAN ones; and an optional name that restricts the search to a particular group -->
       <!-- Output: the tan:items that are valid keywords for the element in question -->
       <xsl:param name="element-that-takes-attribute-which" as="item()"/>
       <xsl:param name="extra-TAN-key-docs" as="document-node()*"/>
@@ -1041,7 +1166,14 @@
                $element-that-takes-attribute-which
             else
                name($element-that-takes-attribute-which)"/>
-      <xsl:variable name="all-TAN-key-docs" select="$extra-TAN-key-docs, $TAN-keywords"/>
+      <xsl:variable name="extra-keys-prepped" as="document-node()*">
+         <xsl:for-each select="$extra-TAN-key-docs">
+            <xsl:document>
+               <xsl:apply-templates mode="prep-tan-key"/>
+            </xsl:document>
+         </xsl:for-each>
+      </xsl:variable>
+      <xsl:variable name="all-TAN-key-docs" select="$extra-keys-prepped, $TAN-keywords"/>
       <xsl:sequence
          select="
             for $i in $all-TAN-key-docs
@@ -1059,7 +1191,7 @@
 
    <!-- Default templates, shared across modes -->
    <xsl:template match="node()"
-      mode="resolve-href include resolve-attr-include resolve-keyword arabic-numerals strip-duplicates">
+      mode="resolve-href include resolve-attr-include resolve-keyword arabic-numerals strip-duplicates prep-tan-key">
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:apply-templates mode="#current"/>
@@ -1157,6 +1289,21 @@
             </xsl:copy>
          </xsl:otherwise>
       </xsl:choose>
+   </xsl:template>
+
+   <xsl:template match="tan:name" mode="prep-tan-key">
+      <xsl:variable name="this-name" select="text()"/>
+      <xsl:variable name="this-name-common" select="tan:normalize-text($this-name, true())"/>
+      <xsl:copy-of select="."/>
+      <xsl:if test="not($this-name = $this-name-common)">
+         <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <!-- we add @common, to distinguish it from the master, for error checking -->
+            <xsl:attribute name="common"/>
+            <xsl:copy-of select="*"/>
+            <xsl:value-of select="$this-name-common"/>
+         </xsl:copy>
+      </xsl:if>
    </xsl:template>
 
    <xsl:template match="*[@include]" mode="resolve-attr-include">
@@ -1402,7 +1549,7 @@
       <xsl:param name="extra-keys" as="document-node()*" tunnel="yes"/>
       <xsl:variable name="this-element" select="."/>
       <xsl:variable name="element-name" select="name(.)"/>
-      <xsl:variable name="this-which" select="tan:normalize-text(@which)"/>
+      <xsl:variable name="this-which" select="tan:normalize-text(@which, true())"/>
       <xsl:variable name="help-requested" select="matches(@which, $help-trigger-regex)"/>
       <xsl:variable name="attr-in-key-element-to-suppress" select="('group')" as="xs:string*"/>
       <xsl:variable name="valid-definitions"
@@ -1472,6 +1619,16 @@
          <xsl:copy-of select="$definition-matches/*[not(self::tan:token-definition)]"/>
       </xsl:copy>
    </xsl:template>
+   <xsl:function name="tan:resolve-keyword" as="item()*">
+      <!-- Input: any items; any extra keys -->
+      <!-- Output: the same items, but with elements with @which expanded into their full form, using the predefined TAN vocabulary and the extra keys supplied -->
+      <xsl:param name="items" as="item()*"/>
+      <xsl:param name="extra-keys" as="document-node()*"/>
+      <xsl:apply-templates select="$items" mode="resolve-keyword">
+         <xsl:with-param name="extra-keys" select="$extra-keys" tunnel="yes"/>
+      </xsl:apply-templates>
+   </xsl:function>
+
 
    <xsl:template match="*[@href]" mode="resolve-href">
       <xsl:param name="special-base-uri" as="xs:string?" tunnel="yes"/>
@@ -1559,8 +1716,8 @@
          <xsl:with-param name="exclude-elements-beyond-what-depth"
             select="$exclude-elements-beyond-what-depth" tunnel="yes"/>
          <xsl:with-param name="current-depth" select="0"/>
-         <xsl:with-param name="shallow-skip-elements-named"
-            select="$shallow-skip-elements-named" tunnel="yes"/>
+         <xsl:with-param name="shallow-skip-elements-named" select="$shallow-skip-elements-named"
+            tunnel="yes"/>
       </xsl:apply-templates>
    </xsl:function>
    <xsl:template match="*" mode="copy-of-except">

@@ -16,6 +16,7 @@
    <xsl:include href="incl/TAN-class-3-functions.xsl"/>
    <xsl:include href="incl/TAN-schema-functions.xsl"/>
    <!--<xsl:variable name="self-prepped" select="$self-core-errors-marked"/>-->
+   <xsl:variable name="all-body-iris" select="$body//tan:IRI"/>
    <xsl:variable name="self-prepped" as="document-node()">
       <xsl:variable name="pass-1">
          <xsl:document>
@@ -27,76 +28,31 @@
       </xsl:document>
    </xsl:variable>
 
-   <xsl:template match="node()" mode="prep-tan-key tan-key-errors">
+   <xsl:template match="node()" mode="tan-key-errors">
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:apply-templates mode="#current"/>
       </xsl:copy>
    </xsl:template>
-   <xsl:template match="/*" mode="prep-tan-key">
-      <xsl:copy>
-         <xsl:copy-of select="@*"/>
-         <xsl:apply-templates mode="prep-tan-key">
-            <xsl:with-param name="is-reserved"
-               select="matches(@id, '^tag:textalign.net,2015:tan-key:')" tunnel="yes"/>
-         </xsl:apply-templates>
-      </xsl:copy>
-   </xsl:template>
-   <xsl:template match="tan:item" mode="prep-tan-key">
-      <xsl:param name="is-reserved" as="xs:boolean?" tunnel="yes"/>
-      <xsl:variable name="affected-element"
-         select="(ancestor-or-self::*[@affects-element])[last()]/@affects-element"/>
-      <xsl:variable name="reserved-keyword-doc"
-         select="$TAN-keywords[tan:TAN-key/tan:body/@affects-element = $affected-element]"/>
-      <xsl:variable name="reserved-keyword-items"
-         select="
-            if (exists($reserved-keyword-doc)) then
-               key('item-via-node-name', $affected-element, $reserved-keyword-doc)
-            else
-               ()"/>
-      <xsl:copy>
-         <xsl:copy-of select="@*"/>
-         <!--<test><xsl:copy-of select="$affected-element"/></test>-->
-         <xsl:if
-            test="($is-reserved = true()) and (not(exists(tan:IRI[starts-with(., $TAN-namespace)]))) and (not(exists(tan:token-definition)))">
-            <xsl:variable name="this-fix" as="element()">
-               <IRI><xsl:value-of select="$TAN-namespace"/></IRI>
-            </xsl:variable>
-            <xsl:copy-of select="tan:error('tky04', (), $this-fix)"/>
-         </xsl:if>
-         <xsl:apply-templates mode="prep-tan-key">
-            <xsl:with-param name="reserved-keyword-items" select="$reserved-keyword-items"/>
-            <!--<xsl:with-param name="other-keyword-items" select="$other-keyword-items"/>-->
-         </xsl:apply-templates>
-      </xsl:copy>
-   </xsl:template>
-   <xsl:template match="tan:name" mode="prep-tan-key">
-      <xsl:param name="reserved-keyword-items" as="element()*"/>
-      <xsl:param name="is-reserved" as="xs:boolean?" tunnel="yes"/>
-      <xsl:variable name="this-name" select="."/>
-      <xsl:copy>
-         <xsl:copy-of select="@*"/>
-         <xsl:if test="($reserved-keyword-items/tan:name = $this-name) and ($is-reserved = false())">
-            <xsl:copy-of select="tan:error('tky01')"/>
-         </xsl:if>
-         <xsl:if
-            test="count($body//tan:name[. = $this-name][(ancestor-or-self::*/@affects-element)[last()] = ($this-name/ancestor-or-self::*/@affects-element)[last()]]) gt 1">
-            <xsl:copy-of select="tan:error('tky02')"/>
-         </xsl:if>
-         <!--<test>
-            <xsl:copy-of select="$keys-1st-da"/>
-         </test>-->
-         <xsl:apply-templates mode="prep-tan-key"/>
-      </xsl:copy>
-   </xsl:template>
-   <xsl:template match="tan:IRI[parent::tan:item]" mode="prep-tan-key">
+
+   <xsl:template match="tan:IRI[parent::tan:item]" mode="tan-key-errors">
       <xsl:variable name="this-IRI" select="."/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
-         <xsl:if test="count($body//tan:IRI[. = $this-IRI]) gt 1">
+         <xsl:if test="count($all-body-iris[. = $this-IRI]) gt 1">
             <xsl:copy-of select="tan:error('tan09')"/>
          </xsl:if>
-         <xsl:apply-templates mode="prep-tan-key"/>
+         <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+   </xsl:template>
+
+   <xsl:template match="/*" mode="tan-key-errors">
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:apply-templates mode="#current">
+            <xsl:with-param name="is-reserved"
+               select="matches(@id, '^tag:textalign.net,2015:tan-key:')" tunnel="yes"/>
+         </xsl:apply-templates>
       </xsl:copy>
    </xsl:template>
 
@@ -111,10 +67,65 @@
             <xsl:copy-of
                select="tan:error('tky03', $TAN-elements-that-take-the-attribute-which/@name)"/>
          </xsl:if>
-         <xsl:apply-templates mode="tan-key-errors"/>
+         <xsl:apply-templates mode="#current"/>
       </xsl:copy>
    </xsl:template>
 
-   <xsl:variable name="all-body-iris" select="$body//tan:IRI"/>
+   <xsl:template match="tan:item" mode="tan-key-errors">
+      <xsl:param name="is-reserved" as="xs:boolean?" tunnel="yes"/>
+      <xsl:variable name="affected-elements"
+         select="tokenize((ancestor-or-self::*[@affects-element])[last()]/@affects-element, '\s+')"
+      />
+      <xsl:variable name="reserved-keyword-doc"
+         select="$TAN-keywords[tan:TAN-key/tan:body[tokenize(@affects-element, '\s+') = $affected-elements]]"
+      />
+      <xsl:variable name="reserved-keyword-items"
+         select="
+            if (exists($reserved-keyword-doc)) then
+               key('item-via-node-name', $affected-elements, $reserved-keyword-doc)
+            else
+               ()"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:if
+            test="($is-reserved = true()) and (not(exists(tan:IRI[starts-with(., $TAN-namespace)]))) and (not(exists(tan:token-definition)))">
+            <xsl:variable name="this-fix" as="element()">
+               <IRI>
+                  <xsl:value-of select="$TAN-namespace"/>
+               </IRI>
+            </xsl:variable>
+            <xsl:copy-of select="tan:error('tky04', (), $this-fix)"/>
+         </xsl:if>
+         <xsl:apply-templates mode="#current">
+            <xsl:with-param name="reserved-keyword-items" select="$reserved-keyword-items"/>
+            <xsl:with-param name="affected-elements" select="$affected-elements"/>
+         </xsl:apply-templates>
+      </xsl:copy>
+   </xsl:template>
+   <xsl:template match="tan:name[not(@common)]" mode="tan-key-errors">
+      <xsl:param name="reserved-keyword-items" as="element()*"/>
+      <xsl:param name="is-reserved" as="xs:boolean?" tunnel="yes"/>
+      <xsl:param name="affected-elements"/>
+      <xsl:variable name="this-name" select="."/>
+      <xsl:variable name="this-common-name" select="following-sibling::tan:name[1][@common]"/>
+      <xsl:variable name="name-to-check"
+         select="
+            if (not(exists($this-common-name))) then
+               $this-name
+            else
+               $this-common-name"/>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:if
+            test="($reserved-keyword-items/tan:name = $name-to-check) and ($is-reserved = false())">
+            <xsl:copy-of select="tan:error('tky01')"/>
+         </xsl:if>
+         <xsl:if
+            test="count(root(.)/tan:TAN-key/tan:body//tan:name[. = $name-to-check][tokenize((ancestor-or-self::*/@affects-element)[last()],'\s+') = $affected-elements]) gt 1">
+            <xsl:copy-of select="tan:error('tky02')"/>
+         </xsl:if>
+         <xsl:apply-templates mode="#current"/>
+      </xsl:copy>
+   </xsl:template>
 
 </xsl:stylesheet>

@@ -5,15 +5,40 @@
     id="tag:textalign.net,2015:tan-key:relationships">
     <head>
         <name>TAN keywords for types of relationships</name>
-        <desc>Definitive list of key terms used for describing relationships between digital files.</desc>
-        <master-location href="http://textalign.net/release/TAN-1-dev/TAN-key/relationships.TAN-key.xml"/>
+        <desc>Definitive list of key terms used for describing relationships between digital
+            files.</desc>
+        <master-location
+            href="http://textalign.net/release/TAN-1-dev/TAN-key/relationships.TAN-key.xml"/>
         <rights-excluding-sources rights-holder="kalvesmaki">
             <IRI>http://creativecommons.org/licenses/by/4.0/deed.en_US</IRI>
             <name>Creative Commons Attribution 4.0 International License</name>
             <desc>This license is granted independent of rights and licenses associated with the
                 source. </desc>
         </rights-excluding-sources>
-        <declarations/>
+        <declarations>
+            <group-type xml:id="TAN-c">
+                <IRI>tag:textalign.net,2015:ns:group:tan-c</IRI>
+                <name>TAN-c</name>
+                <desc>Groups whose items pertain to the TAN-c format. In the context of
+                    relationships, identifies where the parent &lt;see-also> must point exclusively
+                    to the TAN-c format.</desc>
+            </group-type>
+            <group-type xml:id="copies">
+                <IRI>tag:textalign.net,2015:ns:group:copies</IRI>
+                <name>copies</name>
+                <desc>Groups whose items pertain to copies. In the context of relationships,
+                    identifies where the parent &lt;see-also> points to a file that is a duplicate
+                    of the current document. Used primarily by class 1 files that need to reflect
+                    different ways of structuring or presenting the same text.</desc>
+            </group-type>
+            <group-type xml:id="versions">
+                <IRI>tag:textalign.net,2015:ns:group:versions</IRI>
+                <name>versions</name>
+                <desc>Groups whose items pertain to versions. In the context of relationships,
+                    identifies where the parent &lt;see-also> must point to another version of the
+                    current TAN file or its underlying work.</desc>
+            </group-type>
+        </declarations>
         <agent xml:id="kalvesmaki" roles="creator">
             <IRI>http://viaf.org/viaf/299582703</IRI>
             <IRI>tag:textalign.net,2015:agent:kalvesmaki:joel</IRI>
@@ -38,9 +63,7 @@
             <name>transformation</name>
             <desc>XSLT or XQuery document that was used to create the current TAN document.</desc>
         </item>
-        <group>
-            <name>TAN files</name>
-            <desc>Relationships where the parent &lt;see-also> must point exclusively to TAN files:</desc>
+        <group type="TAN-c">
             <item>
                 <IRI>tag:textalign.net,2015:relationship:dependent</IRI>
                 <name>class 2</name>
@@ -48,8 +71,6 @@
                 <desc>Points to a TAN file that uses the current file as a source.</desc>
             </item>
             <group>
-                <name>TAN-c</name>
-                <desc>Relationships where the parent &lt;see-also> must point exclusively to the TAN-c format.</desc>
                 <item>
                     <IRI>tag:textalign.net,2015:relationship:context</IRI>
                     <name>context</name>
@@ -57,11 +78,7 @@
                         file.</desc>
                 </item>
             </group>
-            <group>
-                <name>copies</name>
-                <desc>Relationships where the parent &lt;see-also> points to a file that is a duplicate
-                of the current document. Used primarily by class 1 files that need to reflect different
-                ways of structuring or presenting the same text.</desc>
+            <group type="copies">
                 <item>
                     <IRI>tag:textalign.net,2015:relationship:alternatively-divided-edition</IRI>
                     <name>alternatively divided edition</name>
@@ -78,25 +95,7 @@
                         alternative reference systems for the same text.</desc>
                 </item>
             </group>
-            <!--<group>
-                <name>TAN edition</name>
-                <desc>Relationships where the parent &lt;see-also> must point to comparable editions.</desc>
-                <desc>Two TAN files are different editions if they are genetically related to each
-                    other, but neither one supersedes the other. They share a common editorial
-                    history and treat the same basic material but with a different approach.
-                    Editions must not have the same TAN id. They normally differ in the content of
-                    &lt;source&gt; or &lt;declarations&gt; or both.</desc>
-                <item>
-                    <IRI>tag:textalign.net,2015:relationship:alternative-edition</IRI>
-                    <name>alternative edition</name>
-                    <desc>An alternative edition.</desc>
-                </item>
-                
-            </group>-->
-            <group>
-                <name>versions</name>
-                <desc>Relationships where the parent &lt;see-also> must point to another version of
-                    the current TAN file or its underlying work.</desc>
+            <group type="versions">
                 <item>
                     <IRI>tag:textalign.net,2015:relationship:old-version</IRI>
                     <name>old version</name>
@@ -116,8 +115,8 @@
                 <item>
                     <IRI>tag:textalign.net,2015:relationship:different-work-version</IRI>
                     <name>different work version</name>
-                    <desc>Used by a class 1 TAN file to point to another that offers the same work but
-                        in a different version.</desc>
+                    <desc>Used by a class 1 TAN file to point to another that offers the same work
+                        but in a different version.</desc>
                 </item>
                 <item>
                     <IRI>tag:textalign.net,2015:relationship:model</IRI>

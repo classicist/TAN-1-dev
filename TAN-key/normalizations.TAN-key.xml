@@ -95,6 +95,11 @@
             <desc>All punctuation has been removed.</desc>
         </item>
         <item>
+            <IRI>tag:textalign.net,2015:normalization:quotation-marks-removed</IRI>
+            <name>no quotation marks</name>
+            <desc>Quotation marks have been removed.</desc>
+        </item>
+        <item>
             <IRI>tag:textalign.net,2015:normalization:capitalization-corrected</IRI>
             <name>corrected capitalization</name>
             <desc>All letters have been tacitly capitalized according to standard forms.</desc>

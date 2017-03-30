@@ -37,19 +37,85 @@
             <name>creator</name>
         </item>
         <item>
-            <IRI>http://schema.org/editor</IRI>
-            <IRI>tag:textalign.net,2015:role:editor</IRI>
-            <name>editor</name>
-        </item>
-        <item>
             <IRI>http://purl.org/dc/elements/1.1/publisher</IRI>
             <IRI>tag:textalign.net,2015:role:publisher</IRI>
             <name>publisher</name>
         </item>
         <item>
+            <IRI>tag:textalign.net,2015:role:funder</IRI>
+            <name>funder</name>
+            <name>sponsor</name>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:role:editor-in-chief</IRI>
+            <name>editor in chief</name>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:role:manager</IRI>
+            <name>manager</name>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:role:manager:project</IRI>
+            <name>project manager</name>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:role:manager:technical</IRI>
+            <name>technical manager</name>
+            <name>lead developer</name>
+        </item>
+        <item>
+            <IRI>http://schema.org/editor</IRI>
+            <IRI>tag:textalign.net,2015:role:editor</IRI>
+            <name>editor</name>
+            <name>revisor</name>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:role:developer</IRI>
+            <name>developer</name>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:role:project-assistant</IRI>
+            <name>project assistant</name>
+            <name>assistant</name>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:role:advisor</IRI>
+            <name>advisor</name>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:role:advisor:technical</IRI>
+            <name>technical advisor</name>
+        </item>
+        <item>
             <IRI>http://www.w3.org/1999/xhtml/vocab#stylesheet</IRI>
             <IRI>tag:textalign.net,2015:role:stylesheet</IRI>
             <name>stylesheet</name>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:role:proofreader</IRI>
+            <name>proofreader</name>
+            <name>corrector</name>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:role:encoder</IRI>
+            <name>encoder</name>
+            <desc>The job of encoding a text, e.g., marking text with tags.</desc>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:role:keyboarder</IRI>
+            <name>keyboarder</name>
+            <name>typist</name>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:role:digitizer</IRI>
+            <name>digitizer</name>
+            <name>OCR operator</name>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:role:tan-converter</IRI>
+            <name>TAN converter</name>
+            <name>converter</name>
+            <desc>Responsible for converting a file into the TAN format.</desc>
         </item>
     </body>
 </TAN-key>

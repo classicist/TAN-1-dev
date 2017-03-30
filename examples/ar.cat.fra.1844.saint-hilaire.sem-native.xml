@@ -48,7 +48,7 @@
             <name>sentence</name>
          </div-type>
          <div-type xml:id="ic">
-            <IRI>https://en.wikipedia.org/wiki/Independent_clause</IRI>
+            <IRI>https://dbpedia.org/resource/Independent_clause</IRI>
             <name>independent clause</name>
             <desc>used to identify two or more sentence parts that have a subject and predicate and
                function as a sentence.</desc>

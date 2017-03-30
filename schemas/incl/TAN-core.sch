@@ -160,8 +160,10 @@
             </sqf:description>
             <sqf:delete match="@href"/>
             <sqf:add>
-               <xsl:text>&#xA;</xsl:text>
-               <xsl:copy-of select="$relevant-errors[@xml:id = 'tan08']/tan:fix/*"/>
+               <xsl:for-each select="$relevant-errors[@xml:id = 'tan08']/tan:fix/*">
+                  <xsl:text>&#xA;</xsl:text>
+                  <xsl:copy-of select="."/>
+               </xsl:for-each>
             </sqf:add>
          </sqf:fix>
       </sqf:group>

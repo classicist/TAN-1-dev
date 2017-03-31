@@ -151,7 +151,7 @@
   <define name="n-val">
     <a:documentation>Acceptable values of @n, used by class 1 and class 2 files; this is related to div-range-ref, in that it allows ranges of items, but ignores "last", "max", or "all" keyterms.</a:documentation>
     <data type="string">
-      <param name="pattern">(\w|\d+-\d+)+(\s+(\w|\d+-\d+)+)*</param>
+      <param name="pattern">(\w+|\d+-\d+)(\s+(\w+|\d+-\d+))*</param>
     </data>
   </define>
   <define name="TAN-ver">

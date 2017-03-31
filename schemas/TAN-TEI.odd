@@ -144,11 +144,10 @@
             -->
             <attDef mode="change" ident="type" usage="opt"/>
             <attDef mode="change" ident="n" usage="opt">
-              <desc>This is a label that, with @type, situates the div within a reference system. If
-                not empty, it must have only word characters--no punctuation or spaces. </desc>
+              <desc>The value of @n situates a &lt;div> within a reference system. </desc>
               <datatype>
                 <rng:data type="string">
-                  <rng:param name="pattern">\w*</rng:param>
+                  <rng:param name="pattern">(\w+|\d+-\d+)(\s+(\w+|\d+-\d+))*</rng:param>
                 </rng:data>
               </datatype>
             </attDef>

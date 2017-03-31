@@ -107,7 +107,7 @@ n =
 item-picker = xsd:string { pattern = "((last|max)|((last|max)-\d+)|(\d+))|.*\?\?\?.*" }
 
 ## Acceptable values of @n, used by class 1 and class 2 files; this is related to div-range-ref, in that it allows ranges of items, but ignores "last", "max", or "all" keyterms.
-n-val = xsd:string { pattern = "(\w|\d+-\d+)+(\s+(\w|\d+-\d+)+)*" }
+n-val = xsd:string { pattern = "(\w+|\d+-\d+)(\s+(\w+|\d+-\d+))*" }
 TAN-ver =
     
     ## specifies the version of TAN schemas used. 

@@ -11,7 +11,7 @@ namespace xlink = "http://www.w3.org/1999/xlink"
 
 datatypes d = "http://relaxng.org/ns/compatibility/datatypes/1.0"
 
-# Schema generated from ODD source 2017-03-17T03:22:38Z. .
+# Schema generated from ODD source 2017-03-31T17:17:11Z. .
 # TEI Edition: Version 3.0.0. Last updated on
 #	29th March 2016, revision 89ba24e
 # TEI Edition Location: http://www.tei-c.org/Vault/P5/Version 3.0.0/
@@ -101,7 +101,7 @@ div {
       attribute n { n-val }
     
     ## Acceptable values of @n, used by class 1 and class 2 files; this is related to div-range-ref, in that it allows ranges of items, but ignores "last", "max", or "all" keyterms.
-    n-val = xsd:string { pattern = "(\w|\d+-\d+)+(\s+(\w|\d+-\d+)+)*" }
+    n-val = xsd:string { pattern = "(\w+|\d+-\d+)(\s+(\w+|\d+-\d+))*" }
     keyword-ref =
       
       ## used to point to a reserved keyword, either a reserved tokenization pattern or a relationship.
@@ -9987,9 +9987,9 @@ floatingText =
     att.declaring.attributes,
     att.written.attributes,
     
-    ## (number) This is a label that, with @type, situates the div within a reference system. If not empty, it must have only word characters--no punctuation or spaces. 
+    ## (number) The value of @n situates a <div> within a reference system. 
     attribute n {
-      xsd:string { pattern = "\w*" }
+      xsd:string { pattern = "(\w+|\d+-\d+)(\s+(\w+|\d+-\d+))*" }
     }?,
     
     ## characterizes the element in some sense, using any convenient classification scheme or typology.

@@ -427,7 +427,7 @@
          select="
             for $i in $text
             return
-               normalize-space(replace($i, $help-trigger-regex, ''))"/>
+               normalize-unicode(normalize-space(replace($i, $help-trigger-regex, '')))"/>
       <xsl:copy-of
          select="
             if ($render-common = true()) then
@@ -1035,7 +1035,7 @@
       <xsl:param name="elements" as="element()*"/>
       <xsl:for-each select="$elements">
          <xsl:variable name="pass1" as="xs:string*">
-            <xsl:for-each select="ancestor-or-self::*">
+            <xsl:for-each select="(ancestor::*[not(self::tei:text)], self::*)">
                <xsl:variable name="this-name" select="name()"/>
                <xsl:copy-of
                   select="

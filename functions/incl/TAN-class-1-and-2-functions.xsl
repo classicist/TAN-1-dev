@@ -265,11 +265,14 @@
          </xsl:copy>
       </xsl:for-each>
    </xsl:function>
-   <xsl:template match="node()" mode="prep-class-1">
+   <xsl:template match="element()" mode="prep-class-1">
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:apply-templates mode="#current"/>
       </xsl:copy>
+   </xsl:template>
+   <xsl:template match="text()" mode="prep-class-1">
+      <xsl:value-of select="tan:normalize-text(.)"/>
    </xsl:template>
    <xsl:template match="tan:TAN-T | tei:TEI" mode="prep-class-1">
       <!-- Homogenize tei:TEI to tan:TAN-T -->
@@ -326,21 +329,10 @@
                <xsl:if test="tan:help-requested(.) = true()">
                   <xsl:copy-of select="tan:help($orig-ref, ())"/>
                </xsl:if>
-               <xsl:choose>
-                  <xsl:when test="not(*:div)">
-                     <!-- It's a leaf div, and we can normalize space, depending on whether it's TAN or TEI. Special TAN div-end punctuation (e.g., soft hyphen) is retained, for later use of tan:text-join() -->
-                     <xsl:value-of select="normalize-space(.)"/>
-                     <xsl:if test="exists(tei:*)">
-                        <xsl:copy-of select="node()"/>
-                     </xsl:if>
-                  </xsl:when>
-                  <xsl:otherwise>
-                     <xsl:apply-templates mode="#current">
-                        <xsl:with-param name="orig-ref-so-far" select="$orig-ref"/>
-                        <xsl:with-param name="new-ref-so-far" select="$new-ref"/>
-                     </xsl:apply-templates>
-                  </xsl:otherwise>
-               </xsl:choose>
+               <xsl:apply-templates mode="#current">
+                  <xsl:with-param name="orig-ref-so-far" select="$orig-ref"/>
+                  <xsl:with-param name="new-ref-so-far" select="$new-ref"/>
+               </xsl:apply-templates>
             </div>
          </xsl:otherwise>
       </xsl:choose>

@@ -547,11 +547,8 @@
                   else
                      tan:idrefs(., $head)"
             />
-            <!--<xsl:variable name="these-values" select="tokenize(tan:normalize-text(.), '\s+')"/>-->
             <xsl:variable name="these-values" select="$entities-pointed-to/@xml:id"/>
             <xsl:variable name="these-distinct-values" select="distinct-values($these-values)"/>
-            <!--<xsl:variable name="these-valid-entities"
-               select="$valid-referents[@xml:id = $these-values]"/>-->
             <xsl:variable name="these-valid-entities"
                select="$entities-pointed-to[name() = $should-refer-to-which-element]"/>
             <xsl:variable name="these-invalid-entities"
@@ -583,6 +580,7 @@
                      </xsl:for-each>
                   </xsl:variable>
                   <xsl:copy-of select="tan:error('tan05', $this-message, $this-fix)"/>
+                  <!--<xsl:message select="tan:q-ref(parent::*)"></xsl:message>-->
                </xsl:for-each>
                <xsl:if test="count($these-values) gt count($these-distinct-values)">
                   <xsl:copy-of

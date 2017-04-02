@@ -301,13 +301,17 @@
          select="
             deep-equal($target-1st-da-resolved, $empty-doc)
             or $target-1st-da-resolved/(tan:error, tan:warning, tan:fatal, tan:help)"/>
-      <xsl:variable name="target-is-in-progress"
+      <xsl:variable name="target-is-in-progress" as="xs:boolean?"
          select="
-            if ($target-1st-da-resolved/(tan:body, tei:text/tei:body)/@in-progress = false())
+            if ($target-1st-da-resolved/*/(tan:body, tei:text/tei:body)/@in-progress = false())
             then
                false()
             else
-               true()"/>
+               if (exists($target-1st-da-resolved/*/(tan:body, tei:text/tei:body))) then
+                  true()
+               else
+                  ()"
+      />
       <xsl:variable name="target-new-versions"
          select="$target-1st-da-resolved/*/tan:head/tan:see-also[tan:has-relationship(., 'new version', ())]"/>
       <xsl:variable name="target-hist" select="tan:get-doc-hist($target-1st-da-resolved)"/>
@@ -425,7 +429,7 @@
                </xsl:choose>
             </xsl:for-each>
          </xsl:if>
-         <xsl:if test="$target-is-faulty = false() and $target-is-in-progress = true()">
+         <xsl:if test="$target-is-in-progress = true()">
             <xsl:copy-of select="tan:error('wrn03')"/>
          </xsl:if>
          <xsl:if test="exists($target-new-versions)">

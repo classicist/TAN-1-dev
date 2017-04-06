@@ -140,8 +140,7 @@
           the well-composed models. That rule, then, is enforced in the Schematron validation. -->
           <attList>
             <!-- This following is a temporary measure. In the TAN model, a <div> should have either @include or
-              the other attributes, but not both. For now, these rules are enforced at the schematron level.
-            -->
+              the other attributes, but not both. For now, these rules are enforced at the schematron level. -->
             <attDef mode="change" ident="type" usage="opt"/>
             <attDef mode="change" ident="n" usage="opt">
               <desc>The value of @n situates a &lt;div> within a reference system. </desc>

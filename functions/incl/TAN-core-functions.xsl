@@ -191,7 +191,7 @@
       </xsl:for-each>
    </xsl:variable>
    <xsl:variable name="relationship-keywords-for-tan-files"
-      select="tan:get-attr-which-definition('relationship', (), 'TAN files')"/>
+      select="tan:glossary('relationship', (), 'TAN files')"/>
    <xsl:variable name="keys-1st-da" select="tan:get-1st-doc($head/tan:key)"/>
    <xsl:variable name="keys-resolved" select="tan:resolve-doc($keys-1st-da)"/>
    <xsl:variable name="keys-prepped" as="document-node()*">
@@ -1134,7 +1134,7 @@
       <xsl:param name="extra-keys" as="document-node()*"/>
       <xsl:variable name="all-keys" select="$extra-keys, $TAN-keywords"/>
       <xsl:variable name="relationship-definitions"
-         select="tan:get-attr-which-definition('relationship', $extra-keys, ())"/>
+         select="tan:glossary('relationship', $extra-keys, ())"/>
       <xsl:variable name="this-relationship-IRIs"
          select="$see-also-element/tan:relationship/tan:IRI"/>
       <xsl:variable name="this-relationship-attr-which"
@@ -1147,16 +1147,16 @@
                $this-relationship-attr-which = $relationship-definitions[tan:name = $keyword and tan:name = $this-relationship-attr-which]"
       />
    </xsl:function>
-   <xsl:function name="tan:get-attr-which-definition" as="element()*">
+   <xsl:function name="tan:glossary" as="element()*">
       <!-- one-parameter version of the master one, below -->
       <xsl:param name="element-that-takes-attribute-which" as="item()"/>
       <xsl:copy-of
-         select="tan:get-attr-which-definition($element-that-takes-attribute-which, $keys-1st-da, ())"
+         select="tan:glossary($element-that-takes-attribute-which, $keys-1st-da, ())"
       />
    </xsl:function>
-   <xsl:function name="tan:get-attr-which-definition" as="element()*">
+   <xsl:function name="tan:glossary" as="element()*">
       <!-- Input: any element that has @which (or a string value of the name of an element that takes @which); any TAN-key documents other than the standard TAN ones; and an optional name that restricts the search to a particular group -->
-      <!-- Output: the tan:items that are valid keywords for the element in question -->
+      <!-- Output: the tan:items that are valid keywords for the element in question, filtered by matches on @which, if present in the first parameter -->
       <xsl:param name="element-that-takes-attribute-which" as="item()"/>
       <xsl:param name="extra-TAN-key-docs" as="document-node()*"/>
       <xsl:param name="group-name-filter" as="xs:string?"/>
@@ -1166,6 +1166,13 @@
                $element-that-takes-attribute-which
             else
                name($element-that-takes-attribute-which)"/>
+      <xsl:variable name="results-filter"
+         select="
+            if ($element-that-takes-attribute-which instance of element()) then
+               $element-that-takes-attribute-which/@which
+            else
+               ()"
+      />
       <xsl:variable name="extra-keys-prepped" as="document-node()*">
          <xsl:for-each select="$extra-TAN-key-docs">
             <xsl:document>
@@ -1180,6 +1187,9 @@
             return
                key('item-via-node-name', $element-name, $i)[if (string-length($group-name-filter) gt 0) then
                   (ancestor::tan:group/tan:name = $group-name-filter)
+               else
+                  true()][if (string-length($results-filter) gt 0) then
+                  (tan:name = $results-filter)
                else
                   true()]"
       />
@@ -1553,7 +1563,7 @@
       <xsl:variable name="help-requested" select="matches(@which, $help-trigger-regex)"/>
       <xsl:variable name="attr-in-key-element-to-suppress" select="('group')" as="xs:string*"/>
       <xsl:variable name="valid-definitions"
-         select="tan:get-attr-which-definition(., $extra-keys, ())"/>
+         select="tan:glossary(., $extra-keys, ())"/>
       <xsl:variable name="definition-matches" as="element()*"
          select="$valid-definitions[tan:name[normalize-space(.) = $this-which]]"/>
       <xsl:variable name="close-matches"

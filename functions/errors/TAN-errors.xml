@@ -135,7 +135,9 @@
         <error xml:id="cl111"><rule>No div may begin with a modifying character.</rule></error>
         <error xml:id="cl112"><rule>No div may have a spacing character followed by a modifying character.</rule></error>
         <error xml:id="cl113"><rule>No div may have Unicode characters that are disallowed, e.g., U+A0, NO BREAK SPACE.</rule></error>
-        <error xml:id="tei01"><rule>No mixed content is allowed in a &lt;div>; it must parent either only &lt;div>s or none at all. </rule></error>
+        <error xml:id="tei01"><rule>&lt;div>s may not be mixed with other elements: a &lt;div> must parent either only &lt;div>s or none at all, and may have as siblings only other &lt;div>s.</rule></error>
+        <error xml:id="tei02"><rule>A &lt;div> must not mix @include with any other attributes.</rule></error>
+        <error xml:id="tei03"><rule>A &lt;div> must have either @type + @n or @include but not both.</rule></error>
     </group>
     <group affects-element="div-type" affects-attribute="n">
         <error xml:id="cl114"><rule>To avoid ambiguous numerals, no div type should mix Roman and alphabet numerals.</rule></error>

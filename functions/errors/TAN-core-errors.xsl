@@ -518,8 +518,14 @@
    <xsl:template match="tei:div" mode="core-errors">
       <xsl:copy>
          <xsl:copy-of select="@*"/>
-         <xsl:if test="(preceding-sibling::tei:*, following-sibling::tei:*)[not(self::tei:div)]">
+         <xsl:if test="exists(tei:div) and exists(tei:*[not(self::tei:div)])">
             <xsl:copy-of select="tan:error('tei01')"/>
+         </xsl:if>
+         <xsl:if test="exists(@include) and exists(@*[not(name() = ('ed-who', 'ed-when'))])">
+            <xsl:copy-of select="tan:error('tei02')"/>
+         </xsl:if>
+         <xsl:if test="not(exists(@n) and exists(@type)) and not(exists(@include))">
+            <xsl:copy-of select="tan:error('tei03')"/>
          </xsl:if>
          <xsl:apply-templates mode="core-errors"/>
       </xsl:copy>
@@ -674,9 +680,8 @@
                </IRI>
                <xsl:copy-of select="$target-name"/>
                <xsl:copy-of select="$target-desc"/>
-               <location when-accessed="{current-dateTime()}">
-                  <xsl:copy-of select="tan:uri-relative-to(@href, $doc-uri)"/>
-               </location>
+               <location when-accessed="{current-dateTime()}"
+                  href="{tan:uri-relative-to(@href, $doc-uri)}"/>
             </xsl:variable>
             <xsl:copy-of select="tan:error('tan08', $this-message, $this-fix)"/>
          </xsl:if>

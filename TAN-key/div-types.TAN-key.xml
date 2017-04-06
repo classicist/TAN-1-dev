@@ -115,6 +115,36 @@
             <name>caption</name>
         </item>
         <item>
+            <IRI>tag:textalign.net,2015:div-type:castlist</IRI>
+            <name>castlist</name>
+            <desc>A list of cast members</desc>
+            <desc>= tei:castList</desc>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:div-type:castlist-item</IRI>
+            <name>castlist item</name>
+            <desc>An entry within a castlist</desc>
+            <desc>= tei:castItem</desc>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:div-type:castlist-item-actor</IRI>
+            <name>castlist item actor</name>
+            <desc>An actor mentioned in a castlist item</desc>
+            <desc>= tei:actor</desc>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:div-type:castlist-item-role</IRI>
+            <name>castlist item role</name>
+            <desc>A role within a castlist item</desc>
+            <desc>= tei:role</desc>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:div-type:castlist-item-role-description</IRI>
+            <name>castlist item role description</name>
+            <desc>A role description within a castlist item</desc>
+            <desc>= tei:roleDesc</desc>
+        </item>
+        <item>
             <IRI>tag:textalign.net,2015:div-type:causa</IRI>
             <name>causa</name>
             <desc>Division in medieval western literature</desc>
@@ -292,6 +322,11 @@
         <item group="line-start line-end">
             <IRI>tag:textalign.net,2015:div-type:index_entry</IRI>
             <name>index entry</name>
+        </item>
+        <item group="line-start line-end">
+            <IRI>tag:textalign.net,2015:div-type:letter</IRI>
+            <name>letter</name>
+            <name>epistle</name>
         </item>
         <item group="line-start line-end">
             <IRI>tag:textalign.net,2015:div-type:line:physical</IRI>

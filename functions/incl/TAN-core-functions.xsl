@@ -330,6 +330,38 @@
          </xsl:if>
       </xsl:for-each>
    </xsl:function>
+   
+   <xsl:function name="tan:sequence-collapse" as="xs:string?">
+      <!-- Input: a sequence of integers -->
+      <!-- Output: a string that puts them in a TAN-like compact string -->
+      <xsl:param name="integers" as="xs:integer*"/>
+      <xsl:variable name="pass1" as="xs:integer*">
+         <xsl:for-each select="$integers">
+            <xsl:sort/>
+            <xsl:copy-of select="."/>
+         </xsl:for-each>
+      </xsl:variable>
+      <xsl:variable name="pass2" as="element()*">
+         <xsl:for-each select="$pass1">
+            <xsl:variable name="pos" select="position()"/>
+            <xsl:variable name="prev" select="($pass1[$pos - 1], 0)[1]"/>
+            <item val="{.}" diff-with-prev="{. - $prev}"/>
+         </xsl:for-each> 
+      </xsl:variable>
+      <xsl:variable name="pass3" as="xs:string*">
+         <xsl:for-each-group select="$pass2" group-starting-with="*[xs:integer(@diff-with-prev) gt 1]">
+            <xsl:choose>
+               <xsl:when test="count(current-group()) gt 1">
+                  <xsl:value-of select="concat(current-group()[1]/@val,'-',current-group()[last()]/@val)"/>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:value-of select="current-group()/@val"/>
+               </xsl:otherwise>
+            </xsl:choose>
+         </xsl:for-each-group> 
+      </xsl:variable>
+      <xsl:value-of select="string-join($pass3, ', ')"/>
+   </xsl:function>
 
 
    <!-- Functions: date, time, version -->
@@ -1207,7 +1239,7 @@
          <xsl:apply-templates mode="#current"/>
       </xsl:copy>
    </xsl:template>
-   <xsl:template match="tan:tail" mode="#all" priority="0">
+   <xsl:template match="tan:tail" mode="#all" priority="-1">
       <!-- We ignore, but retain, tails throughout -->
       <xsl:copy-of select="."/>
    </xsl:template>

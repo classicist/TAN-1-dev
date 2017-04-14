@@ -585,7 +585,8 @@
                   <xsl:variable name="this-fix" as="element()*">
                      <xsl:for-each select="$should-refer-to-which-element">
                         <xsl:element name="{.}">
-                           <xsl:attribute name="xml:id" select="$this-erroneous-id"/>
+                           <!--<xsl:attribute name="xml:id" select="$this-erroneous-id"/>-->
+                           <xsl:copy-of select="$this-erroneous-id"/>
                         </xsl:element>
                      </xsl:for-each>
                   </xsl:variable>

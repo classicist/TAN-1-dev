@@ -720,11 +720,8 @@
       </xsl:for-each>
    </xsl:function>
    <xsl:function name="tan:group-by-IRIs-loop" as="element()*">
-      <!-- Input: an element containing zero or more <group> children; a sequence of elements yet to be placed
-         in a <group>
-         Output: a sequence of groups (= <equate-works>, <equate-div-types>, or <group>) lumping together elements 
-         based on commonality of their <IRI> values 
-      -->
+      <!-- Input: an element containing zero or more <group> children; a sequence of elements yet to be placed in a <group> -->
+      <!--  Output: a sequence of groups (= <equate-works>, <equate-div-types>, or <group>) lumping together elements  based on commonality of their <IRI> values -->
       <xsl:param name="tree-of-groups-so-far" as="element()?"/>
       <xsl:param name="elements-to-group" as="element()*"/>
       <xsl:variable name="next-item" select="$elements-to-group[1]"/>
@@ -1079,7 +1076,7 @@
       <!-- Output: a fragment from the source document with the hierarchies of only those divs that correspond to the range specified by @ref -->
       <!-- It is assumed that the second parameter refers to the first; that is, the source document really is the one that the element with @ref is trying to cite. -->
       <!-- It is also assumed that in any range where the second element has fewer @n values than the first, then the abbreviated form will be checked before the form actually stated. For example, 1 1 - 2 will be tested first for 1 1 - 1 2, which, if not corresponding to an actual <div>, will be interpeted as 1 1 - 2 -->
-      <xsl:param name="prepped-src-doc" as="document-node()"/>
+      <xsl:param name="prepped-src-doc" as="document-node()*"/>
       <xsl:param name="element-with-ref-attr" as="element()"/>
       <xsl:param name="keep-text" as="xs:boolean"/>
       <xsl:param name="missing-ref-returned-as-info-not-error" as="xs:boolean"/>

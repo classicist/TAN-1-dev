@@ -182,11 +182,13 @@
                            <xsl:value-of select="tan:normalize-div-text($child-text)"/>
                         </xsl:otherwise>
                      </xsl:choose>
-                     
                   </xsl:for-each>
                </xsl:when>
                <xsl:when test="self::tan:tok or self::tan:non-tok">
                   <xsl:value-of select="replace(., '\s+', ' ')"/>
+               </xsl:when>
+               <xsl:when test="exists(descendant::tei:*)">
+                  <xsl:value-of select="tan:normalize-text(string-join(.//text(),''))"/>
                </xsl:when>
                <xsl:otherwise>
                   <!-- The item doesn't have leaf divs, and it isn't a <tok> or <non-tok>. Who knows what it is, so we just normalize the text -->
@@ -295,7 +297,7 @@
       <!-- Makes sure the tei:body rises rootward one level, as is customary in TAN and HTML -->
       <xsl:apply-templates mode="#current"/>
    </xsl:template>
-   <xsl:template match="tan:div | tei:div" mode="prep-class-1">
+   <xsl:template match="*:div" mode="prep-class-1">
       <xsl:param name="key-to-this-src" as="element()*" tunnel="yes"/>
       <xsl:param name="orig-ref-so-far" as="xs:string?"/>
       <xsl:param name="new-ref-so-far" as="xs:string?"/>
@@ -329,10 +331,21 @@
                <xsl:if test="tan:help-requested(.) = true()">
                   <xsl:copy-of select="tan:help($orig-ref, ())"/>
                </xsl:if>
-               <xsl:apply-templates mode="#current">
-                  <xsl:with-param name="orig-ref-so-far" select="$orig-ref"/>
-                  <xsl:with-param name="new-ref-so-far" select="$new-ref"/>
-               </xsl:apply-templates>
+               <xsl:choose>
+                  <xsl:when test="exists(*:div)">
+                     <xsl:apply-templates mode="#current">
+                        <xsl:with-param name="orig-ref-so-far" select="$orig-ref"/>
+                        <xsl:with-param name="new-ref-so-far" select="$new-ref"/>
+                     </xsl:apply-templates>
+                  </xsl:when>
+                  <xsl:when test="exists(tei:*)">
+                     <xsl:value-of select="normalize-space(tan:text-join(node()))"/>
+                     <xsl:copy-of select="tei:*"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:value-of select="tan:normalize-text(.)"/>
+                  </xsl:otherwise>
+               </xsl:choose>
             </div>
          </xsl:otherwise>
       </xsl:choose>

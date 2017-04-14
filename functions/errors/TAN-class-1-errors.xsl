@@ -7,7 +7,7 @@
    exclude-result-prefixes="#all" version="2.0">
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p><xd:b>Updated </xd:b>August 18, 2016</xd:p>
+         <xd:p><xd:b>Updated </xd:b>April 13, 2016</xd:p>
          <xd:p>Variables, functions, and templates for marking class-1 errors in TAN files. To be
             used in conjunction with TAN-core-functions.xsl. Includes items related to help
             requests.</xd:p>
@@ -21,13 +21,12 @@
             if (exists($see-alsos-resolved)) then
                $see-alsos-resolved[$pos]
             else
-               tan:resolve-doc(tan:get-1st-doc(.))"
-      />
+               tan:resolve-doc(tan:get-1st-doc(.))"/>
       <xsl:variable name="target-prepped" select="tan:prep-resolved-class-1-doc($target-doc)"/>
       <xsl:variable name="this-doc-text" select="tan:text-join(/tan:TAN-T/tan:body, true())"/>
       <xsl:variable name="target-doc-text"
          select="tan:text-join($target-doc/*/(tan:body, tei:text/tei:body))"/>
-      <xsl:variable name="text-diff" select="tan:diff($this-doc-text, $target-doc-text)"/>
+      <xsl:variable name="text-diff" select="tan:raw-diff($this-doc-text, $target-doc-text)"/>
       <xsl:variable name="text-diff-analyzed">
          <xsl:variable name="pass1">
             <xsl:apply-templates select="$text-diff" mode="c1-stamp-string-length"/>
@@ -64,7 +63,7 @@
                   not(/*/tan:head/tan:declarations/tan:version/tan:IRI = $target-doc/*/tan:head/tan:declarations/tan:version/tan:IRI)">
                <xsl:copy-of select="tan:error('cl103')"/>
             </xsl:if>
-            <xsl:if test="exists($text-diff/(tan:s1, tan:s2))">
+            <xsl:if test="exists($text-diff/(tan:s1, tan:s2, tan:a, tan:b))">
                <xsl:copy-of select="tan:error('cl104', (), $text-diff-analyzed)"/>
             </xsl:if>
          </xsl:if>
@@ -155,10 +154,8 @@
                      <xsl:for-each select="1 to $this-s1/@s1-length">
                         <xsl:variable name="s1-floor" select="(. - 1) div $this-s1/@s1-length"/>
                         <xsl:variable name="s1-ceiling" select=". div $this-s1/@s1-length"/>
-                        <xsl:variable name="s2-start"
-                           select="($this-s2/@s2-length * $s1-floor) + 1"/>
-                        <xsl:variable name="s2-end"
-                           select="($this-s2/@s2-length * $s1-ceiling)"/>
+                        <xsl:variable name="s2-start" select="($this-s2/@s2-length * $s1-floor) + 1"/>
+                        <xsl:variable name="s2-end" select="($this-s2/@s2-length * $s1-ceiling)"/>
                         <xsl:variable name="replacement-text"
                            select="substring($this-s2, $s2-start, $s2-end - $s2-start + 1)"/>
                         <c s1-pos="{. + $this-s1/@s1-pos - 1}" start="{$s2-start}" end="{$s2-end}">
@@ -203,7 +200,7 @@
                   <xsl:value-of select="$this-flag/text()"/>
                </xsl:when>
                <xsl:when test="$this-flag/parent::tan:s2">
-                  <xsl:value-of select="concat($this-flag/text(),$this-char)"/>
+                  <xsl:value-of select="concat($this-flag/text(), $this-char)"/>
                </xsl:when>
                <xsl:otherwise>
                   <xsl:value-of select="$this-char"/>
@@ -211,15 +208,15 @@
             </xsl:choose>
          </xsl:for-each>
       </xsl:variable>
-      <xsl:variable name="this-message" select="concat('Text in copy: ', string-join($replacement,''))"
-      />
+      <xsl:variable name="this-message"
+         select="concat('Text in copy: ', string-join($replacement, ''))"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:if test="exists($flags)">
-            <xsl:copy-of select="tan:error('cl104', $this-message, string-join($replacement, ''))"
-            />
+            <xsl:copy-of select="tan:error('cl104', $this-message, string-join($replacement, ''))"/>
          </xsl:if>
          <xsl:apply-templates mode="class-1-copy-errors"/>
       </xsl:copy>
    </xsl:template>
+
 </xsl:stylesheet>

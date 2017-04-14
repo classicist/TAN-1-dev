@@ -1,10 +1,230 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns="tag:textalign.net,2015:ns" xmlns:tan="tag:textalign.net,2015:ns"
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:math="http://www.w3.org/2005/xpath-functions/math"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:math="http://www.w3.org/2005/xpath-functions/math"
     xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl"
     exclude-result-prefixes="xs xd" version="2.0">
-    <!-- String difference function for XSLT 2.0 -->    
+    <!-- String difference function for XSLT 2.0 -->
+
+    <xsl:param name="loop-tolerance" as="xs:integer" select="550"/>
+
+    <xsl:function name="tan:raw-diff" as="element()">
+        <!-- Input: any two strings -->
+        <!-- Output: an element with <a>, <b>, and <common> children showing where strings a and b match and depart -->
+        <!-- This function was written after tan:diff, intended to be a cruder and faster way to check two strings against each other, suitable for validation without hanging due to nested recursion objections. -->
+        <xsl:param name="string-a" as="xs:string?"/>
+        <xsl:param name="string-b" as="xs:string?"/>
+        <xsl:variable name="len-a" select="string-length($string-a)"/>
+        <xsl:variable name="len-b" select="string-length($string-b)"/>
+        <xsl:variable name="strings-prepped" as="element()+">
+            <xsl:choose>
+                <xsl:when test="$len-a lt $len-b">
+                    <a>
+                        <xsl:value-of select="$string-a"/>
+                    </a>
+                    <b>
+                        <xsl:value-of select="$string-b"/>
+                    </b>
+                </xsl:when>
+                <xsl:otherwise>
+                    <b>
+                        <xsl:value-of select="$string-b"/>
+                    </b>
+                    <a>
+                        <xsl:value-of select="$string-a"/>
+                    </a>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+        <xsl:variable name="strings-diffed" as="element()*"
+            select="tan:raw-diff-loop($strings-prepped[1], $strings-prepped[2], true(), true(), 0)"/>
+        <raw-diff>
+            <xsl:for-each-group select="$strings-diffed" group-adjacent="name()">
+                <xsl:element name="{current-grouping-key()}">
+                    <xsl:value-of select="string-join(current-group(), '')"/>
+                </xsl:element>
+            </xsl:for-each-group>
+        </raw-diff>
+    </xsl:function>
+
+    <xsl:param name="vertical-stops"
+        select="
+            for $i in reverse(1 to 20)
+            return
+                $i * 0.05"
+        as="xs:double*"/>
+    <xsl:function name="tan:raw-diff-loop">
+        <xsl:param name="short-string" as="element()?"/>
+        <xsl:param name="long-string" as="element()?"/>
+        <xsl:param name="start-at-beginning" as="xs:boolean"/>
+        <xsl:param name="check-vertically-before-horizontally" as="xs:boolean"/>
+        <xsl:param name="loop-counter" as="xs:integer"/>
+        <xsl:variable name="short-size" select="string-length($short-string)"/>
+        <xsl:choose>
+            <xsl:when test="$loop-counter ge $loop-tolerance">
+                <xsl:copy-of select="$short-string, $long-string"/>
+            </xsl:when>
+            <xsl:when test="$short-size lt 1">
+                <xsl:copy-of select="$long-string"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:variable name="horizontal-search-on-long" as="element()*">
+                    <!--<params-into-vert>
+                  <xsl:value-of select="$short-size"/>
+               </params-into-vert>-->
+                    <xsl:for-each select="$vertical-stops">
+                        <xsl:variable name="vertical-pos" select="position()"/>
+                        <xsl:variable name="percent-of-short-to-check"
+                            select="min((max((., 0.0000001)), 1.0))"/>
+                        <xsl:variable name="number-of-horizontal-passes"
+                            select="
+                                if ($check-vertically-before-horizontally) then
+                                    1
+                                else
+                                    xs:integer((1 - $percent-of-short-to-check) * 40) + 1"/>
+                        <xsl:variable name="length-of-short-substring"
+                            select="ceiling($short-size * $percent-of-short-to-check)"/>
+                        <xsl:variable name="length-of-play-in-short"
+                            select="$short-size - $length-of-short-substring"/>
+                        <xsl:variable name="horizontal-stagger"
+                            select="$length-of-play-in-short div max(($number-of-horizontal-passes - 1, 1))"/>
+                        <xsl:variable name="horizontal-pass-sequence"
+                            select="
+                                if ($start-at-beginning) then
+                                    (1 to $number-of-horizontal-passes)
+                                else
+                                    reverse(1 to $number-of-horizontal-passes)"/>
+                        <!--<params-into-horiz><xsl:value-of select="$length-of-short-substring"/> /
+                        <xsl:value-of select="$length-of-play-in-short"/> / <xsl:value-of
+                        select="$horizontal-stagger"/></params-into-horiz>-->
+                        <xsl:for-each select="$horizontal-pass-sequence">
+                            <xsl:variable name="horizontal-pos" select="."/>
+                            <xsl:variable name="starting-pos-of-short-substring"
+                                select="ceiling(($horizontal-pos - 1) * $horizontal-stagger) + 1"/>
+                            <xsl:variable name="picked-search-text"
+                                select="substring($short-string, $starting-pos-of-short-substring, $length-of-short-substring)"/>
+                            <xsl:variable name="this-search" as="element()*">
+                                <xsl:analyze-string select="$long-string"
+                                    regex="{tan:escape($picked-search-text)}">
+                                    <xsl:matching-substring>
+                                        <common loop="{$loop-counter}">
+                                            <xsl:value-of select="."/>
+                                        </common>
+                                    </xsl:matching-substring>
+                                    <xsl:non-matching-substring>
+                                        <xsl:element name="{name($long-string)}">
+                                            <xsl:attribute name="loop" select="$loop-counter"/>
+                                            <xsl:value-of select="."/>
+                                        </xsl:element>
+                                    </xsl:non-matching-substring>
+                                </xsl:analyze-string>
+                            </xsl:variable>
+                            <xsl:if test="exists($this-search/self::tan:common)">
+                                <result short-search-start="{$starting-pos-of-short-substring}"
+                                    short-search-length="{$length-of-short-substring}">
+                                    <xsl:copy-of select="$this-search"/>
+                                </result>
+                            </xsl:if>
+                            <!--<search-on><xsl:value-of select="$picked-search-text"/></search-on>-->
+                            <!--<test><xsl:value-of select="$percent-of-short-to-check"/> / <xsl:value-of
+                                 select="."/> = <xsl:value-of select="$length-of-short-substring"/>
+                              / <xsl:value-of select="$starting-pos-of-short-substring"/>
+                                 (<xsl:value-of
+                                 select="$length-of-short-substring + $starting-pos-of-short-substring"
+                              />)</test>-->
+                        </xsl:for-each>
+                    </xsl:for-each>
+                </xsl:variable>
+                <xsl:variable name="first-result"
+                    select="($horizontal-search-on-long/self::tan:result)[1]"/>
+                <xsl:choose>
+                    <xsl:when test="not(exists($first-result))">
+                        <xsl:choose>
+                            <xsl:when test="not($check-vertically-before-horizontally = true())">
+                                <xsl:copy-of select="$long-string, $short-string"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:copy-of
+                                    select="tan:raw-diff-loop($short-string, $long-string, $start-at-beginning, false(), $loop-counter + 1)"
+                                />
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:variable name="short-search-start"
+                            select="xs:integer($first-result/@short-search-start)"/>
+                        <xsl:variable name="short-search-length"
+                            select="xs:integer($first-result/@short-search-length)"/>
+                        <xsl:variable name="long-head"
+                            select="$first-result/tan:common[1]/preceding-sibling::*"/>
+                        <xsl:variable name="long-tail-prelim"
+                            select="$first-result/tan:common[1]/following-sibling::*"/>
+                        <!-- The long tail should include matches past the first -->
+                        <xsl:variable name="long-tail" as="element()?">
+                            <xsl:if test="exists($long-tail-prelim)">
+                                <xsl:element name="{name($long-tail-prelim[1])}">
+                                    <xsl:attribute name="loop" select="$loop-counter"/>
+                                    <xsl:value-of select="string-join($long-tail-prelim, '')"/>
+                                </xsl:element>
+                            </xsl:if>
+                        </xsl:variable>
+                        <xsl:variable name="short-head" as="element()">
+                            <xsl:element name="{name($short-string)}">
+                                <xsl:attribute name="loop" select="$loop-counter"/>
+                                <xsl:value-of
+                                    select="substring($short-string, 1, $short-search-start - 1)"/>
+                            </xsl:element>
+                        </xsl:variable>
+                        <xsl:variable name="short-tail" as="element()">
+                            <xsl:element name="{name($short-string)}">
+                                <xsl:attribute name="loop" select="$loop-counter"/>
+                                <xsl:value-of
+                                    select="substring($short-string, $short-search-start + $short-search-length)"
+                                />
+                            </xsl:element>
+                        </xsl:variable>
+                        <xsl:variable name="head-input" as="element()*">
+                            <xsl:for-each select="$long-head, $short-head">
+                                <xsl:sort select="string-length(.)"/>
+                                <xsl:copy-of select="."/>
+                            </xsl:for-each>
+                        </xsl:variable>
+                        <xsl:variable name="tail-input" as="element()*">
+                            <xsl:for-each select="$long-tail, $short-tail">
+                                <xsl:sort select="string-length(.)"/>
+                                <xsl:copy-of select="."/>
+                            </xsl:for-each>
+                        </xsl:variable>
+                        <!-- need to loop again on head fragments -->
+                        <xsl:copy-of
+                            select="
+                                tan:raw-diff-loop($head-input[1], $head-input[2], false(), true(), $loop-counter + 1)"/>
+                        <!--<xsl:copy-of select="$head-input"/>-->
+                        <xsl:copy-of select="$first-result/tan:common[1]"/>
+
+                        <!-- need to loop again on tail fragments -->
+                        <xsl:copy-of
+                            select="
+                                tan:raw-diff-loop($tail-input[1], $tail-input[2], true(), true(), $loop-counter + 1)"/>
+                        <!--<xsl:copy-of select="$tail-input"/>-->
+                    </xsl:otherwise>
+                </xsl:choose>
+                <!--<xsl:copy-of select="$horizontal-search-on-long"/>-->
+
+
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:function>
+
+
+    <xd:doc scope="component">
+        <xd:desc>Returns &lt;diff>, with attributes indicating parameters used, and children
+            &lt;s1>, &lt;s2>, and &lt;common>, indicating where the first and second strings diverge
+            and match.</xd:desc>
+        <xd:param name="string1">String to be compared.</xd:param>
+        <xd:param name="string2">String to be compared.</xd:param>
+    </xd:doc>
     <xsl:function name="tan:diff" as="element()">
         <!-- two-parameter version of the full version below. The stagger and diminishment
         factors are designed to get small as the length of the shortest string gets larger.
@@ -38,7 +258,8 @@
         <xsl:param name="stagger-base-adjustment" as="xs:double"/>
         <xsl:param name="stagger-exp-adjustment" as="xs:double"/>
         <xsl:variable name="short-length" select="string-length($string2)"/>
-        <xsl:variable name="pass1" select="tan:diff-loop($string1, $string2, $diminishment-base, $diminishment-exp-adjustment, $stagger-base-adjustment, $stagger-exp-adjustment)"/>
+        <xsl:variable name="pass1"
+            select="tan:diff-loop($string1, $string2, $diminishment-base, $diminishment-exp-adjustment, $stagger-base-adjustment, $stagger-exp-adjustment, 0)"/>
         <diff diminishment-base="{$diminishment-base}"
             diminishment-exp-adjustment="{$diminishment-exp-adjustment}"
             stagger-base-adjustment="{$stagger-base-adjustment}"
@@ -50,13 +271,14 @@
             </xsl:for-each-group>
         </diff>
     </xsl:function>
-    <xsl:function name="tan:diff-loop">
+    <xsl:function name="tan:diff-loop" as="node()*">
         <xsl:param name="string1" as="xs:string?"/>
         <xsl:param name="string2" as="xs:string?"/>
         <xsl:param name="diminishment-base" as="xs:double"/>
         <xsl:param name="diminishment-exp-adjustment" as="xs:double"/>
         <xsl:param name="stagger-base-adjustment" as="xs:double"/>
         <xsl:param name="stagger-exp-adjustment" as="xs:double"/>
+        <xsl:param name="loop-count" as="xs:integer"/>
         <xsl:variable name="len1" select="string-length($string1)"/>
         <xsl:variable name="len2" select="string-length($string2)"/>
         <xsl:variable name="string1-is-long" select="$len1 ge $len2" as="xs:boolean"/>
@@ -94,11 +316,14 @@
             </xsl:when>
             <xsl:otherwise>
                 <xsl:choose>
-                    <xsl:when test="string-length($s1-head) lt 1 or string-length($s2-head) lt 1">
+                    <xsl:when
+                        test="($loop-count = $loop-tolerance) or string-length($s1-head) lt 1 or string-length($s2-head) lt 1">
                         <xsl:copy-of select="($s1-head, $s2-head)"/>
                     </xsl:when>
                     <xsl:otherwise>
-                        <xsl:copy-of select="tan:diff-loop($s1-head, $s2-head, $diminishment-base, $diminishment-exp-adjustment, $stagger-base-adjustment, $stagger-exp-adjustment)"/>
+                        <xsl:copy-of
+                            select="tan:diff-loop($s1-head, $s2-head, $diminishment-base, $diminishment-exp-adjustment, $stagger-base-adjustment, $stagger-exp-adjustment, $loop-count + 1)"
+                        />
                     </xsl:otherwise>
                 </xsl:choose>
                 <xsl:copy-of select="$first-diff-norm/tan:common"/>
@@ -107,7 +332,9 @@
                         <xsl:copy-of select="($s1-tail, $s2-tail)"/>
                     </xsl:when>
                     <xsl:otherwise>
-                        <xsl:copy-of select="tan:diff-loop($s1-tail, $s2-tail, $diminishment-base, $diminishment-exp-adjustment, $stagger-base-adjustment, $stagger-exp-adjustment)"/>
+                        <xsl:copy-of
+                            select="tan:diff-loop($s1-tail, $s2-tail, $diminishment-base, $diminishment-exp-adjustment, $stagger-base-adjustment, $stagger-exp-adjustment, $loop-count + 1)"
+                        />
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:otherwise>
@@ -131,8 +358,8 @@
             <xsl:value-of select="."/>
         </xsl:element>
     </xsl:template>
-    
-    
+
+
     <xsl:function name="tan:diff-core" as="element()*">
         <xsl:param name="long-string" as="xs:string?"/>
         <xsl:param name="short-string" as="xs:string?"/>
@@ -153,7 +380,7 @@
             e.g., adjacent segments will happen at the fourth (second) line. -->
         <xsl:param name="stagger-base-adjustment" as="xs:double"/>
         <xsl:param name="stagger-exp-adjustment" as="xs:double"/>
-        <xsl:param name="loop-count" as="xs:double"/>
+        <xsl:param name="loop-count" as="xs:integer"/>
         <xsl:param name="line-count" as="xs:double"/>
 
 
@@ -217,8 +444,7 @@
                 if ($is-end-of-line = true()) then
                     math:pow($diminishment-base-norm, (2 + $diminishment-exp-adjustment))
                 else
-                    $diminishment-base-norm"
-        />
+                    $diminishment-base-norm"/>
         <xsl:variable name="new-segment-length" as="xs:double"
             select="
                 if ($is-end-of-line = true()) then
@@ -231,12 +457,12 @@
                     1
                 else
                     $next-segment-position"/>
-        
-        <xsl:variable name="new-loop-count" select="$loop-count + 1" as="xs:double"/>
+
+        <xsl:variable name="new-loop-count" select="$loop-count + 1" as="xs:integer"/>
         <xsl:variable name="loop-result"
             select="tan:diff-core($long-string, $short-string, $short-string-length, $new-segment-length, $new-segment-position, $new-diminishment-base, $diminishment-exp-adjustment, $stagger-base-adjustment-norm, $stagger-exp-adjustment, $new-loop-count, $new-line-count)"/>
         <xsl:choose>
-            <xsl:when test="($loop-count = 550) or ($segment-length lt 1)">
+            <xsl:when test="($loop-count = $loop-tolerance) or ($segment-length lt 1)">
                 <seg pos="{$segment-position}" len="{$segment-length}">
                     <xsl:value-of select="$new-segment"/>
                 </seg>
@@ -282,8 +508,8 @@
             </xsl:otherwise>-->
         </xsl:choose>
     </xsl:function>
-    
-    
+
+
     <xsl:function name="tan:diff-core-draft" as="element()*">
         <xsl:param name="long-string" as="xs:string?"/>
         <xsl:param name="short-string" as="xs:string?"/>
@@ -370,4 +596,37 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:function>
+
+    <!--<xsl:function name="tan:test-loop" as="element()">
+        <xsl:param name="outer-loop-limit" as="xs:integer"/>
+        <xsl:param name="inner-loop-limit" as="xs:integer"/>
+        <loop><xsl:copy-of select="tan:outer-loop($outer-loop-limit, $inner-loop-limit, 0)"/></loop>
+    </xsl:function>
+    <xsl:function name="tan:outer-loop">
+        <xsl:param name="outer-loop-limit"/>
+        <xsl:param name="inner-loop-limit"/>
+        <xsl:param name="counter"/>
+        <xsl:choose>
+            <xsl:when test="$counter gt $outer-loop-limit"/>
+            <xsl:otherwise>
+                <outer><xsl:value-of select="$counter"/>
+                    <xsl:copy-of select="tan:inner-loop($inner-loop-limit, 0)"/>
+                </outer>
+                <xsl:copy-of
+                    select="tan:outer-loop($outer-loop-limit, $inner-loop-limit, $counter + 1)"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:function>
+    <xsl:function name="tan:inner-loop">
+        <xsl:param name="inner-loop-limit"/>
+        <xsl:param name="counter"/>
+        <xsl:choose>
+            <xsl:when test="$counter gt $inner-loop-limit"/>
+            <xsl:otherwise>
+                <inner><xsl:value-of select="$counter"/></inner>
+                <xsl:copy-of select="tan:inner-loop($inner-loop-limit, $counter + 1)"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:function>-->
+
 </xsl:stylesheet>

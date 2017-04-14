@@ -59,8 +59,6 @@
       <report test="exists($help-requested)" role="warning" sqf:fix="help">
          <value-of select="$help-requested/tan:message"/>
       </report>
-   </rule>
-   <sqf:fixes>
       <sqf:group id="errors" use-when="$has-include-or-which-attr = false()">
          <sqf:fix id="replace-text"
             use-when="$has-include-or-which-attr = false() and exists($relevant-errors[@xml:id = ('tan04', 'tan10', 'cl104', 'cl111', 'cl112', 'cl113')])">
@@ -182,5 +180,5 @@
          </sqf:fix>
          
       </sqf:group>
-   </sqf:fixes>
+   </rule>
 </pattern>

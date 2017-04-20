@@ -301,20 +301,22 @@
                                 select="substring($short-string, $starting-pos-of-short-substring, $length-of-short-substring)"/>
                             <xsl:if test="$diagnostic-flag"><xsl:message select="$picked-search-text"></xsl:message></xsl:if>
                             <xsl:variable name="this-search" as="element()*">
-                                <xsl:analyze-string select="$long-string"
-                                    regex="{tan:escape($picked-search-text)}">
-                                    <xsl:matching-substring>
-                                        <common loop="{$loop-counter}">
-                                            <xsl:value-of select="."/>
-                                        </common>
-                                    </xsl:matching-substring>
-                                    <xsl:non-matching-substring>
-                                        <xsl:element name="{name($long-string)}">
-                                            <xsl:attribute name="loop" select="$loop-counter"/>
-                                            <xsl:value-of select="."/>
-                                        </xsl:element>
-                                    </xsl:non-matching-substring>
-                                </xsl:analyze-string>
+                                <xsl:if test="string-length($picked-search-text) gt 0">
+                                    <xsl:analyze-string select="$long-string"
+                                        regex="{tan:escape($picked-search-text)}">
+                                        <xsl:matching-substring>
+                                            <common loop="{$loop-counter}">
+                                                <xsl:value-of select="."/>
+                                            </common>
+                                        </xsl:matching-substring>
+                                        <xsl:non-matching-substring>
+                                            <xsl:element name="{name($long-string)}">
+                                                <xsl:attribute name="loop" select="$loop-counter"/>
+                                                <xsl:value-of select="."/>
+                                            </xsl:element>
+                                        </xsl:non-matching-substring>
+                                    </xsl:analyze-string>
+                                </xsl:if>
                             </xsl:variable>
                             <xsl:if test="exists($this-search/self::tan:common)">
                                 <result short-search-start="{$starting-pos-of-short-substring}"

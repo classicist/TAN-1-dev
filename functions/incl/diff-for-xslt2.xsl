@@ -10,43 +10,222 @@
     <xsl:param name="loop-tolerance" as="xs:integer" select="550"/>
 
     <xsl:function name="tan:raw-diff" as="element()">
-        <!-- Input: any two strings -->
+        <!-- 2-param version of fuller one below -->
+        <xsl:param name="string-a" as="xs:string?"/>
+        <xsl:param name="string-b" as="xs:string?"/>
+        <xsl:copy-of select="tan:raw-diff($string-a, $string-b, true())"/>
+    </xsl:function>
+    <xsl:function name="tan:raw-diff" as="element()">
+        <!-- Input: any two strings; boolean indicating whether results should snap to nearest word -->
         <!-- Output: an element with <a>, <b>, and <common> children showing where strings a and b match and depart -->
         <!-- This function was written after tan:diff, intended to be a cruder and faster way to check two strings against each other, suitable for validation without hanging due to nested recursion objections. -->
         <xsl:param name="string-a" as="xs:string?"/>
         <xsl:param name="string-b" as="xs:string?"/>
-        <xsl:variable name="len-a" select="string-length($string-a)"/>
-        <xsl:variable name="len-b" select="string-length($string-b)"/>
+        <xsl:param name="snap-to-word" as="xs:boolean"/>
+        <xsl:variable name="a-prepped" as="element()">
+            <a>
+                <xsl:value-of select="$string-a"/>
+            </a>
+        </xsl:variable>
+        <xsl:variable name="b-prepped" as="element()">
+            <b>
+                <xsl:value-of select="$string-b"/>
+            </b>
+        </xsl:variable>
         <xsl:variable name="strings-prepped" as="element()+">
-            <xsl:choose>
-                <xsl:when test="$len-a lt $len-b">
-                    <a>
-                        <xsl:value-of select="$string-a"/>
-                    </a>
-                    <b>
-                        <xsl:value-of select="$string-b"/>
-                    </b>
-                </xsl:when>
-                <xsl:otherwise>
-                    <b>
-                        <xsl:value-of select="$string-b"/>
-                    </b>
-                    <a>
-                        <xsl:value-of select="$string-a"/>
-                    </a>
-                </xsl:otherwise>
-            </xsl:choose>
+            <xsl:for-each select="$a-prepped, $b-prepped">
+                <xsl:sort select="string-length(text())"/>
+                <xsl:copy-of select="."/>
+            </xsl:for-each>
         </xsl:variable>
         <xsl:variable name="strings-diffed" as="element()*"
             select="tan:raw-diff-loop($strings-prepped[1], $strings-prepped[2], true(), true(), 0)"/>
-        <raw-diff>
-            <xsl:for-each-group select="$strings-diffed" group-adjacent="name()">
-                <xsl:element name="{current-grouping-key()}">
-                    <xsl:value-of select="string-join(current-group(), '')"/>
-                </xsl:element>
-            </xsl:for-each-group>
-        </raw-diff>
+        <xsl:variable name="results-sorted-1" as="element()">
+            <raw-diff>
+                <xsl:for-each-group select="$strings-diffed" group-starting-with="tan:common">
+                    <xsl:copy-of select="current-group()/self::tan:common"/>
+                    <xsl:if test="exists(current-group()/self::tan:a)">
+                        <a>
+                            <xsl:value-of select="string-join(current-group()/self::tan:a, '')"/>
+                        </a>
+                    </xsl:if>
+                    <xsl:if test="exists(current-group()/self::tan:b)">
+                        <b>
+                            <xsl:value-of select="string-join(current-group()/self::tan:b, '')"/>
+                        </b>
+                    </xsl:if>
+                </xsl:for-each-group>
+            </raw-diff>
+        </xsl:variable>
+        <xsl:variable name="results-sorted-2" as="element()">
+            <raw-diff>
+                <xsl:copy-of select="tan:group-adjacent-elements($results-sorted-1/*)"/>
+            </raw-diff>
+        </xsl:variable>
+        <xsl:choose>
+            <xsl:when test="$snap-to-word">
+                <xsl:variable name="snap1" as="element()">
+                    <xsl:apply-templates select="$results-sorted-2" mode="snap-to-word-pass-1"/>
+                </xsl:variable>
+                <xsl:variable name="snap2" as="element()*">
+                    <!-- It happens that sometimes matching words get restored in this process, either at the beginning or the end of an <a> or <b>; this step moves those common words back into the common pool -->
+                    <xsl:for-each-group select="$snap1/*" group-starting-with="tan:common">
+                        <xsl:copy-of select="current-group()/self::tan:common"/>
+                        <xsl:variable name="text-a"
+                            select="string-join(current-group()/(self::tan:a, self::tan:a-or-b), '')"/>
+                        <xsl:variable name="text-b"
+                            select="string-join(current-group()/(self::tan:b, self::tan:a-or-b), '')"/>
+                        <xsl:variable name="a-toks" as="xs:string*">
+                            <xsl:analyze-string select="$text-a" regex="\s+">
+                                <xsl:matching-substring><xsl:value-of select="."/></xsl:matching-substring>
+                                <xsl:non-matching-substring><xsl:value-of select="."/></xsl:non-matching-substring>
+                            </xsl:analyze-string>
+                        </xsl:variable>
+                        <xsl:variable name="b-toks" as="xs:string*">
+                            <xsl:analyze-string select="$text-b" regex="\s+">
+                                <xsl:matching-substring><xsl:value-of select="."/></xsl:matching-substring>
+                                <xsl:non-matching-substring><xsl:value-of select="."/></xsl:non-matching-substring>
+                            </xsl:analyze-string>
+                        </xsl:variable>
+                        <xsl:variable name="a-tok-qty" select="count($a-toks)"/>
+                        <xsl:variable name="b-tok-qty" select="count($b-toks)"/>
+                        <xsl:variable name="non-matches-from-start" as="xs:integer*">
+                            <xsl:for-each select="$a-toks">
+                                <xsl:variable name="pos" select="position()"/>
+                                <xsl:if test="not(. = $b-toks[$pos])">
+                                    <xsl:value-of select="$pos"/>
+                                </xsl:if>
+                            </xsl:for-each>
+                        </xsl:variable>
+                        <xsl:variable name="b-toks-rev"
+                            select="reverse($b-toks[position() ge $non-matches-from-start[1]])"/>
+                        <xsl:variable name="non-matches-from-end" as="xs:integer*">
+                            <xsl:for-each
+                                select="reverse($a-toks[position() ge $non-matches-from-start[1]])">
+                                <xsl:variable name="pos" select="position()"/>
+                                <xsl:if test="not(. = $b-toks-rev[$pos])">
+                                    <xsl:value-of select="$pos"/>
+                                </xsl:if>
+                            </xsl:for-each>
+                        </xsl:variable>
+                        <xsl:variable name="a-analyzed" as="element()*">
+                            <xsl:for-each select="$a-toks">
+                                <xsl:variable name="pos" select="position()"/>
+                                <xsl:variable name="rev-pos" select="$a-tok-qty - $pos"/>
+                                <xsl:choose>
+                                    <xsl:when test="$pos lt $non-matches-from-start[1]">
+                                        <common-head>
+                                            <xsl:value-of select="."/>
+                                        </common-head>
+                                    </xsl:when>
+                                    <xsl:when test="$rev-pos + 1 lt $non-matches-from-end[1]">
+                                        <common-tail>
+                                            <xsl:value-of select="."/>
+                                        </common-tail>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <a>
+                                            <xsl:value-of select="."/>
+                                        </a>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                            </xsl:for-each>
+                        </xsl:variable>
+                        <xsl:variable name="b-analyzed" as="element()*">
+                            <xsl:for-each
+                                select="$b-toks[position() ge $non-matches-from-start[1] and position() le ($b-tok-qty - $non-matches-from-end[1] + 1)]">
+                                <b>
+                                    <xsl:value-of select="."/>
+                                </b>
+                            </xsl:for-each>
+                        </xsl:variable>
+                        <xsl:for-each-group select="($a-analyzed, $b-analyzed)" group-by="name()">
+                            <xsl:sort
+                                select="index-of(('common-head', 'a', 'b', 'common-tail'), current-grouping-key())"
+                            />
+                            <xsl:variable name="element-name"
+                                select="replace(current-grouping-key(), '-.+', '')"/>
+                            <xsl:element name="{$element-name}">
+                                <xsl:value-of select="string-join(current-group(), '')"/>
+                            </xsl:element>
+                        </xsl:for-each-group>
+                    </xsl:for-each-group>
+                </xsl:variable>
+                <raw-diff>
+                    <!-- diagnostics, results -->
+                    <!--<xsl:copy-of select="$strings-prepped"/>-->
+                    <!--<xsl:copy-of select="$strings-diffed"/>-->
+                    <!--<xsl:copy-of select="$results-sorted-1"/>-->
+                    <!--<xsl:copy-of select="$results-sorted-2"/>-->
+                    <!--<xsl:copy-of select="$snap1"/>-->
+                    <!--<xsl:copy-of select="$snap2"/>-->
+                    <xsl:copy-of select="tan:group-adjacent-elements($snap2)"/>
+                </raw-diff>
+            </xsl:when>
+            <xsl:otherwise>
+                <!--<xsl:sequence select="$results-sorted-1"/>-->
+                <xsl:sequence select="$results-sorted-2"/>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:function>
+
+    <xsl:function name="tan:group-adjacent-elements" as="element()*">
+        <!-- Input: any sequence of elements -->
+        <!-- Output: the same elements, but adjacent elements of the same name grouped together -->
+        <xsl:param name="elements" as="element()*"/>
+        <xsl:for-each-group select="$elements" group-adjacent="name()">
+            <xsl:element name="{current-grouping-key()}">
+                <xsl:copy-of select="current-group()/@*"/>
+                <xsl:copy-of select="current-group()/node()"/>
+            </xsl:element>
+        </xsl:for-each-group>
+    </xsl:function>
+    <xsl:template match="*" mode="snap-to-word-pass-1">
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:apply-templates mode="#current"/>
+        </xsl:copy>
+    </xsl:template>
+    <xsl:template match="tan:common" mode="snap-to-word-pass-1">
+        <xsl:variable name="content-analyzed" as="element()">
+            <content>
+                <xsl:analyze-string select="text()" regex="^\S+|\S+$">
+                    <xsl:matching-substring>
+                        <a-or-b>
+                            <xsl:value-of select="."/>
+                        </a-or-b>
+                    </xsl:matching-substring>
+                    <xsl:non-matching-substring>
+                        <common>
+                            <xsl:value-of select="."/>
+                        </common>
+                        <!--<xsl:analyze-string select="." regex="\S+$">
+                            <xsl:matching-substring>
+                                <a-or-b>
+                                    <xsl:value-of select="."/>
+                                </a-or-b>
+                            </xsl:matching-substring>
+                            <xsl:non-matching-substring>
+                                <common>
+                                    <xsl:value-of select="."/>
+                                </common>
+                            </xsl:non-matching-substring>
+                        </xsl:analyze-string>-->
+                    </xsl:non-matching-substring>
+                </xsl:analyze-string>
+            </content>
+        </xsl:variable>
+        <xsl:choose>
+            <xsl:when test="matches($content-analyzed/tan:common, '\S')">
+                <xsl:copy-of select="$content-analyzed/*"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <a-or-b>
+                    <xsl:value-of select="."/>
+                </a-or-b>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
 
     <xsl:param name="vertical-stops"
         select="
@@ -65,7 +244,7 @@
             <xsl:when test="$loop-counter ge $loop-tolerance">
                 <xsl:copy-of select="$short-string, $long-string"/>
             </xsl:when>
-            <xsl:when test="$short-size lt 1">
+            <xsl:when test="$short-size lt 1 or string-length($long-string) lt 1">
                 <xsl:copy-of select="$long-string"/>
             </xsl:when>
             <xsl:otherwise>

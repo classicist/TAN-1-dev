@@ -9,3 +9,4 @@ testing*
 private*
 *[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]*
 guidelines/xhtml/
+.DS_Store

@@ -204,18 +204,28 @@
         />
         <xsl:variable name="content-analyzed" as="element()">
             <content>
-                <xsl:analyze-string select="text()" regex="{string-join(($regex-1, $regex-2),'|')}">
-                    <xsl:matching-substring>
-                        <a-or-b>
-                            <xsl:value-of select="."/>
-                        </a-or-b>
-                    </xsl:matching-substring>
-                    <xsl:non-matching-substring>
+                <xsl:choose>
+                    <xsl:when test="exists($regex-1) or exists($regex-2)">
+                        <xsl:analyze-string select="text()"
+                            regex="{string-join(($regex-1, $regex-2),'|')}">
+                            <xsl:matching-substring>
+                                <a-or-b>
+                                    <xsl:value-of select="."/>
+                                </a-or-b>
+                            </xsl:matching-substring>
+                            <xsl:non-matching-substring>
+                                <common>
+                                    <xsl:value-of select="."/>
+                                </common>
+                            </xsl:non-matching-substring>
+                        </xsl:analyze-string>
+                    </xsl:when>
+                    <xsl:otherwise>
                         <common>
-                            <xsl:value-of select="."/>
+                            <xsl:value-of select="text()"/>
                         </common>
-                    </xsl:non-matching-substring>
-                </xsl:analyze-string>
+                    </xsl:otherwise>
+                </xsl:choose>
             </content>
         </xsl:variable>
         <xsl:choose>

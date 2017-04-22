@@ -69,87 +69,103 @@
                 </xsl:variable>
                 <xsl:variable name="snap2" as="element()">
                     <!-- It happens that sometimes matching words get restored in this process, either at the beginning or the end of an <a> or <b>; this step moves those common words back into the common pool -->
-                    <snap2><xsl:for-each-group select="$snap1/*" group-starting-with="tan:common">
-                        <xsl:copy-of select="current-group()/self::tan:common"/>
-                        <xsl:variable name="text-a"
-                            select="string-join(current-group()/(self::tan:a, self::tan:a-or-b), '')"/>
-                        <xsl:variable name="text-b"
-                            select="string-join(current-group()/(self::tan:b, self::tan:a-or-b), '')"/>
-                        <xsl:variable name="a-toks" as="xs:string*">
-                            <xsl:analyze-string select="$text-a" regex="\s+">
-                                <xsl:matching-substring><xsl:value-of select="."/></xsl:matching-substring>
-                                <xsl:non-matching-substring><xsl:value-of select="."/></xsl:non-matching-substring>
-                            </xsl:analyze-string>
-                        </xsl:variable>
-                        <xsl:variable name="b-toks" as="xs:string*">
-                            <xsl:analyze-string select="$text-b" regex="\s+">
-                                <xsl:matching-substring><xsl:value-of select="."/></xsl:matching-substring>
-                                <xsl:non-matching-substring><xsl:value-of select="."/></xsl:non-matching-substring>
-                            </xsl:analyze-string>
-                        </xsl:variable>
-                        <xsl:variable name="a-tok-qty" select="count($a-toks)"/>
-                        <xsl:variable name="b-tok-qty" select="count($b-toks)"/>
-                        <xsl:variable name="non-matches-from-start" as="xs:integer*">
-                            <xsl:for-each select="$a-toks">
-                                <xsl:variable name="pos" select="position()"/>
-                                <xsl:if test="not(. = $b-toks[$pos])">
-                                    <xsl:value-of select="$pos"/>
+                    <snap2>
+                        <xsl:for-each-group select="$snap1/*" group-starting-with="tan:common">
+                            <xsl:copy-of select="current-group()/self::tan:common"/>
+                            <xsl:variable name="text-a"
+                                select="string-join(current-group()/(self::tan:a, self::tan:a-or-b), '')"/>
+                            <xsl:variable name="text-b"
+                                select="string-join(current-group()/(self::tan:b, self::tan:a-or-b), '')"/>
+                            <xsl:variable name="a-toks" as="xs:string*">
+                                <xsl:analyze-string select="$text-a" regex="\s+">
+                                    <xsl:matching-substring>
+                                        <xsl:value-of select="."/>
+                                    </xsl:matching-substring>
+                                    <xsl:non-matching-substring>
+                                        <xsl:value-of select="."/>
+                                    </xsl:non-matching-substring>
+                                </xsl:analyze-string>
+                            </xsl:variable>
+                            <xsl:variable name="b-toks" as="xs:string*">
+                                <xsl:analyze-string select="$text-b" regex="\s+">
+                                    <xsl:matching-substring>
+                                        <xsl:value-of select="."/>
+                                    </xsl:matching-substring>
+                                    <xsl:non-matching-substring>
+                                        <xsl:value-of select="."/>
+                                    </xsl:non-matching-substring>
+                                </xsl:analyze-string>
+                            </xsl:variable>
+                            <xsl:variable name="a-tok-qty" select="count($a-toks)"/>
+                            <xsl:variable name="b-tok-qty" select="count($b-toks)"/>
+                            <xsl:variable name="non-matches-from-start" as="xs:integer*">
+                                <xsl:for-each select="$a-toks">
+                                    <xsl:variable name="pos" select="position()"/>
+                                    <xsl:if test="not(. = $b-toks[$pos])">
+                                        <xsl:value-of select="$pos"/>
+                                    </xsl:if>
+                                </xsl:for-each>
+                                <xsl:if test="$a-tok-qty lt $b-tok-qty">
+                                    <xsl:value-of select="$a-tok-qty + 1"/>
                                 </xsl:if>
-                            </xsl:for-each>
-                        </xsl:variable>
-                        <xsl:variable name="b-toks-rev"
-                            select="reverse($b-toks[position() ge $non-matches-from-start[1]])"/>
-                        <xsl:variable name="non-matches-from-end" as="xs:integer*">
-                            <xsl:for-each
-                                select="reverse($a-toks[position() ge $non-matches-from-start[1]])">
-                                <xsl:variable name="pos" select="position()"/>
-                                <xsl:if test="not(. = $b-toks-rev[$pos])">
-                                    <xsl:value-of select="$pos"/>
+                            </xsl:variable>
+                            <xsl:variable name="b-toks-rev"
+                                select="reverse($b-toks[position() ge $non-matches-from-start[1]])"/>
+                            <xsl:variable name="non-matches-from-end" as="xs:integer*">
+                                <xsl:for-each
+                                    select="reverse($a-toks[position() ge $non-matches-from-start[1]])">
+                                    <xsl:variable name="pos" select="position()"/>
+                                    <xsl:if test="not(. = $b-toks-rev[$pos])">
+                                        <xsl:value-of select="$pos"/>
+                                    </xsl:if>
+                                </xsl:for-each>
+                                <xsl:if test="$a-tok-qty lt $b-tok-qty">
+                                    <xsl:value-of select="$a-tok-qty + 1"/>
                                 </xsl:if>
-                            </xsl:for-each>
-                        </xsl:variable>
-                        <xsl:variable name="a-analyzed" as="element()*">
-                            <xsl:for-each select="$a-toks">
-                                <xsl:variable name="pos" select="position()"/>
-                                <xsl:variable name="rev-pos" select="$a-tok-qty - $pos"/>
-                                <xsl:choose>
-                                    <xsl:when test="$pos lt $non-matches-from-start[1]">
-                                        <common-head>
-                                            <xsl:value-of select="."/>
-                                        </common-head>
-                                    </xsl:when>
-                                    <xsl:when test="$rev-pos + 1 lt $non-matches-from-end[1]">
-                                        <common-tail>
-                                            <xsl:value-of select="."/>
-                                        </common-tail>
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <a>
-                                            <xsl:value-of select="."/>
-                                        </a>
-                                    </xsl:otherwise>
-                                </xsl:choose>
-                            </xsl:for-each>
-                        </xsl:variable>
-                        <xsl:variable name="b-analyzed" as="element()*">
-                            <xsl:for-each
-                                select="$b-toks[position() ge $non-matches-from-start[1] and position() le ($b-tok-qty - $non-matches-from-end[1] + 1)]">
-                                <b>
-                                    <xsl:value-of select="."/>
-                                </b>
-                            </xsl:for-each>
-                        </xsl:variable>
-                        <xsl:for-each-group select="($a-analyzed, $b-analyzed)" group-by="name()">
-                            <xsl:sort
-                                select="index-of(('common-head', 'a', 'b', 'common-tail'), current-grouping-key())"
-                            />
-                            <xsl:variable name="element-name"
-                                select="replace(current-grouping-key(), '-.+', '')"/>
-                            <xsl:element name="{$element-name}">
-                                <xsl:value-of select="string-join(current-group(), '')"/>
-                            </xsl:element>
+                            </xsl:variable>
+                            <xsl:variable name="a-analyzed" as="element()*">
+                                <xsl:for-each select="$a-toks">
+                                    <xsl:variable name="pos" select="position()"/>
+                                    <xsl:variable name="rev-pos" select="$a-tok-qty - $pos"/>
+                                    <xsl:choose>
+                                        <xsl:when test="$pos lt $non-matches-from-start[1]">
+                                            <common-head>
+                                                <xsl:value-of select="."/>
+                                            </common-head>
+                                        </xsl:when>
+                                        <xsl:when test="$rev-pos + 1 lt $non-matches-from-end[1]">
+                                            <common-tail>
+                                                <xsl:value-of select="."/>
+                                            </common-tail>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <a>
+                                                <xsl:value-of select="."/>
+                                            </a>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </xsl:for-each>
+                            </xsl:variable>
+                            <xsl:variable name="b-analyzed" as="element()*">
+                                <xsl:for-each
+                                    select="$b-toks[position() ge $non-matches-from-start[1] and position() le ($b-tok-qty - $non-matches-from-end[1] + 1)]">
+                                    <b>
+                                        <xsl:value-of select="."/>
+                                    </b>
+                                </xsl:for-each>
+                            </xsl:variable>
+                            <xsl:for-each-group select="($a-analyzed, $b-analyzed)"
+                                group-by="name()">
+                                <xsl:sort
+                                    select="index-of(('common-head', 'a', 'b', 'common-tail'), current-grouping-key())"/>
+                                <xsl:variable name="element-name"
+                                    select="replace(current-grouping-key(), '-.+', '')"/>
+                                <xsl:element name="{$element-name}">
+                                    <xsl:value-of select="string-join(current-group(), '')"/>
+                                </xsl:element>
+                            </xsl:for-each-group>
                         </xsl:for-each-group>
-                    </xsl:for-each-group></snap2>
+                    </snap2>
                 </xsl:variable>
                 <raw-diff>
                     <!-- diagnostics, results -->
@@ -193,15 +209,13 @@
                 if (exists(preceding-sibling::*)) then
                     '^\S+'
                 else
-                    ()"
-        />
+                    ()"/>
         <xsl:variable name="regex-2"
             select="
                 if (exists(following-sibling::*)) then
                     '\S+$'
                 else
-                    ()"
-        />
+                    ()"/>
         <xsl:variable name="content-analyzed" as="element()">
             <content>
                 <xsl:choose>
@@ -246,8 +260,13 @@
             return
                 $i * 0.05), 0.025)"
         as="xs:double*"/>-->
+    <!--<xsl:param name="vertical-stops"
+        select="(1.0, 0.95, 0.9, 0.8, 0.65, 0.5, 0.35, 0.2, 0.1, 0.05, 0.025, 0.01)" as="xs:double*"/>-->
     <xsl:param name="vertical-stops"
-        select="(1.0, 0.95, 0.9, 0.8, 0.65, 0.5, 0.35, 0.2, 0.1, 0.05, 0.025, 0.01)" as="xs:double*"/>
+        select="
+            for $i in (0 to 14)
+            return
+                math:pow(2, (-0.5 * $i))"/>
     <xsl:function name="tan:raw-diff-loop">
         <xsl:param name="short-string" as="element()?"/>
         <xsl:param name="long-string" as="element()?"/>
@@ -255,15 +274,23 @@
         <xsl:param name="check-vertically-before-horizontally" as="xs:boolean"/>
         <xsl:param name="loop-counter" as="xs:integer"/>
         <!-- If diagnostics are needed, set the following variable to something that will give messages at the right times -->
-        <xsl:variable name="diagnostic-flag" as="xs:boolean" select="false()"/>
+        <xsl:variable name="diagnostic-flag" as="xs:boolean" select="$loop-counter = -1"/>
         <xsl:variable name="short-size" select="string-length($short-string)"/>
-        <xsl:if test="$diagnostic-flag"><xsl:message>start at beginning <xsl:value-of select="$start-at-beginning"/>; check v before h <xsl:value-of select="$check-vertically-before-horizontally"/></xsl:message>
-            <xsl:message>short string <xsl:value-of select="substring($short-string,1,10)"/>...</xsl:message>
-            <xsl:message>long string <xsl:value-of select="substring($long-string,1,10)"/>...</xsl:message>
+        <xsl:if test="$diagnostic-flag">
+            <xsl:message>start at beginning <xsl:value-of select="$start-at-beginning"/>; check v
+                before h <xsl:value-of select="$check-vertically-before-horizontally"
+                /></xsl:message>
+            <xsl:message>short string <xsl:value-of select="substring($short-string, 1, 10)"
+                />...</xsl:message>
+            <xsl:message>long string <xsl:value-of select="substring($long-string, 1, 10)"
+                />...</xsl:message>
         </xsl:if>
         <xsl:choose>
             <xsl:when test="$loop-counter ge $loop-tolerance">
-                <xsl:if test="$diagnostic-flag"><xsl:message>Can't go beyond loop <xsl:value-of select="$loop-tolerance"/></xsl:message></xsl:if>
+                <xsl:if test="$diagnostic-flag">
+                    <xsl:message>Can't go beyond loop <xsl:value-of select="$loop-tolerance"
+                        /></xsl:message>
+                </xsl:if>
                 <xsl:copy-of select="$short-string, $long-string"/>
             </xsl:when>
             <xsl:when test="$short-size lt 1 or string-length($long-string) lt 1">
@@ -280,13 +307,16 @@
                                 if ($check-vertically-before-horizontally) then
                                     1
                                 else
-                                    xs:integer((1 - $percent-of-short-to-check) * 40) + 1"/>
+                                    xs:integer((1 - $percent-of-short-to-check) * 50) + 1"/>
                         <xsl:variable name="length-of-short-substring"
                             select="ceiling($short-size * $percent-of-short-to-check)"/>
                         <xsl:variable name="length-of-play-in-short"
                             select="$short-size - $length-of-short-substring"/>
                         <xsl:variable name="horizontal-stagger"
                             select="$length-of-play-in-short div max(($number-of-horizontal-passes - 1, 1))"/>
+                        <xsl:if test="$diagnostic-flag">
+                            <xsl:message select="$horizontal-stagger"/>
+                        </xsl:if>
                         <xsl:variable name="horizontal-pass-sequence"
                             select="
                                 if ($start-at-beginning) then
@@ -298,8 +328,17 @@
                             <xsl:variable name="starting-pos-of-short-substring"
                                 select="ceiling(($horizontal-pos - 1) * $horizontal-stagger) + 1"/>
                             <xsl:variable name="picked-search-text"
-                                select="substring($short-string, $starting-pos-of-short-substring, $length-of-short-substring)"/>
-                            <xsl:if test="$diagnostic-flag"><xsl:message select="$picked-search-text"></xsl:message></xsl:if>
+                                select="
+                                    concat(if ($check-vertically-before-horizontally and $start-at-beginning) then
+                                        '^'
+                                    else
+                                        (), substring($short-string, $starting-pos-of-short-substring, $length-of-short-substring), if ($check-vertically-before-horizontally and not($start-at-beginning)) then
+                                        '$'
+                                    else
+                                        ())"/>
+                            <xsl:if test="$diagnostic-flag">
+                                <xsl:message select="$picked-search-text"/>
+                            </xsl:if>
                             <xsl:variable name="this-search" as="element()*">
                                 <xsl:if test="string-length($picked-search-text) gt 0">
                                     <xsl:analyze-string select="$long-string"
@@ -395,10 +434,13 @@
                         <xsl:copy-of select="$first-result/tan:common[1]"/>
 
                         <!-- need to loop again on tail fragments -->
-                        <xsl:if test="$diagnostic-flag"><xsl:message select="$tail-input[1], $tail-input[2]"></xsl:message></xsl:if>
+                        <xsl:if test="$diagnostic-flag">
+                            <xsl:message select="$tail-input[1], $tail-input[2]"/>
+                        </xsl:if>
                         <xsl:copy-of
                             select="
-                                tan:raw-diff-loop($tail-input[1], $tail-input[2], true(), true(), $loop-counter + 1)"/>
+                                tan:raw-diff-loop($tail-input[1], $tail-input[2], true(), true(), $loop-counter + 1)"
+                        />
                     </xsl:otherwise>
                 </xsl:choose>
                 <!--<xsl:copy-of select="$horizontal-search-on-long"/>-->

@@ -339,7 +339,7 @@
                      </xsl:apply-templates>
                   </xsl:when>
                   <xsl:when test="exists(tei:*)">
-                     <xsl:value-of select="normalize-space(tan:text-join(node()))"/>
+                     <xsl:value-of select="normalize-space(string-join(tei:*//text(), ''))"/>
                      <xsl:copy-of select="tei:*"/>
                   </xsl:when>
                   <xsl:otherwise>

@@ -207,13 +207,13 @@
         <xsl:variable name="regex-1"
             select="
                 if (exists(preceding-sibling::*)) then
-                    '^\S+'
+                    '^\w+'
                 else
                     ()"/>
         <xsl:variable name="regex-2"
             select="
                 if (exists(following-sibling::*)) then
-                    '\S+$'
+                    '\w+$'
                 else
                     ()"/>
         <xsl:variable name="content-analyzed" as="element()">
@@ -293,7 +293,8 @@
                 </xsl:if>
                 <xsl:copy-of select="$short-string, $long-string"/>
             </xsl:when>
-            <xsl:when test="$short-size lt 1 or string-length($long-string) lt 1">
+            <xsl:when test="string-length($long-string) lt 1"/>
+            <xsl:when test="$short-size lt 1">
                 <xsl:copy-of select="$long-string"/>
             </xsl:when>
             <xsl:otherwise>
@@ -386,18 +387,18 @@
                             select="xs:integer($first-result/@short-search-start)"/>
                         <xsl:variable name="short-search-length"
                             select="xs:integer($first-result/@short-search-length)"/>
-                        <xsl:variable name="long-head"
-                            select="$first-result/tan:common[1]/preceding-sibling::*"/>
-                        <xsl:variable name="long-tail-prelim"
-                            select="$first-result/tan:common[1]/following-sibling::*"/>
-                        <!-- The long tail should include matches past the first -->
+                        <xsl:variable name="long-head" as="element()">
+                            <xsl:element name="{name($long-string)}">
+                                <xsl:attribute name="loop" select="$loop-counter"/>
+                                <xsl:copy-of
+                                    select="$first-result/tan:common[1]/preceding-sibling::*/text()"/>
+                            </xsl:element>
+                        </xsl:variable>
                         <xsl:variable name="long-tail" as="element()?">
-                            <xsl:if test="exists($long-tail-prelim)">
-                                <xsl:element name="{name($long-tail-prelim[1])}">
-                                    <xsl:attribute name="loop" select="$loop-counter"/>
-                                    <xsl:value-of select="string-join($long-tail-prelim, '')"/>
-                                </xsl:element>
-                            </xsl:if>
+                            <xsl:element name="{name($long-string)}">
+                                <xsl:attribute name="loop" select="$loop-counter"/>
+                                <xsl:copy-of select="$first-result/tan:common[1]/following-sibling::*/text()"/>
+                            </xsl:element>
                         </xsl:variable>
                         <xsl:variable name="short-head" as="element()">
                             <xsl:element name="{name($short-string)}">
@@ -430,12 +431,11 @@
                         <xsl:copy-of
                             select="
                                 tan:raw-diff-loop($head-input[1], $head-input[2], false(), true(), $loop-counter + 1)"/>
-                        <!--<xsl:copy-of select="$head-input"/>-->
                         <xsl:copy-of select="$first-result/tan:common[1]"/>
-
                         <!-- need to loop again on tail fragments -->
                         <xsl:if test="$diagnostic-flag">
-                            <xsl:message select="$tail-input[1], $tail-input[2]"/>
+                            <xsl:message
+                                select="'tail1: ', $tail-input[1], ' tail2: ', $tail-input[2]"/>
                         </xsl:if>
                         <xsl:copy-of
                             select="
@@ -443,9 +443,6 @@
                         />
                     </xsl:otherwise>
                 </xsl:choose>
-                <!--<xsl:copy-of select="$horizontal-search-on-long"/>-->
-
-
             </xsl:otherwise>
         </xsl:choose>
     </xsl:function>

@@ -483,20 +483,23 @@
    <!-- Processing self after common class 2 functions are finished. -->
 
    <xsl:function name="tan:prep-verbosely" as="document-node()*">
-      <!-- Input: a TAN-A-div file prepped and its sources, also prepped
-         Output: the same files, with information marked of relevance to the validation process.
-      -->
+      <!-- Input: a TAN-A-div file prepped and its sources, also prepped -->
+      <!--   Output: the same files, with information marked of relevance to the validation process. -->
       <xsl:param name="TAN-A-div-prepped" as="document-node()?"/>
       <xsl:param name="TAN-A-div-sources-prepped" as="document-node()*"/>
-      <xsl:variable name="this-skeleton" select="tan:get-src-skeleton($TAN-A-div-sources-prepped)"/>
+      <xsl:variable name="these-skeletons" as="document-node()*">
+         <xsl:for-each-group select="$TAN-A-div-sources-prepped" group-by="count($TAN-A-div-prepped/tan:TAN-A-div/tan:body/tan:equate-works[tan:work/@src = current()/*/@src]/preceding-sibling::tan:equate-works)">
+            <xsl:copy-of select="tan:get-src-skeleton(current-group())"/>
+         </xsl:for-each-group> 
+      </xsl:variable>
       <xsl:document>
          <xsl:apply-templates select="$TAN-A-div-prepped" mode="prep-verbosely">
-            <xsl:with-param name="source-skeleton" select="$this-skeleton" tunnel="yes"/>
+            <xsl:with-param name="source-skeletons" select="$these-skeletons" tunnel="yes"/>
             <xsl:with-param name="sources-prepped" select="$TAN-A-div-sources-prepped" tunnel="yes"
             />
          </xsl:apply-templates>
       </xsl:document>
-      <!-- Nov 2016: validation rules so far do not require changes to the sources -->
+      <!-- Nov 2016: validation rules so far do not require changes to the sources, so we return them unchanged -->
       <xsl:sequence select="$TAN-A-div-sources-prepped"/>
    </xsl:function>
 
@@ -507,14 +510,21 @@
       </xsl:copy>
    </xsl:template>
    <xsl:template match="/*" mode="prep-verbosely">
-      <xsl:param name="source-skeleton" tunnel="yes" as="document-node()?"/>
+      <xsl:param name="source-skeletons" tunnel="yes" as="document-node()*"/>
       <xsl:variable name="these-realigns" select="tan:body/tan:realign"/>
-      <xsl:variable name="defective-divs"
+      <!--<xsl:variable name="defective-divs"
          select="
-            $source-skeleton//tan:div[@src][not(
+            $source-skeletons//tan:div[@src][not(
             some $i in $these-realigns/*
                satisfies
-               ($i/@src = tokenize(@src, '\s+') and $i//@ref = @ref))]"/>
+               ($i/@src = tokenize(@src, '\s+') and $i//@ref = @ref))]"/>-->
+      <xsl:variable name="defective-divs"
+         select="
+            for $i in $source-skeletons,
+               $j in count(tokenize($i/*/@src, ' '))
+            return
+               $i//tan:div[not(count(tokenize(@src, ' ')) = $j)]"
+      />
       <xsl:variable name="defective-div-count" select="count($defective-divs)"/>
       <xsl:variable name="defective-divs-message" as="xs:string*">
          <xsl:value-of select="$defective-div-count"/>

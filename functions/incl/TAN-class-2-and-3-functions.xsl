@@ -75,7 +75,8 @@
          <xsl:when test="$data-type = 'QName'">
             <xsl:value-of select="$item castable as xs:QName"/>
          </xsl:when>
-         <xsl:when test="$data-type = 'normalizedString'">
+         <!-- the following datatypes are not recognized in a basic XSLT 2.0 processor -->
+         <!--<xsl:when test="$data-type = 'normalizedString'">
             <xsl:value-of select="$item castable as xs:normalizedString"/>
          </xsl:when>
          <xsl:when test="$data-type = 'token'">
@@ -149,7 +150,7 @@
          </xsl:when>
          <xsl:when test="$data-type = 'positiveInteger'">
             <xsl:value-of select="$item castable as xs:positiveInteger"/>
-         </xsl:when>
+         </xsl:when>-->
          <xsl:otherwise>
             <xsl:value-of select="false()"/>
          </xsl:otherwise>

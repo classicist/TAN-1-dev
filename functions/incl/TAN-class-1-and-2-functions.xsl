@@ -1118,7 +1118,7 @@
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
-   <xsl:template match="text()[matches(., '\S')] | tei:*[not(preceding-sibling::tei:*)]" mode="prepare-class-1-doc-for-merge">
+   <xsl:template match="text()[matches(., '\S')][not(following-sibling::tei:*)] | tei:*[not(preceding-sibling::tei:*)]" mode="prepare-class-1-doc-for-merge">
       <xsl:param name="src" tunnel="yes"/>
       <xsl:param name="keep-text" tunnel="yes" as="xs:boolean"/>
       <xsl:if test="$keep-text = true()">

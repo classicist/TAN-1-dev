@@ -15,12 +15,8 @@
    version="3.0">
    <xd:doc scope="stylesheet">
       <xd:desc>
-         <xd:p>
-            <xd:b>Updated </xd:b> March 2017</xd:p>
-         <xd:p>The input xml file to this stylesheet is immaterial. The stylesheet will transform
-            all the TAN schema files into a series of Docbook inclusions for the TAN guidelines,
-            documenting the structural rules, the validation rules, the schematron quick
-            fixes.</xd:p>
+         <xd:p>Input: any XML file</xd:p>
+         <xd:p>Output: repopulated TAN guidelines, bot the main document and its inclusions</xd:p>
       </xd:desc>
    </xd:doc>
    <xsl:output method="xml" indent="no"/>

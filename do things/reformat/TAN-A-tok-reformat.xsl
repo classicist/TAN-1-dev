@@ -78,10 +78,10 @@
          select="($pos-or-val-override, $p2-convert-tok-refs-to-pos-or-val)[1]"/>
       <xsl:variable name="this-tok" select="."/>
       <xsl:variable name="this-src" select="@src"/>
-      <xsl:variable name="this-ref-norm" select="tan:normalize-refs(@ref)"/>
+      <xsl:variable name="this-ref-norm" select="tan:normalize-refs(.)"/>
       <xsl:variable name="this-val-norm" select="(@val, '.+')[1]"/>
       <xsl:variable name="that-div"
-         select="$srcs-tokenized-and-filtered/tan:TAN-T[@src = $this-src]/tan:body//tan:div[@ref = $this-ref-norm]"/>
+         select="$sources-prepped/tan:TAN-T[@src = $this-src]/tan:body//tan:div[@ref = $this-ref-norm]"/>
       <xsl:variable name="tok-ceiling" select="count($that-div/tan:tok)"/>
       <xsl:variable name="this-pos-norm"
          select="
@@ -90,9 +90,9 @@
             else
                1"/>
       <xsl:for-each select="$this-pos-norm">
-         <xsl:variable name="pos" select="."/>
+         <xsl:variable name="position" select="."/>
          <xsl:variable name="that-tok"
-            select="($that-div/tan:tok[tan:matches(., $this-val-norm)])[$pos]"/>
+            select="($that-div/tan:tok[tan:matches(., $this-val-norm)])[$position]"/>
          <tok>
             <xsl:copy-of select="$this-tok/(@ref, @cert, @chars, @cont, @ed-when, @ed-who, @src)"/>
             <xsl:choose>
@@ -173,10 +173,10 @@
       </xsl:choose>
    </xsl:variable>
    <xsl:variable name="srcs-ref-sequence-1"
-      select="$srcs-tokenized-and-filtered/tan:TAN-T[@src = $head/tan:source[1]/@xml:id]/tan:body//@ref"
+      select="$sources-prepped/tan:TAN-T[@src = $head/tan:source[1]/@xml:id]/tan:body//@ref"
       as="xs:string*"/>
    <xsl:variable name="srcs-ref-sequence-2"
-      select="$srcs-tokenized-and-filtered/tan:TAN-T[@src = $head/tan:source[2]/@xml:id]/tan:body//@ref"
+      select="$sources-prepped/tan:TAN-T[@src = $head/tan:source[2]/@xml:id]/tan:body//@ref"
       as="xs:string*"/>
    <xsl:template match="tan:align" mode="re-sort-p1">
       <xsl:copy>

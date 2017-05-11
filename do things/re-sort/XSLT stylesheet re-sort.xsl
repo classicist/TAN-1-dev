@@ -4,7 +4,7 @@
    xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="#all" version="2.0">
    <xsl:output indent="yes"/>
    <!-- Input: any xslt stylesheet -->
-   <!-- Output: that same stylesheet, but with the nodes of the root element re-sorted in order of dependency,  from least to most -->
+   <!-- Output: that same stylesheet, but with the nodes of the root element re-sorted in order of dependency,  from least dependent to most -->
    <!-- Results should be checked carefully, since comments will be kept with independent elements -->
 
    <xsl:include href="../get%20inclusions/XSLT%20analysis.xsl"/>

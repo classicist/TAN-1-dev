@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component-syntax xmlns="tag:textalign.net,2015:ns" name-matches="\i\c*" name-replacement="\\i\\c*">
-    <!-- This document acts as a set of parameters that define how certain components are to be found or rendered. --> 
+    <!-- This document is used by the stylesheet that generates TAN guidelines to define how plain-text references to attributes, elements, and so forth are to be found or rendered. --> 
     <!-- The string 'name' is to be replaced with the name; you must be careful about whether the namespace prefix is used or not, e.g., 'tan:name' versus 'name' -->
-    <!-- @xpath-matching-pattern is used to look through the values of attributes to see if the component is used -->
-    <!-- @string-matching-pattern is used to find references to the component in ordinary text -->
-    <!-- See stylesheets that depend upon this set of parameters for examples of use. -->
+    <!-- @xpath-matching-pattern is used to identify the component in an XPath expression. -->
+    <!-- @string-matching-pattern is used to find references to the component in ordinary prose -->
     <component type="attribute" syntax="@name" string-matching-pattern="@name"
         xpath-matching-pattern="@name"/>
     <component type="element" syntax="&lt;name>" string-matching-pattern="&lt;name>"

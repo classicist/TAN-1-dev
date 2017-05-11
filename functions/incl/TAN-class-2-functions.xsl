@@ -277,6 +277,10 @@
       <xsl:apply-templates mode="prep-class-2-doc-pass-1" select="$elements-with-src-and-div-type"/>
    </xsl:function>
    <xsl:function name="tan:normalize-refs" as="xs:string*">
+      <xsl:param name="elements-with-attr-ref" as="element()*"/>
+      <xsl:copy-of select="tan:normalize-refs($elements-with-attr-ref, ())"/>
+   </xsl:function>
+   <xsl:function name="tan:normalize-refs" as="xs:string*">
       <!-- Input: elements that take @ref; a numeral types declaration (elements produced by tan:analyze-attr-n-or-ref-numerals()) -->
       <!-- Output: a sequence of punctuation- and space-normalized reference strings, converting the items that match numerals into Arabic numerals and setting the strings lowercase -->
       <xsl:param name="elements-with-attr-ref" as="element()*"/>

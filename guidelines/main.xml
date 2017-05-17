@@ -23,33 +23,26 @@
       </legalnotice>
       <revhistory>
          <info>
-            <releaseinfo>This version home directory:
-               http://textalign.net/release/TAN-1-dev/guidelines/.</releaseinfo>
             <releaseinfo>Latest version:
                http://textalign.net/release/TAN-1-dev/guidelines/.</releaseinfo>
          </info>
          <revision>
             <revnumber>1 dev</revnumber>
-            <date>2017-03-14</date>
+            <date>2017-05-09</date>
             <revdescription>
-               <para>Prepublication working draft, for circulation among those interested in helping
-                  to develop TAN. Corrections are actively solicited and should be sent to the
-                  author (see above).</para>
+               <para>Working draft. Please send corrections to the author (see above).</para>
                <para>Formats: <link xlink:href="index.html">HTML</link> • <link
                      xlink:href="main.pdf">PDF</link> • <link xlink:href="main.xml">Docbook</link>
                   (master)</para>
                <warning>
-                  <para>This version of the guidelines is known to have significant omissions. In
-                     case of contradictions, apparent or not, between the schemas and these
-                     guidelines, the greatest weight is to be given to the RELAX-NG schemas (compact
+                  <para>In case of contradictions, apparent or not, between these guidelines and the
+                     core TAN files, priority should be given to the RELAX-NG schemas (compact
                      syntax), then to the functions, and then to these guidelines.</para>
                   <para>Chapters 1-7 and 10 are written by hand, and are relatively accurate.
                      Chapters 8, 9, 11, and 12 are written by an algorithm that selectively
-                     reformats normative TAN files. Most errors or inconsistencies found in those
-                     chapters will be based in the stylesheets that produces them.</para>
-                  <para>TAN is meant to encourage collaboration and distributed scholarship. If you
-                     are part of a project that would like to use and help develop the TAN format,
-                     please contact the author (see above).</para>
+                     reformats normative TAN files. Errors or inconsistencies found in those
+                     chapters will be due to the XSLT stylesheets that produce them or to the files
+                     upon which they are based.</para>
                </warning>
             </revdescription>
          </revision>
@@ -59,27 +52,26 @@
       <title>General Overview</title>
       <chapter>
          <title>Introduction</title>
-         <section>
+         <section xml:id="tan_definition">
             <title>Definition and purpose </title>
             <para>The Text Alignment Network (TAN) is a suite of highly regulated XML formats
-               intended for scholars to interoperably align and share texts and textual analysis.
-               TAN is particularly suited to the study and exchange of a textual work in its
-               different versions (translations, paraphrases), and to producing related datasets on
-               quotations, word-for-word alignments, and lexicomorphological features, all at a
-               maximal level of syntactic and semantic interoperability.</para>
+               intended for scholars to align and share texts and textual analysis at a maximal
+               level of syntactic and semantic interoperability. TAN is particularly suited to
+               textual works with multiple versions (translations, paraphrases), and to related
+               datasets on quotations, word-for-word alignments, and lexicomorphological
+               features.</para>
             <para>TAN files are simple, modular, and networked, allowing users, working
-               independently and collaboratively, to edit, study, and exchange files. The extensive
-               validation rules depend upon a library of processing functions that definitively
-               interpret the TAN format, thereby informing and helping editors in research and
-               publication, and providing a basis for anyone who wished to create advanced TAN-based
-               tools and applications.</para>
-            <para>Although expressive of nuance and complexity, and committed to scholarly
-               responsibility, TAN files benefit everyone, both scholars and non-scholars, and can
-               be used broadly for multilingual publishing, language learning, and machine
-               translation. </para>
+               independently and collaboratively, to edit, study, and annotate shared files. The
+               extensive validation rules depend upon a library of processing functions that
+               definitively interpret the format, thereby informing and helping editors in research
+               and publication, and providing a basis for the development of third-party tools and
+               applications.</para>
+            <para>Although expressive of scholarly nuance and complexity, the TAN format has been
+               designed to benefit everyone, scholars and non-scholars alike, and can be used
+               broadly for multilingual publishing, language learning, and machine translation. </para>
          </section>
          <section>
-            <title>Rationale and purpose</title>
+            <title>Rationale and Purpose</title>
             <para>Different versions of texts—translations, quotations, paraphrases, and so
                forth—are important sources for scholars. Some texts have been lost in their original
                form and can be studied only through later translations, paraphrases, or fragmentary
@@ -93,7 +85,7 @@
                might be defective, or follow an idiosyncratic sequence. One editor may have chosen a
                segmentation system not easily applied to other versions. Identifying which words or
                phrases in a translation correspond to which words or phrases in the original might
-               result in complex, overlapping sets. And even larger segments such as sentences and
+               result in complex, overlapping spans. And even larger segments such as sentences and
                paragraphs may not line up well. Further, every version of a text is part of a much
                larger, complex history of text reuse, and a proper study of that context requires
                not only multiple versions of different works, but collaboration across projects and
@@ -103,13 +95,12 @@
                to read and edit, expressive enough to allow scholars to register doubt and nuance,
                and sufficiently structured to permit complex computer-based queries across
                independent datasets. The format is modular, with each module designed to allow an
-               editor to focus on a single set of tasks (editing, grammatical analysis, word
-               alignment, etc.) without having to worry about tasks handled by other modules. The
-               format compels editors to declare their views or assumptions about language and texts
-               in a structured manner, so that other users of the data (both human and computer) can
-               determine whether the data is suitable for their needs. Because nearly all TAN data
-               must be expressed in way that computers can parse, the information can be used in
-               semantic web applications.</para>
+               editor to focus on a single set of tasks without having to worry about other related
+               but separable ones. The format encourages or requires editors to declare their views
+               or assumptions about language and texts in a structured manner, so that other users
+               of the data (both human and computer) can determine whether the data is suitable for
+               their needs. Because nearly all TAN data must be expressed in way that computers can
+               parse, the information can be used in semantic web applications.</para>
             <para>TAN has been designed to support specific research desiderata such as the
                following:</para>
             <para>
@@ -177,20 +168,23 @@
                         differ across languages?</para>
                   </listitem>
                </itemizedlist></para>
-            <para>These ambitious research questions should be tempered with some caveats:<itemizedlist>
+            <para>Optimism that TAN could be used to address such research questions should be
+               tempered:<itemizedlist>
                   <listitem>
-                     <para>TAN is not a tool. TAN does not provide tools or applications to create,
-                        edit, or display TAN-compliant files, nor does it dictate what such tools
-                        should or should not do.</para>
+                     <para>Although TAN comes with an extensive library of functions and templates,
+                        it is not a tool per se. It does not provide software or applications to
+                        create, edit, or display TAN-compliant files, nor does it dictate how such
+                        tools should handle TAN files.</para>
                   </listitem>
                   <listitem>
-                     <para>TAN does not create alignments or, on its own, answer research questions.
-                        It merely lays a framework within which such questions can be investigated. </para>
+                     <para>TAN does not on its own create alignments or answer research questions.
+                        It merely lays a framework within which such questions can be investigated.
+                     </para>
                   </listitem>
                   <listitem>
-                     <para>TAN is not meant to support inquiry into questions that go beyond the
-                        types of linguistic data that TAN covers (as defined and explained in these
-                        guidelines).</para>
+                     <para>TAN has a restricted field of inquiry (defined and explained in these
+                        guidelines). The format is not suitable for many lines of iniquiry, e.g.,
+                        reconstructing the format of an original book or article.</para>
                   </listitem>
                   <listitem>
                      <para>TAN is just one of many formats for texts. It supplements, and does not
@@ -310,6 +304,18 @@
                   </listitem>
                </itemizedlist>
             </para>
+         </section>
+         <section xml:id="tan_participation">
+            <title>Participation</title>
+            <para>Participants in testing, using, and developing the Text Alignment Network are
+               welcome. Our core purpose is to develop and maintain the schemas, the guidelines,
+               and the functions and templates. Inquiries about participation
+               should be sent to the project manager, <link xlink:href="http://kalvesmaki.com/">Joel
+                  Kalvesmaki</link>, by email: kalvesmaki at gmail.com.</para>
+            <para>Official announcements are made by <link
+               xlink:href="http://groups.google.com/group/textalign?hl=en">email (Google Group)</link> and
+               by 
+               <link xlink:href="https://twitter.com/textalign">Twitter</link>.</para>
          </section>
       </chapter>
       <chapter xml:id="gentle_guide">
@@ -3363,16 +3369,17 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                <title>General</title>
                <para>(For more general principles and assumptions applying to all TAN files, not
                   just class 1, see <xref linkend="design_principles"/>.)</para>
-               <para>Class 1 formats are designed for faithful digital transcriptions. Each
-                  TAN-T(EI) file is devoted exclusively to a single work, correctly segmented and
-                  labeled and restricted to a single version found in a single book, manuscript, or
-                  other scriptum (text-bearing object). Editors of TAN-T or TAN-TEI files should be
-                  able to read, write, and proofread texts in the languages of the transcriptions.
-                  They should understand the texts well enough to segment them and label them
-                  according to the conventions used for those works. They should be familiar with
-                  normalizing conventions for texts from the period, language, and culture. They
-                  should have some familiarity with how users of the text will distinguish and count
-                  words.</para>
+               <para>Class 1 formats are designed for faithful but judiciously edited digital
+                  transcriptions. Each TAN-T(EI) file is devoted exclusively to a single work,
+                  correctly segmented and labeled and restricted to a single version found in a
+                  single book, manuscript, or other scriptum (text-bearing object). Editors of TAN-T
+                  or TAN-TEI files should be able to read, write, and proofread texts in the
+                  languages of the transcriptions. They should understand the texts well enough to
+                  segment them and label them according to the conventions used for those works.
+                  They should be able to distinguish the primary source from its editorial
+                  apparatus. They should be familiar with normalizing conventions for texts from the
+                  period, language, and culture. They should have some familiarity with how users of
+                  the text will distinguish and count words.</para>
                <para>Editors need not understand everything about their texts, and they need not
                   have any specialized skill in grammar or lexicology. They need not know the
                   morphology of individual words, or how individual parts of the text have been
@@ -3658,25 +3665,28 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                         linkend="element-normalization">&lt;normalization></link></code> see <xref
                      linkend="keywords-normalization"/>.)</para>
                <para>Generally speaking, normalization entails the suppression of elements
-                  extraneous to the work you have chosen. You are encouraged to omit parenthetical
-                  editorial insertions, stray handwritten remarks, discretionary word-breaking
-                  hyphens, editorial comments, inserted cross-references, and reference numerals
-                  (page numbers, section numbers, etc.). The goal is a transcription whose text is
-                  free of the interpretive voice of later editors. In addition, you should resolve
-                  ligatures and correct unintended typographical errors. (Such orthographic
-                  corrections are useful to those users who want to generate lexico-morphological
-                  data automatically or semiautomatically.)</para>
+                  extraneous to or separable from the work you have chosen. You are encouraged to
+                  omit parenthetical editorial insertions, stray handwritten remarks, discretionary
+                  word-breaking hyphens, editorial comments, inserted cross-references, and
+                  reference numerals (page numbers, section numbers, etc.). The goal is a
+                  transcription whose text is free of the interpretive voice of later editors. In
+                  addition, you should resolve ligatures and correct unintended typographical
+                  errors. (Such orthographic corrections are useful to those users who want to
+                  generate lexico-morphological data automatically or semiautomatically.)</para>
                <para>In a digital source, variable lengths of spacing marks (e.g., General
                   Punctuation U+2000..U+200A; U+200B) should be converted to ordinary spaces, and superscript
                   combining Roman letters (U+0363..U+036F) should probably be converted to their
                   non-combining counterparts. All Unicode must be normalized to NFC forms (see <xref
                      linkend="normalization"/>). </para>
-               <para>You should remove from the text anything that is not part of the work proper
-                  and would interfere with detailed word-for-word alignment, or would require extra
-                  preprocessing or postprocessing work for later users. If you are segmenting a
-                  source into line breaks, and you are required to break a word between divisions,
-                  you should either use the soft hyphen (<code>&amp;#xad;</code>) or the zero-width
-                  joiner (<code>&amp;#x200d;</code>) at the end of the first <code><link
+               <para>Keep in mind that your transcriptions will be used by other people doing, e.g.,
+                  word-for-word translation alignments, quotation checking, syntactical analysis,
+                  and they will want transcriptions that are as clean as possible. You should remove
+                  from the text anything that is not part of the work proper and would interfere
+                  with detailed word-for-word alignment, or would require extra preprocessing or
+                  postprocessing work for later users. If you are segmenting a source into line
+                  breaks, and you are required to break a word between divisions, you should either
+                  use the soft hyphen (<code>&amp;#xad;</code>) or the zero-width joiner
+                     (<code>&amp;#x200d;</code>) at the end of the first <code><link
                         linkend="element-div">&lt;div></link></code>. TAN processors that handle a
                         <code><link linkend="element-div">&lt;div></link></code> will automatically
                   normalize the space in the element, then place a space between that <code><link
@@ -3695,11 +3705,14 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   any <code><link linkend="element-div">&lt;div></link></code> of an annotating
                         <code><link linkend="attribute-type">@type</link></code> is an annotation of
                   the last <code><link linkend="element-div">&lt;div></link></code> that is not an
-                  annotation. If you intend more specific guidance on how annotations and text
-                  correlate, use a companion TAN-A-div, which will allow you to indicate exactly
-                  which span of text each note annotates. With this approach, you have the
-                  opportunity to attach the note not merely to a point in the text (which is
-                  frequently all our print editions can do), but to a specific range of text.</para>
+                  annotation. (Alternatively, you may use the <code>&lt;note></code> feature of
+                  TAN-TEI, but bear in mind that this element will be treated by users as part of
+                  the leaf div to which it belongs, not separate from it.) If you intend more
+                  specific guidance on how annotations and text correlate, use a companion
+                  TAN-A-div, which will allow you to indicate exactly which span of text each note
+                  annotates. With this approach, you have the opportunity to attach the note not
+                  merely to a point in the text (which is frequently all our print editions can do),
+                  but to a specific range of text.</para>
                <para>If the notes are not part of the work per se—for example, translator's notes in
                   a translation of a primary source—you should treat them as a separate work
                   altogether, and put them in a separate TAN-T(EI) file, perhaps linking the two
@@ -3730,8 +3743,15 @@ tag:bbrb@example.org,1995-04-01:pos-grc</programlisting>
                   may need to consider whether an unusual or rarely used Unicode character might be
                   misinterpreted, or a hindrance to other users (especially for parsing word
                   tokens). Describe any decisions that might not be agreeable to everyone who uses
-                  the file in the <code><link linkend="element-filter"
-                  >&lt;filter></link></code>.</para>
+                  the file in the <code><link linkend="element-filter">&lt;filter></link></code>. </para>
+               <para>In some ambiguous areas, you can use TAN-TEI to your advantage. Suppose, for
+                  example, a manuscript has reference numerals that are sui generis. That is, these
+                  reference numbers do not correspond to the "canonical" reference scheme. On the
+                  one hand, they are metadata, and should arguably be deleted; on the other, they
+                  are part of the text, and witness to how a text was read and changed over time. A
+                  middle-ground approach would move these references to TAN-TEI's
+                     <code>&lt;milestone rend=""></code>. In that way, the numerals are removed from
+                  the main text; on the other hand, the information is retained.</para>
             </section>
          </section>
          <section xml:id="tan-t_data">

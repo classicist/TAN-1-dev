@@ -116,6 +116,18 @@
                     <desc>The textual subject quotes from the textual object. Relationship may be direct or
                         indirect. This implies that the subject postdates the object.</desc>
                 </item>
+                <item group="cf">
+                    <IRI>tag:textalign.net,2015:verb:alludes-or-refers-to</IRI>
+                    <name>alludes or refers to</name>
+                    <name>refers or alludes to</name>
+                    <desc>The textual subject alludes to or refers to the textual object. The
+                        allusion or reference may be direct or indirect. This implies that the
+                        subject postdates the object.</desc>
+                    <desc>Although some people may distinguish alluding from refering, this
+                        vocabulary item does not, since the distinction is very frequently hard to
+                        identify, and many people use the terms interchangeably. If gradation is
+                        needed, @cert should be used.</desc>
+                </item>
                 <item group="symmetry cf">
                     <IRI>tag:textalign.net,2015:verb:parallels</IRI>
                     <name>parallels</name>
@@ -124,7 +136,6 @@
                         through verbatim. Nothing is implied about whether subject quotes from
                         object, vice versa, or both draw from a common source. Nothing is implied
                         about the chronological priority of the object or subject.</desc>
-                    <desc>This verb is one of several that commonly is rendered "cf."</desc>
                 </item>
 
             </group>

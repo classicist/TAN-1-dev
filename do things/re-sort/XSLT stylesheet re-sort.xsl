@@ -88,7 +88,7 @@
          </xsl:for-each>
          <xsl:for-each select="$analysis-pass-1//tan:name[@type = 'mode']">
             <xsl:variable name="this-mode" select="."/>
-            <xsl:if test="exists($original-element//xsl:apply-templates[@mode = $this-mode])">
+            <xsl:if test="exists($original-element//xsl:apply-templates[(@mode = $this-mode) and not(@mode = $original-element/@mode)])">
                <depends-upon>
                   <xsl:value-of select="../@n"/>
                </depends-upon>
@@ -101,7 +101,7 @@
    </xsl:variable>
    
    <xsl:function name="tan:reorder-by-dependence-loop" as="element()?">
-      <!-- Input: an element with elements to be reordered, an element with the results so far -->
+      <!-- Input: an element with children elements to be reordered; an element with the results so far -->
       <!-- Output: resultant element with the child elements reordered from least dependent to most -->
       <xsl:param name="element-with-children-to-reorder" as="element()"/>
       <xsl:param name="results-so-far" as="element()?"/>
@@ -109,7 +109,7 @@
          select="
             $element-with-children-to-reorder/*[not(exists(tan:depends-upon))
             or (every $i in tan:depends-upon
-               satisfies $i = $results-so-far/*/@n)]"
+               satisfies $i = ($results-so-far/*/@n, @n))]"
       />
       <xsl:variable name="new-param-1" as="element()">
          <xsl:element name="{name($element-with-children-to-reorder)}">

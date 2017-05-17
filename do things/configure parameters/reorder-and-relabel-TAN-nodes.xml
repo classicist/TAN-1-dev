@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This document is a parameter to be fed into TAN-core-prepare-for-reuse.xsl, which prepares TAN files for reuse. See description there. -->
+<!-- The root element contains attributes that define default behavior. -->
+<!-- @action: either shallow-copy, shallow-skip, deep-copy, or deep-skip -->
+<!-- @convert-attributes-to-elements: convert attributes to elements -->
+<!-- @priority: sibling elements will be sorted in priority order, with lower @priority numbers appearing before higher ones. -->
+<!-- @label: what label, if any, should be placed as the first child element within a given element or attribute-turned-element -->
+<!-- @group-min: the minimum number of sibling elements of the same name required before thoe elements are placed under a grouping element -->
+<!-- @group-label: what label, if any, should  appear as the first child element within a grouping element -->
+<!-- @group-item-label: what label, if any, should appear as the first child element of any element that has been grouped. If not present, then @label will be used -->
+<!-- @format-label: takes an idref of a <format-label>, specifying how all labels should be transformed -->
+<!-- @prepend: add content as first child of element -->
+<!-- @append: add content as last child of element -->
+<!-- @replace-with: replace node with select content -->
+<!-- @replace-content-with: replace content node with select content -->
+<!-- NB, if you do not want some information to appear, but it's important for other processing (e.g., populating an HTML @class), then don't let @suppress = 'y'; instead, turn off the display using CSS -->
+<reorder-and-relabel-TAN-nodes xmlns="tag:textalign.net,2015:ns" action="shallow-copy" priority="5"
+    label="{name($p1)}" group-item-label="" group-min="3" group-label="{name($p1)}s"
+    format-label="1" convert-attributes-to-elements="y">
+    <!-- This document is a large parameter, for stylesheets preparing TAN files for reuse -->
+    <element name="a" label="" group-min="1000000"/>
+    <attribute name="add-stats" action="deep-skip"/>
+    <attribute name="adverb" label="" group-label="adv"/>
+    <element name="adverb" group-item-label=""/>
+    <attribute name="affects-element"/>
+    <element name="agent" label="{$p1/@roles}" group-item-label="{$p1/tan:name[1]} ({$p1/@roles})"
+        group-min="1" group-label="Persons responsible"/>
+    <element name="agentrole"/>
+    <element name="align" action="deep-skip"/>
+    <element name="ana" action="deep-skip"/>
+    <element name="anchor" label=""/>
+    <element name="anchor-div-ref"/>
+    <element name="assert"/>
+    <element name="attr" action="deep-skip"/>
+    <element name="b" label="" group-min="1000000"/>
+    <attribute name="bitext-relation"/>
+    <element name="bitext-relation"/>
+    <element name="body" label=""/>
+    <element name="category" group-label="Categories"/>
+    <attribute name="cert"/>
+    <element name="change" priority="6" group-min="1" group-label="Change log"/>
+    <attribute name="chars"/>
+    <element name="checksum"/>
+    <element name="claim" format-label="0" label="{distinct-values($p1/*/(@orig-ref, @ref)[1])}" group-min="1000000"/>
+    <!--<element name="claim" label=""/>-->
+    <attribute name="claimant"/>
+    <attribute name="class"/>
+    <attribute name="code"/>
+    <element name="comment" priority="7" group-min="1"/>
+    <element name="common" label="" group-min="1000000"/>
+    <attribute name="cont"/>
+    <attribute name="context"/>
+    <element name="declarations" label=""/>
+    <attribute name="def-ref"/>
+    <element name="desc" label="" priority="3"/>
+    <attribute name="distribute"/>
+    <element name="div" group-min="1000000"
+        label="{tan:most-common-value($p1/tan:attr[not(@pre-realign-ref)]/(@orig-n, @n))}"/>
+    <!--<element name="div" group-min="1000000" label="{($p1/@orig-ref, $p1/@pre-realign-ref, $p1/@ref)[1]}"/>-->
+    <!--<element name="div" group-min="1000000"
+        label="{if (exists($p1/@orig-ref)) then $p1/@orig-ref else if (exists($p1/@pre-realign-ref)) then $p1/@pre-realign-ref else $p1/@ref}"
+    />-->
+    <element name="div-ref"/>
+    <element name="div-type" group-min="1" label="{$p1/@which}"
+        group-label="Types of textual divisions"/>
+    <attribute name="div-type-ref"/>
+    <element name="div-type-ref"/>
+    <attribute name="ed-when" action="deep-skip"/>
+    <attribute name="ed-who" action="deep-skip"/>
+    <element name="equate-div-types" action="deep-skip"/>
+    <element name="equate-works" label="" group-label=""/>
+    <!--<element name="equate-works" action="deep-skip"/>-->
+    <element name="error" action="deep-skip"/>
+    <attribute name="exclusive"/>
+    <element name="f" label="" group-min="1000000"/>
+    <element name="fatal"/>
+    <element name="feature"/>
+    <attribute name="feature-qty-test"/>
+    <attribute name="feature-test"/>
+    <element name="filter"/>
+    <attribute name="flags"/>
+    <element name="for-lang"/>
+    <attribute name="from" group-label=""/>
+    <attribute name="gloss" label=""/>
+    <element name="gloss" label=""/>
+    <element name="group" label=""/>
+    <attribute name="group"/>
+    <element name="group-type"/>
+    <element name="head" label="TAN metadata"/>
+    <attribute name="help"/>
+    <element name="help" action="deep-skip"/>
+    <attribute name="href" label=""/>
+    <attribute name="id" label=""/>
+    <attribute name="in-progress"/>
+    <attribute name="include" action="deep-skip"/>
+    <element name="inclusion"/>
+    <element name="IRI" priority="4"/>
+    <element name="item"/>
+    <element name="key"/>
+    <element name="l" label="" group-min="1000000"/>
+    <attribute name="lexicon"/>
+    <element name="lexicon"/>
+    <element name="lm" label="" group-min="1000000"/>
+    <element name="location"/>
+    <element name="m" label="" group-min="1000000"/>
+    <element name="master-location"/>
+    <attribute name="matches-m"/>
+    <attribute name="matches-tok"/>
+    <attribute name="max-toks" action="deep-skip"/>
+    <element name="modal" group-item-label="{$p1/tan:name[1]}"/>
+    <attribute name="morphology"/>
+    <element name="morphology"/>
+    <attribute name="n" action="deep-skip"/>
+    <element name="name" label="" priority="2" group-min="6" group-label="{$p1}, ..."/>
+    <attribute name="new"/>
+    <element name="non-tok" label=""/>
+    <element name="normalization"/>
+    <attribute name="ns-are-numerals"/>
+    <element name="object" format-label="0" label="{$p1/(@orig-ref, @ref)[1]}" group-min="1000000"/>
+    <!--<attribute name="object" group-label="obj"/>-->
+    <element name="object" group-label="obj"/>
+    <attribute name="object-datatype"/>
+    <attribute name="object-lexical-constraint"/>
+    <attribute name="old"/>
+    <attribute name="orig-code" label=""/>
+    <attribute name="orig-group" action="deep-skip"/>
+    <attribute name="orig-include" action="deep-skip"/>
+    <attribute name="orig-n" action="deep-skip"/>
+    <attribute name="orig-ref" label=""/>
+    <element name="person" group-item-label="{$p1/tan:name[1]}"/>
+    <element name="place" group-item-label="{$p1/tan:name[1]}"/>
+    <attribute name="pos"/>
+    <attribute name="pre-realign-ref" label=""/>
+    <attribute name="q" action="deep-skip"/>
+    <element name="realign" group-label="Realignments" action="deep-skip"/>
+    <!--<attribute name="ref" action="deep-skip"/>-->
+    <attribute name="ref" label=""/>
+    <attribute name="regex"/>
+    <element name="relationship"/>
+    <element name="rename"/>
+    <element name="rename-div-ns"/>
+    <element name="replace"/>
+    <attribute name="replacement"/>
+    <element name="report"/>
+    <attribute name="reuse-type"/>
+    <element name="reuse-type"/>
+    <element name="rights-excluding-sources" label="Rights (excluding sources)"/>
+    <attribute name="rights-holder"/>
+    <element name="rights-source-only" label="Rights (source only)"/>
+    <element name="role" action="deep-skip"/>
+    <attribute name="roles" action="deep-skip"/>
+    <element name="see-also"/>
+    <attribute name="seg"/>
+    <element name="source" group-min="1"/>
+    <element name="split-leaf-div-at" label="Split" group-label="Splits" action="deep-skip"/>
+    <attribute name="src" label=""/>
+    <attribute name="strength"/>
+    <attribute name="string-length" action="deep-skip"/>
+    <attribute name="string-pos" action="deep-skip"/>
+    <attribute name="subject"/>
+    <element name="subject" group-item-label="" group-label="subj"/>
+    <element name="suppress-div-types"/>
+    <element name="tail"/>
+    <element name="TAN-A-div" label=""/>
+    <element name="TAN-A-tok" label=""/>
+    <element name="TAN-key" label=""/>
+    <element name="TAN-LM" label=""/>
+    <element name="TAN-mor" label=""/>
+    <element name="TAN-c" label=""/>
+    <element name="TAN-T" label=""/>
+    <attribute name="TAN-version"/>
+    <attribute name="to" group-label=""/>
+    <element name="tok" label=""/>
+    <element name="token-definition"/>
+    <attribute name="topic"/>
+    <element name="topic" label="{$p1/tan:name[1]}"/>
+    <element name="transliteration"/>
+    <!--<attribute name="type" action="deep-skip"/>-->
+    <attribute name="type"/>
+    <element name="unit"/>
+    <attribute name="units"/>
+    <attribute name="val"/>
+    <element name="value"/>
+    <!--<element name="ver" group-min="1000000" label="{if (matches($p1/../@orig-ref,', ')) then ($p1/@orig-ref, $p1/@pre-realign-ref, $p1/@ref)[1] else name($p1/parent::*)}"/>-->
+    <element name="ver" group-min="1000000" label=""/>
+    <attribute name="verb" label="" group-label="verb"/>
+    <element name="verb" group-item-label="{$p1/tan:name[1]}"/>
+    <element name="version" group-item-label="{$p1/tan:name[1]}"/>
+    <element name="warning" action="deep-skip"/>
+    <attribute name="when" label="" priority="6"/>
+    <element name="when" group-label=""/>
+    <attribute name="when-accessed"/>
+    <attribute name="where" group-label=""/>
+    <!--<attribute name="which" action="deep-skip" label=""/>-->
+    <attribute name="which" label=""/>
+    <attribute name="who" label=""/>
+    <element name="work" label="" group-item-label="{$p1/tan:name[1]}" group-label=""/>
+    <attribute name="xml:id" label=""/>
+    <attribute name="xml:lang" label="language"/>
+    <element name="xref" label=""/>
+    <!-- Below this comment are elements and attributes proper to TEI -->
+    <element name="abbr" label=""/>
+    <element name="cit" label=""/>
+    <element name="foreign" label=""/>
+    <element name="l" label=""/>
+    <element name="lb" label=""/>
+    <attribute name="org" action="deep-skip"/>
+    <element name="p" label="" group-min="1000000" group-label="paragraphs"/>
+    <element name="pb" label=""/>
+    <attribute name="part" action="deep-skip"/>
+    <element name="quote" label=""/>
+    <element name="ref" action="deep-skip"/>
+    <attribute name="sample" action="deep-skip"/>
+    <!-- Below are parameters to format labels -->
+    <format-label xml:id="1">
+        <replace pattern="-" replacement=" "/>
+        <change-case to="upper" words="1" initial-only="t"/>
+    </format-label>
+    <format-label xml:id="no-first-label">
+        <replace pattern="^[a1i]$" replacement=""/>
+    </format-label>
+</reorder-and-relabel-TAN-nodes>

@@ -135,5 +135,11 @@
             <name>converted html to tan</name>
             <desc>HTML converted to TAN-T format</desc>
         </item>
+        <item>
+            <IRI>tag:textalign.net,2015:normalization:reference-markers-removed</IRI>
+            <name>no reference markers</name>
+            <desc>All numbers, letters, or other labels inserted by the author or editor to indicate
+                references (the value ordinarily placed in @n in &lt;div>) removed.</desc>
+        </item>
     </body>
 </TAN-key>

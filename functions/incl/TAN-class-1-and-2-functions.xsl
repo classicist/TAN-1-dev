@@ -26,7 +26,8 @@
       <xsl:param name="ambiguous-numeral-types" as="element()*" tunnel="yes"/>
       <xsl:variable name="this-element" select="."/>
       <xsl:variable name="this-type" select="tan:normalize-text(@type)"/>
-      <xsl:variable name="this-amb-num-type" select="$ambiguous-numeral-types[@type = $this-type]" as="element()*"/>
+      <xsl:variable name="this-amb-num-type" select="$ambiguous-numeral-types[@type = $this-type]"
+         as="element()*"/>
       <xsl:variable name="this-n-norm" select="tan:normalize-text(lower-case(@n))"/>
       <xsl:variable name="this-n-analyzed" as="element()"
          select="tan:analyze-elements-with-numeral-attributes(., (), false(), true())"/>
@@ -45,8 +46,9 @@
          <xsl:variable name="pass1" as="xs:string*">
             <xsl:analyze-string select="$this-n-identified" regex="\d+-\d+">
                <xsl:matching-substring>
-                  <xsl:variable name="digits" select="tokenize(.,'-')"/>
-                  <xsl:variable name="range" as="xs:integer*" select="xs:integer($digits[1]) to xs:integer($digits[2])"/>
+                  <xsl:variable name="digits" select="tokenize(., '-')"/>
+                  <xsl:variable name="range" as="xs:integer*"
+                     select="xs:integer($digits[1]) to xs:integer($digits[2])"/>
                   <xsl:value-of
                      select="
                         string-join(for $i in ($range)
@@ -61,7 +63,7 @@
          </xsl:variable>
          <xsl:value-of select="string-join($pass1, '')"/>
       </xsl:variable>
-      
+
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:if test="not(@n = $this-n-norm-expanded)">
@@ -80,13 +82,10 @@
                select="tan:error('cl114', concat($this-n-norm, ' interpreted as ', $this-n-norm-expanded, '; all @n values for this div type: ', string-join(distinct-values($this-amb-num-type//tan:val[@type = '$']), ' ')))"
             />
          </xsl:if>
-         <!--<test>
-            <xsl:copy-of select="$this-n-identified"/>
-         </test>-->
          <xsl:apply-templates mode="arabic-numerals"/>
       </xsl:copy>
       <xsl:if test="$is-complex = true()">
-         <xsl:for-each select="tokenize($this-n-norm-expanded,' ')">
+         <xsl:for-each select="tokenize($this-n-norm-expanded, ' ')">
             <div>
                <xsl:copy-of select="$this-element/(@* except @n)"/>
                <xsl:attribute name="n" select="."/>
@@ -99,26 +98,26 @@
       <xsl:param name="this-amb-num-type" as="element()?" tunnel="yes"/>
       <xsl:copy>
          <xsl:choose>
-         <xsl:when test="tan:val/@type = $n-type[1] and tan:val/@type = $n-type[4]">
-            <xsl:choose>
-               <xsl:when test="$this-amb-num-type/@type-i-or-a-is-probably = 'a'">
-                  <!-- it's probably an alphabetic not Roman numeral -->
-                  <xsl:copy-of select="(tan:val[not(@type = $n-type[1])])[1]"/>
-               </xsl:when>
-               <xsl:when test="$this-amb-num-type/@type-i-or-a-is-probably = 'i'">
-                  <!-- it's probably a Roman not alphabetic numeral -->
-                  <xsl:copy-of select="(tan:val[not(@type = $n-type[4])])[1]"/>
-               </xsl:when>
-               <xsl:otherwise>
-                  <xsl:copy-of select="tan:val[1]"/>
-               </xsl:otherwise>
-            </xsl:choose>
-         </xsl:when>
-         <xsl:otherwise>
-            <!-- no ambiguity; just use the first value -->
-            <xsl:copy-of select="tan:val[1]"/>
-         </xsl:otherwise>
-      </xsl:choose>
+            <xsl:when test="tan:val/@type = $n-type[1] and tan:val/@type = $n-type[4]">
+               <xsl:choose>
+                  <xsl:when test="$this-amb-num-type/@type-i-or-a-is-probably = 'a'">
+                     <!-- it's probably an alphabetic not Roman numeral -->
+                     <xsl:copy-of select="(tan:val[not(@type = $n-type[1])])[1]"/>
+                  </xsl:when>
+                  <xsl:when test="$this-amb-num-type/@type-i-or-a-is-probably = 'i'">
+                     <!-- it's probably a Roman not alphabetic numeral -->
+                     <xsl:copy-of select="(tan:val[not(@type = $n-type[4])])[1]"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:copy-of select="tan:val[1]"/>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+               <!-- no ambiguity; just use the first value -->
+               <xsl:copy-of select="tan:val[1]"/>
+            </xsl:otherwise>
+         </xsl:choose>
       </xsl:copy>
    </xsl:template>
 
@@ -158,7 +157,7 @@
    </xsl:function>
    <xsl:function name="tan:text-join" as="xs:string">
       <!-- Input: any number of elements, text nodes, or strings; a boolean indicating whether the end of the sequence should also be prepared -->
-      <!-- Output: a single string that joins and normalizes them according to TAN rules: if the item is (1) a <tok> or <non-tok> that has following siblings or (2) the last leaf element and $prep-end is false then the bare text is used; otherwise the text return follows the rules of tan:normalize-div-text() --> 
+      <!-- Output: a single string that joins and normalizes them according to TAN rules: if the item is (1) a <tok> or <non-tok> that has following siblings or (2) the last leaf element and $prep-end is false then the bare text is used; otherwise the text return follows the rules of tan:normalize-div-text() -->
       <!-- If the second parameter is true, then the end of the resultant string is checked for special div-end characters -->
       <xsl:param name="items" as="item()*"/>
       <xsl:param name="prep-end" as="xs:boolean"/>
@@ -172,10 +171,16 @@
                   <xsl:for-each select="$leaf-divs">
                      <xsl:variable name="pos2" select="position()"/>
                      <xsl:variable name="tok-children" select="(tan:tok, tan:non-tok)"/>
-                     <xsl:variable name="this-text" select="if (exists($tok-children)) then $tok-children/text() else text()"/>
+                     <xsl:variable name="this-text"
+                        select="
+                           if (exists($tok-children)) then
+                              $tok-children/text()
+                           else
+                              text()"/>
                      <xsl:variable name="child-text" select="string-join($this-text, '')"/>
                      <xsl:choose>
-                        <xsl:when test="$pos = $item-count and $pos2 = count($leaf-divs) and $prep-end = false()">
+                        <xsl:when
+                           test="$pos = $item-count and $pos2 = count($leaf-divs) and $prep-end = false()">
                            <xsl:value-of select="normalize-space($child-text)"/>
                         </xsl:when>
                         <xsl:otherwise>
@@ -188,34 +193,13 @@
                   <xsl:value-of select="replace(., '\s+', ' ')"/>
                </xsl:when>
                <xsl:when test="exists(descendant::tei:*)">
-                  <xsl:value-of select="tan:normalize-text(string-join(.//text(),''))"/>
+                  <xsl:value-of select="tan:normalize-text(string-join(.//text(), ''))"/>
                </xsl:when>
                <xsl:otherwise>
                   <!-- The item doesn't have leaf divs, and it isn't a <tok> or <non-tok>. Who knows what it is, so we just normalize the text -->
                   <xsl:value-of select="tan:normalize-div-text(.)"/>
                </xsl:otherwise>
             </xsl:choose>
-            <!--<xsl:choose>
-               <xsl:when test=". instance of xs:string">
-                  <xsl:value-of select="tan:normalize-div-text(.)"/>
-               </xsl:when>
-               <xsl:otherwise>
-                  <xsl:for-each select="descendant-or-self::*[self::tan:tok or self::tan:non-tok or not(*)]">
-                     <xsl:choose>
-                        <xsl:when test="name() = ('tok', 'non-tok')">
-                           <!-\- many <non-tok> elements will have nothing but space, so normalize-text() is self-defeating -\->
-                           <xsl:value-of select="replace(., '\s+', ' ')"/>
-                        </xsl:when>
-                        <xsl:when test="$pos = $item-count and $prep-end = false()">
-                           <xsl:value-of select="normalize-space(.)"/>
-                        </xsl:when>
-                        <xsl:otherwise>
-                           <xsl:value-of select="tan:normalize-div-text(.)"/>
-                        </xsl:otherwise>
-                     </xsl:choose>
-                  </xsl:for-each>
-               </xsl:otherwise>
-            </xsl:choose>-->
          </xsl:for-each>
       </xsl:variable>
       <xsl:value-of select="string-join($string-sequence, '')"/>
@@ -268,12 +252,60 @@
       </xsl:for-each>
    </xsl:function>
    <xsl:template match="element()" mode="prep-class-1">
+      <xsl:param name="orig-ref-so-far" as="xs:string?"/>
+      <xsl:param name="new-ref-so-far" as="xs:string?"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
-         <xsl:apply-templates mode="#current"/>
+         <xsl:apply-templates mode="#current">
+            <xsl:with-param name="orig-ref-so-far" select="$orig-ref-so-far"/>
+            <xsl:with-param name="new-ref-so-far" select="$new-ref-so-far"/>
+         </xsl:apply-templates>
       </xsl:copy>
    </xsl:template>
+   <xsl:template match="tan:head | tei:teiHeader" mode="prep-class-1">
+      <xsl:copy-of select="."/>
+   </xsl:template>
    <xsl:template match="text()" mode="prep-class-1">
+      <xsl:param name="orig-ref-so-far" as="xs:string?"/>
+      <xsl:param name="new-ref-so-far" as="xs:string?"/>
+      <xsl:variable name="parental-div" select="(ancestor-or-self::*:div)[last()]"/>
+      <xsl:variable name="this-regex"
+         select="string-join(($orig-ref-so-far, $new-ref-so-far, '\w+|\d+-\d+'), '|')"/>
+      <xsl:variable name="opening-n-or-ref-regex" as="xs:string"
+         select="concat('^[\p{P}\s]*(', $this-regex, ')[\p{P}\s]+')"
+      />
+      
+      <xsl:variable name="text-parsed-for-opening-n-or-ref" as="element()*">
+         <xsl:analyze-string select="." regex="{$opening-n-or-ref-regex}">
+            <xsl:matching-substring>
+               <match><xsl:value-of select="regex-group(1)"/></match>
+            </xsl:matching-substring>
+            <xsl:non-matching-substring>
+               <nonmatch><xsl:value-of select="."/></nonmatch>
+            </xsl:non-matching-substring>
+         </xsl:analyze-string>
+      </xsl:variable>
+      <xsl:if
+         test="exists($text-parsed-for-opening-n-or-ref/self::tan:match) 
+         and not(exists(preceding-sibling::text()[matches(., '\S')]))
+         and not($text-parsed-for-opening-n-or-ref/self::tan:match = $words-that-look-like-numbers)">
+         <xsl:variable name="opener-parsed" select="tan:arabic-numerals($text-parsed-for-opening-n-or-ref/self::tan:match, true())"/>
+         <xsl:choose>
+            <xsl:when
+               test="$text-parsed-for-opening-n-or-ref/self::tan:match = ($orig-ref-so-far, $new-ref-so-far)">
+               <xsl:variable name="this-message"
+                  select="concat($text-parsed-for-opening-n-or-ref/self::tan:match, ' seems to be the ref')"/>
+               <xsl:copy-of
+                  select="tan:error('cl116', $this-message, $text-parsed-for-opening-n-or-ref/self::tan:nonmatch/text(), 'replace-text')"/>
+            </xsl:when>
+            <xsl:when test="$opener-parsed = $parental-div/(@n, @orig-n)">
+               <xsl:variable name="this-message"
+                  select="concat($text-parsed-for-opening-n-or-ref/self::tan:match, ' seems to duplicate @n ')"/>
+               <xsl:copy-of
+                  select="tan:error('cl116', $this-message, $text-parsed-for-opening-n-or-ref/self::tan:nonmatch/text(), 'replace-text')"/>
+            </xsl:when>
+         </xsl:choose>
+      </xsl:if>
       <xsl:value-of select="tan:normalize-text(.)"/>
    </xsl:template>
    <xsl:template match="tan:TAN-T | tei:TEI" mode="prep-class-1">
@@ -329,26 +361,61 @@
                   <xsl:attribute name="orig-ref" select="$orig-ref"/>
                </xsl:if>
                <xsl:if test="tan:help-requested(.) = true()">
-                  <xsl:copy-of select="tan:help($orig-ref, ())"/>
+                  <xsl:copy-of select="tan:help($orig-ref, (), ())"/>
                </xsl:if>
-               <xsl:choose>
-                  <xsl:when test="exists(*:div)">
-                     <xsl:apply-templates mode="#current">
-                        <xsl:with-param name="orig-ref-so-far" select="$orig-ref"/>
-                        <xsl:with-param name="new-ref-so-far" select="$new-ref"/>
-                     </xsl:apply-templates>
-                  </xsl:when>
-                  <xsl:when test="exists(tei:*)">
-                     <xsl:value-of select="normalize-space(string-join(tei:*//text(), ''))"/>
-                     <xsl:copy-of select="tei:*"/>
-                  </xsl:when>
-                  <xsl:otherwise>
-                     <xsl:value-of select="tan:normalize-text(.)"/>
-                  </xsl:otherwise>
-               </xsl:choose>
+               <xsl:if test="matches(@n,'^0+\d+$')">
+                  <xsl:variable name="this-fix" as="element()">
+                     <element n="{replace(@n, '^0+', '')}"/>
+                  </xsl:variable>
+                  <xsl:copy-of select="tan:error('cl117', (), $this-fix, 'copy-attributes')"/>
+               </xsl:if>
+               <xsl:if test="exists(tei:* except tei:div)">
+                  <!-- We copy a plain-text version of what's in TEI, for convenience -->
+                  <xsl:value-of select="normalize-space(string-join(tei:*//text(), ''))"/>
+               </xsl:if>
+               <xsl:apply-templates mode="#current">
+                  <xsl:with-param name="orig-ref-so-far" select="$orig-ref"/>
+                  <xsl:with-param name="new-ref-so-far" select="$new-ref"/>
+               </xsl:apply-templates>
             </div>
          </xsl:otherwise>
       </xsl:choose>
+   </xsl:template>
+   <xsl:template match="tei:lb | tei:pb | tei:cb" mode="prep-class-1">
+      <xsl:variable name="prev-text" select="preceding-sibling::node()[1]/self::text()"/>
+      <xsl:variable name="next-text" select="following-sibling::node()[1]/self::text()"/>
+      <xsl:variable name="next-text-check" as="xs:string*">
+         <xsl:if test="exists($next-text)">
+            <xsl:analyze-string select="$next-text" regex="^\s*[\|‖  ⁣￺]" flags="x">
+               <xsl:matching-substring>
+                  <xsl:value-of select="concat('match: ',.)"/>
+               </xsl:matching-substring>
+               <xsl:non-matching-substring>
+                  <xsl:value-of select="concat('nonmatch: ', .)"/>
+               </xsl:non-matching-substring>
+            </xsl:analyze-string>
+         </xsl:if>
+      </xsl:variable>
+      <xsl:copy>
+         <xsl:copy-of select="@*"/>
+         <xsl:if test="count($next-text-check) gt 1 and not(exists(@rend))">
+            <xsl:variable name="this-message"
+               select="concat($next-text-check[1], ' looks like a break mark')"
+            />
+            <xsl:variable name="this-fix" as="item()*">
+               <xsl:copy copy-namespaces="no">
+                  <xsl:copy-of select="@* except @q"/>
+                  <xsl:attribute name="rend" select="normalize-space($next-text-check[1])"/>
+               </xsl:copy>
+               <xsl:value-of select="$next-text-check[2]"/>
+            </xsl:variable>
+            <xsl:copy-of select="tan:error('tei04', $this-message, $this-fix, 'replace-self-and-next-sibling')"/>
+         </xsl:if>
+         <xsl:if test="(@break = 'no' and (matches($prev-text,'\s$') or matches($next-text,'^\s'))
+            or (not(@break = 'no') and (matches($prev-text,'\S$') and matches($next-text,'^\S'))))">
+            <xsl:copy-of select="tan:error('tei05')"/>
+         </xsl:if>
+      </xsl:copy>
    </xsl:template>
 
 
@@ -410,7 +477,7 @@
                   <xsl:value-of
                      select="
                         if ($convert-to-arabic = true() or not(exists($treat-ambiguous-a-or-i-type-as-roman-numeral))) then
-                           $n-type[7]
+                           $n-type[8]
                         else
                            if ($treat-ambiguous-a-or-i-type-as-roman-numeral = true()) then
                               $n-type[1]
@@ -421,32 +488,15 @@
                <xsl:when test="matches(., $n-type-pattern[5], 'i') and $convert-to-arabic = false()">
                   <xsl:value-of select="$n-type[5]"/>
                </xsl:when>
-               <xsl:otherwise>
+               <xsl:when test="matches(., $n-type-pattern[6])">
                   <xsl:value-of select="$n-type[6]"/>
+               </xsl:when>
+               <xsl:otherwise>
+                  <xsl:value-of select="$n-type[7]"/>
                </xsl:otherwise>
             </xsl:choose>
          </xsl:for-each>
       </xsl:variable>
-      <!--<xsl:variable name="i-gt-a" as="xs:boolean"
-         select="count($these-types[. = $n-type[1]]) gt count($these-types[. = $n-type[4]])"/>-->
-      <!--<xsl:variable name="these-types-norm" as="xs:string*">
-         <xsl:for-each select="$these-types">
-            <xsl:choose>
-               <xsl:when test=". = $n-type[7]">
-                  <xsl:value-of
-                     select="
-                        if ($i-gt-a = true()) then
-                           'i'
-                        else
-                           'a'"
-                  />
-               </xsl:when>
-               <xsl:otherwise>
-                  <xsl:value-of select="."/>
-               </xsl:otherwise>
-            </xsl:choose>
-         </xsl:for-each>
-      </xsl:variable>-->
       <xsl:choose>
          <xsl:when test="$convert-to-arabic = true()">
             <xsl:for-each select="1 to count($strings)">
@@ -455,7 +505,7 @@
                   <xsl:when test="$these-types[$pos] = $n-type[1]">
                      <xsl:value-of select="tan:rom-to-int($strings[$pos])"/>
                   </xsl:when>
-                  <xsl:when test="$these-types[$pos] = ($n-type[2], $n-type[6])">
+                  <xsl:when test="$these-types[$pos] = ($n-type[2], $n-type[7])">
                      <xsl:value-of select="$strings[$pos]"/>
                   </xsl:when>
                   <xsl:when test="$these-types[$pos] = $n-type[3]">
@@ -471,7 +521,10 @@
                         select="concat(tan:aaa-to-int(replace($strings[$pos], '\d+', '')), '-', replace($strings[$pos], '\D+', ''))"
                      />
                   </xsl:when>
-                  <xsl:when test="$these-types[$pos] = $n-type[7]">
+                  <xsl:when test="$these-types[$pos] = $n-type[6]">
+                     <xsl:value-of select="tan:letter-to-number($strings[$pos])"/>
+                  </xsl:when>
+                  <xsl:when test="$these-types[$pos] = $n-type[8]">
                      <xsl:value-of
                         select="
                            if ($treat-ambiguous-a-or-i-type-as-roman-numeral = false()) then
@@ -775,8 +828,7 @@
             if ($mark-only-leaf-elements = true()) then
                preceding-sibling::*//descendant-or-self::*[not(*)]/@string-length
             else
-               preceding-sibling::*/@string-length"
-      />
+               preceding-sibling::*/@string-length"/>
       <xsl:variable name="preceding-sibling-pos" as="xs:integer">
          <xsl:choose>
             <xsl:when test="exists($preceding-string-lengths)">
@@ -1022,8 +1074,8 @@
          </xsl:apply-templates>
       </xsl:copy>
    </xsl:template>
-   
-   
+
+
    <xsl:template match="tan:div" mode="prepare-class-1-doc-for-merge">
       <!-- This template is long, because it deals with cases where individual <div>s have been realigned by a TAN-A-div file. <div>s that must be realigned are best done so in this method, since one cannot predict where in a hierarchy an anchor and anchoree are to be found -->
       <xsl:param name="src" tunnel="yes"/>
@@ -1035,12 +1087,14 @@
       <xsl:variable name="this-n" select="@n"/>
       <xsl:variable name="likely-new-ref" select="concat($inherited-ref, ' ', @n)"/>
       <xsl:variable name="this-pos" select="count(preceding-sibling::tan:div) + 1"/>
-      <xsl:variable name="first-realign" select="($tan-a-div-prepped/tan:TAN-A-div/tan:body/tan:realign[tan:div-ref[@src = $src][tan:div/@ref = $this-ref]])[1]"/>
-      <xsl:variable name="where-this-div-is-realigned" select="$first-realign/tan:div-ref[@src = $src][tan:div/@ref = $this-ref]"/>
+      <xsl:variable name="first-realign"
+         select="($tan-a-div-prepped/tan:TAN-A-div/tan:body/tan:realign[tan:div-ref[@src = $src][tan:div/@ref = $this-ref]])[1]"/>
+      <xsl:variable name="where-this-div-is-realigned"
+         select="$first-realign/tan:div-ref[@src = $src][tan:div/@ref = $this-ref]"/>
       <xsl:variable name="other-div-to-which-this-div-should-be-moved"
-         select="$where-this-div-is-realigned[1]/(preceding-sibling::tan:anchor-div-ref, preceding-sibling::tan:div-ref)[1]"
-      />
-      <xsl:variable name="where-this-div-is-an-anchor" select="$tan-a-div-prepped/tan:TAN-A-div/tan:body/tan:realign/tan:anchor-div-ref[@src = $src][tan:div/@ref = $this-ref]"/>
+         select="$where-this-div-is-realigned[1]/(preceding-sibling::tan:anchor-div-ref, preceding-sibling::tan:div-ref)[1]"/>
+      <xsl:variable name="where-this-div-is-an-anchor"
+         select="$tan-a-div-prepped/tan:TAN-A-div/tan:body/tan:realign/tan:anchor-div-ref[@src = $src][tan:div/@ref = $this-ref]"/>
       <xsl:variable name="other-div-refs-that-should-be-moved-here"
          select="
             if (exists($where-this-div-is-an-anchor)) then
@@ -1049,21 +1103,19 @@
                if (not(exists($other-div-to-which-this-div-should-be-moved))) then
                   $where-this-div-is-realigned[1]/following-sibling::tan:div-ref
                else
-                  ()"
-      />
+                  ()"/>
       <xsl:variable name="realigns-that-dislodge-this-div"
-         select="$tan-a-div-prepped/tan:TAN-A-div/tan:body/tan:realign[tan:anchor-div-ref[tan:div/@ref = $likely-new-ref and not(@src = $src)] and tan:div-ref[@src = $src]]"
-      />
+         select="$tan-a-div-prepped/tan:TAN-A-div/tan:body/tan:realign[tan:anchor-div-ref[tan:div/@ref = $likely-new-ref and not(@src = $src)] and tan:div-ref[@src = $src]]"/>
       <xsl:choose>
          <!-- If this <div> is to be moved, skip it -->
          <xsl:when
-            test="exists($other-div-to-which-this-div-should-be-moved) and not(exists($where-this-div-is-an-anchor)) and not($is-being-reanchored = true())"
-         />
+            test="exists($other-div-to-which-this-div-should-be-moved) and not(exists($where-this-div-is-an-anchor)) and not($is-being-reanchored = true())"/>
          <xsl:otherwise>
             <!-- The <div> is not involved in a realign or it is but only as the anchor or as the first <div> of an unanchored realign, should it be copied, perhaps with trailing <div>s that are to be reanchored -->
             <xsl:variable name="this-revised-ref" as="xs:string?">
                <xsl:choose>
-                  <xsl:when test="not(exists($where-this-div-is-an-anchor)) and exists($where-this-div-is-realigned) and not(exists($other-div-to-which-this-div-should-be-moved))">
+                  <xsl:when
+                     test="not(exists($where-this-div-is-an-anchor)) and exists($where-this-div-is-realigned) and not(exists($other-div-to-which-this-div-should-be-moved))">
                      <!-- If the <div> is the first in an unanchored realign, just adopt the @id of the realignment -->
                      <xsl:value-of select="$first-realign/@id"/>
                   </xsl:when>
@@ -1082,7 +1134,7 @@
                </xsl:choose>
             </xsl:variable>
             <xsl:copy>
-               <xsl:copy-of select="@*  except @ref"/>
+               <xsl:copy-of select="@* except @ref"/>
                <xsl:attribute name="ref" select="$this-revised-ref"/>
                <xsl:if test="not($this-revised-ref = @ref)">
                   <xsl:attribute name="pre-realign-ref" select="@ref"/>
@@ -1118,7 +1170,9 @@
          </xsl:otherwise>
       </xsl:choose>
    </xsl:template>
-   <xsl:template match="text()[matches(., '\S')][not(following-sibling::tei:*)] | tei:*[not(preceding-sibling::tei:*)]" mode="prepare-class-1-doc-for-merge">
+   <xsl:template
+      match="text()[matches(., '\S')][not(following-sibling::tei:*)] | tei:*[not(preceding-sibling::tei:*)]"
+      mode="prepare-class-1-doc-for-merge">
       <xsl:param name="src" tunnel="yes"/>
       <xsl:param name="keep-text" tunnel="yes" as="xs:boolean"/>
       <xsl:if test="$keep-text = true()">
@@ -1130,7 +1184,7 @@
       </xsl:if>
    </xsl:template>
    <xsl:template match="tei:*[preceding-sibling::tei:*]" mode="prepare-class-1-doc-for-merge"/>
-   
+
    <xsl:function name="tan:merge-analyzed-stats" as="element()">
       <!-- Takes a group of elements that follow the pattern that results from tan:analyze-stats and synthesizes them into a single element. If $add-stats is true, then they are added; if false, the sum of the 2nd - last elements is subtracted from the first; if neither true nor false, nothing happens. Will work on elements of any name, so long as they have tan:d children, with the data points to be merged. -->
       <xsl:param name="analyzed-stats" as="element()*"/>

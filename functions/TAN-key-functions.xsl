@@ -61,11 +61,22 @@
          select="tokenize(tan:normalize-text(@affects-element), ' ')"/>
       <xsl:variable name="bad-element-names"
          select="$these-element-names[not(. = $TAN-elements-that-take-the-attribute-which/@name)]"/>
+      <xsl:variable name="good-element-names" select="$these-element-names[. = $TAN-elements-that-take-the-attribute-which/@name]"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:if test="exists($bad-element-names)">
+            <xsl:variable name="this-fix" as="element()*">
+               <xsl:for-each select="$TAN-elements-that-take-the-attribute-which/@name">
+                  <xsl:sort
+                     select="
+                        some $i in $bad-element-names
+                           satisfies matches(., $i)"
+                     order="descending"/>
+                  <element affects-element="{string-join((., $good-element-names),' ')}"/>
+               </xsl:for-each>
+            </xsl:variable>
             <xsl:copy-of
-               select="tan:error('tky03', $TAN-elements-that-take-the-attribute-which/@name)"/>
+               select="tan:error('tky03', $TAN-elements-that-take-the-attribute-which/@name, $this-fix, 'copy-attributes')"/>
          </xsl:if>
          <xsl:apply-templates mode="#current"/>
       </xsl:copy>
@@ -94,7 +105,7 @@
                   <xsl:value-of select="$TAN-namespace"/>
                </IRI>
             </xsl:variable>
-            <xsl:copy-of select="tan:error('tky04', (), $this-fix)"/>
+            <xsl:copy-of select="tan:error('tky04', (), $this-fix, 'prepend-content')"/>
          </xsl:if>
          <xsl:apply-templates mode="#current">
             <xsl:with-param name="reserved-keyword-items" select="$reserved-keyword-items"/>

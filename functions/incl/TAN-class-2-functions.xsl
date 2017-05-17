@@ -244,7 +244,7 @@
                </xsl:if>
                <xsl:if test="tan:help-requested($this-element/@src)">
                   <xsl:copy-of
-                     select="tan:help(concat('Valid values: ', string-join($all-possible-sources, ' ')), $all-possible-sources)"
+                     select="tan:help(concat('Valid values: ', string-join($all-possible-sources, ' ')), (), ())"
                   />
                </xsl:if>
                <xsl:copy-of select="$this-element/node()"/>
@@ -631,7 +631,7 @@
             <xsl:variable name="this-message"
                select="concat('close matches: ', string-join($old-close-matches, ', '), '; all possible values: ', string-join($ns-in-use, ', '))"
             />
-            <xsl:copy-of select="tan:help($this-message, $old-close-matches)"/>
+            <xsl:copy-of select="tan:help($this-message, (), ())"/>
          </xsl:if>
       </xsl:copy>
    </xsl:template>
@@ -1176,7 +1176,7 @@
          <xsl:if test="exists($ref-options-help-requested)">
             <xsl:variable name="this-message"
                select="concat('for source ', $this-src, ' try: ', string-join($ref-near-matches/@ref, '; '))"/>
-            <xsl:copy-of select="tan:help($this-message, $this-fragment)"/>
+            <xsl:copy-of select="tan:help($this-message, $this-fragment, 'copy-after')"/>
          </xsl:if>
          <xsl:if test="not(exists($this-fragment)) and (exists($div-start) and exists($div-end))">
             <xsl:copy-of select="tan:error('ref04', concat($div-start/@ref,' and ', $div-end/@ref, ' point to real divisions, but do not create a range'))"/>
@@ -1212,11 +1212,9 @@
                <xsl:choose>
                   <xsl:when test="$missing-ref-returned-as-info-not-error = false()">
                      <xsl:copy-of select="tan:error('ref01', string-join($this-message, ' '))"/>
-                     <test1><xsl:copy-of select="$element-with-ref-attr/@ref"/></test1>
-                     <test2><xsl:copy-of select="$ref-analyzed"/></test2>
                   </xsl:when>
                   <xsl:otherwise>
-                     <xsl:copy-of select="tan:info(string-join($this-message, ' '), ())"/>
+                     <xsl:copy-of select="tan:info(string-join($this-message, ' '), (), ())"/>
                   </xsl:otherwise>
                </xsl:choose>
             </xsl:when>
@@ -1558,13 +1556,12 @@
                </xsl:if>
                <xsl:if test="$this-help-requested = true()">
                   <xsl:if test="$pos-help-requested = true()">
-                     <test></test>
                      <xsl:copy-of
-                        select="tan:help(concat('Maximum matched tokens: ', count($these-matches)), ())"
+                        select="tan:help(concat('Maximum matched tokens: ', count($these-matches)), (), ())"
                      />
                   </xsl:if>
                   <xsl:if test="$val-help-requested = true()">
-                     <xsl:copy-of select="tan:help($near-match-message, ())"/>
+                     <xsl:copy-of select="tan:help($near-match-message, (), ())"/>
                   </xsl:if>
                   <xsl:if test="$chars-help-requested = true()">
                      <xsl:variable name="this-message"
@@ -1572,7 +1569,7 @@
                            concat('string length: ', string-join(for $i in $these-matches
                            return
                               concat(string(string-length($i)), ' (', $i, ')'), ', '))"/>
-                     <xsl:copy-of select="tan:help($this-message, ())"/>
+                     <xsl:copy-of select="tan:help($this-message, (), ())"/>
                   </xsl:if>
                </xsl:if>
                <xsl:copy-of select="$these-matches[$this-pos]/text()"/>

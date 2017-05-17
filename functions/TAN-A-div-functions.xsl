@@ -122,7 +122,7 @@
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:if test="$help-requested = true()">
-            <xsl:copy-of select="tan:help(string-join($this-message, ''), ())"/>
+            <xsl:copy-of select="tan:help(string-join($this-message, ''), (), ())"/>
          </xsl:if>
          <xsl:copy-of select="* except tan:work"/>
          <xsl:for-each select="tan:work">
@@ -162,7 +162,7 @@
       </xsl:variable>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
-         <xsl:copy-of select="tan:help(string-join($this-message, ''), ())"/>
+         <xsl:copy-of select="tan:help(string-join($this-message, ''), (), ())"/>
          <xsl:apply-templates mode="#current"/>
       </xsl:copy>
    </xsl:template>
@@ -545,7 +545,7 @@
       </xsl:variable>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
-         <xsl:copy-of select="tan:info(string-join($defective-divs-message, ''), ())"/>
+         <xsl:copy-of select="tan:info(string-join($defective-divs-message, ''), (), ())"/>
          <xsl:apply-templates mode="#current"/>
       </xsl:copy>
    </xsl:template>

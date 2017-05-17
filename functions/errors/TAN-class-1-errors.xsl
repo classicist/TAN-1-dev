@@ -64,7 +64,7 @@
                <xsl:copy-of select="tan:error('cl103')"/>
             </xsl:if>
             <xsl:if test="exists($text-diff/(tan:s1, tan:s2, tan:a, tan:b))">
-               <xsl:copy-of select="tan:error('cl104', (), $text-diff-analyzed)"/>
+               <xsl:copy-of select="tan:error('cl104', (), $text-diff-analyzed, 'replace-text')"/>
             </xsl:if>
          </xsl:if>
          <xsl:if test="tan:has-relationship(., 'model', ())">
@@ -109,10 +109,6 @@
       </xsl:copy>
    </xsl:template>
    <xsl:template match="tan:div" mode="class-1-errors">
-      <xsl:variable name="text-with-bad-modifiers-1" select="text()[matches(., '^\p{M}')]"/>
-      <xsl:variable name="text-with-bad-modifiers-2" select="text()[matches(., '\s\p{M}')]"/>
-      <xsl:variable name="text-with-bad-characters"
-         select="text()[matches(., $regex-characters-not-permitted)]"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:if test="@ref = $self-leaf-div-flatref-duplicates">
@@ -120,21 +116,6 @@
          </xsl:if>
          <xsl:if test="not(matches(., '\S')) and not(exists(@see))">
             <xsl:copy-of select="tan:error('cl110')"/>
-         </xsl:if>
-         <xsl:if test="exists($text-with-bad-modifiers-1)">
-            <xsl:copy-of
-               select="tan:error('cl111', (), replace($text-with-bad-modifiers-1[1], '^\p{M}+', ''))"
-            />
-         </xsl:if>
-         <xsl:if test="exists($text-with-bad-modifiers-2)">
-            <xsl:copy-of
-               select="tan:error('cl112', (), replace($text-with-bad-modifiers-2[1], '\s+(\p{M})', '$1'))"
-            />
-         </xsl:if>
-         <xsl:if test="exists($text-with-bad-characters)">
-            <xsl:copy-of
-               select="tan:error('cl113', (), replace($text-with-bad-characters[1], $regex-characters-not-permitted, ''))"
-            />
          </xsl:if>
          <xsl:apply-templates mode="class-1-errors"/>
       </xsl:copy>
@@ -213,7 +194,7 @@
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:if test="exists($flags)">
-            <xsl:copy-of select="tan:error('cl104', $this-message, string-join($replacement, ''))"/>
+            <xsl:copy-of select="tan:error('cl104', $this-message, string-join($replacement, ''), 'replace-text')"/>
          </xsl:if>
          <xsl:apply-templates mode="class-1-copy-errors"/>
       </xsl:copy>

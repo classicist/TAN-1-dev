@@ -14,16 +14,28 @@
    </xd:doc>
 
    <xsl:variable name="errors" select="doc('TAN-errors.xml')"/>
+   <xsl:function name="tan:fix" as="element()?">
+      <!-- Input: any items; a string representing a fix type -->
+      <!-- Ouput: a tan:fix element with @type -->
+      <!-- This function is used to populate a file with material to be used by Schematron Quick Fixes -->
+      <xsl:param name="fix" as="item()*"/>
+      <xsl:param name="fix-type" as="xs:string?"/>
+      <xsl:if test="string-length($fix-type) gt 0">
+         <fix type="{$fix-type}">
+            <xsl:copy-of select="$fix"/>
+         </fix>
+      </xsl:if>
+   </xsl:function>
    <xsl:function name="tan:error" as="element()?">
       <!-- one-parameter function of the master version, below -->
       <xsl:param name="idref" as="xs:string"/>
-      <xsl:copy-of select="tan:error($idref, ())"/>
+      <xsl:copy-of select="tan:error($idref, (), (), ())"/>
    </xsl:function>
    <xsl:function name="tan:error" as="element()?">
       <!-- two-parameter function of the master version, below -->
       <xsl:param name="idref" as="xs:string"/>
       <xsl:param name="diagnostic-message" as="item()*"/>
-      <xsl:copy-of select="tan:error($idref, $diagnostic-message, ())"/>
+      <xsl:copy-of select="tan:error($idref, $diagnostic-message, (), ())"/>
    </xsl:function>
    <xsl:function name="tan:error" as="element()?">
       <!-- Input: idref of an error, and optional diagnostic messages
@@ -32,6 +44,7 @@
       <xsl:param name="idref" as="xs:string"/>
       <xsl:param name="diagnostic-message" as="item()*"/>
       <xsl:param name="fix" as="item()*"/>
+      <xsl:param name="fix-type" as="xs:string?"/>
       <xsl:variable name="this-error" select="$errors//id($idref)"/>
       <xsl:for-each select="$this-error">
          <xsl:copy>
@@ -42,11 +55,7 @@
                   <xsl:value-of select="."/>
                </message>
             </xsl:for-each>
-            <xsl:if test="exists($fix)">
-               <fix>
-                  <xsl:copy-of select="$fix"/>
-               </fix>
-            </xsl:if>
+            <xsl:copy-of select="tan:fix($fix, $fix-type)"/>
          </xsl:copy>
       </xsl:for-each>
    </xsl:function>
@@ -95,17 +104,6 @@
             replace($i, concat('.*tan:error\([', $apos, $quot, '](\w+).+'), '$1')"/>
    <xsl:variable name="errors-not-used"
       select="$errors//tan:error[not(@xml:id = ($function-error-ids, $schema-error-ids))]"/>
-   <!--<xsl:variable name="tokenization-errors"
-      select="$errors//tan:group[tokenize(@affects-element, '\s+') = 'token-definition']//tan:error"
-      as="xs:string*"/>-->
-   <!--<xsl:variable name="inclusion-errors"
-      select="$errors//tan:group[@affects-attribute = 'include']/tan:error" as="xs:string*"/>-->
-
-   <!--<xsl:function name="tan:warning" as="element()?">
-      <!-\- one-parameter function of the master version, below -\->
-      <xsl:param name="idref" as="xs:string"/>
-      <xsl:copy-of select="$errors//id($idref)"/>
-   </xsl:function>-->
 
 
    <xsl:param name="help-trigger" select="'???'"/>
@@ -113,20 +111,21 @@
    <xsl:function name="tan:help" as="element()">
       <xsl:param name="diagnostic-message" as="item()*"/>
       <xsl:param name="fix" as="item()*"/>
-      <xsl:copy-of select="tan:help-or-info($diagnostic-message, $fix, false())"/>
+      <xsl:param name="fix-type" as="xs:string?"/>
+      <xsl:copy-of select="tan:help-or-info($diagnostic-message, $fix, $fix-type, false())"/>
    </xsl:function>
    <xsl:function name="tan:info" as="element()">
       <xsl:param name="diagnostic-message" as="item()*"/>
       <xsl:param name="fix" as="item()*"/>
-      <xsl:copy-of select="tan:help-or-info($diagnostic-message, $fix, true())"/>
+      <xsl:param name="fix-type" as="xs:string?"/>
+      <xsl:copy-of select="tan:help-or-info($diagnostic-message, $fix, $fix-type, true())"/>
    </xsl:function>
    <xsl:function name="tan:help-or-info" as="element()">
-      <!-- Input: a sequence of items to populate a message, a series of items to be used in a SQFix, and
-      a boolean value indicating whether the output element should be named info (rather than help)
-      Output: an element with the appropriate help or info message
-      -->
+      <!-- Input: a sequence of items to populate a message, a series of items to be used in a SQFix, and a boolean value indicating whether the output element should be named info (rather than help) -->
+      <!-- Output: an element with the appropriate help or info message -->
       <xsl:param name="diagnostic-message" as="item()*"/>
       <xsl:param name="fix" as="item()*"/>
+      <xsl:param name="fix-type" as="xs:string?"/>
       <xsl:param name="is-info" as="xs:boolean"/>
       <xsl:element name="{if ($is-info = true()) then 'info' else 'help'}">
          <xsl:for-each select="$diagnostic-message">
@@ -134,11 +133,7 @@
                <xsl:value-of select="."/>
             </message>
          </xsl:for-each>
-         <xsl:if test="exists($fix)">
-            <fix>
-               <xsl:copy-of select="$fix"/>
-            </fix>
-         </xsl:if>
+         <xsl:copy-of select="tan:fix($fix, $fix-type)"/>
       </xsl:element>
    </xsl:function>
    <xsl:function name="tan:help-requested" as="xs:boolean">
@@ -152,26 +147,50 @@
                false()"
       />
    </xsl:function>
-   <xsl:function name="tan:give-help" as="element()">
-      <!-- Input: a string representing a help message and some item to populate a SQF
-      Output: <help> carrying <message> and <fix> -->
-      <xsl:param name="diagnostic-message" as="item()*"/>
-      <xsl:param name="fix" as="item()*"/>
-      <help>
-         <xsl:for-each select="$diagnostic-message">
-            <message>
-               <xsl:value-of select="."/>
-            </message>
-         </xsl:for-each>
-         <xsl:if test="exists($fix)">
-            <fix>
-               <xsl:copy-of select="$fix"/>
-            </fix>
-         </xsl:if>
-      </help>
+
+   <xsl:function name="tan:fragment-to-text" as="xs:string?">
+      <!-- Input: any document fragment -->
+      <!-- Output: a string representation of the fragment -->
+      <!-- This function is used to represent XML fragments in a plain text message, used particularly in validation reports -->
+      <xsl:param name="fragment" as="item()*"/>
+      <xsl:variable name="results" as="xs:string*">
+         <xsl:apply-templates select="$fragment" mode="fragment-to-text"/>
+      </xsl:variable>
+      <xsl:value-of select="string-join($results, '')"/>
    </xsl:function>
+   <xsl:template match="*" mode="fragment-to-text">
+      <xsl:text>&lt;</xsl:text>
+      <xsl:value-of select="name()"/>
+      <xsl:apply-templates select="@*" mode="#current"/>
+      <xsl:choose>
+         <xsl:when test="exists(node())">
+            <xsl:text>></xsl:text>
+            <xsl:apply-templates select="node()" mode="#current"/>
+            <xsl:text>&lt;/</xsl:text>
+            <xsl:value-of select="name()"/>
+            <xsl:text>></xsl:text>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:text> /></xsl:text>
+         </xsl:otherwise>
+      </xsl:choose>
+
+   </xsl:template>
+   <xsl:template match="@*" mode="fragment-to-text">
+      <xsl:text> </xsl:text>
+      <xsl:value-of select="name()"/>
+      <xsl:text>='</xsl:text>
+      <xsl:value-of select="."/>
+      <xsl:text>'</xsl:text>
+   </xsl:template>
+   <xsl:template match="comment()" mode="fragment-to-text">
+      <xsl:text>&lt;!--</xsl:text>
+      <xsl:value-of select="."/>
+      <xsl:text>--></xsl:text>
+   </xsl:template>
+
    <xsl:function name="tan:idrefs" as="node()*">
-      <!-- Input: a string, documents or document fragments -->
+      <!-- Input: a string; documents or document fragments -->
       <!-- Output: the elements that have an @xml:id value that matches the string, after it has been normalized and resolved for proxies -->
       <xsl:param name="idrefs" as="xs:string?"/>
       <xsl:param name="nodes" as="node()*"/>
@@ -189,9 +208,11 @@
             <xsl:sequence select="$results-so-far"/>
          </xsl:when>
          <xsl:otherwise>
-            <xsl:variable name="nodes-that-match" select="$nodes-to-check//*[@xml:id = $id-refs-to-check]"/>
+            <xsl:variable name="nodes-that-match"
+               select="$nodes-to-check//*[@xml:id = $id-refs-to-check]"/>
             <xsl:variable name="proxies-that-match" select="$nodes-that-match/self::tan:alias"/>
-            <xsl:variable name="ids-that-match-nothing" select="$id-refs-to-check[not(. = $nodes-that-match/@xml:id)]"/>
+            <xsl:variable name="ids-that-match-nothing"
+               select="$id-refs-to-check[not(. = $nodes-that-match/@xml:id)]"/>
             <xsl:if test="exists($ids-that-match-nothing)">
                <xsl:copy-of select="tan:error('tan05', $ids-that-match-nothing)"/>
             </xsl:if>
@@ -210,8 +231,7 @@
                      select="
                         for $i in $nodes-that-match/self::tan:alias
                         return
-                           tokenize(tan:normalize-text($i/@idrefs), ' ')"
-                  />
+                           tokenize(tan:normalize-text($i/@idrefs), ' ')"/>
                   <xsl:sequence
                      select="tan:idrefs-loop($new-refs-to-check, ($results-so-far, $nodes-that-match[not(self::tan:alias)]), $nodes-to-check, ($alias-ids-already-checked, $nodes-that-match[self::tan:alias]/@xml:id))"
                   />
@@ -236,6 +256,10 @@
       mode="core-errors core-attribute-errors referenced-doc-errors class-1-errors">
       <xsl:copy-of select="."/>
    </xsl:template>
+   <xsl:template match="tan:error | tan:help | tan:warning | tan:fix | tan:fatal | tan:info"
+      mode="core-attribute-errors core-errors">
+      <xsl:copy-of select="."/>
+   </xsl:template>
 
    <!-- core templates -->
    <xsl:template match="text()" mode="core-errors">
@@ -243,7 +267,19 @@
       <xsl:variable name="this-text-normalized" select="normalize-unicode(.)"/>
       <xsl:if test="$this-text != $this-text-normalized">
          <xsl:copy-of
-            select="tan:error('tan04', concat('Should be: ', $this-text-normalized), $this-text-normalized)"
+            select="tan:error('tan04', concat('Should be: ', $this-text-normalized), $this-text-normalized, 'replace-text')"
+         />
+      </xsl:if>
+      <xsl:if test="matches(., '^\p{M}')">
+         <xsl:copy-of select="tan:error('cl111', (), replace(., '^\p{M}+', ''), 'replace-text')"/>
+      </xsl:if>
+      <xsl:if test="matches(., '\s\p{M}')">
+         <xsl:copy-of
+            select="tan:error('cl112', (), replace(., '\s+(\p{M})', '$1'), 'replace-text')"/>
+      </xsl:if>
+      <xsl:if test="matches(., $regex-characters-not-permitted)">
+         <xsl:copy-of
+            select="tan:error('cl113', (), replace(., $regex-characters-not-permitted, ''), 'replace-text')"
          />
       </xsl:if>
       <xsl:copy-of select="."/>
@@ -263,7 +299,7 @@
             <xsl:variable name="this-fix">
                <master-location href="{$doc-uri}"/>
             </xsl:variable>
-            <xsl:copy-of select="tan:error('tan02', '', $this-fix)"/>
+            <xsl:copy-of select="tan:error('tan02', '', $this-fix, 'add-master-location')"/>
          </xsl:if>
          <xsl:apply-templates mode="core-errors"/>
       </xsl:copy>
@@ -310,8 +346,7 @@
                if (exists($target-1st-da-resolved/*/(tan:body, tei:text/tei:body))) then
                   true()
                else
-                  ()"
-      />
+                  ()"/>
       <xsl:variable name="target-new-versions"
          select="$target-1st-da-resolved/*/tan:head/tan:see-also[tan:has-relationship(., 'new version', ())]"/>
       <xsl:variable name="target-hist" select="tan:get-doc-hist($target-1st-da-resolved)"/>
@@ -360,21 +395,24 @@
                $this-TAN-reserved-relationships//ancestor::tan:group/tan:name = 'TAN files'
                and $target-class = 0">
             <xsl:copy-of
-               select="tan:error('see01', concat('root element name: ', name($target-1st-da-resolved/*)))"/>
+               select="tan:error('see01', concat('root element name: ', name($target-1st-da-resolved/*)))"
+            />
          </xsl:if>
          <xsl:if
             test="
                $this-TAN-reserved-relationships//ancestor::tan:group/tan:name = 'TAN-c'
                and not(name($target-1st-da-resolved/*) = 'TAN-c')">
             <xsl:copy-of
-               select="tan:error('see02', concat('root element name: ', name($target-1st-da-resolved/*)))"/>
+               select="tan:error('see02', concat('root element name: ', name($target-1st-da-resolved/*)))"
+            />
          </xsl:if>
          <xsl:if
             test="
                $this-TAN-reserved-relationships//ancestor::tan:group/tan:name = 'copies'
                and not(replace(name($target-1st-da-resolved/*), '^TEI$', 'TAN-T') = $prov-root-name)">
             <xsl:copy-of
-               select="tan:error('see03', concat('root element name: ', name($target-1st-da-resolved/*)))"/>
+               select="tan:error('see03', concat('root element name: ', name($target-1st-da-resolved/*)))"
+            />
          </xsl:if>
          <xsl:if
             test="
@@ -385,13 +423,9 @@
          </xsl:if>
          <xsl:copy-of select="$target-1st-da-resolved/tan:error"/>
          <xsl:if test="exists(tan:location) and not($target-id = tan:IRI) and $target-class gt 0">
-            <xsl:variable name="this-fix" as="element()">
-               <IRI>
-                  <xsl:value-of select="$target-id"/>
-               </IRI>
-            </xsl:variable>
             <xsl:copy-of
-               select="tan:error('loc02', concat('ID of see-also file: ', $target-id), $this-fix)"/>
+               select="tan:error('loc02', concat('ID of see-also file: ', $target-id), $target-id, 'replace-text')"
+            />
          </xsl:if>
          <xsl:if
             test="($doc-id = $target-1st-da-resolved/*/@id) and not(self::tan:see-also and $this-TAN-reserved-relationships/tan:name = ('new version', 'old version'))">
@@ -410,21 +444,37 @@
                </xsl:for-each>
                <xsl:text>)</xsl:text>
             </xsl:variable>
-            <xsl:copy-of select="tan:info($this-message, $target-updates)"/>
+            <xsl:copy-of select="tan:info($this-message, (), ())"/>
             <xsl:for-each select="$target-updates[@flags]">
                <xsl:variable name="this-id" select="@when"/>
                <xsl:choose>
                   <xsl:when test="@flags = ('warn', 'warning')">
-                     <warning xml:id="{$this-id}"><rule><xsl:value-of select="."/></rule></warning>
+                     <warning xml:id="{$this-id}">
+                        <rule>
+                           <xsl:value-of select="."/>
+                        </rule>
+                     </warning>
                   </xsl:when>
                   <xsl:when test="@flags = 'error'">
-                     <error xml:id="{$this-id}"><rule><xsl:value-of select="."/></rule></error>
+                     <error xml:id="{$this-id}">
+                        <rule>
+                           <xsl:value-of select="."/>
+                        </rule>
+                     </error>
                   </xsl:when>
                   <xsl:when test="@flags = 'fatal'">
-                     <fatal xml:id="{$this-id}"><rule><xsl:value-of select="."/></rule></fatal>
+                     <fatal xml:id="{$this-id}">
+                        <rule>
+                           <xsl:value-of select="."/>
+                        </rule>
+                     </fatal>
                   </xsl:when>
                   <xsl:when test="@flags = 'info'">
-                     <info xml:id="{$this-id}"><message><xsl:value-of select="."/></message></info>
+                     <info xml:id="{$this-id}">
+                        <message>
+                           <xsl:value-of select="."/>
+                        </message>
+                     </info>
                   </xsl:when>
                </xsl:choose>
             </xsl:for-each>
@@ -473,8 +523,7 @@
          select="
             distinct-values(for $i in $these-entities[not(self::tan:error)]
             return
-               name($i))"
-      />
+               name($i))"/>
       <xsl:copy>
          <xsl:copy-of select="@*"/>
          <xsl:if test="exists(@idrefs) and not(exists($these-entities))">
@@ -509,7 +558,7 @@
          </xsl:if>
          <xsl:if test="exists($target-id) and not(. = $target-id)">
             <xsl:copy-of
-               select="tan:error('tan10', concat('Target document @id = ', $target-id), $target-id)"
+               select="tan:error('tan10', concat('Target document @id = ', $target-id), $target-id, 'replace-text')"
             />
          </xsl:if>
          <xsl:apply-templates mode="core-errors"/>
@@ -535,6 +584,7 @@
    <xsl:template match="*" mode="core-attribute-errors">
       <xsl:variable name="this-from" select="tan:dateTime-to-decimal(@from)"/>
       <xsl:variable name="this-to" select="tan:dateTime-to-decimal(@to)"/>
+      <xsl:variable name="this-element" select="."/>
       <xsl:variable name="these-refs" as="element()*">
          <xsl:for-each
             select="@*[name(.) = $id-idrefs//tan:idrefs/@attribute][parent::tan:* or parent::tei:div]">
@@ -545,31 +595,29 @@
                select="
                   for $i in $id-idrefs//tan:id[tan:idrefs/@attribute = $this-attribute-name]/@element
                   return
-                     tokenize($i, ' ')"
-            />
+                     tokenize($i, ' ')"/>
+            <xsl:variable name="these-vals-norm" select="tokenize(tan:normalize-text(.), ' ')"/>
+            <xsl:variable name="these-distinct-values" select="distinct-values($these-vals-norm)"/>
             <xsl:variable name="all-possible-valid-entities"
                select="$head//*[name(.) = $should-refer-to-which-element]"/>
-            
+
             <xsl:variable name="entities-pointed-to"
                select="
                   if (. = '*') then
                      $all-possible-valid-entities
                   else
-                     tan:idrefs(., $head)"
-            />
-            <xsl:variable name="these-values" select="$entities-pointed-to/@xml:id"/>
-            <xsl:variable name="these-distinct-values" select="distinct-values($these-values)"/>
-            <xsl:variable name="these-valid-entities"
-               select="$entities-pointed-to[name() = $should-refer-to-which-element]"/>
-            <xsl:variable name="these-invalid-entities"
-               select="$entities-pointed-to[not(name() = $should-refer-to-which-element)]"/>
-            <xsl:variable name="value-normalized" select="string-join($entities-pointed-to/@xml:id, ' ')"/>
+                     $all-possible-valid-entities[@xml:id = $these-vals-norm]"/>
+            <xsl:variable name="value-normalized"
+               select="string-join($entities-pointed-to/@xml:id, ' ')"/>
+            <xsl:variable name="invalid-refs"
+               select="$these-vals-norm[not(. = $entities-pointed-to/@xml:id)]"/>
+
+
             <attribute name="{$this-attribute-name}" val="{$value-normalized}">
                <xsl:if test="not($value-normalized = .)">
                   <xsl:attribute name="orig-val" select="."/>
                </xsl:if>
-               <xsl:for-each select="$these-invalid-entities">
-                  <xsl:variable name="this-erroneous-id" select="@xml:id"/>
+               <xsl:if test="not(exists($entities-pointed-to)) or exists($invalid-refs)">
                   <xsl:variable name="this-message">
                      <xsl:value-of
                         select="concat('@', $this-attribute-name, ' must point to valid values of ')"/>
@@ -582,37 +630,51 @@
                         select="concat(': delete ', ., ' or change to: ', string-join($all-possible-valid-entities/@xml:id, ' '))"
                      />
                   </xsl:variable>
-                  <xsl:variable name="this-fix" as="element()*">
-                     <xsl:for-each select="$should-refer-to-which-element">
-                        <xsl:element name="{.}">
-                           <!--<xsl:attribute name="xml:id" select="$this-erroneous-id"/>-->
-                           <xsl:copy-of select="$this-erroneous-id"/>
-                        </xsl:element>
+                  <xsl:variable name="new-element-fixes" as="element()*">
+                     <xsl:for-each select="$invalid-refs">
+                        <xsl:variable name="this-bad-ref" select="."/>
+                        <xsl:for-each select="$should-refer-to-which-element">
+                           <xsl:element name="{.}">
+                              <xsl:attribute name="xml:id" select="$this-bad-ref"/>
+                           </xsl:element>
+                        </xsl:for-each>
                      </xsl:for-each>
                   </xsl:variable>
-                  <xsl:copy-of select="tan:error('tan05', $this-message, $this-fix)"/>
-                  <!--<xsl:message select="tan:q-ref(parent::*)"></xsl:message>-->
-               </xsl:for-each>
-               <xsl:if test="count($these-values) gt count($these-distinct-values)">
                   <xsl:copy-of
-                     select="tan:error('tan06', string-join($these-values[index-of($these-values, .)[2]], ' '))"
+                     select="tan:error('tan05', $this-message, $new-element-fixes, 'copy-element-after-last-of-type')"
                   />
                </xsl:if>
-               <xsl:if test="$help-requested = true()">
-                  <xsl:variable name="referents-to-query"
-                     select="
-                        if (exists($these-valid-entities)) then
-                           $these-valid-entities
-                        else
-                           $all-possible-valid-entities"/>
-                  <xsl:variable name="this-message">
-                     <xsl:text>Options: </xsl:text>
-                     <xsl:for-each select="$referents-to-query">
-                        <xsl:value-of select="@xml:id"/>
-                        <xsl:value-of select="concat(' (', tan:name[1], ') ')"/>
+               <xsl:if
+                  test="$help-requested or not(exists($entities-pointed-to)) or exists($invalid-refs)">
+                  <xsl:variable name="this-fix" as="element()*">
+                     <xsl:for-each select="$all-possible-valid-entities">
+                        <xsl:sort
+                           select="
+                              some $i in $these-vals-norm
+                                 satisfies matches(@xml:id, $i)"
+                           order="descending"/>
+                        <element>
+                           <xsl:attribute name="{$this-attribute-name}" select="@xml:id"/>
+                        </element>
                      </xsl:for-each>
                   </xsl:variable>
-                  <xsl:copy-of select="tan:help($this-message, $referents-to-query)"/>
+                  <xsl:choose>
+                     <xsl:when test="$help-requested">
+                        <xsl:variable name="this-message"
+                           select="concat('Try: ', string-join($this-fix/@*, '; '))"/>
+                        <xsl:copy-of select="tan:help((), $this-fix, 'copy-attributes')"/>
+                     </xsl:when>
+                     <xsl:otherwise>
+                        <xsl:message select="$this-fix"/>
+                        <xsl:copy-of select="tan:fix($this-fix, 'copy-attributes')"/>
+                     </xsl:otherwise>
+                  </xsl:choose>
+
+               </xsl:if>
+               <xsl:if test="count($these-vals-norm) gt count($these-distinct-values)">
+                  <xsl:copy-of
+                     select="tan:error('tan06', string-join($these-vals-norm[index-of($these-vals-norm, .)[2]], ' '))"
+                  />
                </xsl:if>
             </attribute>
          </xsl:for-each>
@@ -622,7 +684,6 @@
       <xsl:variable name="this-href-resolved"
          select="resolve-uri(@href, (root()/*/@base-uri, $doc-uri)[1])"/>
       <xsl:copy>
-         <!--<xsl:copy-of select="@*"/>-->
          <xsl:for-each select="@*">
             <xsl:variable name="this-attr-name" select="name()"/>
             <xsl:variable name="ref-check" select="$these-refs[@name = $this-attr-name]"/>
@@ -643,14 +704,13 @@
             <xsl:copy-of select="tan:error('tan03')"/>
          </xsl:if>
          <xsl:if test="$dates = 0">
-            <xsl:copy-of select="tan:error('whe01', (), current-dateTime())"/>
+            <xsl:copy-of select="tan:error('whe01')"/>
          </xsl:if>
          <xsl:if test="
                some $i in $dates
                   satisfies $i > $now">
             <xsl:copy-of
-               select="tan:error('whe02', concat('Currently ', string(current-dateTime())), current-dateTime())"
-            />
+               select="tan:error('whe02', concat('Currently ', string(current-dateTime())))"/>
          </xsl:if>
          <xsl:if test="exists(@from) and exists(@to) and ($this-from gt $this-to)">
             <xsl:copy-of select="tan:error('whe03')"/>
@@ -662,7 +722,7 @@
          <xsl:if test="exists(@href) and (doc-available($this-href-resolved) = false())">
             <xsl:copy-of select="tan:error('wrn01')"/>
          </xsl:if>
-         <xsl:if test="exists(self::tan:master-location) and matches(@href,'!/')">
+         <xsl:if test="exists(self::tan:master-location) and matches(@href, '!/')">
             <xsl:copy-of select="tan:error('tan15')"/>
          </xsl:if>
          <xsl:if test="exists(@href) and not((self::tan:location, self::tan:master-location))">
@@ -675,18 +735,21 @@
                <xsl:value-of select="$target-IRI"/>
                <xsl:value-of select="concat(' (', $target-name[1], ')')"/>
             </xsl:variable>
-            <xsl:variable name="this-fix" as="element()*">
-               <IRI>
-                  <xsl:value-of select="$target-IRI"/>
-               </IRI>
-               <xsl:copy-of select="$target-name"/>
-               <xsl:copy-of select="$target-desc"/>
-               <location when-accessed="{current-dateTime()}"
-                  href="{tan:uri-relative-to(@href, $doc-uri)}"/>
+            <xsl:variable name="this-fix" as="element()">
+               <xsl:copy>
+                  <xsl:copy-of select="@* except (@href, @orig-href, @q)"/>
+                  <IRI>
+                     <xsl:value-of select="$target-IRI"/>
+                  </IRI>
+                  <xsl:copy-of select="$target-name"/>
+                  <xsl:copy-of select="$target-desc"/>
+                  <location when-accessed="{current-dateTime()}"
+                     href="{tan:uri-relative-to(@href, $doc-uri)}"/>
+               </xsl:copy>
             </xsl:variable>
-            <xsl:copy-of select="tan:error('tan08', $this-message, $this-fix)"/>
+            <xsl:copy-of select="tan:error('tan08', $this-message, $this-fix, 'replace-self')"/>
          </xsl:if>
-         <xsl:copy-of select="$these-refs/(tan:error, tan:help)"/>
+         <xsl:copy-of select="$these-refs/*"/>
          <xsl:apply-templates mode="core-attribute-errors"/>
       </xsl:copy>
    </xsl:template>

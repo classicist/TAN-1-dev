@@ -66,32 +66,30 @@
         variables, they must appear between the regular expression anchors ^ and $. -->
    <xsl:variable name="roman-numeral-pattern"
       select="'m{0,4}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})'"/>
-   <xsl:variable name="letter-numeral-pattern"
+   <xsl:variable name="latin-letter-numeral-pattern"
       select="'a+|b+|c+|d+|e+|f+|g+|h+|i+|j+|k+|l+|m+|n+|o+|p+|q+|r+|s+|t+|u+|v+|w+|x+|y+|z+'"/>
+   <xsl:variable name="greek-letter-numeral-pattern" select="'͵?([α-θΑ-ΘϛϚ]?[ρ-ωΡ-ΩϠϡ]?[ι-πΙ-ΠϘϙϞϟ]?[α-θΑ-ΘϛϚ]|[α-θΑ-ΘϛϚ]?[ρ-ωΡ-ΩϠϡ]?[ι-πΙ-ΠϘϙϞϟ][α-θΑ-ΘϛϚ]?|[α-θΑ-ΘϛϚ]?[ρ-ωΡ-ΩϠϡ][ι-πΙ-ΠϘϙϞϟ]?[α-θΑ-ΘϛϚ]?)ʹ?'"/>
+   <xsl:variable name="syriac-letter-numeral-pattern"
+      select="'[ܐܒܓܕܗܘܙܚܛ]?\p{Mc}?(ܬ?[ܩܪܫܬ]|[ܢܣܥܦܨ]\p{Mc})?\p{Mc}?[ܝܟܠܡܢܣܥܦܨ]?\p{Mc}?[ܐܒܓܕܗܘܙܚܛ]\p{Mc}?|[ܐܒܓܕܗܘܙܚܛ]?\p{Mc}?(ܬ?[ܩܪܫܬ]|[ܢܣܥܦܨ]\p{Mc})?\p{Mc}?[ܝܟܠܡܢܣܥܦܨ]\p{Mc}?[ܐܒܓܕܗܘܙܚܛ]?\p{Mc}?|[ܐܒܓܕܗܘܙܚܛ]?\p{Mc}?(ܬ?[ܩܪܫܬ]|[ܢܣܥܦܨ]\p{Mc})\p{Mc}?[ܝܟܠܡܢܣܥܦܨ]?\p{Mc}?[ܐܒܓܕܗܘܙܚܛ]?\p{Mc}?'"
+   />
+   <xsl:variable name="nonlatin-letter-numeral-pattern"
+      select="string-join(($greek-letter-numeral-pattern, $syriac-letter-numeral-pattern), '|')"/>
    <xsl:variable name="n-type-pattern"
       select="
          (concat('^(', $roman-numeral-pattern, ')$'),
          '^(\d+)$',
-         concat('^(\d+)(', $letter-numeral-pattern, ')$'),
-         concat('^(', $letter-numeral-pattern, ')$'),
-         concat('^(', $letter-numeral-pattern, ')(\d+)$'),
+         concat('^(\d+)(', $latin-letter-numeral-pattern, ')$'),
+         concat('^(', $latin-letter-numeral-pattern, ')$'),
+         concat('^(', $latin-letter-numeral-pattern, ')(\d+)$'),
+         concat('^(', $nonlatin-letter-numeral-pattern, ')$'),
          '(.)')"/>
-   <xsl:variable name="n-type"
-      select="
-         ('i',
-         '1',
-         '1a',
-         'a',
-         'a1',
-         '$')"/>
+   <xsl:param name="words-that-look-like-numbers" as="xs:string*" select="('A', 'I', 'Ει')"/>
+   <xsl:variable name="n-type" select="('i', '1', '1a', 'a', 'a1', 'α', '$', 'i-or-a')"/>
    <xsl:variable name="n-type-label"
       select="
-         ('Roman numerals',
-         'Arabic numerals',
-         'Arabic numerals + alphabet numeral',
-         'alphabet numeral',
-         'alphabet numeral + Arabic numeral',
-         'string')"/>
+         ('Roman numerals', 'Arabic numerals', 'Arabic numerals + alphabet numeral', 'alphabet numeral', 'alphabet numeral + Arabic numeral',
+         'non-Latin-alphabet numeral', 'string', 'Roman or alphabet numeral')"
+   />
    <xsl:function name="tan:interpret-n-vals" as="element()*">
       <!-- Input: any strings representing values of @n -->
       <!-- Output: one element per @n, with at least one <val @type="[n-type]"> corresponding to the six types of numeral patterns/strings; if the input can be legitimately interpreted as that type, its converted value is in the element, otherwise it is empty -->
@@ -126,6 +124,11 @@
                   <xsl:value-of
                      select="concat(tan:aaa-to-int(replace($this-n-norm, '\d+', '')), $separator-hierarchy-minor, replace($this-n-norm, '\D+', ''))"
                   />
+               </val>
+            </xsl:if>
+            <xsl:if test="matches($this-n-norm, $n-type-pattern[6], 'i')">
+               <val type="{$n-type[6]}">
+                  <xsl:value-of select="tan:letter-to-number($this-n-norm)"/>
                </val>
             </xsl:if>
             <val type="$">
@@ -530,7 +533,7 @@
       <xsl:param name="arg" as="xs:string*"/>
       <xsl:for-each select="$arg">
          <xsl:variable name="arg-lower" select="lower-case(.)"/>
-         <xsl:if test="matches($arg-lower, concat('^(', $letter-numeral-pattern, ')$'))">
+         <xsl:if test="matches($arg-lower, concat('^(', $latin-letter-numeral-pattern, ')$'))">
             <xsl:variable name="arg-length" select="string-length($arg-lower)"/>
             <xsl:variable name="arg-val" select="string-to-codepoints($arg-lower)[1] - 96"/>
             <xsl:value-of select="$arg-val + ($arg-length - 1) * 26"/>
@@ -577,24 +580,27 @@
       <!-- NB, currently works only for Greek and Syriac; anything else produces null results -->
       <xsl:param name="numerical-letters" as="xs:anyAtomicType*"/>
       <xsl:for-each select="$numerical-letters">
+         <xsl:variable name="this-letter-norm" select="replace(.,'[͵ʹ]','')"/>
          <xsl:variable name="pass1" as="xs:integer*">
-            <xsl:analyze-string select="." regex=".">
-               <xsl:matching-substring>
-                  <xsl:variable name="this-letter" select="."/>
-                  <xsl:choose>
-                     <xsl:when test="matches(., '^\p{IsSyriac}+$')">
-                        <xsl:copy-of
-                           select="xs:integer(($alphabet-numeral-key/*[matches(@syc, $this-letter, 'i')][1]/@int))"
-                        />
-                     </xsl:when>
-                     <xsl:when test="matches(., '^\p{IsGreek}+$')">
-                        <xsl:copy-of
-                           select="xs:integer(($alphabet-numeral-key/*[matches(@grc, $this-letter, 'i')][1]/@int))"
-                        />
-                     </xsl:when>
-                  </xsl:choose>
-               </xsl:matching-substring>
-            </xsl:analyze-string>
+            <xsl:if test="string-length($this-letter-norm) gt 0">
+               <xsl:analyze-string select="$this-letter-norm" regex=".">
+                  <xsl:matching-substring>
+                     <xsl:variable name="this-letter" select="."/>
+                     <xsl:choose>
+                        <xsl:when test="matches(., '^\p{IsSyriac}+$')">
+                           <xsl:copy-of
+                              select="xs:integer(($alphabet-numeral-key/*[matches(@syc, $this-letter, 'i')][1]/@int))"
+                           />
+                        </xsl:when>
+                        <xsl:when test="matches(., '^\p{IsGreek}+$')">
+                           <xsl:copy-of
+                              select="xs:integer(($alphabet-numeral-key/*[matches(@grc, $this-letter, 'i')][1]/@int))"
+                           />
+                        </xsl:when>
+                     </xsl:choose>
+                  </xsl:matching-substring>
+               </xsl:analyze-string>
+            </xsl:if>
          </xsl:variable>
          <xsl:value-of select="sum($pass1)"/>
       </xsl:for-each>
@@ -1595,7 +1601,7 @@
       <xsl:variable name="help-requested" select="matches(@which, $help-trigger-regex)"/>
       <xsl:variable name="attr-in-key-element-to-suppress" select="('group')" as="xs:string*"/>
       <xsl:variable name="valid-definitions"
-         select="tan:glossary(., $extra-keys, ())"/>
+         select="tan:glossary($element-name, $extra-keys, ())"/>
       <xsl:variable name="definition-matches" as="element()*"
          select="$valid-definitions[tan:name[normalize-space(.) = $this-which]]"/>
       <xsl:variable name="close-matches"
@@ -1618,7 +1624,7 @@
             <xsl:attribute name="orig-{name()}" select="."/>
          </xsl:for-each>
          <xsl:if test="exists($definition-groups)">
-            <!-- although strictly not necessary for validation, the <group> of a keyword is enormously helpful in later processing, so the name of each group is included here -->
+            <!-- although strictly not necessary for validation, the <group> of a keyword is quite helpful in later processing, so the name of each group is included here -->
             <xsl:attribute name="orig-group" select="$definition-groups"/>
          </xsl:if>
          <xsl:if test="not(exists($definition-matches))">
@@ -1631,15 +1637,23 @@
                   </xsl:if>
                </xsl:for-each>
             </xsl:variable>
+            <xsl:variable name="this-fix" as="element()*">
+               <xsl:for-each select="$best-matches/tan:name">
+                  <xsl:sort select="matches(., $this-which)" order="descending"/>
+                  <element>
+                     <xsl:attribute name="which" select="."/>
+                  </element>
+               </xsl:for-each>
+            </xsl:variable>
             <xsl:copy-of
-               select="tan:error('whi01', concat('Try: ', string-join($this-message, '; ')), $best-matches)"
+               select="tan:error('whi01', concat('Try: ', string-join($this-message, '; ')), $this-fix, 'copy-attributes')"
             />
          </xsl:if>
          <xsl:if test="count($definition-matches) gt 1">
             <xsl:copy-of select="tan:error('whi02')"/>
          </xsl:if>
          <xsl:if test="not(exists($valid-definitions))">
-            <xsl:copy-of select="tan:error('whi03')"/>
+            <xsl:copy-of select="tan:error('whi03', 'perhaps add key element pointing to TAN-key file')"/>
          </xsl:if>
          <xsl:if test="($help-requested = true()) and exists($definition-matches)">
             <xsl:variable name="this-message" as="xs:string*">
@@ -1656,7 +1670,7 @@
                   <xsl:value-of select="tan:desc"/>
                </xsl:for-each>
             </xsl:variable>
-            <xsl:copy-of select="tan:help($this-message, $valid-definitions)"/>
+            <xsl:copy-of select="tan:help($this-message, $valid-definitions, 'copy-after')"/>
          </xsl:if>
          <xsl:copy-of select="$definition-matches/*[not(self::tan:token-definition)]"/>
       </xsl:copy>

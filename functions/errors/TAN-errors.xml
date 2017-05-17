@@ -2,13 +2,13 @@
 <errors xmlns="tag:textalign.net,2015:ns">
     <!-- NB, @affects-element and @affects-attribute are present to populate the guidelines, not to trigger errors -->
     <group affects-element="TAN-T TEI TAN-A-div TAN-A-tok TAN-LM TAN-key TAN-c TAN-mor">
-        <warning xml:id="wrn04"><rule>Every validated TAN file will include the following message at its root.</rule><message>This version of TAN is unstable and unpublished. Use it at your own risk.</message></warning>
+        <warning xml:id="wrn04"><rule>Every validated TAN file will include the following message at its root.</rule><message>This version of TAN is under development, and is subject to change. Participants in developing the TAN schemas, functions, and guidelines are welcome. See http://textalign.net for details.</message></warning>
     </group>
     <group affects-element="agent" affects-attribute="id">
         <error xml:id="tan01"><rule>Every TAN file must have a primary agent, the organization or person that takes the greatest responsibility for the content of the TAN file. The primary agent is defined as the first &lt;agent> with an &lt;IRI> that is a tag URI whose namespace matches the namespaces of @id in the root element.</rule></error>
     </group>
     <group affects-attribute="in-progress" affects-element="master-location">
-        <error xml:id="tan02"><rule>Any TAN file marked as being no longer in progress must have at least one master-location.</rule></error>
+        <warning xml:id="tan02"><rule>Any TAN file marked as being no longer in progress should have at least one master-location.</rule></warning>
     </group>
     <group affects-attribute="xml:id">
         <error xml:id="tan03"><rule>@xml:id values may not be repeated in the same document.</rule></error>
@@ -129,6 +129,7 @@
     </group>
     <group affects-attribute="n" affects-element="div">
         <error xml:id="cl109"><rule>Leaf div references must be unique.</rule></error>
+        <error xml:id="cl117"><rule>@n's taking digit values should not begin with 0.</rule></error>
     </group>
     <group affects-element="div">
         <error xml:id="cl110"><rule>Every leaf div must have at least some non-space text.</rule></error>
@@ -138,6 +139,16 @@
         <error xml:id="tei01"><rule>&lt;div>s may not be mixed with other elements: a &lt;div> must parent either only &lt;div>s or none at all, and may have as siblings only other &lt;div>s.</rule></error>
         <error xml:id="tei02"><rule>A &lt;div> must not mix @include with any other attributes.</rule></error>
         <error xml:id="tei03"><rule>A &lt;div> must have either @type + @n or @include but not both.</rule></error>
+    </group>
+    <group affects-element="div" affects-attribute="n">
+        <warning xml:id="cl115"><rule>@n suffices for labeling text in a &lt;div>; the @n's value should not appear in the text.</rule></warning>
+        <warning xml:id="cl116"><rule>concatenated @n's suffice for labeling text in a &lt;div>; the &lt;div>'s reference should not appear in the text.</rule></warning>
+    </group>
+    <group affects-element="tei:lb tei:pb tei:cb" affects-attribute="rend">
+        <warning xml:id="tei04"><rule>@rend should be used to represent a break, not actual text</rule></warning>
+    </group>
+    <group affects-element="tei:lb tei:pb tei:cb">
+        <error xml:id="tei05"><rule>A breaking element without @break="no" should have at least one space on either side; one with @break="no" should have no nearby spaces</rule></error>
     </group>
     <group affects-element="div-type" affects-attribute="n">
         <error xml:id="cl114"><rule>To avoid ambiguous numerals, no div type should mix Roman and alphabet numerals.</rule></error>

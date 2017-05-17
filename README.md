@@ -1,19 +1,14 @@
 Text Alignment Network version 1, development release
 
-For more about TAN visit http://textalign.net.
+http://textalign.net
 
 This project has submodules, which must be invoked using the --recursive option:
-: git clone --recursive [PATH]
+`git clone --recursive [PATH]`
 
-This being a development release, all files are subject to change. Quite
-a lot of work remains before the TAN format can be used widely and reliably.
-Files valid one day might be rendered invalid the next. If you begin to 
-work with the format and develop ideas, we would welcome your input and
-contributions.
+All files are subject to change. Participation in developing the guidelines is welcome.
 
-The best place to start is guidelines/, followed by examples/. The other
-three subdirectories -- functions/, schemas/, and TAN-R-tok/ -- carry
+The best place to start is guidelines/ (see also http://textalign.net/release/TAN-1-dev/guidelines/xhtml/index.xhtml), 
+followed by examples/. The other three subdirectories -- functions/, schemas/, and TAN-key/ -- carry
 the core files needed for validation.
 
-For more examples, consult https://github.com/orgs/textalign/people and
-look for libraries hosted by participants.
+For other TAN libraries see http://textalign.net.

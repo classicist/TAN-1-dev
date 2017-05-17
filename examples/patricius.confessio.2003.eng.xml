@@ -181,6 +181,7 @@
          <IRI>http://schema.org/editor</IRI>
          <name xml:lang="eng">Editor</name>
       </role>
+      <change when="2017-05-15" who="park">Normalized @n</change>
       <change when="2016-01-25" who="park">Created new TAN-TEI file.</change>
    </head>
    <text>
@@ -188,7 +189,7 @@
          <div type="title" n="title" part="N" org="uniform" sample="complete"><head>
             <title>The Confession of St Patrick</title>
          </head></div>
-         <div xml:id="C01_eng" n="01" part="I" corresp="C01_lat" type="sect" org="uniform" sample="complete">
+         <div xml:id="C01_eng" n="1" part="I" corresp="C01_lat" type="sect" org="uniform" sample="complete">
             <div type="para" n="1" part="N" org="uniform" sample="complete"><p part="N">My name is Patrick. I am a sinner, a simple country person, and the least of all
                believers. I am looked down upon by many.</p></div>
             <div type="para" n="2" part="N" org="uniform" sample="complete"><p part="N">My father was Calpornius. He was a deacon; his father was Potitus, a priest, who
@@ -202,7 +203,7 @@
                among many nations even to the ends of the earth. It was among foreigners that it was
                seen how little I was. </p></div>
          </div>
-         <div xml:id="C02_eng" n="02" part="F" corresp="C02_lat" type="sect" org="uniform" sample="complete">
+         <div xml:id="C02_eng" n="2" part="F" corresp="C02_lat" type="sect" org="uniform" sample="complete">
             <div type="para" n="1" part="N" org="uniform" sample="complete"><p part="N">It was there that the Lord opened up my awareness of my lack of faith. Even though it
                came about late, I recognised my failings. So I turned with all my heart to the Lord
                my God, and he looked down on my lowliness and had mercy on my youthful ignorance. He
@@ -210,14 +211,14 @@
                between good and evil. He protected me and consoled me as a father does for his
                son.</p></div>
          </div>
-         <div xml:id="C03_eng" n="03" corresp="C03_lat" type="sect" part="N" org="uniform" sample="complete">
+         <div xml:id="C03_eng" n="3" corresp="C03_lat" type="sect" part="N" org="uniform" sample="complete">
             <div type="para" n="1" part="N" org="uniform" sample="complete"><p part="N">That is why I cannot be silent – nor would it be good to do so – about such great
                blessings and such a gift that the Lord so kindly bestowed in the land of my
                captivity. This is how we can repay such blessings, when our lives change and we come
                to know God, to praise and bear witness to his great wonders before every nation
                under heaven.</p></div>
          </div>
-         <div xml:id="C04_eng" n="04" corresp="C04_lat" type="sect" part="N" org="uniform" sample="complete">
+         <div xml:id="C04_eng" n="4" corresp="C04_lat" type="sect" part="N" org="uniform" sample="complete">
             <div type="para" n="1" part="N" org="uniform" sample="complete"><p part="N">This is because there is no other God, nor will there ever be, nor was there ever,
                except God the Father. He is the one who was not begotten, the one without a
                beginning, the one from whom all beginnings come, the one who holds all things in
@@ -236,28 +237,28 @@
                co-heirs with Christ. This is the one we
                acknowledge and adore – one God in a trinity of the sacred name.</p></div>
          </div>
-         <div xml:id="C05_eng" n="05" corresp="C05_lat" type="sect" part="N" org="uniform" sample="complete">
+         <div xml:id="C05_eng" n="5" corresp="C05_lat" type="sect" part="N" org="uniform" sample="complete">
             <div type="para" n="1" part="N" org="uniform" sample="complete"><p part="N">He said through the prophet: ‘Call on me in the day of your distress, and I will set
                you free, and you will glorify me.’
                Again he said: ‘It is a matter of honour to reveal and tell forth the works of
                   God.’</p></div>
          </div>
-         <div xml:id="C06_eng" n="06" corresp="C06_lat" type="sect" part="N" org="uniform" sample="complete">
+         <div xml:id="C06_eng" n="6" corresp="C06_lat" type="sect" part="N" org="uniform" sample="complete">
             <div type="para" n="1" part="N" org="uniform" sample="complete"><p part="N">Although I am imperfect in many ways, I want my brothers and relations to know what
                I’m really like, so that they can see what it is that inspires my life.</p></div>
          </div>
-         <div xml:id="C07_eng" n="07" corresp="C07_lat" type="sect" part="N" org="uniform" sample="complete">
+         <div xml:id="C07_eng" n="7" corresp="C07_lat" type="sect" part="N" org="uniform" sample="complete">
             <div type="para" n="1" part="N" org="uniform" sample="complete"><p part="N">I am not ignoring the evidence of my Lord, who testifies in the psalm: ‘You destroy
                those who speak lies.’ And again he says: ‘A mouth which lies kills the soul.’
                And the same Lord says in the gospel: ‘The idle words which people speak, they will
                account for on the day of judgment.’</p></div>
          </div>
-         <div xml:id="C08_eng" n="08" corresp="C08_lat" type="sect" part="N" org="uniform" sample="complete">
+         <div xml:id="C08_eng" n="8" corresp="C08_lat" type="sect" part="N" org="uniform" sample="complete">
             <div type="para" n="1" part="N" org="uniform" sample="complete"><p part="N">So I should greatly dread, with fear and trembling, this sentence on that day, where
                nobody can avoid or escape, but all shall give complete account of the least of sins
                before the tribunal of the Lord Christ.</p></div>
          </div>
-         <div xml:id="C09_eng" n="09" corresp="C09_lat" type="sect" part="N" org="uniform" sample="complete">
+         <div xml:id="C09_eng" n="9" corresp="C09_lat" type="sect" part="N" org="uniform" sample="complete">
             <div type="para" n="1" part="N" org="uniform" sample="complete"><p part="N">This is why I have long thought to write, but up to now I have hesitated, because I
                feared what people would say. This is because I did not learn as others did, who
                drank in equally well both the law and the sacred writings, and never had to change

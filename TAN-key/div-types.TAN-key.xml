@@ -68,12 +68,26 @@
         </item>
         <item group="page-start page-end">
             <IRI>tag:textalign.net,2015:div-type:afterword</IRI>
-            <IRI>http://dbpedia.org/page/</IRI>
+            <IRI>http://dbpedia.org/page/Afterword</IRI>
             <name>afterword</name>
         </item>
         <item>
             <IRI>tag:textalign.net,2015:div-type:amendment</IRI>
             <name>amendment</name>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:div-type:apparatus_criticus</IRI>
+            <IRI>http://dbpedia.org/resource/Critical_apparatus</IRI>
+            <name>apparatus criticus</name>
+            <name>critical apparatus</name>
+            <desc>Section of a critical edition, usually at the bottom of the page, indicating
+                variant readings in the manuscript tradition</desc>
+        </item>
+        <item>
+            <IRI>tag:textalign.net,2015:div-type:apparatus_fontium</IRI>
+            <name>apparatus fontium</name>
+            <desc>Section of a critical edition, usually at the bottom of the page, indicating
+                parallel textual sources</desc>
         </item>
         <item>
             <IRI>tag:textalign.net,2015:div-type:bibliographic_citation</IRI>
@@ -256,6 +270,11 @@
             <IRI>tag:textalign.net,2015:div-type:footnote</IRI>
             <name>footnote</name>
         </item>
+        <item group="line-start line-end page-end">
+            <IRI>tag:textalign.net,2015:div-type:footer</IRI>
+            <name>footer</name>
+            <name>running footer</name>
+        </item>
         <item>
             <IRI>tag:textalign.net,2015:div-type:gloss</IRI>
             <IRI>http://dbpedia.org/resource/Gloss_(annotation)</IRI>
@@ -269,6 +288,11 @@
         <item>
             <IRI>tag:textalign.net,2015:div-type:half-line_(verse)</IRI>
             <name>half-line (verse)</name>
+        </item>
+        <item group="line-start line-end page-start">
+            <IRI>tag:textalign.net,2015:div-type:header</IRI>
+            <name>header</name>
+            <name>running header</name>
         </item>
         <item group="line-start line-end leading-start leading-end">
             <IRI>tag:textalign.net,2015:div-type:heading</IRI>
@@ -542,6 +566,14 @@
             <IRI>tag:textalign.net,2015:div-type:subsection</IRI>
             <name>subsection</name>
             <desc>Divisions of a section, perhaps without name or label.</desc>
+        </item>
+        <item group="line-start line-end leading-start leading-end">
+            <IRI>tag:textalign.net,2015:div-type:subtitle</IRI>
+            <name>subtitle</name>
+        </item>
+        <item group="line-start line-end leading-start leading-end">
+            <IRI>tag:textalign.net,2015:div-type:subsubtitle</IRI>
+            <name>subsubtitle</name>
         </item>
         <item>
             <IRI>tag:textalign.net,2015:div-type:syllogism</IRI>

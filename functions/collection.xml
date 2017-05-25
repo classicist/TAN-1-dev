@@ -22,7 +22,6 @@
    <doc href="errors/TAN-A-div-errors.xsl"/>
    <doc href="errors/TAN-class-1-errors.xsl"/>
    <doc href="errors/TAN-class-2-errors.xsl"/>
-   <doc href="errors/TAN-core-errors%20-%20Copy.xsl"/>
    <doc href="errors/TAN-core-errors.xsl"/>
    <doc href="errors/TAN-errors.xml"/>
    <doc href="regex/regex-ext-tan-functions.xsl"/>

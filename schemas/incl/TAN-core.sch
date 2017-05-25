@@ -70,14 +70,17 @@
       <sqf:group id="tan-sqf" use-when="$has-include-or-which-attr = false()">
          <sqf:fix id="replace-self" use-when="exists($self-replacements)">
             <sqf:description>
-               <sqf:title>Replace self with: <value-of select="tan:fragment-to-text($self-replacements[1]/node())"/></sqf:title>
+               <sqf:title>Replace self with: <value-of
+                     select="tan:fragment-to-text($self-replacements[1]/node())"/></sqf:title>
             </sqf:description>
             <sqf:replace select="$self-replacements[1]/node()"/>
          </sqf:fix>
          <sqf:fix id="replace-self-and-next-sibling"
             use-when="exists($self-and-next-sibling-replacements)">
             <sqf:description>
-               <sqf:title>Replace self and next sibling with: <value-of select="tan:fragment-to-text($self-replacements[1]/node()[position() lt 3])"/></sqf:title>
+               <sqf:title>Replace self and next sibling with: <value-of
+                     select="tan:fragment-to-text($self-replacements[1]/node()[position() lt 3])"
+                  /></sqf:title>
             </sqf:description>
             <sqf:replace select="$self-and-next-sibling-replacements/node()[1]"/>
             <sqf:replace match="following-sibling::node()[1]"
@@ -93,25 +96,29 @@
          </sqf:fix>
          <sqf:fix id="prepend-content" use-when="exists($content-to-prepend)">
             <sqf:description>
-               <sqf:title>Prepend content with: <value-of select="tan:fragment-to-text($content-to-prepend/node())"/></sqf:title>
+               <sqf:title>Prepend content with: <value-of
+                     select="tan:fragment-to-text($content-to-prepend/node())"/></sqf:title>
             </sqf:description>
             <sqf:add position="first-child" select="$content-to-prepend/node()"/>
          </sqf:fix>
          <sqf:fix id="append-content" use-when="exists($content-to-append)">
             <sqf:description>
-               <sqf:title>Append content with: <value-of select="tan:fragment-to-text($content-to-append/node())"/></sqf:title>
+               <sqf:title>Append content with: <value-of
+                     select="tan:fragment-to-text($content-to-append/node())"/></sqf:title>
             </sqf:description>
             <sqf:add position="last-child" select="$content-to-append/node()"/>
          </sqf:fix>
          <sqf:fix id="copy-after" use-when="exists($content-to-copy-after)">
             <sqf:description>
-               <sqf:title>Copy content after this element: <value-of select="tan:fragment-to-text($content-to-copy-after/node())"/></sqf:title>
+               <sqf:title>Copy content after this element: <value-of
+                     select="tan:fragment-to-text($content-to-copy-after/node())"/></sqf:title>
             </sqf:description>
             <sqf:add position="after" select="$content-to-copy-after/node()"/>
          </sqf:fix>
          <sqf:fix id="copy-attributes-1" use-when="exists($attributes-to-copy[1]/*)">
             <sqf:description>
-               <sqf:title>Insert <value-of select="tan:fragment-to-text($attributes-to-copy[1]/*[1]/@*)"/></sqf:title>
+               <sqf:title>Insert <value-of
+                     select="tan:fragment-to-text($attributes-to-copy[1]/*[1]/@*)"/></sqf:title>
             </sqf:description>
             <sqf:replace>
                <xsl:copy>
@@ -123,7 +130,8 @@
          </sqf:fix>
          <sqf:fix id="copy-attributes-2" use-when="exists($attributes-to-copy[1]/*[2])">
             <sqf:description>
-               <sqf:title>Insert <value-of select="tan:fragment-to-text($attributes-to-copy[1]/*[2]/@*)"/>
+               <sqf:title>Insert <value-of
+                     select="tan:fragment-to-text($attributes-to-copy[1]/*[2]/@*)"/>
                </sqf:title>
             </sqf:description>
             <sqf:replace>
@@ -136,7 +144,8 @@
          </sqf:fix>
          <sqf:fix id="copy-attributes-3" use-when="exists($attributes-to-copy[1]/*[3])">
             <sqf:description>
-               <sqf:title>Insert <value-of select="tan:fragment-to-text($attributes-to-copy[1]/*[3]/@*)"/>
+               <sqf:title>Insert <value-of
+                     select="tan:fragment-to-text($attributes-to-copy[1]/*[3]/@*)"/>
                </sqf:title>
             </sqf:description>
             <sqf:replace>
@@ -149,7 +158,8 @@
          </sqf:fix>
          <sqf:fix id="copy-attributes-4" use-when="exists($attributes-to-copy[1]/*[4])">
             <sqf:description>
-               <sqf:title>Insert <value-of select="tan:fragment-to-text($attributes-to-copy[1]/*[4]/@*)"/>
+               <sqf:title>Insert <value-of
+                     select="tan:fragment-to-text($attributes-to-copy[1]/*[4]/@*)"/>
                </sqf:title>
             </sqf:description>
             <sqf:replace>
@@ -164,8 +174,11 @@
          <sqf:fix id="copy-element-after-last-of-type"
             use-when="exists($elements-to-copy-elsewhere)">
             <sqf:description>
-               <sqf:title>Copy as last of its type the following element: <value-of select="tan:fragment-to-text($elements-to-copy-elsewhere/*)"/> </sqf:title>
-               <sqf:p>Element will be added after the last occurrence of <value-of select="name($elements-to-copy-elsewhere[1]/*[1])"/></sqf:p>
+               <sqf:title>Copy as last of its type the following element: <value-of
+                     select="tan:fragment-to-text($elements-to-copy-elsewhere/*)"/>
+               </sqf:title>
+               <sqf:p>Element will be added after the last occurrence of <value-of
+                     select="name($elements-to-copy-elsewhere[1]/*[1])"/></sqf:p>
             </sqf:description>
             <sqf:add match="(//*[name(.) = name($elements-to-copy-elsewhere[1]/*[1])])[last()]"
                position="after">
@@ -210,6 +223,6 @@
                use-when="@when-accessed" select="current-dateTime()"/>
          </sqf:fix>
       </sqf:group>
-      
+
    </rule>
 </pattern>

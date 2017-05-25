@@ -40,9 +40,6 @@
     <define name="id-option">
       <empty/>
     </define>
-    <define name="continuation-opt">
-      <ref name="continuation"/>
-    </define>
     <define name="other-body-attributes">
       <ref name="lexicon-attr"/>
       <ref name="grammar-attr"/>

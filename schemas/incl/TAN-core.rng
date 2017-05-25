@@ -112,7 +112,6 @@
   <define name="inclusion-att">
     <attribute name="include">
       <a:documentation>signals that the parent element is to be replaced by all elements of the same name found in the referred &lt;inclusion&gt;.</a:documentation>
-      <data type="IDREFS" datatypeLibrary="http://relaxng.org/ns/compatibility/datatypes/1.0"/>
     </attribute>
   </define>
   <define name="internal-id">
@@ -677,7 +676,11 @@
   </define>
   <define name="any-attribute">
     <attribute>
-      <anyName/>
+      <anyName>
+        <except>
+          <name>xml:id</name>
+        </except>
+      </anyName>
     </attribute>
   </define>
   <!--

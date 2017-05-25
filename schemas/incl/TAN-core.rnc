@@ -80,7 +80,7 @@ href-opt =
 inclusion-att =
     
     ## signals that the parent element is to be replaced by all elements of the same name found in the referred <inclusion>.
-    attribute include { d:IDREFS }
+    attribute include { text }
 internal-id =
     
     ## identifies an entity described within an element. Must be unique within a given file. Must consist only of word characters.
@@ -378,7 +378,7 @@ TAN-tail =
     element tail { any-content }?
 any-content = any-element* & text
 any-element = element * { any-attribute*, any-content }
-any-attribute = attribute * { text }
+any-attribute = attribute * - xml:id { text }
 # 
 # 3rd level of any TAN file, head metadata only (the body, which differs widely across TAN file types, are defined in other schema files)
 nonsource-rights =

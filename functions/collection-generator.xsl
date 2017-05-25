@@ -20,6 +20,9 @@
             <xsl:for-each select="collection('errors/.?select=*.x[ms]l')">
                 <doc href="{replace(base-uri(.),'.+[/\\]([^/\\]+)$','errors/$1')}"/>
             </xsl:for-each>
+            <xsl:for-each select="collection('regex/.?select=*.x[ms]l')">
+                <doc href="{replace(base-uri(.),'.+[/\\]([^/\\]+)$','regex/$1')}"/>
+            </xsl:for-each>
         </collection>
     </xsl:variable>
     <xsl:variable name="schema-URIs">

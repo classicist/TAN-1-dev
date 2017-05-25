@@ -4,6 +4,7 @@
    <doc href="TAN-A-div-functions.xsl"/>
    <doc href="TAN-A-tok-functions.xsl"/>
    <doc href="TAN-c-functions.xsl"/>
+   <doc href="TAN-extra-functions.xsl"/>
    <doc href="TAN-key-functions.xsl"/>
    <doc href="TAN-LM-functions.xsl"/>
    <doc href="TAN-mor-functions.xsl"/>
@@ -21,6 +22,8 @@
    <doc href="errors/TAN-A-div-errors.xsl"/>
    <doc href="errors/TAN-class-1-errors.xsl"/>
    <doc href="errors/TAN-class-2-errors.xsl"/>
+   <doc href="errors/TAN-core-errors%20-%20Copy.xsl"/>
    <doc href="errors/TAN-core-errors.xsl"/>
    <doc href="errors/TAN-errors.xml"/>
+   <doc href="regex/regex-ext-tan-functions.xsl"/>
 </collection>

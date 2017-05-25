@@ -29,9 +29,9 @@
       <xsl:variable name="this-amb-num-type" select="$ambiguous-numeral-types[@type = $this-type]"
          as="element()*"/>
       <xsl:variable name="this-n-norm" select="tan:normalize-text(lower-case(@n))"/>
-      <xsl:variable name="this-n-analyzed" as="element()"
+      <xsl:variable name="this-n-analyzed" as="element()?"
          select="tan:analyze-elements-with-numeral-attributes(., (), false(), true())"/>
-      <xsl:variable name="this-n-identified" as="element()">
+      <xsl:variable name="this-n-identified" as="element()?">
          <xsl:apply-templates select="$this-n-analyzed" mode="#current">
             <xsl:with-param name="this-amb-num-type" select="$this-amb-num-type" tunnel="yes"/>
          </xsl:apply-templates>
@@ -44,22 +44,24 @@
          select="string-join($this-n-identified//text(), '')"/>
       <xsl:variable name="this-n-norm-expanded" as="xs:string?">
          <xsl:variable name="pass1" as="xs:string*">
-            <xsl:analyze-string select="$this-n-identified" regex="\d+-\d+">
-               <xsl:matching-substring>
-                  <xsl:variable name="digits" select="tokenize(., '-')"/>
-                  <xsl:variable name="range" as="xs:integer*"
-                     select="xs:integer($digits[1]) to xs:integer($digits[2])"/>
-                  <xsl:value-of
-                     select="
-                        string-join(for $i in ($range)
-                        return
-                           string($i), ' ')"
-                  />
-               </xsl:matching-substring>
-               <xsl:non-matching-substring>
-                  <xsl:value-of select="."/>
-               </xsl:non-matching-substring>
-            </xsl:analyze-string>
+            <xsl:if test="string-length($this-n-identified) gt 0">
+               <xsl:analyze-string select="$this-n-identified" regex="\d+-\d+">
+                  <xsl:matching-substring>
+                     <xsl:variable name="digits" select="tokenize(., '-')"/>
+                     <xsl:variable name="range" as="xs:integer*"
+                        select="xs:integer($digits[1]) to xs:integer($digits[2])"/>
+                     <xsl:value-of
+                        select="
+                           string-join(for $i in ($range)
+                           return
+                              string($i), ' ')"
+                     />
+                  </xsl:matching-substring>
+                  <xsl:non-matching-substring>
+                     <xsl:value-of select="."/>
+                  </xsl:non-matching-substring>
+               </xsl:analyze-string>
+            </xsl:if>
          </xsl:variable>
          <xsl:value-of select="string-join($pass1, '')"/>
       </xsl:variable>
@@ -306,7 +308,13 @@
             </xsl:when>
          </xsl:choose>
       </xsl:if>
-      <xsl:value-of select="tan:normalize-text(.)"/>
+      <xsl:value-of
+         select="
+            if (parent::tei:*) then
+               .
+            else
+               tan:normalize-text(.)"
+      />
    </xsl:template>
    <xsl:template match="tan:TAN-T | tei:TEI" mode="prep-class-1">
       <!-- Homogenize tei:TEI to tan:TAN-T -->

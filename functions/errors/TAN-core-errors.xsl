@@ -701,7 +701,7 @@
             </xsl:choose>
          </xsl:for-each>
          <xsl:if test="@xml:id = $duplicate-ids">
-            <xsl:copy-of select="tan:error('tan03')"/>
+            <xsl:copy-of select="tan:error('tan03', concat('ids used so far: ', string-join($all-ids, ', ')))"/>
          </xsl:if>
          <xsl:if test="$dates = 0">
             <xsl:copy-of select="tan:error('whe01')"/>

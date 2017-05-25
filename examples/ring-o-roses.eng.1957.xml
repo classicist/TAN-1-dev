@@ -6,7 +6,7 @@
 <TEI xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:svg="http://www.w3.org/2000/svg"
   xmlns:tan="tag:textalign.net,2015:ns" xmlns:math="http://www.w3.org/1998/Math/MathML"
   xmlns="http://www.tei-c.org/ns/1.0" TAN-version="1 dev" id="tag:parkj@textalign.net,2015:ring04">
-  <teiHeader type="text">
+  <teiHeader>
     <fileDesc>
       <titleStmt>
         <title/>

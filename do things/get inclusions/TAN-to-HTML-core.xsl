@@ -215,7 +215,8 @@
                 matches($this-non-space-text, '^[\p{IsHebrew}\p{IsArabic}\p{IsSyriac}\p{IsThaana}]+$')
                 or matches(tan:attr-lang/text(), '^(syr|ara|hbo|syc|heb|aao|abh|abv|acm|acq|acw|acx|acy|adf|aeb|aec|afb|ajp|apc|apd|arb|arq|ars|ary|arz|auz|avl|ayh|ayl|ayn|ayp|bbz|pga|shu|ssh)')"/>
         <xsl:variable name="is-ltr" as="xs:boolean"
-            select="matches($this-non-space-text, '^[^\p{IsHebrew}\p{IsArabic}\p{IsSyriac}\p{IsThaana}]+$')"/>
+            select="matches($this-non-space-text, '^[^\p{IsHebrew}\p{IsArabic}\p{IsSyriac}\p{IsThaana}]+$') or string-length($this-non-space-text) lt 1"
+        />
         <xsl:variable name="contains-mixed-content"
             select="exists(*) and exists(text()[matches(., '\S')])"/>
 

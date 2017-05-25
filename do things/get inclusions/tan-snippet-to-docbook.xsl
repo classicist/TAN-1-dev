@@ -19,7 +19,11 @@
             <xsl:variable name="text-to-emphasize"
                 select="concat('\s', $element-or-attribute-name, '=&quot;[^&quot;]+&quot;|&lt;/?', $element-or-attribute-name, '(/?>|\s+[^&gt;]*>)')"/>
             <xsl:variable name="text-emphasized" select="analyze-string($text, $text-to-emphasize)"/>
-            <xsl:variable name="example-file-name" select="replace(base-uri(current-group()[1]),'.+/([^/]+)$','$1')"/>
+            <xsl:variable name="this-example-uri" select="base-uri(current-group()[1])"/>
+            <!-- In the following, static base uri works, only because it is, like the guidelines inclusions, two levels deeper than the TAN-1-dev directory -->
+            <xsl:variable name="this-example-relative-url" select="tan:uri-relative-to($this-example-uri, static-base-uri())"/>
+            <!--<xsl:variable name="example-file-name" select="replace($this-example-uri,'.+/([^/]+)$','$1')"/>-->
+            <!--<xsl:variable name="example-uri-old" select="'../../examples/' || $example-file-name"/>-->
             <xsl:variable name="docbook-example" as="element()">
                 <para>
                     <example>
@@ -40,8 +44,8 @@
                     <note>
                         <para>
                             <xsl:text>Taken from </xsl:text>
-                            <link xlink:href="{'../../examples/' || $example-file-name}">
-                                <xsl:value-of select="$example-file-name"/>
+                            <link xlink:href="{$this-example-relative-url}">
+                                <xsl:value-of select="tan:cfn(current-group()[1])"/>
                             </link>
                         </para>
                     </note>

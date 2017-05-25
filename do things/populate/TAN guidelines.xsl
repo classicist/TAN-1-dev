@@ -16,7 +16,7 @@
    <xd:doc scope="stylesheet">
       <xd:desc>
          <xd:p>Input: any XML file</xd:p>
-         <xd:p>Output: repopulated TAN guidelines, bot the main document and its inclusions</xd:p>
+         <xd:p>Output: repopulated TAN guidelines, both the main document and its inclusions</xd:p>
       </xd:desc>
    </xd:doc>
    <xsl:output method="xml" indent="no"/>
@@ -78,6 +78,7 @@
          </sec>
          <sec n="TAN-class-2-and-3"/>
          <sec n="diff-for-xslt2"/>
+         <sec n="regex-ext-tan"/>
          <sec n="TAN-schema"/>
       </sec>
    </xsl:variable>
@@ -195,7 +196,7 @@
                         </xsl:otherwise>
                      </xsl:choose>
                   </code>
-                  <xsl:if test="$match-type = 'function'">
+                  <xsl:if test="$match-type = 'function' and $is-valid-link">
                      <xsl:value-of
                         select="replace(., $replacement-for-function-result-to-put-outside-code[1], $replacement-for-function-result-to-put-outside-code[2])"
                      />
@@ -425,9 +426,8 @@
          <!-- part 1, documentation -->
          <xsl:apply-templates select="$this-group/a:documentation" mode="rng-to-docbook"/>
          <!-- part 2, formal definiton -->
+         <para>Formal Definition</para>
          <synopsis>
-            <emphasis>Formal Definition
-</emphasis>
             <xsl:apply-templates select="$this-group/rng:*" mode="formaldef">
                <xsl:with-param name="current-indent" select="$indent" tunnel="yes"/>
             </xsl:apply-templates>
@@ -547,9 +547,10 @@
          <chapter version="5.0" xml:id="keywords-master-list">
             <xsl:variable name="intro-text" as="xs:string">In this section are collected all
                official TAN keywords, i.e., values of @which predefined by TAN for certain elements.
-               Remember, these keywords are not @xml:id values. They may contain punctuation,
-               spaces, and so forth. For more on the use of these keywords, see @which, specific
-               elements, or various examples. </xsl:variable>
+               Remember, these keywords are not @xml:id values, and do not fall under the same
+               restrictions. They may contain punctuation, spaces, and so forth. For more on the use
+               of these keywords, see @which, specific elements, or various examples.
+            </xsl:variable>
             <title>Official TAN keywords</title>
             <para>
                <xsl:copy-of select="tan:prep-string-for-docbook(normalize-space($intro-text))"/>
@@ -570,7 +571,7 @@
                   select="
                      'The ' || count(distinct-values($function-library-variables/@name)) || ' global variables, ' || count(distinct-values($function-library-keys/@name)) || ' keys, ' || count(distinct-values($function-library-functions/@name)) || ' functions, and ' || count(distinct-values(for $i in $function-library-templates/(@name, @mode)
                      return
-                        tokenize($i, '\s+'))) || ' templates (Ŧ = named template; ŧ = template mode) defined in the TAN function library, are the following:'"
+                     tokenize($i, '\s+'))) || ' templates (Ŧ = named template; ŧ = template mode) defined in the TAN function library, are the following (ʞ = key):'"
                />
             </para>
             <xsl:for-each-group

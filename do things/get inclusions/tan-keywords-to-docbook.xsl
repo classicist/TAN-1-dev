@@ -97,7 +97,16 @@
                                         <xsl:for-each select="tan:IRI, tan:token-definition/@regex">
                                             <listitem>
                                                 <para>
-                                                    <xsl:copy-of select="tan:prep-string-for-docbook(.)"/>
+                                                    <xsl:choose>
+                                                        <xsl:when test="matches(.,'^(ftp|https?)://')">
+                                                            <link xlink:href="{.}">
+                                                                <xsl:value-of select="."/>
+                                                            </link>
+                                                        </xsl:when>
+                                                        <xsl:otherwise>
+                                                            <xsl:value-of select="."/>
+                                                        </xsl:otherwise>
+                                                    </xsl:choose>
                                                 </para>
                                             </listitem>
                                         </xsl:for-each>

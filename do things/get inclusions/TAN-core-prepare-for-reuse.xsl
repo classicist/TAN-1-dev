@@ -16,7 +16,7 @@
             else
                 resolve-uri($reorder-param-url-relative-to-this-stylesheet, static-base-uri())"/>
     <xsl:variable name="params" as="document-node()?"
-        select="doc($reorder-param-url-relative-to-input)"/>
+        select="doc($reorder-param-url-resolved)"/>
     <xsl:variable name="lbrace" select="'{'" as="xs:string"/>
     <xsl:variable name="rbrace" select="'}'" as="xs:string"/>
     <xsl:variable name="xpath-pattern" select="'\{[^\}]+?\}'"/>
@@ -34,7 +34,9 @@
         <xsl:variable name="this-namespace" select="namespace-uri()"/>
         <xsl:variable name="is-div-with-tei-children" select="exists(self::tan:div/tei:*)"/>
         <xsl:variable name="is-div-with-tei-descendants" select="exists(self::tan:div//tei:*)"/>
-        <xsl:variable name="attr-become-elements" as="xs:boolean" select="tan:true(($this-param/@convert-attributes-to-elements, $params/*/@convert-attributes-to-elements))[1]"/>
+        <xsl:variable name="attr-become-elements" as="xs:boolean"
+            select="tan:true(($this-param/@convert-attributes-to-elements, $params/*/@convert-attributes-to-elements))[1]"
+        />
 
         <xsl:choose>
             <xsl:when test="exists($this-param/@replace-with)">

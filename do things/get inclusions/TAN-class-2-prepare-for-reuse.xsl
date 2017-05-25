@@ -117,7 +117,7 @@
                                                 <xsl:copy-of select="following-sibling::tan:lm"/>
                                             </xsl:when>
                                             <xsl:otherwise>
-                                                <xsl:copy-of select="normalize-space(string-join(following-sibling::*[not(@src) = $src]//text(), ' '))"/>
+                                                <xsl:copy-of select="normalize-space(string-join(following-sibling::*[not(@src = $src)]//text(), ' '))"/>
                                             </xsl:otherwise>
                                         </xsl:choose>
                                     </xsl:variable>
